@@ -98,13 +98,6 @@ Route::group(['middleware' => ['auth', 'checkUserId']], function () {
 Route::get('/stdLog-search', [StdlogController::class, 'search_id'])->name('searchTestLog');
 
 
-Route::group(['middleware' => ['auth', 'Godeye']], function () {
-    Route::resource('Godeye', GodeyeContreoller::class);
-});
-
-Route::group(['middleware' => ['auth', 'switch']], function () {
-    Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
-});
 Route::group(['middleware' => ['auth', 'outhome']], function () {
 
     Route::get('/updateStudentStatus', [App\Http\Controllers\HomeController::class, 'updateStudentStatus'])->name('updateStudentStatus');
@@ -114,9 +107,6 @@ Route::group(['middleware' => ['auth', 'outhome']], function () {
 
 
 Route::get('/test-fn', [TestController::class, 'store'])->name('testFs')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]); // test
-
-//Route::post('/test-fn/iclock/cdata', [TestController::class, 'store'])->name('testFn')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
-//Route::post('/test-fn/iclock/getrequest', [TestController::class, 'store'])->name('testFnn')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 
 Route::group(['middleware' => ['auth']], function () {
@@ -135,8 +125,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/forms-time', [TimeController::class, 'formsTimes'])->name('formsTimes');
     Route::get('/forms-control', [TimeController::class, 'formsControl'])->name('formsControl');
     Route::delete('/delete_control/{id}', [TimeController::class, 'deleteControl'])->name('delete_control');
-    //std log
 
+    //std log
     Route::get('/report-future-student', [StdlogController::class, 'reportFutureStd'])->name('reportFutureStd');
     Route::get('/searchFuture', [StdlogController::class, 'searchFuture'])->name('searchFuture');
     Route::get('/search_future', [StdlogController::class, 'search_future'])->name('search_future');
@@ -150,7 +140,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('stdlog/create', [StdlogController::class, 'create'])->name('stdlog_create');
 
     //user
-
     Route::get('/users', [EmployeeController::class, 'index'])->name('users');
     Route::get('/users/create', [EmployeeController::class, 'create'])->name('users.create');
     Route::get('/users/show', [EmployeeController::class, 'show'])->name('users.show');
@@ -161,81 +150,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/users/destroy/{id}', [EmployeeController::class, 'destroy'])->name('users.destroy');
     Route::delete('/users/destroy_all', [EmployeeController::class, 'destroy_all'])->name('users.destroy_all');
 
-    //subject
-    Route::get('/subjects', [SubjectController::class, 'index'])->name('subjects');
-    Route::get('/subjects/view/{id}', [SubjectController::class, 'view'])->name('subjects.view');
-    Route::get('/subjects/edit/{id}', [SubjectController::class, 'edit'])->name('subjects.edit');
-    Route::post('/subjects/select_list/{id}', [SubjectController::class, 'select_list'])->name('subjects.select_list');
-    Route::put('/subjects/save/{id}', [SubjectController::class, 'update'])->name('subjects.save');
-    Route::post('/subjects/store', [SubjectController::class, 'store'])->name('subjects.store');
-    Route::delete('/subjects/destroy_all', [SubjectController::class, 'destroy_all'])->name('subjects.destroy_all');
-    Route::delete('/subjects/destroy/{id}', [SubjectController::class, 'destroy'])->name('subjects.destroy');
-    Route::get('/subjects/viewstudent/', [SubjectController::class, 'overview'])->name('subjects.overview');
-    Route::get('/subjects/viewstudent/searchsubSTD', [SubjectController::class, 'searchsubSTD'])->name('searchsubSTD');
-
-    //subject price
-
-    Route::get('/subjects_price', [SubjectPriceController::class, 'index'])->name('subjects_price');
-    Route::get('/subjects_price/edit/{id}', [SubjectPriceController::class, 'edit'])->name('subjects_price.edit');
-    Route::post('/subjects_price/select_list/{id}', [SubjectPriceController::class, 'select_list'])->name('subjects_price.select_list');
-    Route::put('/subjects_price/save/{id}', [SubjectPriceController::class, 'update'])->name('subjects_price.save');
-    Route::post('/subjects_price/store', [SubjectPriceController::class, 'store'])->name('subjects_price.store');
-    Route::delete('/subjects_price/destroy_all', [SubjectPriceController::class, 'destroy_all'])->name('subjects_price.destroy_all');
-    Route::delete('/subjects_price/destroy/{id}', [SubjectPriceController::class, 'destroy'])->name('subjects_price.destroy');
-
-    //level
-    Route::get('/levels', [LevelController::class, 'index'])->name('levels');
-    Route::get('/levels/edit/{id}', [LevelController::class, 'edit'])->name('levels.edit');
-    Route::post('/levels/select_list/{id}', [LevelController::class, 'select_list'])->name('levels.select_list');
-    Route::put('/levels/save/{id}', [LevelController::class, 'update'])->name('levels.save');
-    Route::post('/levels/store', [LevelController::class, 'store'])->name('levels.store');
-    Route::delete('/levels/destroy_all', [LevelController::class, 'destroy_all'])->name('levels.destroy_all');
-    Route::delete('/levels/destroy/{id}', [LevelController::class, 'destroy'])->name('levels.destroy');
-
-    //student
-
-    Route::get('/students', [StudentController::class, 'index'])->name('students');
-    Route::get('/students/expire', [StudentController::class, 'expire'])->name('students.expire');
-    Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
-    Route::get('/students/show/{id}', [StudentController::class, 'show'])->name('students.show');
-    Route::get('/students/view/{id}', [StudentController::class, 'view'])->name('students.view');
-    Route::get('/students/edit/{id}', [StudentController::class, 'edit'])->name('students.edit');
-    Route::put('/students/save/{id}', [StudentController::class, 'update'])->name('students.save');
-    Route::get('/students/show/history/{sub_id}/{std_id}', [StudentController::class, 'std_his'])->name('std_his');
-
-    Route::post('/students/store', [StudentController::class, 'store'])->name('students.store');
-    Route::post('/students/import', [StudentController::class, 'importExcel'])->name('students.import');
-    Route::delete('/students/destroy/{id}', [StudentController::class, 'destroy'])->name('students.destroy');
-    Route::delete('/students/destroy_all', [StudentController::class, 'destroy_all'])->name('students.destroy_all');
-
-    //parent
-
-    Route::get('/parents', [ParentRegisterController::class, 'index'])->name('parents');
-    Route::get('/parents/create', [ParentRegisterController::class, 'create'])->name('parents.create');
-    Route::get('/parents/show', [ParentRegisterController::class, 'show'])->name('parents.show');
-    Route::get('/parents/edit/{id}', [ParentRegisterController::class, 'edit'])->name('parents.edit');
-    Route::put('/parents/save/{id}', [ParentRegisterController::class, 'update'])->name('parents.save');
-    Route::post('/parents/store1', [ParentRegisterController::class, 'store1'])->name('parents.store1');
-    Route::delete('/parents/destroy/{id}', [ParentRegisterController::class, 'destroy'])->name('parents.destroy');
-    Route::delete('/parents/destroy_all', [ParentRegisterController::class, 'destroy_all'])->name('parents.destroy_all');
-
-    //course
-
-    Route::get('/course', [CourseController::class, 'index'])->name('course');
-    Route::get('/course/create', [CourseController::class, 'create'])->name('course.create');
-    Route::get('/course/show/{type}/{lang}/{id}', [CourseController::class, 'show'])->name('course.show');
-    Route::any('/course/simulate/{type}/{lang}', [CourseController::class, 'simulate'])->name('course.simulate');
-    Route::get('/course/edit/{id}', [CourseController::class, 'edit'])->name('course.edit');
-    Route::put('/course/save/{id}', [CourseController::class, 'update'])->name('course.save');
-    Route::post('/course/store', [CourseController::class, 'store'])->name('course.store');
-    Route::delete('/course/destroy/{id}', [CourseController::class, 'destroy'])->name('course.destroy');
-    Route::delete('/course/destroy_all', [CourseController::class, 'destroy_all'])->name('course.destroy_all');
-
-
-
-
     //reciept
-
     Route::get('/receipts', [ReceiptController::class, 'index'])->name('receipts');
     Route::get('/receipts_all', [ReceiptController::class, 'index_all'])->name('receipts_all');
     Route::get('/receipts/create', [ReceiptController::class, 'create'])->name('receipts.create');
@@ -252,46 +167,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/receipts/import', [ReceiptController::class, 'importExcel'])->name('receipts.import');
     Route::delete('/receipts/destroy/{id}', [ReceiptController::class, 'destroy'])->name('receipts.destroy');
     Route::delete('/receipts/destroy_all', [ReceiptController::class, 'destroy_all'])->name('receipts.destroy_all');
-
-
-
-    //history
-
-    Route::get('/histories', [HistoryController::class, 'index'])->name('histories');
-    Route::get('/histories/stdsub/{id}', [HistoryController::class, 'stdsub'])->name('stdsub');
-    Route::get('/histories/stdsperiod/{id}/{sub_id}', [HistoryController::class, 'stdsperiod'])->name('stdsperiod');
-    Route::get('/histories/edit/{id}', [HistoryController::class, 'edit'])->name('histories.edit');
-    Route::put('/histories/save/{id}', [HistoryController::class, 'update'])->name('histories.save');
-    Route::post('/histories/show', [HistoryController::class, 'show'])->name('histories.show');
-    Route::post('/histories/store', [HistoryController::class, 'store'])->name('histories.store');
-    Route::delete('/histories/destroy/{id}', [HistoryController::class, 'destroy'])->name('histories.destroy');
-    Route::delete('/histories/destroy_all', [HistoryController::class, 'destroy_all'])->name('histories.destroy_all');
-    Route::match(array('GET', 'POST'), '/histories/print_std', [HistoryController::class, 'print_std'])->name('histories.print_std');
-    Route::match(array('GET', 'POST'), '/histories/print_day', [HistoryController::class, 'print_day'])->name('histories.print_day');
-
-    //receipt_school
-
-    Route::match(array('GET', 'POST'), '/receipt_school', [ReceiptSchoolController::class, 'index'])->name('receipt_school');
-    Route::get('/receipt_school/{sub_id}', [ReceiptSchoolController::class, 'search'])->name('receipt_school.search');
-    Route::get('/receipt_school/{sub_id}/{level_id}/{week}/{price}/{qty}/{discount}/{book_price}/{type}/{course_type}/{entrance_fee}', [ReceiptSchoolController::class, 'searchs'])->name('receipt_school.searchs');
-    Route::get('/receipt_school/{sub_id}/{level_id}/{book}/{week}/{course_type}/', [ReceiptSchoolController::class, 'sumbook'])->name('receipt_school.sumbook');
-    // Route::get('/receipt_school/{sub_id}/{level_id}/{book}/', [ReceiptSchoolController::class, 'sumbook'])->name('receipt_school.sumbook');
-    Route::get('/receipt_school/find/{parent}', [ReceiptSchoolController::class, 'find'])->name('receipt_school.find');
-
-    Route::post('/receipt_school/store', [ReceiptSchoolController::class, 'store'])->name('receipt_school.store');
-
-    Route::get('/receipt_school/show/{type}/{id}', [ReceiptSchoolController::class, 'show'])->name('receipt_school.show');
-
-    Route::get('/receipt_school/{id}/{type}', [ReceiptSchoolController::class, 'edit'])->name('receipt_school.edit');
-    Route::put('/receipt_school/save/{id}', [ReceiptSchoolController::class, 'update'])->name('receipt_school.save');
-    Route::post('/receipt_school/upload', [ReceiptSchoolController::class, 'fileStore'])->name('receipt_school.upload');
-    Route::post('/receipt_school/upload/delete', [ReceiptSchoolController::class, 'fileDestroy'])->name('receipt_school.delete');
-    Route::put('/receipt_school/delete/{id}/{id2}', [ReceiptSchoolController::class, 'deleteImg'])->name('receipt_school.deleteImg');
-    Route::delete('/receipt_school/destroy/{id}', [ReceiptSchoolController::class, 'destroy'])->name('receipt_school.destroy');
-
-    Route::get('/admin/activity-logs', [ActivityLogController::class, 'index'])->name('activity.logs');
-    Route::get('/admin/activity-logs/filter', [ActivityLogController::class, 'filter'])->name('logs.filter');
-    Route::get('/admin/activity-logs/full-filter', [ActivityLogController::class, 'fullFilter'])->name('logs.full.filter');
 
     Route::get('/referent_url', [ReceiptFormController::class, 'referent_url'])->name('referent_url');
     Route::get('/generate_url', [ReceiptFormController::class, 'generateUrl'])->name('generate_url');
