@@ -11,7 +11,8 @@ LOG_LEVEL=debug
 DB_CONNECTION=mysql
 DB_HOST=localhost
 DB_PORT=3306
-DB_DATABASE=infinite
+# DB_DATABASE=infinite
+DB_DATABASE=infinite_on_serve
 DB_USERNAME=root
 DB_PASSWORD=
 
