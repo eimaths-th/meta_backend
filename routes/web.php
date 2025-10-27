@@ -97,7 +97,9 @@ Route::group(['middleware' => ['auth', 'checkUserId']], function () {
 });
 Route::get('/stdLog-search', [StdlogController::class, 'search_id'])->name('searchTestLog');
 
-
+Route::group(['middleware' => ['auth', 'switch']], function () {
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
+});
 Route::group(['middleware' => ['auth', 'outhome']], function () {
 
     Route::get('/updateStudentStatus', [App\Http\Controllers\HomeController::class, 'updateStudentStatus'])->name('updateStudentStatus');
