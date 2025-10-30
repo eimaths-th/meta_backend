@@ -61,7 +61,7 @@ Route::post('/attendance/import', [AttendanceController::class, 'import']);
 Route::group(['middleware' => 'check.opening.date.time'], function () {
     // Dynamic slug-based route for all forms
     Route::get('/form/{slug}', [ReceiptFormController::class, 'showFormBySlug'])->name('form.show');
-    Route::get('/gelosea', [ReceiptFormController::class, 'gelosea'])->name('gelosea');
+    // Route::get('/gelosea', [ReceiptFormController::class, 'gelosea'])->name('gelosea');
     Route::get('/spelling-bee-islo', [ReceiptFormController::class, 'spelling_bee_islo'])->name('spelling-bee-islo');
     Route::get('/stemco_science', [ReceiptFormController::class, 'stemco_science'])->name('stemco_science');
     Route::get('/advance_english_grammar', [ReceiptFormController::class, 'advance_english_grammar'])->name('advance_english_grammar');
