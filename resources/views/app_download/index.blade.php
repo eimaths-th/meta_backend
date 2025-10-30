@@ -17,8 +17,8 @@
                     <div class="page-title-icon">
                         <i class="fa fa-mobile-screen-button icon-gradient bg-tempting-azure"></i>
                     </div>
-                    <div>Infinite Brain App
-                        <div class="page-title-subheading">Infinite Brain App Data</div>
+                    <div>META Knowledge App
+                        <div class="page-title-subheading">META Knowledge App Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

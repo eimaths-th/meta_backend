@@ -573,7 +573,7 @@
                         <i class="pe-7s-users icon-gradient bg-tempting-azure"></i>
                     </div>
                     <div>Comment
-                        <div class="page-title-subheading">Infinite Brain Comment Data</div>
+                        <div class="page-title-subheading">META Knowledge Comment Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

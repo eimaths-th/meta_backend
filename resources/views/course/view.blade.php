@@ -28,7 +28,7 @@
                     </div>
                     <div>
                         Study Course
-                        <div class="page-title-subheading">Infinite Brain Study Course Data</div>
+                        <div class="page-title-subheading">META Knowledge Study Course Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

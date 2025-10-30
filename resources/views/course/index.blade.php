@@ -29,7 +29,7 @@
                     </div>
                     <div>
                         Study Course
-                        <div class="page-title-subheading">Infinite Brain Study Course Data</div>
+                        <div class="page-title-subheading">META Knowledge Study Course Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">
@@ -103,7 +103,7 @@
 
                             <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true"></span>
-                            </button>   
+                            </button>
                         </div>
                         <div class="form-group">
                             <label for="Student">Student Name:</label><br>
@@ -517,7 +517,7 @@
                     url: "course/edit/" + id,
                     method: 'GET',
                     success: function(res) {
-                   
+
                         $('#EditStudent').html(res.student);
                         $('#EditSubject').html(res.subject);
                         $('#EditLevel').html(res.html);
@@ -582,7 +582,7 @@
                         _token: token,
                     },
                     success: function(result) {
-                       
+
                         if (result.errors) {
                             $('.alert-danger').html('');
                             $.each(result.errors, function(key, value) {
@@ -604,7 +604,7 @@
                             $('#AddLevel').val('');
                             $('#AddBook').val('');
                             $('#AddDate').val('');
-                        
+
                             //$('#SubmitCreateForm').hide();
                             //setTimeout(function() {
                             //$('.alert-success').hide();
@@ -640,7 +640,7 @@
                     },
 
                     success: function(result) {
-                    
+
                         if (result.errors) {
                             $('.alert-danger').html('');
                             $.each(result.errors, function(key, value) {
@@ -660,7 +660,7 @@
                             $('#EditModal').modal('hide');
                             //setTimeout(function() {
                             //$('.alert-success').hide();
-                            //  
+                            //
                             //}, 10000);
 
                         }

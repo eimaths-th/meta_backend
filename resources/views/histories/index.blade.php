@@ -53,7 +53,7 @@
                     </div>
                     <div>
                         Study Histories
-                        <div class="page-title-subheading">Infinite Brain Study Histories Data</div>
+                        <div class="page-title-subheading">META Knowledge Study Histories Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

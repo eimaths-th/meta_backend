@@ -408,13 +408,13 @@
                     <div>
                         @if (!request()->get('sfield'))
                             <span id="title"> All </span> Online Form
-                            <div class="page-title-subheading">Infinite Brain Online Form Data</div>
+                            <div class="page-title-subheading">META Knowledge Online Form Data</div>
                         @elseif ($sfielda[request()->get('sfield')] === 'neos')
                             <span> Neo science Online Form</span>
-                            <div class="page-title-subheading">Infinite Brain Online Form Data</div>
+                            <div class="page-title-subheading">META Knowledge Online Form Data</div>
                         @else
                             <span id="title">{{ $sfielda[request()->get('sfield')] ?? 'All' }}</span>Online Form
-                            <div class="page-title-subheading">Infinite Brain Online Form Data</div>
+                            <div class="page-title-subheading">META Knowledge Online Form Data</div>
                         @endif
 
                     </div>
@@ -1483,12 +1483,12 @@
 
             $(document).on('click', '.btn-resend-mail', function(e) {
                 e.preventDefault();
-                
+
                 if (!confirm("คุณต้องการส่งอีเมลอีกครั้งหรือไม่?")) return;
 
                 var id = $(this).data('id');
                 var btn = $(this);
-                
+
                 if (!id) return;
 
                 btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Sending...');

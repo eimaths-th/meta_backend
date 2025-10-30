@@ -27,8 +27,8 @@
                         <i class="pe-7s-network icon-gradient bg-tempting-azure"></i>
                     </div>
                     <div>
-                        Infinite Brain
-                        <div class="page-title-subheading">Infinite Brain Back Office</div>
+                        META Knowledge
+                        <div class="page-title-subheading">META Knowledge Back Office</div>
                     </div>
                 </div>
             </div>
@@ -37,7 +37,7 @@
         <div class="main-card mb-3 card " id="x_content">
             <div class="card-body">
                 <div>
-                   You Not Have Permission To View Data <br> 
+                   You Not Have Permission To View Data <br>
                    Please Contact Administrator <br>
                    To Change Permission
                 </div>
@@ -49,5 +49,5 @@
 @endsection
 
 @section('script')
-    
+
 @endsection

@@ -26,7 +26,7 @@
                         <i class="fas fa-mortar-board icon-gradient bg-tempting-azure"></i>
                     </div>
                     <div>Referent Code
-                        <div class="page-title-subheading">Infinite Brain Referent Code Data</div>
+                        <div class="page-title-subheading">META Knowledge Referent Code Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

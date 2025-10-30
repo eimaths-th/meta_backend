@@ -23,7 +23,7 @@
                     </div>
                     <div>
                         Subject / รายชื่อนักเรียนในรายวิชา
-                        <div class="page-title-subheading">Infinite Brain Subject Data</div>
+                        <div class="page-title-subheading">META Knowledge Subject Data</div>
                     </div>
                 </div>
 

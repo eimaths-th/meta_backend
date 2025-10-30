@@ -65,16 +65,16 @@
                     <div>
                         @if (isset($sfielda[request()->get('sfield')]) && $sfielda[request()->get('sfield')] === 'neos')
                             Receipts
-                            <div class="page-title-subheading">Infinite Brain Receipt Data</div>
+                            <div class="page-title-subheading">META Knowledge Receipt Data</div>
                         @else
                             {{ isset($sfielda[request()->get('sfield')]) ? $sfielda[request()->get('sfield')] : $form->form_name }}
                             Receipts
                             <div class=
-                            "page-title-subheading">Infinite Brain Receipt Data
+                            "page-title-subheading">META Knowledge Receipt Data
                             </div>
                         @endif
                         {{-- {{ $sfielda[(int) request()->get('sfield')] }} Receipts
-                        <div class="page-title-subheading">Infinite Brain Receipt Data</div> --}}
+                        <div class="page-title-subheading">META Knowledge Receipt Data</div> --}}
                     </div>
                 </div>
                 <div class="page-title-actions">
@@ -283,7 +283,7 @@
                                 <label for="font">Template:</label>
                                 <select class="form-control" id="template" name="template" required>
                                     <option value=""> Select </option>
-                                    <option value="inf"> Infinite Brain </option>
+                                    <option value="inf"> META Knowledge </option>
                                     <option value="meta" selected> Meta </option>
                                     <option value="meta2" selected> Meta2 </option>
 
@@ -380,7 +380,7 @@
                                 <label for="font">Template:</label>
                                 <select class="form-control" id="printDaysTemplate" name="printDaysTemplate" required>
                                     <option value="">Select Template</option>
-                                    <option value="inf">Infinite Brain </option>
+                                    <option value="inf">META Knowledge </option>
                                     <option value="meta"> Meta </option>
                                     <option value="meta2" selected> Meta2 </option>
 
@@ -468,7 +468,7 @@
                                 <label for="font">Template:</label>
                                 <select class="form-control" id="printMonthTemplate" name="printMonthTemplate" required>
                                     <option value="">Select Template</option>
-                                    <option value="inf">Infinite Brain </option>
+                                    <option value="inf">META Knowledge </option>
                                     <option value="meta"> Meta </option>
                                     <option value="meta2" selected> Meta2 </option>
 
@@ -558,7 +558,7 @@
                                 <label for="font">Template:</label>
                                 <select class="form-control" id="printFieldTemplate" name="printFieldTemplate" required>
                                     <option value="">Select Template</option>
-                                    <option value="inf">Infinite Brain </option>
+                                    <option value="inf">META Knowledge </option>
                                     <option value="meta"> Meta </option>
                                     <option value="meta2" selected> Meta2 </option>
 

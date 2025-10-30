@@ -88,7 +88,7 @@
                     </div>
                     <div>
                         ใบกำกับภาษี/ใบเสร็จรับเงิน
-                        <div class="page-title-subheading">Infinite Brain ใบกำกับภาษี/ใบเสร็จรับเงิน Data</div>
+                        <div class="page-title-subheading">META Knowledge ใบกำกับภาษี/ใบเสร็จรับเงิน Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

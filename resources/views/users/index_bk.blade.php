@@ -15,7 +15,7 @@
                         <i class="pe-7s-user icon-gradient bg-tempting-azure"></i>
                     </div>
                     <div>Employee
-                        <div class="page-title-subheading">Infinite Brain Employee Data</div>
+                        <div class="page-title-subheading">META Knowledge Employee Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

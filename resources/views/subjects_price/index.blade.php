@@ -24,7 +24,7 @@
                     <div>
                         {{ $subject[request()->get('id') - 1]->title }}
                         Cost
-                        <div class="page-title-subheading">Infinite Brain Cost Data</div>
+                        <div class="page-title-subheading">META Knowledge Cost Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">
@@ -57,7 +57,7 @@
                         if(request()->get('id')==3){?>
                                 <th>Type</th>
 
-                        <?php }  
+                        <?php }
                         ?>
                                 <th>Week</th>
                                 <th>Price</th>
@@ -99,7 +99,7 @@
                                 <span aria-hidden="true"></span>
                             </button>
                         </div>
-                       
+
                         <div class="form-group">
                             <label for="Subject">Subject:</label>
                             <select class="form-control" id="AddSubject" name="subject" disabled>
@@ -127,11 +127,11 @@
                                 <option value="" selected>Select Type</option>
                                 <option value="1">One Type แบบเดี่ยว</option>
                                 <option value="2">Couple แบบคู่</option>
-                               
+
                             </select>
                         </div>
 
-                        <?php }  
+                        <?php }
                         ?>
                         <div class="form-group">
                             <label for="Title">Week:</label>
@@ -243,7 +243,7 @@
                         //$("#AddBook").html(result.html2);
                     }
                 });
-            
+
 
             $("#AddSubject").change(function() {
 
@@ -281,7 +281,7 @@
             });
 
             //$.noConflict();
-            
+
 if(subject_id==3){
     var table = $('#Listview').DataTable({
                 ajax: '',
@@ -321,7 +321,7 @@ if(subject_id==3){
                         data: 'week',
                         name: 'week'
                     },
-                    
+
                     {
                         data: 'price',
                         name: 'price'
@@ -363,12 +363,12 @@ if(subject_id==3){
                         data: 'level',
                         name: 'level'
                     },
-                    
+
                     {
                         data: 'week',
                         name: 'week'
                     },
-                    
+
                     {
                         data: 'price',
                         name: 'price'
@@ -380,7 +380,7 @@ if(subject_id==3){
                 ]
             });
 }
-            
+
 
 
 

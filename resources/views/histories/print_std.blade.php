@@ -89,7 +89,7 @@
                     </div>
                     <div>
                         Study Histories
-                        <div class="page-title-subheading">Infinite Brain ประวัติการเรียนประจำวัน</div>
+                        <div class="page-title-subheading">META Knowledge ประวัติการเรียนประจำวัน</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

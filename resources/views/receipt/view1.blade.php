@@ -80,7 +80,7 @@
                     </div>
                     <div>
                         {{ $mes }}
-                        <div class="page-title-subheading">Infinite Brain {{ $mes }} Data</div>
+                        <div class="page-title-subheading">META Knowledge {{ $mes }} Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">
@@ -228,7 +228,7 @@
                                         <td align="center">{{ number_format($unitpriceBook, 2) }}</td>
                                         <td align="center">{{ $receipt_detail['discount'] }}</td>
                                         <td align="center" style="vertical-align: top;">
-                                          
+
                                             {{ number_format($unitpriceBook * $receipt_detail['quantity'], 2) }}
                                         </td>
                                     </tr>

@@ -45,7 +45,7 @@
                         <i class="pe-7s-note2 icon-gradient bg-tempting-azure"></i>
                     </div>
                     <div>{{ $sfielda[request()->get('pmsfield')] }} Receipts Report {{ request()->get('print_month') }}
-                        <div class="page-title-subheading">Infinite Brain Receipt Report</div>
+                        <div class="page-title-subheading">META Knowledge Receipt Report</div>
                     </div>
                 </div>
                 <div class="page-title-actions">
@@ -235,7 +235,7 @@
             $(".AddMonth").inputmask("9999-99");
             $(".AddPhone").inputmask("(999) 999-9999");
 
-          
+
             //$.noConflict();
             var token = ''
             $.ajaxSetup({
@@ -244,7 +244,7 @@
                 }
             });
 
-   
+
 
             $('#printr2').on('click', function(e) {
                 //console.log("TEST");
@@ -296,7 +296,7 @@
         title: {
             text: 'ยอดรวมรายได้ {{ $sfielda[request()->get('pmsfield')] }} ประจำเดือน {{ request()->get('print_month') }}'
           },
-          
+
           categories: [{!! $chart_date !!}],
         },
         yaxis: {

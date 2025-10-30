@@ -32,12 +32,12 @@
                         <i class="pe-7s-user icon-gradient bg-tempting-azure"></i>
                     </div>
                     <div>Logs
-                        <div class="page-title-subheading">Infinite Brain Logs Data</div>
+                        <div class="page-title-subheading">META Knowledge Logs Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">
                     <div class="d-inline-block dropdown">
-                       
+
                     </div>
                 </div>
             </div>

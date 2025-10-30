@@ -156,7 +156,7 @@
                 </div>
                 <div>Back Office Dashboard
                     <div class="page-title-subheading">
-                        Infinite Brain Dashboard
+                        META Knowledge Dashboard
                     </div>
                 </div>
 

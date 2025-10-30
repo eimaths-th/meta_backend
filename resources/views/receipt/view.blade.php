@@ -85,7 +85,7 @@
                     </div>
                     <div>
                         {{ $mes }}
-                        <div class="page-title-subheading">Infinite Brain {{ $mes }} Data</div>
+                        <div class="page-title-subheading">META Knowledge {{ $mes }} Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

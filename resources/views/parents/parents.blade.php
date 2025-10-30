@@ -22,7 +22,7 @@
                         <i class="pe-7s-users icon-gradient bg-tempting-azure"></i>
                     </div>
                     <div>Parents
-                        <div class="page-title-subheading">Infinite Brain parent Data</div>
+                        <div class="page-title-subheading">META Knowledge parent Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

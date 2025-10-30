@@ -32009,3 +32009,21 @@ A VERTICAL event
     margin-bottom: 1.5rem;
     background-size: 100%;
 }
+
+/* Custom Meta Logo Class */
+.logo-meta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    width: auto;
+    padding: 0;
+    margin: 0;
+}
+
+.logo-meta img {
+    display: block;
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+}

@@ -27,7 +27,7 @@
                     </div>
                     <div>
                         {{-- {{ $title }} --}}
-                        <div class="page-title-subheading">Infinite Brain SetTime Forms Data</div>
+                        <div class="page-title-subheading">META Knowledge SetTime Forms Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

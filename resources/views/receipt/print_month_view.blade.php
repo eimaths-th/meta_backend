@@ -155,7 +155,7 @@
                     </div>
                     <div>
                         Receipts
-                        <div class="page-title-subheading">Infinite Brain ใบปะหน้ารายเดือน</div>
+                        <div class="page-title-subheading">META Knowledge ใบปะหน้ารายเดือน</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

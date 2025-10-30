@@ -10,7 +10,7 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-  
+
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
@@ -27,7 +27,7 @@
             <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
                 <div class="container">
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        <img src="{{ asset('images/logo_infinitebrain.png') }}" alt="..." height="36">
+                        <img src="{{ asset('images/logo_meta.png') }}" alt="..." height="36">
                         <!--{{ config('app.name', 'Laravel') }}-->
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"

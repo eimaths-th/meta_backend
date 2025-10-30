@@ -5,9 +5,9 @@
 
 {{-- <link rel="stylesheet" href="style.css"> --}}
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<link rel="icon" href="{{ asset('images/infinite-b-icon-non-text-2.png') }}" type="image/png">
+<link rel="icon" href="{{ asset('images/logo_meta.png') }}" type="image/png">
 
-<title>INF | @yield('title', 'INFINITE BRAIN')</title>
+<title>INF | @yield('title', 'META Knowledge')</title>
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
@@ -20,8 +20,8 @@
     }
 
     body {
-        background-color: #c9d6ff;
-        background: linear-gradient(to right, #f2fce2, #d0ff85);
+        background-color: #ffe5d0;
+        background: linear-gradient(to right, #fff5e6, #ffcc80);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -59,7 +59,7 @@
     }
 
     .container button {
-        background-color: #91c045;
+        background-color: #ff8c42;
         color: #fff;
         font-size: 12px;
         padding: 10px 45px;
@@ -89,7 +89,7 @@
 
     .container input {
         background-color: #ffffff;
-        border: solid 2px #517d0b;
+        border: solid 2px #d97706;
         margin: 8px 0;
         padding: 10px 15px;
         font-size: 13px;
@@ -177,9 +177,9 @@
     }
 
     .toggle {
-        background-color: #0055ff;
+        background-color: #ff8c42;
         height: 100%;
-        background: linear-gradient(288deg, #91c045, #517d0b);
+        background: linear-gradient(288deg, #ffab77, #ffa33a);
         color: #fff;
         position: relative;
         left: -100%;
@@ -239,8 +239,8 @@
         /* Light gray border */
         border-radius: 4px;
         cursor: pointer;
-        accent-color: #91c045;
-        /* Blue color when checked */
+        accent-color: #ff8c42;
+        /* Orange color when checked */
     }
 
     .form-check-input:focus {
@@ -270,7 +270,7 @@
     }
 
     .title-brand {
-        background: linear-gradient(288deg, #91c045, #517d0b);
+        background: linear-gradient(288deg, #ff8c42, #d97706);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }

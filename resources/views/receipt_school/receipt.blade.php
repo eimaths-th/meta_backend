@@ -390,7 +390,7 @@
                         <i class="pe-7s-note2 icon-gradient bg-tempting-azure"></i>
                     </div>
                     <div>Receipts
-                        <div class="page-title-subheading">Infinite Brain Receipt Data</div>
+                        <div class="page-title-subheading">META Knowledge Receipt Data</div>
                     </div>
                 </div>
 
@@ -2145,7 +2145,7 @@
                 $("#importForm").submit();
 
             });
-            
+
             $(document).on("click", ".btn-delete", function(e) {
                 e.preventDefault(); // Prevent default action
 

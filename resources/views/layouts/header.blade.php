@@ -2,24 +2,33 @@
     <div class="app-header__logo">
 
         @if (Auth::user()->level >= 0 && Auth::user()->level < 3)
-            <a href="{{ route('home') }}">
-                <div class="logo-src">
-                    <img src="{{ asset('images/logo_infinitebrain.png') }}" alt="..." height="36"
-                        style="padding-bottom: 5px">
+            <a href="{{ route('home') }}" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+                <div class="logo-meta">
+                    <img src="{{ asset('images/logo_meta.png') }}" alt="Meta Logo">
+                </div>
+                <div style="display: flex; flex-direction: column; line-height: 1.1;">
+                    <span style="margin: 0; background: linear-gradient(135deg, #ff8c42, #fe8a06); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700; font-size: 20px; letter-spacing: 0.5px;">META</span>
+                    <span style="margin: 0; background: linear-gradient(135deg, #ff8c42, #fe8a06); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 500; font-size: 18px; letter-spacing: 0px;">Knowledge</span>
                 </div>
             </a>
         @elseif (Auth::user()->level == 3)
-            <a href="{{ route('formsControl') }}">
-                <div class="logo-src">
-                    <img src="{{ asset('images/logo_infinitebrain.png') }}" alt="..." height="36"
-                        style="padding-bottom: 5px">
+            <a href="{{ route('formsControl') }}" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+                <div class="logo-meta">
+                    <img src="{{ asset('images/logo_meta.png') }}" alt="Meta Logo">
+                </div>
+                <div style="display: flex; flex-direction: column; line-height: 1.1;">
+                    <span style="margin: 0; background: linear-gradient(135deg, #ff8c42, #fe8a06); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700; font-size: 20px; letter-spacing: 0.5px;">META</span>
+                    <span style="margin: 0; background: linear-gradient(135deg, #ff8c42, #fe8a06); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 500; font-size: 18px; letter-spacing: 0px;">Knowledge</span>
                 </div>
             </a>
         @elseif (Auth::user()->level > 3 && Auth::user()->level < 6)
-            <a href="{{ route('home2') }}">
-                <div class="logo-src">
-                    <img src="{{ asset('images/logo_infinitebrain.png') }}" alt="..." height="36"
-                        style="padding-bottom: 5px">
+            <a href="{{ route('home2') }}" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+                <div class="logo-meta">
+                    <img src="{{ asset('images/logo_meta.png') }}" alt="Meta Logo">
+                </div>
+                <div style="display: flex; flex-direction: column; line-height: 1.1;">
+                    <span style="margin: 0; background: linear-gradient(135deg, #ff8c42, #fe8a06); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700; font-size: 20px; letter-spacing: 0.5px;">META</span>
+                    <span style="margin: 0; background: linear-gradient(135deg, #ff8c42, #fe8a06); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 500; font-size: 18px; letter-spacing: 0px;">Knowledge</span>
                 </div>
             </a>
         @endif

@@ -408,10 +408,10 @@
                     <div>
                         @if (isset($sfielda[request()->get('sfield')]) && $sfielda[request()->get('sfield')] === 'neos' )
                             Neo science Online Form
-                            <div class="page-title-subheading">Infinite Brain Online Form Data</div>
+                            <div class="page-title-subheading">META Knowledge Online Form Data</div>
                         @else
                             {{ isset($sfielda[request()->get('sfield')]) ? $sfielda[request()->get('sfield')] : $form->form_name }} Online Form
-                            <div class="page-title-subheading">Infinite Brain Online Form Data</div>
+                            <div class="page-title-subheading">META Knowledge Online Form Data</div>
                         @endif
 
                     </div>

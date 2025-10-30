@@ -143,7 +143,7 @@
                             <td align="center" width="10%" class="active_left grey"></td>
                             <td align="center" width="80%" colspan="5">
 
-                                <font class="grey"> Record Time Infinite Brain </font> {{ $name }}
+                                <font class="grey"> Record Time META Knowledge </font> {{ $name }}
                                 {{ date('F-Y', strtotime("$year-$month")) }}<b>
                                 </b>
                             </td>

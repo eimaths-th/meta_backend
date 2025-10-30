@@ -22,7 +22,7 @@
                         <i class="pe-7s-user icon-gradient bg-tempting-azure"></i>
                     </div>
                     <div>Forms Management
-                        <div class="page-title-subheading">Infinite Brain Forms Management Data</div>
+                        <div class="page-title-subheading">META Knowledge Forms Management Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

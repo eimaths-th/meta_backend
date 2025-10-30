@@ -48,8 +48,8 @@
                     <div class="page-title-icon">
                         <i class="fas fa-clock-rotate-left icon-gradient bg-tempting-azure"></i>
                     </div>
-                    <div>Record Time Infinite Brain
-                        <div class="page-title-subheading">Infinite Brain SetTime Forms Data</div>
+                    <div>Record Time META Knowledge
+                        <div class="page-title-subheading">META Knowledge SetTime Forms Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

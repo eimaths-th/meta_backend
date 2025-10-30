@@ -59,7 +59,7 @@
                 </div>
                 <div>Wellcome
                     <div class="page-title-subheading">
-                        Infinite Brain Dashboard
+                        META Knowledge Dashboard
                     </div>
                 </div>
 

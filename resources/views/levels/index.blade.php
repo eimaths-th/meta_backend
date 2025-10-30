@@ -24,7 +24,7 @@
                     <div>
                         {{ $data[request()->get('id')-1]->title }}
                         Levels
-                        <div class="page-title-subheading">Infinite Brain Levels Data</div>
+                        <div class="page-title-subheading">META Knowledge Levels Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">
@@ -32,7 +32,7 @@
                         <a class="btn btn-success" data-toggle="modal" data-target=".bd-example-modal-lg"
                             id="CreateButton"><i class="fa fa-plus"></i> Create New
                             Level</a>
-                            
+
                         <a class="btn btn-danger delete_all_button" href="#"><i class="fa fa-trash"></i> Delete
                             All</a>
 
@@ -101,7 +101,7 @@
                                 @foreach ($data as $key)
                                     <option value="{{ $key->id }}"  {{ request()->get('id') == $key->id ? 'selected' : '' }}> {{ $key->title }} </option>
                                 @endforeach
-                                
+
                             </select>
                         </div>
                         <div class="form-group">

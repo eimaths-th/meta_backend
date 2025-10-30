@@ -26,7 +26,7 @@
                         <i class="fas fa-mortar-board icon-gradient bg-tempting-azure"></i>
                     </div>
                     <div>SetTime Forms log
-                        <div class="page-title-subheading">Infinite Brain SetTime Forms Data</div>
+                        <div class="page-title-subheading">META Knowledge SetTime Forms Data</div>
                     </div>
                 </div>
                 <div class="page-title-actions">

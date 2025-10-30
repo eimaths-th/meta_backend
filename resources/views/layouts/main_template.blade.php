@@ -27,7 +27,7 @@
     =========================================================
     * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
     -->
-    <link rel="icon" type="image/png" href="../images/inf-icon2.png">
+    <link rel="icon" type="image/png" href="../images/logo_meta.png">
 
 
     <script defer src="{{ asset('architectui/assets/scripts/main.js') }}"></script>
