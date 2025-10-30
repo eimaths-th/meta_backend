@@ -7,7 +7,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="icon" href="{{ asset('images/logo_meta.png') }}" type="image/png">
 
-<title>INF | @yield('title', 'META Knowledge')</title>
+<title>Meta | @yield('title', 'META Knowledge')</title>
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
