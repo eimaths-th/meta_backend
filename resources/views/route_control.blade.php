@@ -63,7 +63,7 @@
                         <option value="spelling-bee-islo">spelling-bee-islo</option>
                         <option value="advance_english_grammar">advance_english_grammar</option>
                         <option value="admin-test-field">admin-test-field</option>
-                        <option value="gelosea">gelosea</option>
+                        {{-- <option value="gelosea">gelosea</option> --}}
                         <option value="isocsea-imocsea-national-round">(ไม่มา) isocsea-imocsea-national-round</option>
                         <option value="isocsea-imocsea-national-round-2025">(มา) isocsea-imocsea-national-round-2025</option>
                         {{-- <option value="asiarope">asiarope</option>
