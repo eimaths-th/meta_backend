@@ -13,6 +13,7 @@ class ReceiptForm extends Model
 
     protected $fillable = [
         'rec_id',
+        'package_id',
         'sfield',
         'submission_date',
         'subject',

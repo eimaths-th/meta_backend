@@ -5,12 +5,12 @@
                 <ul class="nav">
                     <li class="nav-item">
                         <a href="javascript:void(0);" class="nav-link">
-                            Copyright © 2021 infinitebrain.co.th All rights reserved.
+                            Copyright © 2021 metaknowledge.co.th All rights reserved.
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="javascript:void(0);" class="nav-link">
-                            
+
                         </a>
                     </li>
                 </ul>
@@ -19,7 +19,7 @@
                 <ul class="nav">
                     <li class="nav-item">
                         <a href="javascript:void(0);" class="nav-link">
-                            
+
                         </a>
                     </li>
                     <li class="nav-item">
@@ -27,7 +27,7 @@
                             <!--<div class="badge bg-success me-1 ms-0">
                                 <small>NEW</small>
                             </div>-->
-                            infinitebrain.co.th
+                            metaknowledge.co.th
                         </a>
                     </li>
                 </ul>

@@ -610,7 +610,7 @@
 
                             </div>
                             <div class="card-footer text-center" style="background-color: #fff">
-                                Copyright © 2022 infinitebrain.co.th All rights reserved.
+                                Copyright © 2022 metaknowledge.co.th All rights reserved.
                             </div>
                         </div>
 

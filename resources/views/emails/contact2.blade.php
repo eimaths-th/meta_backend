@@ -7,7 +7,7 @@
 <div class="container bg">
 <div class="row align-items-start">
 <div class=" col-12  text-center">
-<img src="https://form.infinitebrain.co.th/images/logo_infinitebrain.png" alt="..." srcset="" style="vertical-align:middle;"><br><br>
+<img src="https://form.metaknowledge.co.th/images/logo_metaknowledge.png" alt="..." srcset="" style="vertical-align:middle;"><br><br>
 </div>
 </div>
 <div class="row align-items-start">

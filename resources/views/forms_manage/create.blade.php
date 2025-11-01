@@ -273,7 +273,8 @@
                                                         <input type="text" name="ref_date_label" id="ref_date_label"
                                                             placeholder="วันที่อ้างอิง" class="form-control"
                                                             value="{{ $data->ref_date_label ?? '' }}">
-                                                        <small class="text-muted">Label นี้จะแสดงในฟอร์มสาธารณะ (Check "Enabled" ในตารางด้านบนเพื่อให้ user กรอกวันที่อ้างอิง)</small>
+                                                        <small class="text-muted">Label นี้จะแสดงในฟอร์มสาธารณะ (Check
+                                                            "Enabled" ในตารางด้านบนเพื่อให้ user กรอกวันที่อ้างอิง)</small>
                                                     </div>
                                                 </span>
                                             </p>
@@ -587,7 +588,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="position-relative form-group">
                                             <label class="form-label form-label-top form-label-auto"
                                                 for="student_grade">Grade
@@ -626,7 +627,7 @@
 
                                 <div class="form-row form-focus">
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
 
                                         <div class="position-relative form-group">
                                             <label class="form-label form-label-top form-label-auto"
@@ -802,12 +803,13 @@
                                     </div>
                                 </div>
                                 @php
-                                    $hasExistingPaymentImage = isset($data->image_payment) && !empty($data->image_payment);
+                                    $hasExistingPaymentImage =
+                                        isset($data->image_payment) && !empty($data->image_payment);
                                 @endphp
 
                                 <div class="form-row form-focus col-md-6" id="image-payment-wrapper"
                                     data-field-input="image_payment"
-                                    @if($hasExistingPaymentImage) style="display:none !important;" @endif>
+                                    @if ($hasExistingPaymentImage) style="display:none !important;" @endif>
 
                                     <div class="col-md-12 col-sm-12">
                                         <div class="form-group">
@@ -1053,9 +1055,14 @@
                             <input type="text" class="form-control" name="optionPackage[${indexoptionPackage}][name]" placeholder="Option Name">
                         </div>
                         <div class="col-md-2">
-                            <button type="button" onclick="removeOptionPackage(${indexoptionPackage})" class="btn btn-danger btn-sm mt-1">
-                                <i class="fa fa-trash"></i>
-                            </button>
+                            <div class="row">
+
+                                <div class="col-md-2">
+                                    <button type="button" onclick="removeOptionPackage(${indexoptionPackage})" class="btn btn-danger btn-sm mt-1">
+                                        <i class="fa fa-trash"></i> test
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1076,6 +1083,7 @@
             }
         }
 
+
         function showPackage(id, package, price) {
             indexoptionPackage++;
             getOptionPackage(indexoptionPackage, package, price, id);
@@ -1095,16 +1103,25 @@
                 <label>Option Package ${index}</label>
                 <div class="form-group">
                     <div class="row">
-                        <div class="col-md-5">
-                            <input type="number" class="form-control" name="optionPackage[${index}][value]" placeholder="Option Value" value="${price}">
+                        <div class="col-md-4">
+                            <input type="number" id="optionPackagePrice${id}" class="form-control" name="optionPackage[${index}][value]" placeholder="Option Value" value="${price}">
                         </div>
-                        <div class="col-md-5">
-                            <input type="text" class="form-control" name="optionPackage[${index}][name]" placeholder="Option Name" value="${package}">
+                        <div class="col-md-4">
+                            <input type="text" id="optionPackageName${id}" class="form-control" name="optionPackage[${index}][name]" placeholder="Option Name" value="${package}">
                         </div>
-                        <div class="col-md-2">
-                            <button type="button" onclick="removeOptionPackage(${index})" class="btn btn-danger btn-sm mt-1">
-                                <i class="fa fa-trash"></i>
-                            </button>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="button" onclick="editOptionPackage(${id})" data-id="${id}" class="editOptionPackage btn btn-warning btn-sm mt-1">
+                                        <i id="changeIcon${id}" class="fa fa-edit"></i>
+                                    </button>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" onclick="removeOptionPackage(${index})" class="btn btn-danger btn-sm mt-1">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1231,12 +1248,12 @@
                     </div>
                     <div class="col-md-4">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <button type="button" onclick="editOptionGrade(${id})" data-id="${id}" class="editOptionGrade btn btn-warning btn-sm mt-1">
                                     <i id="changeIcon${id}" class="fa fa-edit"></i>
                                 </button>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <button type="button" onclick="deleteOptionGrade(${id},${index})" data-id="${id}" class="removeOptionGrade btn btn-danger btn-sm mt-1">
                                     <i class="fa fa-trash"></i>
                                 </button>

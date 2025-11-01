@@ -1520,6 +1520,7 @@ class ReceiptFormController extends Controller
             $street_address2 = '';
         }
 
+
         $receiptForm = new ReceiptForm([
             'sfield' => $request->get('sfield'),
             'submission_date' => date("Y-m-d"),
@@ -1534,7 +1535,10 @@ class ReceiptFormController extends Controller
             'award' => $award ?? null,
             'street_address2' => $street_address2 ?? null,
             'grade' => $request->get('grade'),
+
             'package' => $request->get('package'),
+            'package_id' => null,
+
             'contest' => $request->get('contest'),
             'discount_code' => $request->get('dcode'),
             'name_parent' => $request->get('parent'),
@@ -1720,6 +1724,20 @@ class ReceiptFormController extends Controller
             $street_address2 = '';
         }
 
+        $package_id = $request->get('package');
+
+        $formPackage = FormPakages::find($package_id);
+
+        if ($formPackage) {
+            # code...
+            $package_id = $formPackage->id;
+            $package = $formPackage->package;
+
+        }else{
+            # code...
+            $package = $request->get('package');
+        }
+
         $receiptForm = new ReceiptForm([
             'sfield' => $request->get('sfield'),
             'submission_date' => date("Y-m-d"),
@@ -1734,7 +1752,8 @@ class ReceiptFormController extends Controller
             'award' => $award ?? null,
             'street_address2' => $street_address2 ?? null,
             'grade' => $request->get('grade'),
-            'package' => $request->get('package'),
+            'package' => $package,
+            'package_id' => $package_id,
             'contest' => $request->get('contest'),
             'discount_code' => $request->get('dcode'),
             'name_parent' => $request->get('parent'),

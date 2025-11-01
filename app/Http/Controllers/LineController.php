@@ -50,7 +50,7 @@ class LineController extends Controller
                         'altText' => 'Contact Admin',
                         'template' => [
                             'type' => 'buttons',
-                            'thumbnailImageUrl' => 'https://form.infinitebrain.co.th/images/infinite-c.png', // Thumbnail image URL
+                            'thumbnailImageUrl' => 'https://form.metaknowledge.co.th/images/infinite-c.png', // Thumbnail image URL
                             // 'thumbnailImageUrl' => asset('images/infinite-c.png'), // Thumbnail image URL
                             'title' => 'Contact Admin', // Title of the message
                             'text' => 'your ref : ' . $ref, // Text in the message
@@ -128,7 +128,7 @@ class LineController extends Controller
     //             'altText' => 'Contact Admin',
     //             'template' => [
     //                 'type' => 'buttons',
-    //                 'thumbnailImageUrl' => 'https://form.infinitebrain.co.th/images/infinite-c.png', // Thumbnail image URL
+    //                 'thumbnailImageUrl' => 'https://form.metaknowledge.co.th/images/infinite-c.png', // Thumbnail image URL
     //                 // 'thumbnailImageUrl' => asset('images/infinite-c.png'), // Thumbnail image URL
     //                 'title' => 'Contact Admin', // Title of the message
     //                 'text' => 'your ref : ' . $ref, // Text in the message

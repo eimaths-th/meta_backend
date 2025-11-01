@@ -6,7 +6,7 @@
 
 ```bash
 # เข้าไปที่ directory ของโปรเจค
-cd c:\xampp\htdocs\infinitebrain-backoffice
+cd c:\xampp\htdocs\metaknowledge-backoffice
 
 # Run migration
 php artisan migrate
@@ -54,8 +54,8 @@ php artisan view:clear
 #### ทดสอบฟอร์มเดิม
 เปิดเบราว์เซอร์และทดสอบ URL:
 ```
-http://localhost/infinitebrain-backoffice/form/gmec
-http://localhost/infinitebrain-backoffice/form/imocsea
+http://localhost/metaknowledge-backoffice/form/gmec
+http://localhost/metaknowledge-backoffice/form/imocsea
 ```
 
 #### สร้างฟอร์มใหม่
@@ -69,7 +69,7 @@ http://localhost/infinitebrain-backoffice/form/imocsea
 
 #### ทดสอบฟอร์มที่สร้างใหม่
 ```
-http://localhost/infinitebrain-backoffice/form/test-form-2025
+http://localhost/metaknowledge-backoffice/form/test-form-2025
 ```
 
 ---

@@ -26,15 +26,15 @@ php artisan db:seed --class=UpdateExistingFormsSlugSeeder
 ### ทดสอบ URL ใหม่
 เปิดเบราว์เซอร์และทดสอบ URL:
 ```
-http://localhost/infinitebrain-backoffice/form/test-form-2025
+http://localhost/metaknowledge-backoffice/form/test-form-2025
 ```
 
 ### ทดสอบฟอร์มที่มีอยู่แล้ว
 หลังจาก run seeder แล้ว ทดสอบฟอร์มเดิม:
 ```
-http://localhost/infinitebrain-backoffice/form/gmec
-http://localhost/infinitebrain-backoffice/form/imocsea
-http://localhost/infinitebrain-backoffice/form/isocsea
+http://localhost/metaknowledge-backoffice/form/gmec
+http://localhost/metaknowledge-backoffice/form/imocsea
+http://localhost/metaknowledge-backoffice/form/isocsea
 ```
 
 ## 4. ทดสอบ Validation

@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Infinite'),
+    'name' => env('APP_NAME', 'Meta Knowedge'),
 
     /*
     |--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://form.infinitebrain.co.th'),
+    'url' => env('APP_URL', 'https://form.metaknowledge.co.th'),
 
     'asset_url' => env('ASSET_URL'),
 
