@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Request;
 
 class LogActivity
 {
-    public static function modelEvent($model, string $action, array $before = null, array $after = null)
+    // public static function modelEvent($model, string $action, array $before = null, array $after = null)
+    public static function modelEvent($model, string $action, ?array $before = null, ?array $after = null)
     {
         ActivityLog::create([
             'user_id'      => Auth::check() ? Auth::id() : null,
