@@ -223,6 +223,7 @@ class FormManageController extends Controller
         ]);
 
         $data = FormManage::find($dataCreate->id);
+        $data->update(['sfield' => $dataCreate->id]);
         $data->field_settings = collect($fieldConfig)->map(function ($config) {
             return [
                 'enabled' => $config['default_enabled'] ?? true,

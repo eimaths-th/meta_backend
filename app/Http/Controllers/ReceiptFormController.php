@@ -726,11 +726,18 @@ class ReceiptFormController extends Controller
 
         //get student
         //$student = Student::orderBy("name", "asc")->get();
-        $form = FormManage::find($request->sfield);
+        $form = FormManage::where('sfield', $request->sfield)->first();
+        $sfielda = self::sfielda;
+
+        if ($form) {
+            $sfielda = array_replace($sfielda, [
+                (string) $form->sfield => $form->form_name,
+            ]);
+        }
         $referent_codes = ReferentCode::orderBy("id", "asc")->get();
 
         return view('receipt_form.index')
-            ->with(['sfielda' =>  self::sfielda])
+            ->with(['sfielda' =>  $sfielda])
             ->with(['sfield' => $request->sfield])
             ->with(['form' => $form])
             ->with(['referent_codes' => $referent_codes]);
