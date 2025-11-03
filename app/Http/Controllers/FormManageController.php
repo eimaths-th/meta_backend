@@ -867,6 +867,7 @@ class FormManageController extends Controller
         }
 
         $form_manage->update([
+            'sfield' => $form_id,
             'form_name' => $request->form_name,
             'form_route' => $request->form_route,
             'slug' => $request->slug ?? $form_manage->slug,
