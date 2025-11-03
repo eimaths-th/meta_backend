@@ -156,6 +156,29 @@
                                                                 </td>
                                                             </tr>
                                                         @endforeach
+
+                                                        {{-- Footer Visibility Control --}}
+                                                        <tr
+                                                            style="background-color: #FFF8F0; border-top: 2px solid #FF8C42;">
+                                                            <td colspan="2">
+                                                                <strong style="color: #D84315;">
+                                                                    <i class="fas fa-building"></i> Show Meta Knowledge
+                                                                    Footer
+                                                                </strong>
+                                                                <br>
+                                                                <small class="text-muted">Display company footer with logo
+                                                                    and contact information</small>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <input type="hidden" name="show_footer" value="0">
+                                                                <input type="checkbox" class="form-check-input"
+                                                                    name="show_footer" value="1"
+                                                                    {{ $data->show_footer ?? true ? 'checked' : '' }}>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <span class="text-muted">-</span>
+                                                            </td>
+                                                        </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -290,7 +313,7 @@
                                                         value="{{ $data->contest_date_label }}">
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <input type="text" name="contest_date" class="form-control"
+                                                    <input type="date" name="contest_date" class="form-control"
                                                         placeholder="dd/mm/yyyy" value="{{ $data->contest_date }}">
                                                 </div>
                                             </div>
@@ -599,8 +622,17 @@
                                                 id="student_grade" value="{{ $data->student_grade }}"
                                                 placeholder="{{ $data->student_grade }}" required>
 
-                                            <button type="button" id="addOptionGrade" class="btn btn-primary btn-sm">Add
-                                                Option</button>
+                                            <button type="button" id="addOptionGrade" class="btn btn-primary btn-sm">
+                                                <i class="fa fa-plus"></i> Add Grade
+                                            </button>
+                                            <button type="button" id="addMoreOptionGrade"
+                                                class="btn btn-success btn-sm">
+                                                <i class="fa fa-layer-group"></i> Add more Grade
+                                            </button>
+                                            <button type="button" id="deleteAllOptionGrade"
+                                                class="btn btn-danger btn-sm">
+                                                <i class="fa fa-trash-alt"></i> Delete All Grades
+                                            </button>
 
 
 
@@ -638,26 +670,60 @@
                                                 id="package" value="{{ $data->package }}"
                                                 placeholder="{{ $data->package }}" required>
 
+                                            {{-- Multi-select checkbox --}}
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-check form-group mb-3">
+                                                        <input type="hidden" name="package_multiselect" value="0">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="package_multiselect" id="package_multiselect"
+                                                            value="1" data-no-validation="true"
+                                                            {{ $data->package_multiselect ?? false ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="package_multiselect">
+                                                            Enable Multi-Select / เปิดใช้งานการเลือกหลายแพคเกจ
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div id="max_selection_container"
+                                                        style="display: {{ $data->package_multiselect ?? false ? 'block' : 'none' }};">
+                                                        <div class="form-group mb-3">
+                                                            <label for="package_max_selection">Maximum Selection /
+                                                                จำนวนสูงสุดที่เลือกได้</label>
+                                                            <input type="number" class="form-control"
+                                                                name="package_max_selection" id="package_max_selection"
+                                                                min="1"
+                                                                value="{{ $data->package_max_selection ?? '1' }}"
+                                                                placeholder="Enter maximum number of selections"
+                                                                data-no-validation="true">
+                                                            <small class="form-text text-muted">Leave empty for unlimited
+                                                                selections</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- Max selection input --}}
+
+
                                             {{-- add button add package --}}
-                                            <button type="button" id="addOptionPackage"
-                                                class="btn btn-primary btn-sm">Add
-                                                Option</button>
+                                            <button type="button" id="addOptionPackage" class="btn btn-primary btn-sm">
+                                                <i class="fa fa-plus"></i> Add
+                                                Package</button>
+                                            <button type="button" id="deleteAllOptionPackage" class="btn btn-danger btn-sm">
+                                                <i class="fa fa-trash-alt"></i> Delete All Packages
+                                            </button>
                                             <div id="options_package" style="display: none;">
 
                                             </div>
 
-                                            {{-- <select class="form-control" id="package" name="package"
-                                                aria-label="แพคเกจในการสอบ / Packages" required>
-                                                <option value="">Please Select</option>
-                                                <option value="Test: 850 baht">Test: 850 baht</option>
-                                                <option value="Test + tutoring class: 1250 bath">Test +
-                                                    tutoring class: 1250 bath</option>
-                                            </select> --}}
                                             <label class="form-sub-label" style="min-height:13px"
                                                 aria-hidden="false">Packages</label>
                                             <div class="form-error-message" role="alert"><img
                                                     src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                                    height="10"> <span class="error-navigation-message">This field is
+                                                    height="10"> <span class="error-navigation-message">This field
+                                                    is
                                                     required.</span>
                                                 <div class="form-error-arrow">
                                                     <div class="form-error-arrow-inner"></div>
@@ -671,8 +737,8 @@
                                     <div class="col-md-12 col-sm-12">
                                         <div class="form-group">
                                             <label class="form-label form-label-top form-label-auto"
-                                                for="student_address">Address / ที่อยู่ภาษาไทยสำหรับจัดส่งของรางวัล <span
-                                                    class="form-required">*</span></label>
+                                                for="student_address">Address / ที่อยู่ภาษาไทยสำหรับจัดส่งของรางวัล
+                                                <span class="form-required">*</span></label>
                                             <input type="text" class="form-control" name="student_address"
                                                 id="student_address" value="{{ $data->student_address }}"
                                                 placeholder="{{ $data->student_address }}" maxlength="150"
@@ -717,7 +783,8 @@
                                                 aria-hidden="false">Parent's name</label>
                                             <div class="form-error-message" role="alert"><img
                                                     src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                                    height="10"> <span class="error-navigation-message">This field is
+                                                    height="10"> <span class="error-navigation-message">This field
+                                                    is
                                                     required.</span>
                                                 <div class="form-error-arrow">
                                                     <div class="form-error-arrow-inner"></div>
@@ -738,7 +805,8 @@
                                                 aria-hidden="false">Phone Number</label>
                                             <div class="form-error-message" role="alert"><img
                                                     src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                                    height="10"> <span class="error-navigation-message">This field is
+                                                    height="10"> <span class="error-navigation-message">This field
+                                                    is
                                                     required.</span>
                                                 <div class="form-error-arrow">
                                                     <div class="form-error-arrow-inner"></div>
@@ -766,7 +834,8 @@
                                                 aria-hidden="false">example@example.com</label>
                                             <div class="form-error-message" role="alert"><img
                                                     src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                                    height="10"> <span class="error-navigation-message">Please input
+                                                    height="10"> <span class="error-navigation-message">Please
+                                                    input
                                                     correct email.</span>
                                                 <div class="form-error-arrow">
                                                     <div class="form-error-arrow-inner"></div>
@@ -790,8 +859,8 @@
 
                                             <label class="form-sub-label" style="min-height:13px"
                                                 aria-hidden="false">Photo ขนาดไม่เกิน 5mb</label>
-                                            <div id="dropzone-photo-error" class="form-error-message" role="alert"><img
-                                                    src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                                            <div id="dropzone-photo-error" class="form-error-message" role="alert">
+                                                <img src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
                                                     height="10">
                                                 <span class="error-navigation-message">This field is
                                                     required.</span>
@@ -961,8 +1030,8 @@
                                                 required>
                                             <label class="form-sub-label" style="min-height:13px"
                                                 aria-hidden="false">Receipt Photo ขนาดไม่เกิน 5mb</label>
-                                            <div id="dropzone-att-error" class="form-error-message" role="alert"><img
-                                                    src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                                            <div id="dropzone-att-error" class="form-error-message" role="alert">
+                                                <img src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
                                                     height="10">
                                                 <span class="error-navigation-message">This field is
                                                     required.</span>
@@ -986,7 +1055,8 @@
                                                 aria-hidden="false"></label>
                                             <div class="form-error-message" role="alert"><img
                                                     src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                                    height="10"> <span class="error-navigation-message">This field is
+                                                    height="10"> <span class="error-navigation-message">This field
+                                                    is
                                                     required.</span>
                                                 <div class="form-error-arrow">
                                                     <div class="form-error-arrow-inner"></div>
@@ -1019,6 +1089,211 @@
 
                             </div>
                             <textarea name="text_policy" id="text_policy" class="form-control mb-5" cols="30" rows="3">{!! $data->text_policy !!}</textarea>
+
+                            <!-- Footer Customization Section -->
+                            <div class="card shadow-sm mb-4" style="border-left: 4px solid #FF6B35;">
+                                <div class="card-header"
+                                    style="background: linear-gradient(135deg, #FFF8F0 0%, #FFE0B2 100%);">
+                                    <h5 class="mb-0" style="color: #D84315;">
+                                        <i class="fas fa-edit"></i> Footer Customization
+                                    </h5>
+                                    <small class="text-muted">Customize the footer content that appears at the bottom of
+                                        the form</small>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- Column 1: Company Info -->
+                                        <div class="col-md-4 mb-3">
+                                            <h6 style="color: #D84315;"><i class="fas fa-building"></i> Company
+                                                Information</h6>
+
+                                            <div class="mb-3">
+                                                <label class="form-label"><strong>Company Name</strong></label>
+                                                <input type="text" name="footer_company_name" class="form-control"
+                                                    value="{{ $data->footer_company_name ?? 'Meta Knowledge' }}"
+                                                    placeholder="Meta Knowledge">
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label"><strong>Description Line 1</strong></label>
+                                                <textarea name="footer_description_1" class="form-control" rows="2"
+                                                    placeholder="ศูนย์รวมความรู้และการพัฒนาทักษะ">{{ $data->footer_description_1 ?? 'ศูนย์รวมความรู้และการพัฒนาทักษะสำหรับนักเรียนและผู้ปกครอง' }}</textarea>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label"><strong>Description Line 2</strong></label>
+                                                <textarea name="footer_description_2" class="form-control" rows="2" placeholder="พัฒนาศักยภาพ สร้างอนาคต">{{ $data->footer_description_2 ?? 'พัฒนาศักยภาพ สร้างอนาคตที่ดีกว่า' }}</textarea>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label"><strong>Logo Image</strong></label>
+                                                <input type="file" name="footer_logo" class="form-control"
+                                                    accept="image/*">
+                                                <small class="text-muted">Current:
+                                                    {{ $data->footer_logo ?? 'logo_meta.png' }}</small>
+                                                @if (isset($data->footer_logo))
+                                                    <div class="mt-2">
+                                                        <img src="{{ asset('images/' . $data->footer_logo) }}"
+                                                            alt="Footer Logo"
+                                                            style="max-width: 150px; background: #333; padding: 10px; border-radius: 8px;">
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <!-- Column 2: About Us -->
+                                        <div class="col-md-4 mb-3">
+                                            <h6 style="color: #D84315;"><i class="fas fa-info-circle"></i> About Us
+                                                Section</h6>
+
+                                            <div class="mb-3">
+                                                <label class="form-label"><strong>Section Title</strong></label>
+                                                <input type="text" name="footer_about_title" class="form-control"
+                                                    value="{{ $data->footer_about_title ?? 'เกี่ยวกับเรา' }}"
+                                                    placeholder="เกี่ยวกับเรา">
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="form-label"><strong>Feature 1</strong></label>
+                                                <input type="text" name="footer_feature_1" class="form-control"
+                                                    value="{{ $data->footer_feature_1 ?? 'ระบบสอบและแข่งขันออนไลน์' }}"
+                                                    placeholder="ระบบสอบและแข่งขันออนไลน์">
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="form-label"><strong>Feature 2</strong></label>
+                                                <input type="text" name="footer_feature_2" class="form-control"
+                                                    value="{{ $data->footer_feature_2 ?? 'หลักสูตรคุณภาพสำหรับทุกระดับชั้น' }}"
+                                                    placeholder="หลักสูตรคุณภาพ">
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="form-label"><strong>Feature 3</strong></label>
+                                                <input type="text" name="footer_feature_3" class="form-control"
+                                                    value="{{ $data->footer_feature_3 ?? 'พัฒนาทักษะเพื่อความสำเร็จ' }}"
+                                                    placeholder="พัฒนาทักษะ">
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="form-label"><strong>Feature 4</strong></label>
+                                                <input type="text" name="footer_feature_4" class="form-control"
+                                                    value="{{ $data->footer_feature_4 ?? 'ใบประกาศนียบัตรรับรอง' }}"
+                                                    placeholder="ใบประกาศนียบัตร">
+                                            </div>
+                                        </div>
+
+                                        <!-- Column 3: Contact Info -->
+                                        <div class="col-md-4 mb-3">
+                                            <h6 style="color: #D84315;"><i class="fas fa-envelope"></i> Contact
+                                                Information</h6>
+
+                                            <div class="mb-3">
+                                                <label class="form-label"><strong>Section Title</strong></label>
+                                                <input type="text" name="footer_contact_title" class="form-control"
+                                                    value="{{ $data->footer_contact_title ?? 'ติดต่อเรา' }}"
+                                                    placeholder="ติดต่อเรา">
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="form-label"><strong>Phone</strong></label>
+                                                <input type="text" name="footer_phone" class="form-control"
+                                                    value="{{ $data->footer_phone ?? '02-XXX-XXXX' }}"
+                                                    placeholder="02-XXX-XXXX">
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="form-label"><strong>Email</strong></label>
+                                                <input type="email" name="footer_email" class="form-control"
+                                                    value="{{ $data->footer_email ?? 'info@metaknowledge.com' }}"
+                                                    placeholder="info@metaknowledge.com">
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="form-label"><strong>Address</strong></label>
+                                                <textarea name="footer_address" class="form-control" rows="2" placeholder="กรุงเทพมหานคร ประเทศไทย">{{ $data->footer_address ?? 'กรุงเทพมหานคร ประเทศไทย' }}</textarea>
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="form-label">
+                                                    <strong><i class="fab fa-facebook"></i> Facebook URL</strong>
+                                                </label>
+                                                <input type="url" name="footer_facebook" class="form-control"
+                                                    value="{{ $data->footer_facebook ?? '' }}"
+                                                    placeholder="https://facebook.com/yourpage">
+                                                <label class="form-label">
+                                                    <small class="text-muted">
+                                                        <span class="text-danger">*</span>
+                                                        https://facebook.com/metaknowledge
+                                                    </small>
+                                                </label>
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="form-label">
+                                                    <strong><i class="fab fa-line"></i> Line URL</strong>
+                                                </label>
+                                                <input type="url" name="footer_line" class="form-control"
+                                                    value="{{ $data->footer_line ?? '' }}"
+                                                    placeholder="https://line.me/ti/p/@yourline">
+                                                <label class="form-label">
+                                                    <small class="text-muted">
+                                                        <span class="text-danger">*</span>
+                                                        https://line.me/ti/p/@yourline
+                                                    </small>
+                                                </label>
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="form-label">
+                                                    <strong><i class="fab fa-instagram"></i> Instagram URL</strong>
+                                                </label>
+                                                <input type="url" name="footer_instagram" class="form-control"
+                                                    value="{{ $data->footer_instagram ?? '' }}"
+                                                    placeholder="https://instagram.com/yourprofile">
+                                                <label class="form-label">
+                                                    <small class="text-muted">
+                                                        <span class="text-danger">*</span>
+                                                        https://instagram.com/yourprofile
+                                                    </small>
+                                                </label>
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="form-label">
+                                                    <strong><i class="fab fa-youtube"></i> YouTube URL</strong>
+                                                </label>
+                                                <input type="url" name="footer_youtube" class="form-control"
+                                                    value="{{ $data->footer_youtube ?? '' }}"
+                                                    placeholder="https://youtube.com/@yourchannel">
+                                                <label class="form-label">
+                                                    <small class="text-muted">
+                                                        <span class="text-danger">*</span>
+                                                        https://youtube.com/@yourchannel
+                                                    </small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr style="border-color: #FF8C42;">
+
+                                    <!-- Copyright Text -->
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h6 style="color: #D84315;"><i class="fas fa-copyright"></i> Copyright Text
+                                            </h6>
+                                            <div class="mb-3">
+                                                <label class="form-label"><strong>Copyright Message</strong></label>
+                                                <input type="text" name="footer_copyright" class="form-control"
+                                                    value="{{ $data->footer_copyright ?? 'Meta Knowledge. All Rights Reserved. | Empowering Education, Inspiring Excellence' }}"
+                                                    placeholder="Company Name. All Rights Reserved.">
+                                                <small class="text-muted">Year will be added automatically (©)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-submit-actions">
                                 <input type="submit" id="send_data" class="btn btn-lg btn-primary"
                                     value="Submit Application">
@@ -1030,6 +1305,86 @@
             </div>
         </div>
     </div>
+
+    <!-- Meta Knowledge Footer (Preview) -->
+    <footer class="meta-footer" style="margin-top: 2rem;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    @php
+                        $footerLogo = $data->footer_logo ?? 'logo_meta.png';
+                    @endphp
+                    <img src="{{ asset('images/' . $footerLogo) }}" alt="Footer Logo" class="footer-logo"
+                        style="max-width: 200px; margin-bottom: 1rem; filter: brightness(0) invert(1);">
+                    <h4 style="font-weight: 700; margin-bottom: 1rem; color: #fff;">
+                        {{ $data->footer_company_name ?? 'Meta Knowledge' }}</h4>
+                    <p style="color: #bdc3c7; margin-bottom: 0.5rem;">
+                        {{ $data->footer_description_1 ?? 'ศูนย์รวมความรู้และการพัฒนาทักษะสำหรับนักเรียนและผู้ปกครอง' }}
+                    </p>
+                    <p style="color: #bdc3c7; margin-bottom: 0.5rem;">
+                        {{ $data->footer_description_2 ?? 'พัฒนาศักยภาพ สร้างอนาคตที่ดีกว่า' }}</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h4 style="font-weight: 700; margin-bottom: 1rem; color: #fff;"><i class="fas fa-info-circle"></i>
+                        {{ $data->footer_about_title ?? 'เกี่ยวกับเรา' }}</h4>
+                    <p style="color: #bdc3c7; margin-bottom: 0.5rem;"><i class="fas fa-graduation-cap"></i>
+                        {{ $data->footer_feature_1 ?? 'ระบบสอบและแข่งขันออนไลน์' }}</p>
+                    <p style="color: #bdc3c7; margin-bottom: 0.5rem;"><i class="fas fa-book-reader"></i>
+                        {{ $data->footer_feature_2 ?? 'หลักสูตรคุณภาพสำหรับทุกระดับชั้น' }}</p>
+                    <p style="color: #bdc3c7; margin-bottom: 0.5rem;"><i class="fas fa-trophy"></i>
+                        {{ $data->footer_feature_3 ?? 'พัฒนาทักษะเพื่อความสำเร็จ' }}</p>
+                    <p style="color: #bdc3c7; margin-bottom: 0.5rem;"><i class="fas fa-certificate"></i>
+                        {{ $data->footer_feature_4 ?? 'ใบประกาศนียบัตรรับรอง' }}</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h4 style="font-weight: 700; margin-bottom: 1rem; color: #fff;"><i class="fas fa-envelope"></i>
+                        {{ $data->footer_contact_title ?? 'ติดต่อเรา' }}</h4>
+                    <p style="color: #bdc3c7; margin-bottom: 0.5rem;"><i class="fas fa-phone"></i> โทร:
+                        {{ $data->footer_phone ?? '02-XXX-XXXX' }}</p>
+                    <p style="color: #bdc3c7; margin-bottom: 0.5rem;"><i class="fas fa-envelope"></i> Email:
+                        {{ $data->footer_email ?? 'info@metaknowledge.com' }}</p>
+                    <p style="color: #bdc3c7; margin-bottom: 0.5rem;"><i class="fas fa-map-marker-alt"></i>
+                        {{ $data->footer_address ?? 'กรุงเทพมหานคร ประเทศไทย' }}</p>
+                    <div style="margin-top: 1rem;">
+                        <a href="{{ $data->footer_facebook ?? '' }}" title="Facebook"
+                            style="color: white; font-size: 1.5rem; margin: 0 0.5rem; transition: all 0.3s ease;"><i
+                                class="fab fa-facebook"></i></a>
+                        <a href="{{ $data->footer_line ?? '' }}" title="Line"
+                            style="color: white; font-size: 1.5rem; margin: 0 0.5rem; transition: all 0.3s ease;"><i
+                                class="fab fa-line"></i></a>
+                        <a href="{{ $data->footer_instagram ?? '' }}" title="Instagram"
+                            style="color: white; font-size: 1.5rem; margin: 0 0.5rem; transition: all 0.3s ease;"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="{{ $data->footer_youtube ?? '' }}" title="YouTube"
+                            style="color: white; font-size: 1.5rem; margin: 0 0.5rem; transition: all 0.3s ease;"><i
+                                class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div
+                style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 1.5rem; margin-top: 2rem; text-align: center; color: #95a5a6;">
+                <p>&copy; {{ date('Y') }}
+                    {{ $data->footer_copyright ?? 'Meta Knowledge. All Rights Reserved. | Empowering Education, Inspiring Excellence' }}
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        /* Footer Styling for Create Page */
+        .meta-footer {
+            background: linear-gradient(135deg, #D84315 0%, #BF360C 100%);
+            color: white;
+            padding: 3rem 0 1.5rem 0;
+            border-radius: 50px 50px 0 0;
+            box-shadow: 0 -10px 30px rgba(216, 67, 21, 0.3);
+        }
+
+        .meta-footer a:hover {
+            color: #FFB84D !important;
+            transform: translateY(-3px);
+        }
+    </style>
 
     @include('forms_manage.script')
     <script>
@@ -1048,18 +1403,28 @@
                 <label>Option Package ${indexoptionPackage}</label>
                 <div class="form-group">
                     <div class="row">
-                        <div class="col-md-5">
-                            <input type="number" class="form-control" name="optionPackage[${indexoptionPackage}][value]" placeholder="Option Value">
+                        <div class="col-md-4">
+                            <input type="hidden" id="optionPackageId${indexoptionPackage}" name="optionPackage[${indexoptionPackage}][id]" value="">
+                            <input type="number" class="form-control" id="packagePrice${indexoptionPackage}" name="optionPackage[${indexoptionPackage}][value]" placeholder="Option Value">
                         </div>
-                        <div class="col-md-5">
-                            <input type="text" class="form-control" name="optionPackage[${indexoptionPackage}][name]" placeholder="Option Name">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="packageName${indexoptionPackage}" name="optionPackage[${indexoptionPackage}][name]" placeholder="Option Name">
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <div class="row">
-
                                 <div class="col-md-2">
-                                    <button type="button" onclick="removeOptionPackage(${indexoptionPackage})" class="btn btn-danger btn-sm mt-1">
-                                        <i class="fa fa-trash"></i> test
+                                    <button type="button" onclick="createOptionPackage(${indexoptionPackage})" id="createPackageBtn${indexoptionPackage}" class="btn btn-primary btn-sm mt-1" title="บันทึกแพคเกจนี้">
+                                        <i class="fa fa-save"></i>
+                                    </button>
+                                </div>
+                                <div class="col-md-2" id="linkGradeHidden${indexoptionPackage}" style="display: none;">
+                                    <button type="button" onclick="linkGrade(0)" data-id="0" class="linkGrade btn btn-info btn-sm mt-1">
+                                        <i class="fa fa-link"></i>
+                                    </button>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" onclick="removeOptionPackage(${indexoptionPackage})" class="btn btn-danger btn-sm mt-1" title="ลบแพคเกจนี้">
+                                        <i class="fa fa-trash"></i>
                                     </button>
                                 </div>
                             </div>
@@ -1071,6 +1436,14 @@
 
             document.getElementById('options_package').appendChild(option);
         });
+
+        const deleteAllPackageButton = document.getElementById('deleteAllOptionPackage');
+
+        if (deleteAllPackageButton) {
+            deleteAllPackageButton.addEventListener('click', function() {
+                deleteAllPackages();
+            });
+        }
 
         function removeOptionPackage(index) {
             let optionDiv = document.querySelector(`.option${index}`);
@@ -1104,6 +1477,7 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-md-4">
+                            <input type="hidden" id="optionPackageId${id}" name="optionPackage[${index}][id]" value="${id || ''}">
                             <input type="number" id="optionPackagePrice${id}" class="form-control" name="optionPackage[${index}][value]" placeholder="Option Value" value="${price}">
                         </div>
                         <div class="col-md-4">
@@ -1113,9 +1487,16 @@
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="button" onclick="editOptionPackage(${id})" data-id="${id}" class="editOptionPackage btn btn-warning btn-sm mt-1">
-                                        <i id="changeIcon${id}" class="fa fa-edit"></i>
+                                        <i id="changeIconPackage${id}" class="fa fa-edit"></i>
                                     </button>
                                 </div>
+
+                                <div class="col-md-2">
+                                    <button type="button" onclick="linkGrade(${id})" data-id="${id}" class="linkGrade btn btn-info btn-sm mt-1">
+                                        <i id="changeIcon${id}" class="fa fa-link"></i>
+                                    </button>
+                                </div>
+
                                 <div class="col-md-2">
                                     <button type="button" onclick="removeOptionPackage(${index})" class="btn btn-danger btn-sm mt-1">
                                         <i class="fa fa-trash"></i>
@@ -1141,6 +1522,108 @@
             }
         }
 
+        function deleteAllPackages() {
+            const formId = document.getElementById('form_id').value;
+
+            if (!formId) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่พบ Form ID',
+                    text: 'กรุณาบันทึกฟอร์มก่อน',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#dc3545'
+                });
+                return;
+            }
+
+            const packageCount = document.querySelectorAll('#options_package > div').length;
+
+            if (packageCount === 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'ไม่มีแพคเกจ',
+                    text: 'ไม่มีแพคเกจให้ลบ',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#6351a2'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: '<div style="color: #dc3545;"><i class="fa fa-exclamation-triangle"></i> ยืนยันการลบ</div>',
+                html: `
+                    <div style="padding: 15px;">
+                        <p style="font-size: 16px; margin-bottom: 15px;">
+                            คุณต้องการลบแพคเกจทั้งหมด <strong style="color: #dc3545;">${packageCount} รายการ</strong> ใช่หรือไม่?
+                        </p>
+                        <div style="background: #fff3cd; padding: 12px; border-radius: 6px; border-left: 4px solid #ffc107;">
+                            <p style="margin: 0; font-size: 14px; color: #856404;">
+                                <i class="fa fa-exclamation-circle"></i>
+                                <strong>คำเตือน:</strong> การลบจะส่งผลต่อข้อมูลที่เชื่อมโยงกับแพคเกจเหล่านี้
+                            </p>
+                        </div>
+                    </div>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fa fa-trash"></i> ลบทั้งหมด',
+                cancelButtonText: '<i class="fa fa-times"></i> ยกเลิก',
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'กำลังลบแพคเกจ...',
+                        html: `<p>กำลังลบ ${packageCount} รายการ</p>`,
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    $.ajax({
+                        url: '{{ route('delete-all-packages') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            form_id: formId
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'สำเร็จ!',
+                                    html: `<p>ลบแพคเกจ <strong>${response.deleted_count}</strong> รายการเรียบร้อยแล้ว</p>`,
+                                    confirmButtonText: 'ตกลง',
+                                    confirmButtonColor: '#28a745'
+                                }).then(() => {
+                                    const optionsContainer = document.getElementById('options_package');
+                                    optionsContainer.innerHTML = '';
+                                    optionsContainer.style.display = 'none';
+                                    indexoptionPackage = 0;
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            let errorMessage = 'ไม่สามารถลบแพคเกจได้';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMessage = xhr.responseJSON.message;
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'เกิดข้อผิดพลาด',
+                                text: errorMessage,
+                                confirmButtonText: 'ตกลง',
+                                confirmButtonColor: '#dc3545'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
         let package_id;
 
         function editOptionPackage(id) {
@@ -1158,7 +1641,7 @@
                 },
                 success: function(response) {
                     //change icon
-                    let icon = document.getElementById('changeIcon' + package_id);
+                    let icon = document.getElementById('changeIconPackage' + package_id);
                     icon.classList.remove('fa-edit');
                     icon.classList.add('fa-check');
 
@@ -1184,6 +1667,74 @@
                 }
             });
         }
+
+        // Toggle max selection input based on checkbox
+        document.getElementById('package_multiselect').addEventListener('change', function() {
+            const maxSelectionContainer = document.getElementById('max_selection_container');
+            const maxSelectionInput = document.getElementById('package_max_selection');
+
+            if (this.checked) {
+                maxSelectionContainer.style.display = 'block';
+                // Don't add required, let it be optional
+            } else {
+                maxSelectionContainer.style.display = 'none';
+                maxSelectionInput.value = '';
+                // Remove required when hidden to prevent validation error
+                maxSelectionInput.removeAttribute('required');
+            }
+        });
+
+        // Prevent validation from adding required to package_multiselect checkbox and max_selection input
+        document.addEventListener('DOMContentLoaded', function() {
+            const packageMultiselectCheckbox = document.getElementById('package_multiselect');
+            const packageMaxSelectionInput = document.getElementById('package_max_selection');
+
+            // Handle checkbox
+            if (packageMultiselectCheckbox) {
+                // Remove required attribute if it gets added
+                packageMultiselectCheckbox.removeAttribute('required');
+
+                // Monitor for changes and remove required if added by other scripts
+                const checkboxObserver = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'attributes' && mutation.attributeName ===
+                            'required') {
+                            if (packageMultiselectCheckbox.hasAttribute('required')) {
+                                packageMultiselectCheckbox.removeAttribute('required');
+                            }
+                        }
+                    });
+                });
+
+                checkboxObserver.observe(packageMultiselectCheckbox, {
+                    attributes: true,
+                    attributeFilter: ['required']
+                });
+            }
+
+            // Handle max selection input
+            if (packageMaxSelectionInput) {
+                // Remove required attribute if it gets added
+                packageMaxSelectionInput.removeAttribute('required');
+
+                // Monitor for changes and remove required if added by other scripts
+                const inputObserver = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'attributes' && mutation.attributeName ===
+                            'required') {
+                            if (packageMaxSelectionInput.hasAttribute('required')) {
+                                packageMaxSelectionInput.removeAttribute('required');
+                            }
+                        }
+                    });
+                });
+
+                inputObserver.observe(packageMaxSelectionInput, {
+                    attributes: true,
+                    attributeFilter: ['required']
+                });
+            }
+        });
     </script>
 
     <script>
@@ -1194,21 +1745,341 @@
             addOptionGrade(indexoption, '');
         });
 
-        function addOptionGrade(index, value) {
+        document.getElementById('addMoreOptionGrade').addEventListener('click', function() {
+            showBulkGradeModal();
+        });
+
+        document.getElementById('deleteAllOptionGrade').addEventListener('click', function() {
+            deleteAllGrades();
+        });
+
+        function deleteAllGrades() {
+            const formId = document.getElementById('form_id').value;
+
+            if (!formId) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่พบ Form ID',
+                    text: 'กรุณาบันทึกฟอร์มก่อน',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#dc3545'
+                });
+                return;
+            }
+
+            // Count grades to delete
+            const gradeCount = document.querySelectorAll('#options_grade > div').length;
+
+            if (gradeCount === 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'ไม่มีระดับชั้น',
+                    text: 'ไม่มีระดับชั้นให้ลบ',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#6351a2'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: '<div style="color: #dc3545;"><i class="fa fa-exclamation-triangle"></i> ยืนยันการลบ</div>',
+                html: `
+                    <div style="padding: 15px;">
+                        <p style="font-size: 16px; margin-bottom: 15px;">
+                            คุณต้องการลบระดับชั้นทั้งหมด <strong style="color: #dc3545;">${gradeCount} รายการ</strong> ใช่หรือไม่?
+                        </p>
+                        <div style="background: #fff3cd; padding: 12px; border-radius: 6px; border-left: 4px solid #ffc107;">
+                            <p style="margin: 0; font-size: 14px; color: #856404;">
+                                <i class="fa fa-exclamation-circle"></i>
+                                <strong>คำเตือน:</strong> การลบจะส่งผลต่อข้อมูลที่เชื่อมโยงกับระดับชั้นเหล่านี้
+                            </p>
+                        </div>
+                    </div>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fa fa-trash"></i> ลบทั้งหมด',
+                cancelButtonText: '<i class="fa fa-times"></i> ยกเลิก',
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading
+                    Swal.fire({
+                        title: 'กำลังลบระดับชั้น...',
+                        html: `<p>กำลังลบ ${gradeCount} รายการ</p>`,
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    $.ajax({
+                        url: '{{ route('delete-all-grades') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            form_id: formId
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'สำเร็จ!',
+                                    html: `<p>ลบระดับชั้น <strong>${response.deleted_count}</strong> รายการเรียบร้อยแล้ว</p>`,
+                                    confirmButtonText: 'ตกลง',
+                                    confirmButtonColor: '#28a745'
+                                }).then(() => {
+                                    // Remove all grade options from UI
+                                    document.getElementById('options_grade').innerHTML = '';
+                                    document.getElementById('options_grade').style.display =
+                                        'none';
+                                    indexoption = 0;
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            let errorMessage = 'ไม่สามารถลบระดับชั้นได้';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMessage = xhr.responseJSON.message;
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'เกิดข้อผิดพลาด',
+                                text: errorMessage,
+                                confirmButtonText: 'ตกลง',
+                                confirmButtonColor: '#dc3545'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function showBulkGradeModal() {
+            Swal.fire({
+                title: '<div style="color: #6351a2; font-size: 22px;"><i class="fa fa-layer-group"></i> สร้างระดับชั้นหลายตัวพร้อมกัน</div>',
+                html: `
+                    <div style="text-align: left; padding: 15px 20px;">
+                        <div style="background: #e3f2fd; padding: 12px 15px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #2196F3;">
+                            <p style="margin: 0; font-size: 13px; line-height: 1.5;">
+                                <i class="fa fa-info-circle" style="color: #2196F3; margin-right: 5px;"></i>
+                                <strong>ตัวอย่าง:</strong> กรอก "ป." และจำนวน 6 จะได้ ป.1, ป.2, ป.3, ป.4, ป.5, ป.6
+                            </p>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="gradePrefix" style="font-weight: 600; margin-bottom: 8px; display: block;">
+                                <i class="fa fa-text-width"></i> ข้อความนำหน้า (Prefix):
+                            </label>
+                            <input type="text" id="gradePrefix" class="swal2-input" placeholder="เช่น ป., ม., Grade "
+                                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px;">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="gradeCount" style="font-weight: 600; margin-bottom: 8px; display: block;">
+                                <i class="fa fa-sort-numeric-up"></i> จำนวนระดับชั้น:
+                            </label>
+                            <input type="number" id="gradeCount" class="swal2-input" placeholder="เช่น 6" min="1" max="20"
+                                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px;">
+                        </div>
+
+                        <div id="gradePreview" style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-top: 15px; display: none;">
+                            <p style="margin: 0 0 8px 0; font-weight: 600; color: #333;">
+                                <i class="fa fa-eye"></i> ตัวอย่างที่จะสร้าง:
+                            </p>
+                            <div id="gradePreviewList" style="max-height: 150px; overflow-y: auto; font-size: 14px; color: #666;"></div>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fa fa-save"></i> สร้างทั้งหมด',
+                cancelButtonText: '<i class="fa fa-times"></i> ยกเลิก',
+                confirmButtonColor: '#6351a2',
+                cancelButtonColor: '#6c757d',
+                width: '600px',
+                didOpen: () => {
+                    const prefixInput = document.getElementById('gradePrefix');
+                    const countInput = document.getElementById('gradeCount');
+                    const preview = document.getElementById('gradePreview');
+                    const previewList = document.getElementById('gradePreviewList');
+
+                    function updatePreview() {
+                        const prefix = prefixInput.value.trim();
+                        const count = parseInt(countInput.value);
+
+                        if (prefix && count > 0 && count <= 20) {
+                            let previewHTML = '';
+                            for (let i = 1; i <= count; i++) {
+                                previewHTML +=
+                                    `<span style="display: inline-block; background: #6351a2; color: white; padding: 4px 10px; margin: 3px; border-radius: 4px; font-size: 13px;">${prefix}${i}</span>`;
+                            }
+                            previewList.innerHTML = previewHTML;
+                            preview.style.display = 'block';
+                        } else {
+                            preview.style.display = 'none';
+                        }
+                    }
+
+                    prefixInput.addEventListener('input', updatePreview);
+                    countInput.addEventListener('input', updatePreview);
+                },
+                preConfirm: () => {
+                    const prefix = document.getElementById('gradePrefix').value.trim();
+                    const count = parseInt(document.getElementById('gradeCount').value);
+
+                    if (!prefix) {
+                        Swal.showValidationMessage('กรุณากรอกข้อความนำหน้า');
+                        return false;
+                    }
+
+                    if (!count || count < 1 || count > 20) {
+                        Swal.showValidationMessage('กรุณากรอกจำนวน 1-20');
+                        return false;
+                    }
+
+                    return {
+                        prefix,
+                        count
+                    };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    createBulkGrades(result.value.prefix, result.value.count);
+                }
+            });
+        }
+
+        function createBulkGrades(prefix, count) {
+            const formId = document.getElementById('form_id').value;
+
+            if (!formId) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่พบ Form ID',
+                    text: 'กรุณาบันทึกฟอร์มก่อนเพิ่มระดับชั้น',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#dc3545'
+                });
+                return;
+            }
+
+            // Show loading
+            Swal.fire({
+                title: 'กำลังสร้างระดับชั้น...',
+                html: `<p>กำลังสร้าง ${count} ระดับชั้น</p>`,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Create grades array
+            const grades = [];
+            for (let i = 1; i <= count; i++) {
+                grades.push(`${prefix} ${i}`);
+            }
+
+            // Send to backend
+            $.ajax({
+                url: '{{ route('create-bulk-grades') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    form_id: formId,
+                    grades: grades
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'สำเร็จ!',
+                            html: `<p>สร้างระดับชั้น <strong>${response.created_count}</strong> รายการเรียบร้อยแล้ว</p>`,
+                            confirmButtonText: 'ตกลง',
+                            confirmButtonColor: '#6351a2'
+                        }).then(() => {
+                            // Add created grades to UI
+                            response.grades.forEach((grade, idx) => {
+                                indexoption++;
+                                addBulkOptionGrade(indexoption, grade.grade, grade.id);
+                            });
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    let errorMessage = 'ไม่สามารถสร้างระดับชั้นได้';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาด',
+                        text: errorMessage,
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#dc3545'
+                    });
+                }
+            });
+        }
+
+        function addOptionGrade(index, value, gradeId = null) {
             document.getElementById('options_grade').style.display = 'block';
             let option = document.createElement('div');
             option.classList.add(`option${index}`);
+            option.setAttribute('data-grade-id', gradeId || '');
             option.innerHTML = `
             <label>Option Grade ${index}</label>
             <div class="form-group">
                 <div class="row">
                     <div class="col-md-8">
-                        <input type="text" class="form-control" name="optionGrade[]" value="${value}">
+                        <input type="hidden" id="optionGradeId${gradeId}" name="optionGrade[${index}][id]" value="${gradeId || ''}">
+                        <input type="text" class="form-control" name="optionGrade[${index}][grade]" id="gradeInput${index}" value="${value}" data-grade-id="${gradeId || ''}">
                     </div>
-                    <div class="col-md-4">
-                        <button type="button" onclick="removeOptionGrade(${index})" class="btn btn-danger btn-sm mt-1">
-                            <i class="fa fa-trash"></i>
-                        </button>
+                    <div class="row col-md-4">
+                        <div class="col-md-2">
+                            <button type="button" onclick="createOptionGrade(${index})" id="createBtn${index}" class="btn btn-primary btn-sm mt-1" title="บันทึกระดับชั้นนี้">
+                                <i class="fa fa-save"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" onclick="removeOptionGrade(${index})" class="btn btn-danger btn-sm mt-1" title="ลบระดับชั้นนี้">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+            document.getElementById('options_grade').appendChild(option);
+        }
+
+        function addBulkOptionGrade(index, value, gradeId) {
+            document.getElementById('options_grade').style.display = 'block';
+            let option = document.createElement('div');
+            option.classList.add(`option${index}`);
+            option.setAttribute('data-grade-id', gradeId);
+            option.innerHTML = `
+            <label>Option Grade ${index}</label>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-8">
+                        <input type="hidden" id="optionGradeId${gradeId}" name="optionGrade[${index}][id]" value="${gradeId || ''}">
+                        <input type="text" class="form-control" name="optionGrade[${index}][grade]" id="optionGrade${gradeId}" value="${value}" data-grade-id="${gradeId || ''}">
+                    </div>
+                    <div class="row col-md-4">
+                        <div class="col-md-2">
+                                <button type="button" onclick="editOptionGrade(${gradeId})" data-id="${gradeId}" class="editOptionGrade btn btn-warning btn-sm mt-1">
+                                    <i id="changeIcon${gradeId}" class="fa fa-edit"></i>
+                                </button>
+                            </div>
+                        <div class="col-md-2">
+                            <button type="button" onclick="removeOptionGrade(${index})" class="btn btn-danger btn-sm mt-1" title="ลบระดับชั้นนี้">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1223,6 +2094,240 @@
             if (document.getElementById('options_grade').children.length === 0) {
                 document.getElementById('options_grade').style.display = 'none';
             }
+        }
+
+        function createOptionGrade(index) {
+            const gradeInput = document.getElementById('gradeInput' + index);
+            const gradeName = gradeInput.value.trim();
+            const formId = document.getElementById('form_id').value;
+            const createBtn = document.getElementById('createBtn' + index);
+            const btnIcon = createBtn.querySelector('i');
+
+            if (!gradeName) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'กรุณากรอกชื่อระดับชั้น',
+                    text: 'โปรดระบุชื่อระดับชั้นก่อนบันทึก',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#6351a2'
+                });
+                return;
+            }
+
+            if (!formId) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่พบ Form ID',
+                    text: 'กรุณาบันทึกฟอร์มก่อนเพิ่มระดับชั้น',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#dc3545'
+                });
+                return;
+            }
+
+            // Disable button and show loading
+            createBtn.disabled = true;
+            btnIcon.classList.remove('fa-save');
+            btnIcon.classList.add('fa-spinner', 'fa-spin');
+
+            $.ajax({
+                url: '{{ route('create-option-grade') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    form_id: formId,
+                    grade_name: gradeName
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Update input with grade ID
+                        gradeInput.setAttribute('data-grade-id', response.grade_id);
+
+                        // Update hidden input with the new grade ID
+                        const hiddenInput = document.getElementById('optionGradeId' + index) ||
+                                          document.querySelector(`.option${index} input[name="optionGrade[${index}][id]"]`);
+                        if (hiddenInput) {
+                            hiddenInput.value = response.grade_id;
+                        }
+
+                        // Change icon to check
+                        btnIcon.classList.remove('fa-spinner', 'fa-spin');
+                        btnIcon.classList.add('fa-check');
+                        createBtn.classList.remove('btn-primary');
+                        createBtn.classList.add('btn-success');
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'สำเร็จ!',
+                            html: `<p>บันทึกระดับชั้น <strong>${gradeName}</strong> เรียบร้อยแล้ว</p>`,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+
+                        // Change to edit mode after 2 seconds
+                        setTimeout(() => {
+                            btnIcon.classList.remove('fa-check');
+                            btnIcon.classList.add('fa-edit');
+                            createBtn.classList.remove('btn-success', 'btn-primary');
+                            createBtn.classList.add('btn-warning');
+                            createBtn.setAttribute('title', 'แก้ไขระดับชั้นนี้');
+                            createBtn.setAttribute('onclick',
+                                `editOptionGrade(${response.grade_id}, ${index})`);
+                            createBtn.disabled = false;
+                        }, 2000);
+                    }
+                },
+                error: function(xhr) {
+                    btnIcon.classList.remove('fa-spinner', 'fa-spin');
+                    btnIcon.classList.add('fa-save');
+                    createBtn.disabled = false;
+
+                    let errorMessage = 'ไม่สามารถบันทึกระดับชั้นได้';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาด',
+                        text: errorMessage,
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#dc3545'
+                    });
+                }
+            });
+        }
+
+        function createOptionPackage(index) {
+            const packageNameInput = document.getElementById('packageName' + index);
+            const packagePriceInput = document.getElementById('packagePrice' + index);
+            const packageName = packageNameInput.value.trim();
+            const packagePrice = packagePriceInput.value.trim();
+            const formId = document.getElementById('form_id').value;
+            const createBtn = document.getElementById('createPackageBtn' + index);
+            const btnIcon = createBtn.querySelector('i');
+
+            if (!packageName) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'กรุณากรอกชื่อแพคเกจ',
+                    text: 'โปรดระบุชื่อแพคเกจก่อนบันทึก',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#6351a2'
+                });
+                return;
+            }
+
+            if (!packagePrice) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'กรุณากรอกราคา',
+                    text: 'โปรดระบุราคาแพคเกจก่อนบันทึก',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#6351a2'
+                });
+                return;
+            }
+
+            if (!formId) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่พบ Form ID',
+                    text: 'กรุณาบันทึกฟอร์มก่อนเพิ่มแพคเกจ',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#dc3545'
+                });
+                return;
+            }
+
+            // Disable button and show loading
+            createBtn.disabled = true;
+            btnIcon.classList.remove('fa-save');
+            btnIcon.classList.add('fa-spinner', 'fa-spin');
+
+            $.ajax({
+                url: '{{ route('create-option-package') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    form_id: formId,
+                    package_name: packageName,
+                    package_price: packagePrice
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Update hidden input with the new package ID
+                        const hiddenInput = document.getElementById('optionPackageId' + index) ||
+                                          document.querySelector(`.option${index} input[name="optionPackage[${index}][id]"]`);
+                        if (hiddenInput) {
+                            hiddenInput.value = response.package_id;
+                            hiddenInput.id = 'optionPackageId' + response.package_id;
+                        }
+
+                        // Update input IDs to use package_id instead of index
+                        packageNameInput.id = 'optionPackageName' + response.package_id;
+                        packagePriceInput.id = 'optionPackagePrice' + response.package_id;
+
+                        // Change icon to check
+                        btnIcon.classList.remove('fa-spinner', 'fa-spin');
+                        btnIcon.classList.add('fa-check');
+                        createBtn.classList.remove('btn-primary');
+                        createBtn.classList.add('btn-success');
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'สำเร็จ!',
+                            html: `<p>บันทึกแพคเกจ <strong>${packageName}</strong> เรียบร้อยแล้ว</p>`,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+
+                        // Change to edit mode after 2 seconds
+                        setTimeout(() => {
+                            btnIcon.classList.remove('fa-check');
+                            btnIcon.classList.add('fa-edit');
+                            btnIcon.id = 'changeIconPackage' + response.package_id;
+                            createBtn.classList.remove('btn-success', 'btn-primary');
+                            createBtn.classList.add('btn-warning');
+                            createBtn.classList.add('editOptionPackage');
+                            createBtn.setAttribute('title', 'แก้ไขแพคเกจนี้');
+                            createBtn.setAttribute('onclick', `editOptionPackage(${response.package_id})`);
+                            createBtn.id = 'editPackageBtn' + response.package_id;
+                            createBtn.disabled = false;
+
+                            // Show and update linkGrade button
+                            const linkGradeBtn = document.getElementById('linkGradeHidden' + index);
+                            if (linkGradeBtn) {
+                                linkGradeBtn.style.display = 'block';
+                                // Update the button's onclick to use the correct package_id
+                                const linkBtn = linkGradeBtn.querySelector('button');
+                                if (linkBtn) {
+                                    linkBtn.setAttribute('onclick', `linkGrade(${response.package_id})`);
+                                    linkBtn.setAttribute('data-id', response.package_id);
+                                }
+                            }
+                        }, 2000);
+                    }
+                },
+                error: function(xhr) {
+                    btnIcon.classList.remove('fa-spinner', 'fa-spin');
+                    btnIcon.classList.add('fa-save');
+                    createBtn.disabled = false;
+
+                    let errorMessage = 'ไม่สามารถบันทึกแพคเกจได้';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาด',
+                        text: errorMessage,
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#dc3545'
+                    });
+                }
+            });
         }
 
         function showGrade(valueGrade, id) {
@@ -1244,7 +2349,8 @@
             <div class="form-group">
                 <div class="row">
                     <div class="col-md-8">
-                        <input type="text" class="form-control" id="optionGrade${id}" name="optionGrade[]" value="${value}">
+                        <input type="hidden" id="optionGradeId${id}" name="optionGrade[${index}][id]" value="${id || ''}">
+                        <input type="text" class="form-control" id="optionGrade${id}" name="optionGrade[${index}][grade]" value="${value}">
                     </div>
                     <div class="col-md-4">
                         <div class="row">
@@ -1268,27 +2374,105 @@
 
         let id;
 
-        function editOptionGrade(id) {
-            id = id;
-            var value = document.getElementById('optionGrade' + id).value;
+        function editOptionGrade(gradeId, index) {
+            // Try to find input by different ID patterns
+            let gradeInput = document.getElementById('gradeInput' + index);
+            if (!gradeInput) {
+                gradeInput = document.getElementById('optionGrade' + gradeId);
+            }
+
+            if (!gradeInput) {
+                console.error('Grade input not found for gradeId:', gradeId, 'index:', index);
+                return;
+            }
+
+            const gradeName = gradeInput.value.trim();
+
+            // Try to find button by different ID patterns
+            let createBtn = document.getElementById('createBtn' + index);
+            let btnIcon;
+
+            if (createBtn) {
+                // New grade created with addOptionGrade
+                btnIcon = createBtn.querySelector('i');
+            } else {
+                // Existing grade loaded with getOptionGrade
+                btnIcon = document.getElementById('changeIcon' + gradeId);
+                if (btnIcon) {
+                    createBtn = btnIcon.closest('button');
+                }
+            }
+
+            if (!createBtn || !btnIcon) {
+                console.error('Button not found for gradeId:', gradeId, 'index:', index);
+                return;
+            }
+
+            if (!gradeName) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'กรุณากรอกชื่อระดับชั้น',
+                    text: 'โปรดระบุชื่อระดับชั้นก่อนบันทึก',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#6351a2'
+                });
+                return;
+            }
+
+            // Disable button and show loading
+            createBtn.disabled = true;
+            btnIcon.classList.remove('fa-edit');
+            btnIcon.classList.add('fa-spinner', 'fa-spin');
+
             $.ajax({
-                url: '{{ route('edit-option-grade') }}', //update option grade
+                url: '{{ route('edit-option-grade') }}',
                 type: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
-                    id: id,
-                    value: value
+                    id: gradeId,
+                    value: gradeName
                 },
                 success: function(response) {
-                    //change icon
-                    let icon = document.getElementById('changeIcon' + id);
-                    icon.classList.remove('fa-edit');
-                    icon.classList.add('fa-check');
+                    // Change icon to check
+                    btnIcon.classList.remove('fa-spinner', 'fa-spin');
+                    btnIcon.classList.add('fa-check');
+                    createBtn.classList.remove('btn-warning');
+                    createBtn.classList.add('btn-success');
 
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'สำเร็จ!',
+                        html: `<p>แก้ไขระดับชั้น <strong>${gradeName}</strong> เรียบร้อยแล้ว</p>`,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    // Revert to edit mode after 2 seconds
                     setTimeout(() => {
-                        icon.classList.remove('fa-check');
-                        icon.classList.add('fa-edit');
+                        btnIcon.classList.remove('fa-check');
+                        btnIcon.classList.add('fa-edit');
+                        createBtn.classList.remove('btn-success');
+                        createBtn.classList.add('btn-warning');
+                        createBtn.disabled = false;
                     }, 2000);
+                },
+                error: function(xhr) {
+                    btnIcon.classList.remove('fa-spinner', 'fa-spin');
+                    btnIcon.classList.add('fa-edit');
+                    createBtn.disabled = false;
+
+                    let errorMessage = 'ไม่สามารถแก้ไขระดับชั้นได้';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาด',
+                        text: errorMessage,
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#dc3545'
+                    });
                 }
             });
         }
@@ -1304,6 +2488,244 @@
                 },
                 success: function(response) {
                     removeOptionGrade(response.index);
+                }
+            });
+        }
+
+        // Link Package with Grades functionality
+        let currentPackageId = null;
+
+        function linkGrade(packageId) {
+            currentPackageId = packageId;
+            const formId = document.getElementById('form_id').value;
+
+            if (!formId) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ไม่พบ Form ID',
+                    text: 'กรุณาบันทึกฟอร์มก่อนเชื่อมโยงระดับชั้น',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#6351a2'
+                });
+                return;
+            }
+
+            // Fetch both package data and latest grades
+            Promise.all([
+                $.ajax({
+                    url: '{{ route('get-package-linked-grades') }}',
+                    type: 'GET',
+                    data: {
+                        package_id: packageId
+                    }
+                }),
+                $.ajax({
+                    url: '{{ route('get-form-grades') }}',
+                    type: 'GET',
+                    data: {
+                        form_id: formId
+                    }
+                })
+            ]).then(([packageResponse, gradesResponse]) => {
+                if (packageResponse.status === 'success' && gradesResponse.success) {
+                    showLinkGradeModal(packageResponse.data, gradesResponse.grades);
+                } else {
+                    throw new Error('Invalid response format');
+                }
+            }).catch((error) => {
+                console.error('Error loading data:', error);
+                let errorMessage = 'ไม่สามารถโหลดข้อมูลได้';
+                
+                if (error.responseJSON && error.responseJSON.message) {
+                    errorMessage = error.responseJSON.message;
+                } else if (error.statusText) {
+                    errorMessage = `เกิดข้อผิดพลาด: ${error.statusText}`;
+                }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: '<span style="color: #dc3545;">เกิดข้อผิดพลาด</span>',
+                    html: `<p>${errorMessage}</p>`,
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#dc3545'
+                });
+            });
+        }
+
+        function showLinkGradeModal(packageData, gradeOptions) {
+            const linkedGrades = packageData.linked_grades || [];
+
+            let gradeCheckboxes = '';
+            if (gradeOptions.length > 0) {
+                gradeOptions.forEach(grade => {
+                    const isChecked = linkedGrades.includes(grade.id) ? 'checked' : '';
+                    gradeCheckboxes += `
+                        <div class="form-check mb-2" style="padding: 8px 12px; border-radius: 6px; transition: background-color 0.2s;">
+                            <input class="form-check-input grade-checkbox" type="checkbox"
+                                   value="${grade.id}" id="grade_${grade.id}" ${isChecked}
+                                   style="width: 18px; height: 18px; cursor: pointer; margin-left: 5px;">
+                            <label class="form-check-label" for="grade_${grade.id}"
+                                   style="cursor: pointer; font-size: 15px; margin-left: 8px;">
+                                ${grade.grade}
+                            </label>
+                        </div>
+                    `;
+                });
+            } else {
+                gradeCheckboxes =
+                    '<p class="text-muted text-center"><i class="fa fa-exclamation-circle"></i> ยังไม่มีระดับชั้นในฟอร์มนี้ กรุณาเพิ่มระดับชั้นก่อน</p>';
+            }
+
+            Swal.fire({
+                title: `<div style="color: #6351a2; font-size: 22px; margin-bottom: 10px;">
+                            <i class="fa fa-link"></i> เชื่อมโยงระดับชั้นกับแพคเกจ
+                        </div>`,
+                html: `
+                    <div style="text-align: left; padding: 15px 20px;">
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                            <p style="margin: 0; font-size: 16px; color: #333;">
+                                <strong>แพคเกจ:</strong> <span style="color: #6351a2;">${packageData.package_name}</span>
+                            </p>
+                        </div>
+
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <p style="margin: 0; font-size: 15px; color: #333; font-weight: 600;">
+                                    <i class="fa fa-check-square" style="margin-right: 5px;"></i> เลือกระดับชั้นที่สามารถใช้แพคเกจนี้ได้:
+                                </p>
+
+                            </div>
+                        </div>
+
+                        <div style="background: #e3f2fd; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #2196F3;">
+                            <p style="margin: 0; font-size: 13px; line-height: 1.5;">
+                                <i class="fa fa-info-circle" style="color: #2196F3; margin-right: 5px;"></i>
+                                <strong>หมายเหตุ:</strong> หากไม่เลือกระดับชั้นใดๆ แพคเกจนี้จะสามารถใช้ได้กับทุกระดับชั้น
+                            </p>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <button type="button" id="selectAllGrades" class="btn btn-sm" style="background: #28a745; color: white; border: none; padding: 5px 12px; border-radius: 4px; font-size: 13px; cursor: pointer;">
+                                <i class="fa fa-check-double"></i> เลือกทั้งหมด
+                            </button>
+                            <button type="button" id="deselectAllGrades" class="btn btn-sm" style="background: #dc3545; color: white; border: none; padding: 5px 12px; border-radius: 4px; font-size: 13px; cursor: pointer;">
+                                <i class="fa fa-times-circle"></i> ยกเลิกทั้งหมด
+                            </button>
+                        </div>
+
+                        <div id="gradeCheckboxContainer" style="max-height: 300px; overflow-y: auto; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; background: #fafafa;">
+                            ${gradeCheckboxes}
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fa fa-save"></i> บันทึก',
+                cancelButtonText: '<i class="fa fa-times"></i> ยกเลิก',
+                confirmButtonColor: '#6351a2',
+                cancelButtonColor: '#6c757d',
+                width: '550px',
+                customClass: {
+                    confirmButton: 'btn btn-primary btn-lg',
+                    cancelButton: 'btn btn-secondary btn-lg'
+                },
+                preConfirm: () => {
+                    const selectedGrades = [];
+                    document.querySelectorAll('.grade-checkbox:checked').forEach(checkbox => {
+                        selectedGrades.push(parseInt(checkbox.value));
+                    });
+                    return selectedGrades;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    saveLinkGrades(currentPackageId, result.value);
+                }
+            });
+
+            // Add hover effect to checkboxes
+            setTimeout(() => {
+                document.querySelectorAll('.form-check').forEach(item => {
+                    item.addEventListener('mouseenter', function() {
+                        this.style.backgroundColor = '#e8f4f8';
+                    });
+                    item.addEventListener('mouseleave', function() {
+                        this.style.backgroundColor = 'transparent';
+                    });
+                });
+
+                // Add event listeners for select/deselect all buttons
+                const selectAllBtn = document.getElementById('selectAllGrades');
+                const deselectAllBtn = document.getElementById('deselectAllGrades');
+
+                if (selectAllBtn) {
+                    selectAllBtn.addEventListener('click', function() {
+                        document.querySelectorAll('.grade-checkbox').forEach(checkbox => {
+                            checkbox.checked = true;
+                        });
+                        // Add visual feedback
+                        this.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            this.style.transform = 'scale(1)';
+                        }, 100);
+                    });
+                }
+
+                if (deselectAllBtn) {
+                    deselectAllBtn.addEventListener('click', function() {
+                        document.querySelectorAll('.grade-checkbox').forEach(checkbox => {
+                            checkbox.checked = false;
+                        });
+                        // Add visual feedback
+                        this.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            this.style.transform = 'scale(1)';
+                        }, 100);
+                    });
+                }
+
+                // Add hover effects for buttons
+                [selectAllBtn, deselectAllBtn].forEach(btn => {
+                    if (btn) {
+                        btn.addEventListener('mouseenter', function() {
+                            this.style.opacity = '0.9';
+                            this.style.transform = 'translateY(-1px)';
+                        });
+                        btn.addEventListener('mouseleave', function() {
+                            this.style.opacity = '1';
+                            this.style.transform = 'translateY(0)';
+                        });
+                    }
+                });
+            }, 100);
+        }
+
+        function saveLinkGrades(packageId, gradeIds) {
+            $.ajax({
+                url: '{{ route('link-package-grades') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    package_id: packageId,
+                    grade_ids: gradeIds.length > 0 ? gradeIds : null
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '<span style="color: #28a745;">สำเร็จ!</span>',
+                            html: '<p style="font-size: 16px;">บันทึกการเชื่อมโยงระดับชั้นเรียบร้อยแล้ว</p>',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '<span style="color: #dc3545;">เกิดข้อผิดพลาด</span>',
+                        html: '<p style="font-size: 16px;">ไม่สามารถบันทึกการเชื่อมโยงระดับชั้นได้</p>',
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#dc3545'
+                    });
                 }
             });
         }

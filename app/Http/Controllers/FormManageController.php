@@ -294,6 +294,261 @@ class FormManageController extends Controller
         ]);
     }
 
+    public function createOptionGrade(Request $request)
+    {
+        $request->validate([
+            'form_id' => 'required|exists:forms_manage,id',
+            'grade_name' => 'required|string|max:255'
+        ]);
+
+        $formId = $request->form_id;
+        $gradeName = $request->grade_name;
+
+        // Check if grade already exists for this form
+        $existingGrade = FormGrades::where('form_id', $formId)
+            ->where('grade', $gradeName)
+            ->first();
+
+        if ($existingGrade) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ระดับชั้นนี้มีอยู่แล้ว'
+            ], 422);
+        }
+        $form = FormManage::find($formId);
+        // Create new grade
+        $grade = new FormGrades();
+        $grade->form_id = $formId;
+        $grade->grade = $gradeName;
+        $grade->sfield = $form->sfield ?? '';
+        $grade->form_name = $form->form_name ?? '';
+        $grade->form_route = $form->form_route ?? '';
+        $grade->create_by = Auth::user()->id;
+        $grade->update_by = Auth::user()->id;
+        $grade->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'บันทึกระดับชั้นเรียบร้อยแล้ว',
+            'grade_id' => $grade->id,
+            'grade_name' => $grade->grade
+        ]);
+    }
+
+    public function createOptionPackage(Request $request)
+    {
+        $request->validate([
+            'form_id' => 'required|exists:forms_manage,id',
+            'package_name' => 'required|string|max:255',
+            'package_price' => 'required|numeric|min:0'
+        ]);
+
+        $formId = $request->form_id;
+        $packageName = $request->package_name;
+        $packagePrice = $request->package_price;
+
+        // Check if package already exists for this form
+        $existingPackage = FormPakages::where('form_id', $formId)
+            ->where('package', $packageName)
+            ->first();
+
+        if ($existingPackage) {
+            return response()->json([
+                'success' => false,
+                'message' => 'แพคเกจนี้มีอยู่แล้ว'
+            ], 422);
+        }
+
+        // Get form details
+        $form = FormManage::find($formId);
+
+        // Create new package
+        $package = new FormPakages();
+        $package->form_id = $formId;
+        $package->package = $packageName;
+        $package->price = $packagePrice;
+        $package->sfield = $form->sfield ?? '';
+        $package->form_name = $form->form_name ?? '';
+        $package->form_route = $form->form_route ?? '';
+        $package->create_by = Auth::user()->id;
+        $package->update_by = Auth::user()->id;
+        $package->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'บันทึกแพคเกจเรียบร้อยแล้ว',
+            'package_id' => $package->id,
+            'package_name' => $package->package,
+            'package_price' => $package->price
+        ]);
+    }
+
+    public function createBulkGrades(Request $request)
+    {
+        $request->validate([
+            'form_id' => 'required|exists:forms_manage,id',
+            'grades' => 'required|array|min:1|max:20',
+            'grades.*' => 'required|string|max:255'
+        ]);
+
+        $formId = $request->form_id;
+        $gradeNames = $request->grades;
+        $createdGrades = [];
+        $skippedCount = 0;
+
+        $form = FormManage::find($formId);
+
+        foreach ($gradeNames as $gradeName) {
+            // Check if grade already exists
+            $existingGrade = FormGrades::where('form_id', $formId)
+                ->where('grade', $gradeName)
+                ->first();
+
+            if ($existingGrade) {
+                $skippedCount++;
+                continue;
+            }
+
+            // Create new grade
+            $grade = new FormGrades();
+            $grade->form_id = $formId;
+            $grade->grade = $gradeName;
+            $grade->sfield = $form->sfield ?? '';
+            $grade->form_name = $form->form_name ?? '';
+            $grade->form_route = $form->form_route ?? '';
+            $grade->create_by = Auth::user()->id;
+            $grade->update_by = Auth::user()->id;
+            $grade->save();
+
+            $createdGrades[] = $grade;
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'สร้างระดับชั้นเรียบร้อยแล้ว',
+            'created_count' => count($createdGrades),
+            'skipped_count' => $skippedCount,
+            'grades' => $createdGrades
+        ]);
+    }
+
+    public function getFormGrades(Request $request)
+    {
+        $formId = $request->form_id;
+
+        if (!$formId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Form ID is required'
+            ], 400);
+        }
+
+        $grades = FormGrades::where('form_id', $formId)
+            ->orderBy('id', 'asc')
+            ->get(['id', 'grade']);
+
+        return response()->json([
+            'success' => true,
+            'grades' => $grades
+        ]);
+    }
+
+    public function deleteAllGrades(Request $request)
+    {
+        $request->validate([
+            'form_id' => 'required|exists:forms_manage,id'
+        ]);
+
+        $formId = $request->form_id;
+
+        // Delete all grades for this form
+        $deletedCount = FormGrades::where('form_id', $formId)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'ลบระดับชั้นทั้งหมดเรียบร้อยแล้ว',
+            'deleted_count' => $deletedCount
+        ]);
+    }
+
+    public function deleteAllPackages(Request $request)
+    {
+        $request->validate([
+            'form_id' => 'required|exists:forms_manage,id'
+        ]);
+
+        $formId = $request->form_id;
+
+        // Delete all packages for this form
+        $deletedCount = FormPakages::where('form_id', $formId)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'ลบแพคเกจทั้งหมดเรียบร้อยแล้ว',
+            'deleted_count' => $deletedCount
+        ]);
+    }
+
+    public function linkPackageGrades(Request $request)
+    {
+        $packageId = $request->package_id;
+        $gradeIds = $request->grade_ids; // Array of grade IDs or null
+
+        $package = FormPakages::find($packageId);
+        if (!$package) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Package not found'
+            ], 404);
+        }
+
+        // If grade_ids is empty array or null, set to null (means all grades allowed)
+        $linkedGrades = (!empty($gradeIds) && is_array($gradeIds)) ? $gradeIds : null;
+
+        $package->linked_grades = $linkedGrades;
+        $package->update_by = Auth::user()->id;
+        $package->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Linked grades updated successfully',
+            'data' => $package
+        ]);
+    }
+
+    public function getPackageLinkedGrades(Request $request)
+    {
+        $packageId = $request->package_id;
+        $package = FormPakages::find($packageId);
+
+        if (!$package) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Package not found'
+            ], 404);
+        }
+
+        // Get linked grades, default to empty array if null
+        $linkedGrades = [];
+        if ($package->linked_grades) {
+            // If linked_grades is a JSON string, decode it
+            if (is_string($package->linked_grades)) {
+                $linkedGrades = json_decode($package->linked_grades, true) ?? [];
+            } else {
+                $linkedGrades = $package->linked_grades;
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'package_id' => $package->id,
+                'package_name' => $package->package,
+                'linked_grades' => $linkedGrades
+            ]
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -371,6 +626,8 @@ class FormManageController extends Controller
             'student_school_name' => $fieldRule('student_school_name', 'string|max:100'),
             'student_grade' => $fieldRule('student_grade', 'string|max:50'),
             'package' => $fieldRule('package', 'string|max:100'),
+            'package_multiselect' => 'nullable|boolean',
+            'package_max_selection' => 'nullable|integer|min:1',
             'student_address' => $fieldRule('student_address', 'string'),
             'student_zip' => $fieldRule('student_zip', 'string'),
             'parent_name' => $fieldRule('parent_name', 'string|max:100'),
@@ -379,11 +636,12 @@ class FormManageController extends Controller
             'contact_email_detail' => $fieldRule('contact_email_detail', 'string'),
             'news' => $fieldRule('news', 'string'),
             'optionGrade' => 'nullable|array',
-            'optionGrade.*' => 'nullable|string|max:100',
-            'optionValue' => 'nullable|array',
-            'optionValue.*' => 'nullable|numeric',
-            'optionName' => 'nullable|array',
-            'optionName.*' => 'nullable|string|max:100',
+            'optionGrade.*.id' => 'nullable|integer|exists:forms_grades,id',
+            'optionGrade.*.grade' => 'nullable|string|max:100',
+            'optionPackage' => 'nullable|array',
+            'optionPackage.*.id' => 'nullable|integer|exists:forms_pakages,id',
+            'optionPackage.*.name' => 'nullable|string|max:100',
+            'optionPackage.*.value' => 'nullable|numeric',
             'field_settings' => 'nullable|array',
             'field_settings.*.enabled' => 'nullable|boolean',
             'field_settings.*.required' => 'nullable|boolean',
@@ -468,6 +726,9 @@ class FormManageController extends Controller
             'package.required' => 'The package is required.',
             'package.string' => 'The package must be a string.',
             'package.max' => 'The package may not be greater than 100 characters.',
+            'package_multiselect.boolean' => 'The package multiselect must be true or false.',
+            'package_max_selection.integer' => 'The package max selection must be a number.',
+            'package_max_selection.min' => 'The package max selection must be at least 1.',
             'student_address.required' => 'The student address is required.',
             'student_address.string' => 'The student address must be a string.',
             'student_zip.required' => 'The student ZIP is required.',
@@ -490,13 +751,16 @@ class FormManageController extends Controller
 
             // dynamic options
             'optionGrade.array' => 'The grades must be an array.',
-            'optionGrade.*.string' => 'Each grade must be a string.',
-            'optionGrade.*.max' => 'Each grade may not be greater than 100 characters.',
-            'optionValue.array' => 'The package values must be an array.',
-            'optionValue.*.numeric' => 'Each package value must be a number.',
-            'optionName.array' => 'The package names must be an array.',
-            'optionName.*.string' => 'Each package name must be a string.',
-            'optionName.*.max' => 'Each package name may not be greater than 100 characters.',
+            'optionGrade.*.id.integer' => 'Each grade ID must be an integer.',
+            'optionGrade.*.id.exists' => 'The specified grade ID does not exist.',
+            'optionGrade.*.grade.string' => 'Each grade must be a string.',
+            'optionGrade.*.grade.max' => 'Each grade may not be greater than 100 characters.',
+            'optionPackage.array' => 'The packages must be an array.',
+            'optionPackage.*.id.integer' => 'Each package ID must be an integer.',
+            'optionPackage.*.id.exists' => 'The specified package ID does not exist.',
+            'optionPackage.*.name.string' => 'Each package name must be a string.',
+            'optionPackage.*.name.max' => 'Each package name may not be greater than 100 characters.',
+            'optionPackage.*.value.numeric' => 'Each package value must be a number.',
 
             // images (generic)
             'brand.image' => 'The brand must be an image file.',
@@ -628,6 +892,8 @@ class FormManageController extends Controller
             'student_school_name' => $request->student_school_name,
             'student_grade' => $request->student_grade,
             'package' => $request->package,
+            'package_multiselect' => $request->input('package_multiselect', 0) == 1 ? true : false,
+            'package_max_selection' => $request->package_max_selection ? (int) $request->package_max_selection : null,
             'student_address' => $request->student_address,
             'student_zip' => $request->student_zip,
             'parent_name' => $request->parent_name,
@@ -642,6 +908,25 @@ class FormManageController extends Controller
             'text_footer' => $request->text_footer,
             'text_policy' => $request->text_policy,
             'field_settings' => $normalizedFieldSettings,
+            // Footer fields
+            'show_footer' => $request->input('show_footer', 0) == 1 ? true : false,
+            'footer_company_name' => $request->footer_company_name,
+            'footer_description_1' => $request->footer_description_1,
+            'footer_description_2' => $request->footer_description_2,
+            'footer_about_title' => $request->footer_about_title,
+            'footer_feature_1' => $request->footer_feature_1,
+            'footer_feature_2' => $request->footer_feature_2,
+            'footer_feature_3' => $request->footer_feature_3,
+            'footer_feature_4' => $request->footer_feature_4,
+            'footer_contact_title' => $request->footer_contact_title,
+            'footer_phone' => $request->footer_phone,
+            'footer_email' => $request->footer_email,
+            'footer_address' => $request->footer_address,
+            'footer_facebook' => $request->footer_facebook,
+            'footer_line' => $request->footer_line,
+            'footer_instagram' => $request->footer_instagram,
+            'footer_youtube' => $request->footer_youtube,
+            'footer_copyright' => $request->footer_copyright,
             'update_by' => Auth::user()->id,
         ]);
 
@@ -673,33 +958,94 @@ class FormManageController extends Controller
             ]);
         }
 
+        // Footer logo upload
+        if ($request->hasFile('footer_logo')) {
+            $file = $request->file('footer_logo');
+            $filename = 'footer_' . $request->form_route . '_' . date('Y-m-d') . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images'), $filename);
+            $form_manage->update([
+                'footer_logo' => $filename,
+            ]);
+        }
+        // dd( $request->all());
+
         if ($request->has('optionGrade')) {
-            FormGrades::where('form_id', $form_id)->delete();
-            foreach ($request->optionGrade as $key => $value) {
-                $form_manage->grade()->create([
-                    'form_id' => $form_id,
-                    'sfield' => $form_manage->sfield,
-                    'form_name' => $form_manage->form_name,
-                    'form_route' => $form_manage->form_route,
-                    'grade' => $value,
-                    'create_by' => Auth::user()->id,
-                    'update_by' => Auth::user()->id,
-                ]);
+            $existingGrades = FormGrades::where('form_id', $form_id)->pluck('grade')->toArray();
+
+            foreach ($request->optionGrade as $gradeData) {
+                // ข้ามถ้าไม่มีข้อมูล grade
+                if (empty($gradeData['grade'])) {
+                    continue;
+                }
+
+                $gradeValue = $gradeData['grade'];
+
+                // ถ้ามี id แสดงว่าเป็นการอัพเดท (ถ้าต้องการให้อัพเดทได้)
+                if (!empty($gradeData['id'])) {
+                    // อัพเดท grade ที่มีอยู่แล้ว
+                    FormGrades::where('id', $gradeData['id'])
+                        ->where('form_id', $form_id)
+                        ->update([
+                            'grade' => $gradeValue,
+                            'update_by' => Auth::id(),
+                        ]);
+                } else {
+                    // สร้าง grade ใหม่ (ถ้ายังไม่มี)
+                    if (in_array($gradeValue, $existingGrades)) {
+                        continue;
+                    }
+
+                    $form_manage->grade()->create([
+                        'form_id' => $form_id,
+                        'sfield' => $form_manage->sfield,
+                        'form_name' => $form_manage->form_name,
+                        'form_route' => $form_manage->form_route,
+                        'grade' => $gradeValue,
+                        'create_by' => Auth::id(),
+                        'update_by' => Auth::id(),
+                    ]);
+                }
             }
         }
         if ($request->has('optionPackage')) {
-            FormPakages::where('form_id', $form_id)->delete();
-            foreach ($request->optionPackage as $key => $package) {
-                $form_manage->package()->create([
-                    'form_id' => $form_id,
-                    'sfield' => $form_manage->sfield,
-                    'form_name' => $form_manage->form_name,
-                    'form_route' => $form_manage->form_route,
-                    'package' => $package['name'],
-                    'price' => $package['value'],
-                    'create_by' => Auth::user()->id,
-                    'update_by' => Auth::user()->id,
-                ]);
+            $existingPackages = FormPakages::where('form_id', $form_id)->pluck('package')->toArray();
+
+            foreach ($request->optionPackage as $packageData) {
+                // ข้ามถ้าไม่มีข้อมูล package name
+                if (empty($packageData['name'])) {
+                    continue;
+                }
+
+                $packageName = $packageData['name'];
+                $packagePrice = $packageData['value'] ?? 0;
+
+                // ถ้ามี id แสดงว่าเป็นการอัพเดท
+                if (!empty($packageData['id'])) {
+                    // อัพเดท package ที่มีอยู่แล้ว
+                    FormPakages::where('id', $packageData['id'])
+                        ->where('form_id', $form_id)
+                        ->update([
+                            'package' => $packageName,
+                            'price' => $packagePrice,
+                            'update_by' => Auth::id(),
+                        ]);
+                } else {
+                    // สร้าง package ใหม่ (ถ้ายังไม่มี)
+                    if (in_array($packageName, $existingPackages)) {
+                        continue;
+                    }
+
+                    $form_manage->package()->create([
+                        'form_id' => $form_id,
+                        'sfield' => $form_manage->sfield,
+                        'form_name' => $form_manage->form_name,
+                        'form_route' => $form_manage->form_route,
+                        'package' => $packageName,
+                        'price' => $packagePrice,
+                        'create_by' => Auth::id(),
+                        'update_by' => Auth::id(),
+                    ]);
+                }
             }
         }
 

@@ -74,22 +74,22 @@
     }
 
     body {
-        background-color: #112d53;
+        background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%);
     }
 
     .form_header {
-        color: #082d5f;
+        color: #D84315;
     }
 
     .form_sub_header {
-        color: #12458D;
+        color: #FF6B35;
     }
 
     hr {
         margin-top: 1rem;
         margin-bottom: 1rem;
         border: 0;
-        border-top: 1px solid #112d53;
+        border-top: 1px solid #FF8C42;
     }
 
     .form-row {
@@ -125,7 +125,7 @@
     }
 
     .form-sub-label {
-        color: #224779;
+        color: #D84315;
     }
 
     .form-sub-label {
@@ -141,7 +141,7 @@
         float: none;
         text-align: left;
         width: 100%;
-        color: #082d5f;
+        color: #D84315;
     }
 
     .form-label-top {
@@ -158,7 +158,10 @@
     }
 
     .form-required {
-        color: #f23a3c;
+        color: #ff6b6b;
+        font-weight: 700;
+        margin-left: 0.25rem;
+        font-size: 1.1em;
     }
 
     .form-required {
@@ -172,26 +175,88 @@
     }
 
     .form-focus-error {
-        background-color: #f8cccd;
+        background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+        border-left: 4px solid #ff6b6b;
+        border-radius: 12px;
+        transition: all 0.3s ease;
     }
 
     .bg-light2 {
-        background-color: #e4efff;
+        background: linear-gradient(to bottom, #ffffff 0%, #FFF8F0 100%);
     }
 
     .form-error-message {
-        color: #fff;
-        background-color: #f23a3c;
-        background-image: url(data:image/svg+xml;charset=utf-8,%3Csvg width='14' height='15' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7 14.515a7 7 0 110-14 7 7 0 010 14zm-.814-5.86h1.628v-5.21H6.186v5.21zM7 11.259a.82.82 0 00.814-.824A.816.816 0 007 9.631a.813.813 0 100 1.628z' fill='%23fff'/%3E%3C/svg%3E);
-        font-size: .75em;
-        margin-top: 8px;
-        border-radius: 4px;
-        background-size: 0.875em;
-        background-position: 0.375em;
-        background-repeat: no-repeat;
+        color: #721c24;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        color: white;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        border-radius: 10px;
         display: none;
-        width: 200px;
-        padding: 0.25em 0.5em 0.25em 1.625em;
+        width: auto;
+        max-width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.75rem;
+        position: relative;
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        font-weight: 500;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    .form-error-message::before {
+        content: "\f06a";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.1rem;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.7;
+        }
+    }
+
+    /* Error Navigation Message Styling */
+    .error-navigation-message {
+        color: white;
+        font-weight: 500;
+        font-size: 0.875rem;
+    }
+
+    .form-error-arrow {
+        display: none;
+    }
+
+    .form-error-arrow-inner {
+        display: none;
+    }
+
+    /* Modern Error Container */
+    .form-error-message-container {
+        display: none;
+        margin-top: 0.5rem;
+    }
+
+    .form-error-message-container.show {
+        display: block;
     }
 
     .form_none {
@@ -213,7 +278,7 @@
 
     .dropzonex {
         min-height: 150px;
-        background: #e4efff;
+        background: linear-gradient(135deg, #FFF8F0 0%, #FFE0B2 100%);
         padding: 20px 20px;
         display: none;
     }
@@ -275,7 +340,7 @@
     }
 
     .dropzonex .dz-preview.dz-image-preview {
-        background: #e4efff;
+        background: #FFF8F0;
     }
 
     .dropzonex .dz-preview.dz-image-preview .dz-details {
@@ -383,8 +448,8 @@
         gap: 16px;
         padding: 12px 24px;
         border-radius: 15px;
-        background: rgba(228, 239, 255, 0.95);
-        box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.15);
+        background: rgba(255, 248, 240, 0.95);
+        box-shadow: 0px 12px 30px rgba(255, 107, 53, 0.2);
         z-index: 1050;
         max-width: calc(100% - 32px);
         flex-wrap: wrap;

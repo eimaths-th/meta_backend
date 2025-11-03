@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\IntegerArray;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $form_route
  * @property string $package
  * @property string $price
+ * @property array $linked_grades
  * @property integer $create_by
  * @property integer $update_by
  * @property string $created_at
@@ -32,9 +34,14 @@ class FormPakages extends Model
         'form_route',
         'package',
         'price',
+        'linked_grades',
         'create_by',
         'update_by',
         'created_at',
         'updated_at'
+    ];
+
+    protected $casts = [
+        'linked_grades' => IntegerArray::class,
     ];
 }

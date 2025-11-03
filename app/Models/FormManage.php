@@ -36,6 +36,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $gender
  * @property string $student_grade
  * @property string $package
+ * @property string $package_multiselect
+ * @property string $package_max_selection
  * @property string $student_address
  * @property string $student_zip
  * @property string $parent_name
@@ -94,6 +96,8 @@ class FormManage extends Model
         'gender',
         'student_grade',
         'package',
+        'package_multiselect',
+        'package_max_selection',
         'student_address',
         'student_zip',
         'parent_name',
@@ -104,6 +108,26 @@ class FormManage extends Model
         'student_slip_photo',
         'news',
         'field_settings',
+        // Footer fields
+        'show_footer',
+        'footer_company_name',
+        'footer_description_1',
+        'footer_description_2',
+        'footer_logo',
+        'footer_about_title',
+        'footer_feature_1',
+        'footer_feature_2',
+        'footer_feature_3',
+        'footer_feature_4',
+        'footer_contact_title',
+        'footer_phone',
+        'footer_email',
+        'footer_address',
+        'footer_facebook',
+        'footer_line',
+        'footer_instagram',
+        'footer_youtube',
+        'footer_copyright',
         'create_by',
         'update_by',
         'created_at',

@@ -445,6 +445,9 @@
                             <select name="sfieldSelect" id="sfieldSelect" class="form-control">
                                 <option value="">Select School Field</option>
 
+                                {{-- @php
+                                    dd($formManage);
+                                @endphp --}}
                                 @foreach ($formManage as $key => $form)
                                     @if ($form != null)
                                         <option value="{{ $key }}" data-title="{{ $form }}"

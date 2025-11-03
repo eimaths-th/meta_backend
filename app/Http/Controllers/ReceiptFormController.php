@@ -22,6 +22,7 @@ use App\Models\Receipt_RunningNumber;
 use App\Models\Receipt_Customer_RunningNumber;
 // use Mail;
 use App\Mail\ContactMail;
+use App\Models\FormGrades;
 use App\Models\FormManage;
 use App\Models\FormPakages;
 use App\Models\OpeningClosingTime;
@@ -37,7 +38,7 @@ class ReceiptFormController extends Controller
     const sfielda = array(
         //sfild => route
         '0' => 'reward',
-        '1' => null, //* null */
+        // '1' => null, //* null */
         '2' => 'GMEC',
         '3' => null, //* null */
         '4' => 'IMOCSEA',
@@ -1043,7 +1044,6 @@ class ReceiptFormController extends Controller
             ]);
         }
 
-        // dd($request->all());
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()->all()]);
@@ -1082,9 +1082,7 @@ class ReceiptFormController extends Controller
         //$form = ReceiptForm::find($id);
 
 
-        $form->generate =  '1';
-        $form->rec_id =  $receipt->id;
-        $form->save();
+
 
         //add more inages
         $img = $request->get('img');
@@ -1131,44 +1129,6 @@ class ReceiptFormController extends Controller
         //add more images
         $rid = $receipt->id;
 
-
-
-        if ($request->get('sfield') === "17") {
-            # code...
-            $price = 500;
-        } else {
-            $out_price = FormPakages::find($request->get('package_id'));
-            if ($out_price) {
-                $price = $out_price->price;
-            } else {
-                $out_price = $this->delete_all_between('(', ')', $request->get('package'));
-                $price = preg_replace("/[^0-9.]/", "", $out_price);
-            }
-            # code...
-        }
-
-        // $package = $request->get('package');
-        // $parts1 = explode(' : ', $package); //500 baht
-        // $parts2 = explode(' baht', $parts1[1]);
-        // $price1 = !empty($parts2[0]) ? intval($parts2[0]) : null;
-
-
-        // $package = $request->get('package');
-
-        // // Define a regular expression pattern to match the desired format
-        // $pattern = '/^([^\s]+) : (\d+) baht$/';
-
-        // // Use preg_match to extract the message and price from the package string
-        // if (preg_match($pattern, $package, $matches)) {
-        //     $price2 = intval($matches[2]);
-        //     $message = $matches[1];
-
-        // } else {
-        // }
-
-
-        // dd($price);
-
         if (strtolower($request->get('dcode')) == "meta200") {
             $discount = 200;
         } elseif (strtolower($request->get('dcode')) == "cem100") {
@@ -1181,18 +1141,60 @@ class ReceiptFormController extends Controller
             $discount = 0;
         }
 
-        $rdata = new ReceiptDetail([
-            'receipt_id' => $rid,
-            'description' => $request->get('description'),
-            'quantity' => 1,
-            //'unit' => '',
-            'unitprice' => (int)$price,
-            'discount' => $discount,
-            //'amount' => $request->get('book_old_price'),
-        ]);
-        $rdata->save();
+        if ($request->get('sfield') === "17") {
+            # code...
+            $price = 500;
+            $out_price = FormPakages::find($request->get('package_id'));
+            if ($out_price) {
+                $price = $out_price->price;
+            } else {
+                $out_price = $this->delete_all_between('(', ')', $request->get('package'));
+                $price = preg_replace("/[^0-9.]/", "", $out_price);
+            }
+        } else {
+            $package_ids = json_decode($form->package_id);
 
-        //secound description
+            if ($form->package_id && is_array($package_ids)) {
+                # code...
+                foreach ($package_ids as $key => $id) {
+                    $out_price = FormPakages::find($id);
+                    $price = $out_price->price;
+                    $desc = $out_price->package;
+                    $rdata = new ReceiptDetail([
+                        'receipt_id' => $rid,
+                        'description' => $desc,
+                        'quantity' => 1,
+                        //'unit' => '',
+                        'unitprice' => (int)$price,
+                        'discount' => $discount,
+                        //'amount' => $request->get('book_old_price'),
+                    ]);
+                    $rdata->save();
+                }
+            } else {
+                # code...
+
+                $out_price = FormPakages::find($request->get('package_id'));
+                if ($out_price) {
+                    $price = $out_price->price;
+                } else {
+                    $out_price = $this->delete_all_between('(', ')', $request->get('package'));
+                    $price = preg_replace("/[^0-9.]/", "", $out_price);
+                }
+                $rdata = new ReceiptDetail([
+                    'receipt_id' => $rid,
+                    'description' => $request->get('description'),
+                    'quantity' => 1,
+                    //'unit' => '',
+                    'unitprice' => (int)$price,
+                    'discount' => $discount,
+                    //'amount' => $request->get('book_old_price'),
+                ]);
+                $rdata->save();
+            }
+
+            # code...
+        }
 
 
         if ($request->get('sfield') == 11) {
@@ -1245,6 +1247,11 @@ class ReceiptFormController extends Controller
         ]);
         $rtdata->save();
         // dd($rdata);
+
+
+        $form->generate =  '1';
+        $form->rec_id =  $receipt->id;
+        $form->save();
         return response()->json(['success' => 'Receive Add successfully']);
     }
 
@@ -1299,14 +1306,34 @@ class ReceiptFormController extends Controller
                 $ruleArray[] = 'nullable';
             }
 
-            $ruleArray[] = 'string';
+            // Special handling for package field (can be string or array)
+            if ($inputName === 'package') {
+                // Check if multi-select is enabled
+                if ($formManage->package_multiselect) {
+                    // Multi-select: expect array
+                    $rules[$inputName] = $required ? ['required', 'array'] : ['nullable', 'array'];
+                    $rules[$inputName . '.*'] = ['integer', 'exists:forms_pakages,id'];
+                    $messages["{$inputName}.required"] = 'กรุณาเลือกแพคเกจ';
+                    $messages["{$inputName}.array"] = 'แพคเกจต้องเป็นรายการ';
+                    $messages["{$inputName}.*.integer"] = 'แพคเกจไม่ถูกต้อง';
+                    $messages["{$inputName}.*.exists"] = 'แพคเกจที่เลือกไม่มีในระบบ';
 
-            if (in_array($inputName, ['firstname', 'lastname', 'nickname'])) {
+                    // Add max selection validation if set
+                    if ($formManage->package_max_selection) {
+                        $rules[$inputName][] = 'max:' . $formManage->package_max_selection;
+                        $messages["{$inputName}.max"] = 'คุณสามารถเลือกได้สูงสุด ' . $formManage->package_max_selection . ' แพคเกจเท่านั้น';
+                    }
+                } else {
+                    // Single select: expect string or integer
+                    $ruleArray[] = 'string';
+                    $rules[$inputName] = $ruleArray;
+                }
+            } elseif (in_array($inputName, ['firstname', 'lastname', 'nickname'])) {
+                $ruleArray[] = 'string';
                 $ruleArray[] = 'regex:/^[A-Za-z ]+$/';
                 $messages["{$inputName}.regex"] = ucfirst($inputName) . ' ต้องเป็นตัวอักษรภาษาอังกฤษเท่านั้น';
-            }
-
-            if ($inputName === 'email') {
+                $rules[$inputName] = $ruleArray;
+            } elseif ($inputName === 'email') {
                 $rules[$inputName] = array_merge(
                     $required ? ['required'] : ['nullable'],
                     [
@@ -1321,6 +1348,7 @@ class ReceiptFormController extends Controller
                     ]
                 );
             } else {
+                $ruleArray[] = 'string';
                 $rules[$inputName] = $ruleArray;
             }
         }
@@ -1724,19 +1752,40 @@ class ReceiptFormController extends Controller
             $street_address2 = '';
         }
 
-        $package_id = $request->get('package');
+        $packageInput = $request->get('package');
 
-        $formPackage = FormPakages::find($package_id);
+        // Handle multi-select packages
+        if (is_array($packageInput)) {
+            $packageIds = [];
+            $packageNames = [];
 
-        if ($formPackage) {
-            # code...
-            $package_id = $formPackage->id;
-            $package = $formPackage->package;
+            foreach ($packageInput as $pkgId) {
+                $formPackage = FormPakages::find($pkgId);
+                if ($formPackage) {
+                    $packageIds[] = $formPackage->id;
+                    $packageNames[] = $formPackage->package;
+                }
+            }
 
-        }else{
-            # code...
-            $package = $request->get('package');
+            $package_id = !empty($packageIds) ? json_encode($packageIds) : null;
+            $package = !empty($packageNames) ? implode(', ', $packageNames) : null;
+        } else {
+            // Handle single package selection
+            $package_id = $packageInput;
+            $formPackage = FormPakages::find($package_id);
+
+            if ($formPackage) {
+                # code...
+                $package_id = $formPackage->id;
+                $package = $formPackage->package;
+            } else {
+                # code...
+                $package = $packageInput;
+            }
         }
+
+
+        $grade = FormGrades::find($request->get('grade'));
 
         $receiptForm = new ReceiptForm([
             'sfield' => $request->get('sfield'),
@@ -1751,7 +1800,7 @@ class ReceiptFormController extends Controller
             'school_name' => $request->get('schoolname'),
             'award' => $award ?? null,
             'street_address2' => $street_address2 ?? null,
-            'grade' => $request->get('grade'),
+            'grade' => $grade->grade,
             'package' => $package,
             'package_id' => $package_id,
             'contest' => $request->get('contest'),

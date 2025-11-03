@@ -197,11 +197,21 @@ Route::group(['middleware' => ['auth']], function () {
     // Route::post('/create-form', [FormManageController::class, 'create'])->name('create-form');
     Route::match(['GET', 'POST'], '/create-form', [FormManageController::class, 'create'])->name('create-form');
     Route::get('/form-manage/{id}', [FormManageController::class, 'view'])->name('form-manage.view');
+    Route::post('/create-option-grade', [FormManageController::class, 'createOptionGrade'])->name('create-option-grade');
+    Route::post('/create-bulk-grades', [FormManageController::class, 'createBulkGrades'])->name('create-bulk-grades');
+    Route::get('/get-form-grades', [FormManageController::class, 'getFormGrades'])->name('get-form-grades');
     Route::post('/edit-option-grade', [FormManageController::class, 'editOptionGrade'])->name('edit-option-grade');
     Route::post('/delete-option-grade', [FormManageController::class, 'deleteOptionGrade'])->name('delete-option-grade');
+    Route::post('/delete-all-grades', [FormManageController::class, 'deleteAllGrades'])->name('delete-all-grades');
 
+    Route::post('/create-option-package', [FormManageController::class, 'createOptionPackage'])->name('create-option-package');
     Route::post('/edit-option-package', [FormManageController::class, 'editOptionPackage'])->name('edit-option-package');
     Route::post('/delete-option-package', [FormManageController::class, 'deleteOptionPackage'])->name('delete-option-package');
+    Route::post('/delete-all-packages', [FormManageController::class, 'deleteAllPackages'])->name('delete-all-packages');
+    
+    // Package-Grade linking routes
+    Route::post('/link-package-grades', [FormManageController::class, 'linkPackageGrades'])->name('link-package-grades');
+    Route::get('/get-package-linked-grades', [FormManageController::class, 'getPackageLinkedGrades'])->name('get-package-linked-grades');
 });
 
 //form

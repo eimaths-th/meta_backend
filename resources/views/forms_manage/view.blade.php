@@ -2,6 +2,404 @@
 
 @section('style')
     @include('forms_manage.css')
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modern Educational Theme Styles - Orange Palette */
+        :root {
+            --primary-color: #FF6B35;
+            --secondary-color: #FF8C42;
+            --accent-color: #FFA500;
+            --success-color: #51CF66;
+            --warning-color: #FFB84D;
+            --dark-orange: #D84315;
+            --light-orange: #FFE0B2;
+            --dark-text: #2C3E50;
+            --light-bg: #FFF8F0;
+            --card-shadow: 0 10px 30px rgba(255, 107, 53, 0.15);
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffb555 0%, #ffa742 50%, #FFA500 100%);
+            font-family: 'Sarabun', 'Kanit', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Header Styling */
+        .form-header-section {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 50px 50px;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        }
+
+        .form_header {
+            color: #D84315;
+            font-weight: 700;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 0.5rem;
+        }
+
+        .form_sub_header {
+            color: #495057;
+            font-weight: 500;
+            font-size: 1.2rem;
+        }
+
+        /* Card Styling */
+        .card.bg-light2 {
+            background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
+            border: none;
+            border-radius: 25px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .card-img {
+            border-radius: 25px 25px 0 0;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 2.5rem;
+        }
+
+        /* Info Section with Icons */
+        .info-badge {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            margin: 0.5rem;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .info-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
+        }
+
+        .info-badge i {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        /* Form Fields */
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .form-label {
+            color: var(--dark-text);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Submit Buttons */
+        .submit-btn {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 107, 53, 0.6);
+            background: linear-gradient(135deg, #FF8C42 0%, #FFA500 100%);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.5);
+            background: linear-gradient(135deg, #FF8C42 0%, #FFA500 100%);
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0 1.5rem 0;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .section-header i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-right: 0.75rem;
+        }
+
+        .section-header h3 {
+            margin: 0;
+            color: var(--dark-orange);
+            font-weight: 700;
+        }
+
+        /* Dropzone Styling */
+        .dropzone {
+            border: 3px dashed var(--primary-color);
+            border-radius: 15px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            transition: all 0.3s ease;
+        }
+
+        .dropzone:hover {
+            border-color: var(--secondary-color);
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            transform: scale(1.02);
+        }
+
+        /* Package List Styling */
+        .package-list {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+        }
+
+        .package-list li {
+            padding: 0.5rem 0;
+            font-weight: 500;
+            color: var(--dark-text);
+        }
+
+        .package-list li::before {
+            content: "🎓";
+            margin-right: 0.5rem;
+        }
+
+        /* Checkbox Styling */
+        .form-check-input {
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 5px;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .form-check-label {
+            margin-left: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-text);
+        }
+
+        /* Footer Styling */
+        .meta-footer {
+            background: linear-gradient(135deg, #D84315 0%, #BF360C 100%);
+            color: white;
+            padding: 3rem 0 1.5rem 0;
+            margin-top: 4rem;
+            border-radius: 50px 50px 0 0;
+            box-shadow: 0 -10px 30px rgba(216, 67, 21, 0.3);
+        }
+
+        .meta-footer .footer-logo {
+            max-width: 200px;
+            margin-bottom: 1rem;
+            filter: brightness(0) invert(1);
+        }
+
+        .meta-footer h4 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .meta-footer p {
+            color: #bdc3c7;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-footer .social-links {
+            margin-top: 1rem;
+        }
+
+        .meta-footer .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .meta-footer .social-links a:hover {
+            color: #FFB84D;
+            transform: translateY(-3px);
+        }
+
+        .meta-footer .copyright {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+            color: #95a5a6;
+        }
+
+        /* Select2 Styling */
+        .select2-container--default .select2-selection--multiple {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            min-height: 45px;
+            padding: 0.25rem;
+        }
+
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+        }
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            border: none;
+            color: white;
+            border-radius: 20px;
+            padding: 5px 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form_header {
+                font-size: 1.8rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .submit-btn {
+                padding: 0.875rem 2rem;
+                font-size: 1rem;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Info Text Styling */
+        .form-html p {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .form-html p span {
+            color: var(--primary-color) !important;
+            font-weight: 600;
+        }
+
+        .form-html strong {
+            color: var(--dark-orange);
+        }
+
+        /* Enhanced Error Styling */
+        input.error, select.error, textarea.error {
+            border: 2px solid #ff6b6b !important;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%) !important;
+            animation: shakeError 0.5s ease-in-out;
+        }
+
+        input.error:focus, select.error:focus, textarea.error:focus {
+            border-color: #ff6b6b !important;
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25) !important;
+        }
+
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        /* Success State */
+        input.valid:not(:focus), select.valid:not(:focus), textarea.valid:not(:focus) {
+            border: 2px solid #51CF66 !important;
+            background: linear-gradient(135deg, #f0fff4 0%, #ffffff 100%) !important;
+        }
+
+        /* Error Label Enhancement */
+        label.error {
+            color: #ff6b6b !important;
+            font-size: 0.875rem !important;
+            margin-top: 0.5rem !important;
+            display: flex !important;
+            align-items: center !important;
+            font-weight: 500 !important;
+            animation: slideDown 0.3s ease-out !important;
+        }
+
+        label.error::before {
+            content: "⚠️";
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+
+        /* Tooltip Style Error */
+        .error-tooltip {
+            position: relative;
+        }
+
+        .error-tooltip .form-error-message {
+            position: absolute;
+            z-index: 1000;
+            left: 0;
+            right: 0;
+        }
+    </style>
 @endsection
 
 
@@ -101,48 +499,41 @@
                                     </div>
                                 @endif
                                 <div class="form-html" data-component="text" tabindex="0">
-                                    <p style="text-align: center;">
-                                        <span style="color: #6351a2;">
-                                            <strong>
-                                                <span style="text-decoration: underline;">
-                                                    @if (isset($form->head_title))
-                                                        {{ $form->head_title }}
+                                    <div style="text-align: center; margin-bottom: 2rem;">
+                                        @if (isset($form->head_title))
+                                            <h3 style="color: #D84315; font-weight: 700; font-size: 1.8rem; margin-bottom: 1.5rem;">
+                                                <i class="fas fa-clipboard-list" style="color: #FF6B35;"></i>
+                                                {{ $form->head_title }}
+                                            </h3>
+                                        @endif
+                                    </div>
+
+                                    <div style="text-align: center; margin-bottom: 2rem;">
+                                        @if (isset($form->registration_date_label))
+                                            <div class="info-badge">
+                                                <i class="fas fa-calendar-check"></i>
+                                                <span>
+                                                    <strong>{{ $form->registration_date_label }}:</strong>
+                                                    @if (isset($date))
+                                                        {{ $date }}
+                                                    @else
+                                                        Today - 25 October 2024
                                                     @endif
                                                 </span>
-                                            </strong>
-                                        </span>
-                                    </p>
-                                    @if (isset($form->registration_date_label))
-                                        <p style="text-align: left;">
-                                            <span style="color: #6351a2;">
-                                                <strong>
-
-                                                    {{ $form->registration_date_label }} :
-
-                                                </strong>
-                                                &nbsp;
-                                                @if (isset($date))
-                                                    {{ $date }}
-                                                @else
-                                                    Today - 25 October 2024 <br>
-                                                @endif
-                                            </span>
-                                        </p>
-                                    @endif
-                                    @if (isset($form->contest_date_label))
-                                        <p>
-                                            <span style="color: #6351a2;">
-                                                <strong>
-                                                    {{ $form->contest_date_label }} :
-                                                </strong>
-                                                &nbsp;
-                                                @if (isset($form->contest_date))
-                                                    {{ $form->contest_date }}
-                                                @endif
-
-                                            </span>
-                                        </p>
-                                    @endif
+                                            </div>
+                                        @endif
+                                        @if (isset($form->contest_date_label))
+                                            <div class="info-badge">
+                                                <i class="fas fa-calendar-alt"></i>
+                                                <span>
+                                                    <strong>{{ $form->contest_date_label }}:</strong>
+                                                    @if (isset($form->contest_date))
+                                                        {{ $form->contest_date }}
+                                                    @endif
+                                                </span>
+                                            </div>
+                                        @endif
+                                    </div>
 
                                     {{--  <p><span style="color: #6351a2;"><strong>Result Release:&nbsp;</strong>19 April
                                             2023</span>
@@ -150,70 +541,53 @@
                                     {{-- <p><span style="color: #6351a2;"><strong>Venue:</strong>&nbsp;Online Competition</span>
                                     </p> --}}
                                     @if (isset($form->registration_fee_label))
-                                        <p>
-                                            <span style="color: #6351a2;">
-                                                <strong>
-
-                                                    {{ $form->registration_fee_label }} :
-                                                </strong>
-                                                <br>
+                                        <div style="margin: 2rem 0;">
+                                            <h4 style="color: #D84315; font-weight: 700; margin-bottom: 1rem;">
+                                                <i class="fas fa-money-bill-wave" style="color: #FF6B35;"></i>
+                                                {{ $form->registration_fee_label }}
+                                            </h4>
+                                            <ul class="package-list" style="list-style: none; padding-left: 0;">
                                                 @foreach ($form->packages as $item)
-                                                    <li style="color: #6351a2;">{{ $item->package }}</li>
+                                                    <li>{{ $item->package }}</li>
                                                 @endforeach
-                                                <br>
-
-                                                {{-- ค่าสมัครสอบพร้อมติว 1250 บาท --}}
-
-                                            </span>
-                                        </p>
+                                            </ul>
+                                        </div>
                                     @endif
 
 
                                     @if (isset($form->admission_criteria_text_label))
-                                        <p>
-                                            <span style="color: #6351a2;">
-                                                <b>
-
-                                                    {{ $form->admission_criteria_text_label }}
-                                                    {{ $form->form_name }}
-
-                                                </b>
-                                                <br>
-                                                <br>
-
+                                        <div style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, #FFF8F0 0%, #FFE0B2 100%); border-radius: 15px; border-left: 5px solid #FF6B35;">
+                                            <h4 style="color: #D84315; font-weight: 700; margin-bottom: 1rem;">
+                                                <i class="fas fa-info-circle" style="color: #FF6B35;"></i>
+                                                {{ $form->admission_criteria_text_label }}
+                                                {{ $form->form_name }}
+                                            </h4>
+                                            <div style="color: #495057; line-height: 1.8;">
                                                 @if (isset($form->admission_criteria_text))
                                                     {!! nl2br(e($form->admission_criteria_text ?? ' ')) !!}
-                                                @else
                                                 @endif
-                                            </span>
-                                        </p>
+                                            </div>
+                                        </div>
                                     @endif
                                     @if (isset($form->admission_criteria_image_label))
-                                        <p>
-                                            <span style="color: #6351a2;">
-                                                <b>
-
-                                                    {{ $form->admission_criteria_image_label }}
-
-                                                    {{ $form->form_name }}
-
-                                                </b>
-                                                <br>
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <div class="text-center">
-                                                            @if (isset($form->admission_criteria_image))
-                                                                <img src="{{ asset('form_manage/admission_criteria_image/' . $form->admission_criteria_image) }}"
-                                                                    class="custom-image2 my-3" alt="Image 2"
-                                                                    hight="20px">
-                                                            @else
-                                                            @endif
-                                                        </div>
+                                        <div style="margin: 2rem 0;">
+                                            <h4 style="color: #D84315; font-weight: 700; margin-bottom: 1rem;">
+                                                <i class="fas fa-image" style="color: #FF6B35;"></i>
+                                                {{ $form->admission_criteria_image_label }}
+                                                {{ $form->form_name }}
+                                            </h4>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="text-center" style="padding: 1rem; background: #f8f9fa; border-radius: 15px;">
+                                                        @if (isset($form->admission_criteria_image))
+                                                            <img src="{{ asset('form_manage/admission_criteria_image/' . $form->admission_criteria_image) }}"
+                                                                class="custom-image2 my-3" alt="Admission Criteria"
+                                                                style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                                                        @endif
                                                     </div>
                                                 </div>
-
-                                            </span>
-                                        </p>
+                                            </div>
+                                        </div>
                                     @endif
 
                                 </div>
@@ -248,6 +622,12 @@
                                     value="{{ $form->form_route }}">
                                 <input type="hidden" name="referent_code" id="referent_code"
                                     value="{{ request()->referent_code }}">
+
+                                <!-- Student Information Section -->
+                                <div class="section-header">
+                                    <i class="fas fa-user-graduate"></i>
+                                    <h3>ข้อมูลนักเรียน / Student Information</h3>
+                                </div>
 
                                 @if ($isFieldEnabled('student_first_name') || $isFieldEnabled('student_last_name'))
                                     <div class="form-row form-focus">
@@ -445,7 +825,7 @@
                                                         @if ($isFieldRequired('student_grade')) required @endif>
                                                         <option value="">Please Select</option>
                                                         @foreach ($form->grades as $grade)
-                                                            <option value="{{ $grade->grade }}">{{ $grade->grade }}</option>
+                                                            <option value="{{ $grade->id }}">{{ $grade->grade }}</option>
                                                         @endforeach
                                                     </select>
                                                     <label class="form-sub-label" style="min-height:13px"
@@ -475,15 +855,33 @@
                                                     @if ($isFieldRequired('package'))
                                                         <span class="form-required">*</span>
                                                     @endif
+                                                    @if ($form->package_multiselect && $form->package_max_selection)
+                                                        <small class="text-muted">(Max: {{ $form->package_max_selection }} selections)</small>
+                                                    @endif
                                                 </label>
-                                                <select class="form-control" id="package" name="package"
-                                                    aria-label="แพคเกจในการสอบ / Packages"
-                                                    @if ($isFieldRequired('package')) required @endif>
-                                                    <option value="">Please Select</option>
-                                                    @foreach ($form->packages as $package)
-                                                        <option value="{{ $package->id }}">{{ $package->package }}</option>
-                                                    @endforeach
-                                                </select>
+                                                @if ($form->package_multiselect)
+                                                    {{-- Multi-select dropdown with Select2 --}}
+                                                    <select class="form-control select2-package" id="package" name="package[]"
+                                                        aria-label="แพคเกจในการสอบ / Packages"
+                                                        multiple
+                                                        data-max-selection="{{ $form->package_max_selection ?? '' }}"
+                                                        @if ($isFieldRequired('package')) required @endif>
+                                                        @foreach ($form->packages as $package)
+                                                            <option value="{{ $package->id }}">{{ $package->package }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <small class="form-text text-muted">Select multiple packages from the dropdown</small>
+                                                @else
+                                                    {{-- Single select dropdown --}}
+                                                    <select class="form-control" id="package" name="package"
+                                                        aria-label="แพคเกจในการสอบ / Packages"
+                                                        @if ($isFieldRequired('package')) required @endif>
+                                                        <option value="">Please Select</option>
+                                                        @foreach ($form->packages as $package)
+                                                            <option value="{{ $package->id }}">{{ $package->package }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                @endif
                                                 <label class="form-sub-label" style="min-height:13px"
                                                     aria-hidden="false">Packages</label>
                                                 <div class="form-error-message" role="alert"><img
@@ -546,6 +944,12 @@
                                         @endif
                                     </div>
                                 @endif
+
+                                <!-- Parent/Guardian Information Section -->
+                                <div class="section-header">
+                                    <i class="fas fa-users"></i>
+                                    <h3>ข้อมูลผู้ปกครอง / Parent/Guardian Information</h3>
+                                </div>
 
                                 @if ($isFieldEnabled('parent_name') || $isFieldEnabled('parent_phone'))
                                     <div class="form-row form-focus">
@@ -633,6 +1037,12 @@
                                         </div>
                                     </div>
                                 @endif
+
+                                <!-- Document Upload Section -->
+                                <div class="section-header">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <h3>อัพโหลดเอกสาร / Document Upload</h3>
+                                </div>
 
                                 @if ($isFieldEnabled('student_photo'))
                                     <div class="form-row form-focus" id="dropzone-photo">
@@ -758,35 +1168,89 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="card-footer text-center">
+                        <div class="card-footer text-center" style="background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%); padding: 2rem;">
                             <br>
-                            <div class="text-danger">
-                                <h3>
-                                    {!! nl2br($form->text_warning) ?? '' !!}
+                            @if(!empty($form->text_warning))
+                            <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); padding: 1.5rem; border-radius: 15px; border-left: 5px solid #ffc107; margin-bottom: 1.5rem;">
+                                <h3 style="color: #856404; font-weight: 700; margin-bottom: 1rem;">
+                                    <i class="fas fa-exclamation-triangle"></i> คำเตือนสำคัญ / Important Notice
                                 </h3>
+                                <div style="color: #856404; font-size: 1.1rem; line-height: 1.8;">
+                                    {!! nl2br($form->text_warning) ?? '' !!}
+                                </div>
                             </div>
-                            <br>
-                            <div class="text-danger">
-                                {!! nl2br($form->text_footer) ?? '' !!}
+                            @endif
 
+                            @if(!empty($form->text_footer))
+                            <div style="background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%); padding: 1.5rem; border-radius: 15px; border-left: 5px solid #dc3545; margin-bottom: 1.5rem;">
+                                <div style="color: #721c24; font-size: 1rem; line-height: 1.8;">
+                                    {!! nl2br($form->text_footer) ?? '' !!}
+                                </div>
                             </div>
+                            @endif
                             <br>
-                            <div class="form-group form-check">
+                            <div class="form-group form-check" style="background: linear-gradient(135deg, #FFF8F0 0%, #FFE0B2 100%); padding: 1.5rem; border-radius: 15px; border: 2px solid #FF6B35; margin-bottom: 2rem;">
                                 <input type="checkbox" class="form-check-input" id="agreeCheckbox" required data-required-checkbox="true"
-                                    style="float: none; margin-right: 3px;">
-                                <label class="form-check-label" for="agreeCheckbox">
+                                    style="float: none; margin-right: 10px;">
+                                <label class="form-check-label" for="agreeCheckbox" style="font-size: 1.05rem; color: #2C3E50; font-weight: 500; text-align: left; display: inline-block;">
+                                    <i class="fas fa-check-circle" style="color: #FF6B35;"></i>
                                     {!! nl2br($form->text_policy) ?? '' !!}
                                 </label>
                             </div>
 
-                            <button type="submit" class="submit-btn btn btn-lg btn-primary">Submit Application</button>
-                            <button type="reset" class="btn btn-lg btn-primary">Clear Form</button><br><br><br>
+                            <button type="submit" class="submit-btn btn btn-lg btn-primary">
+                                <i class="fas fa-paper-plane"></i> Submit Application
+                            </button>
+                            <button type="reset" class="btn btn-lg btn-primary" style="background: linear-gradient(135deg, #6c757d 0%, #495057 100%);">
+                                <i class="fas fa-redo"></i> Clear Form
+                            </button><br><br><br>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Meta Knowledge Footer -->
+    @if($form->show_footer ?? true)
+    <footer class="meta-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    @php
+                        $footerLogo = $form->footer_logo ?? 'logo_meta.png';
+                    @endphp
+                    <img src="{{ asset('images/' . $footerLogo) }}" alt="Footer Logo" class="footer-logo">
+                    <h4>{{ $form->footer_company_name ?? 'Meta Knowledge' }}</h4>
+                    <p>{{ $form->footer_description_1 ?? 'ศูนย์รวมความรู้และการพัฒนาทักษะสำหรับนักเรียนและผู้ปกครอง' }}</p>
+                    <p>{{ $form->footer_description_2 ?? 'พัฒนาศักยภาพ สร้างอนาคตที่ดีกว่า' }}</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h4><i class="fas fa-info-circle"></i> {{ $form->footer_about_title ?? 'เกี่ยวกับเรา' }}</h4>
+                    <p><i class="fas fa-graduation-cap"></i> {{ $form->footer_feature_1 ?? 'ระบบสอบและแข่งขันออนไลน์' }}</p>
+                    <p><i class="fas fa-book-reader"></i> {{ $form->footer_feature_2 ?? 'หลักสูตรคุณภาพสำหรับทุกระดับชั้น' }}</p>
+                    <p><i class="fas fa-trophy"></i> {{ $form->footer_feature_3 ?? 'พัฒนาทักษะเพื่อความสำเร็จ' }}</p>
+                    <p><i class="fas fa-certificate"></i> {{ $form->footer_feature_4 ?? 'ใบประกาศนียบัตรรับรอง' }}</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h4><i class="fas fa-envelope"></i> {{ $form->footer_contact_title ?? 'ติดต่อเรา' }}</h4>
+                    <p><i class="fas fa-phone"></i> โทร: {{ $form->footer_phone ?? '02-XXX-XXXX' }}</p>
+                    <p><i class="fas fa-envelope"></i> Email: {{ $form->footer_email ?? 'info@metaknowledge.com' }}</p>
+                    <p><i class="fas fa-map-marker-alt"></i> {{ $form->footer_address ?? 'กรุงเทพมหานคร ประเทศไทย' }}</p>
+                    <div class="social-links">
+                        <a href="{{ $form->footer_facebook ?? '#' }}" title="Facebook" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="{{ $form->footer_line ?? '#' }}" title="Line" target="_blank"><i class="fab fa-line"></i></a>
+                        <a href="{{ $form->footer_instagram ?? '#' }}" title="Instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="{{ $form->footer_youtube ?? '#' }}" title="YouTube" target="_blank"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; {{ date('Y') }} {{ $form->footer_copyright ?? 'Meta Knowledge. All Rights Reserved. | Empowering Education, Inspiring Excellence' }}</p>
+            </div>
+        </div>
+    </footer>
+    @endif
     <script>
         const allowedSuffixes = ['.com', '.net', '.co.th', '.ac.th', '.or.th', '.go.th', '.edu', '.org'];
         const emailInput = document.getElementById('email');
@@ -1473,6 +1937,248 @@
                     position: 'absolute'
                 });
             }
+        });
+    </script>
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Package-Grade linking data
+        const packageGradeLinks = @json($form->packages->mapWithKeys(function($package) {
+            return [$package->id => $package->linked_grades];
+        }));
+
+        const gradeNameMap = @json($form->grades->mapWithKeys(function($grade) {
+            return [$grade->id => $grade->grade];
+        }));
+
+        // Validate package selection against grade
+        function validatePackageGradeCompatibility(selectedPackageIds, selectedGradeId) {
+            if (!selectedGradeId) {
+                return { valid: true };
+            }
+
+            // Convert to integer for comparison
+            selectedGradeId = parseInt(selectedGradeId);
+
+            const incompatiblePackages = [];
+
+            selectedPackageIds.forEach(packageId => {
+                // Convert packageId to integer for consistent comparison
+                packageId = parseInt(packageId);
+                let linkedGrades = packageGradeLinks[packageId];
+
+                // Convert linked grades to integers if they are strings
+                if (linkedGrades && linkedGrades.length > 0) {
+                    linkedGrades = linkedGrades.map(g => parseInt(g));
+                }
+
+                // Debug log
+                console.log('Package ID:', packageId, 'Linked Grades:', linkedGrades, 'Selected Grade ID:', selectedGradeId);
+
+                // If linkedGrades is null or empty, package is available for all grades
+                if (linkedGrades && linkedGrades.length > 0) {
+                    // Check if selected grade is in the linked grades
+                    if (!linkedGrades.includes(selectedGradeId)) {
+                        // Find package name
+                        const packageOption = $(`#package option[value="${packageId}"]`);
+                        const packageName = packageOption.text();
+                        const gradeName = gradeNameMap[selectedGradeId] || selectedGradeId;
+                        incompatiblePackages.push({
+                            id: packageId,
+                            name: packageName,
+                            gradeName: gradeName,
+                            allowedGrades: linkedGrades
+                        });
+                    }
+                }
+            });
+
+            if (incompatiblePackages.length > 0) {
+                return {
+                    valid: false,
+                    incompatiblePackages: incompatiblePackages
+                };
+            }
+
+            return { valid: true };
+        }
+
+        // Initialize Select2 for multi-select package
+        $(document).ready(function() {
+            const gradeSelect = $('#grade');
+            const packageSelect = $('#package');
+            const isMultiSelect = packageSelect.hasClass('select2-package');
+
+            if (isMultiSelect) {
+                const maxSelection = packageSelect.data('max-selection');
+
+                const select2Options = {
+                    placeholder: 'Select packages',
+                    allowClear: true,
+                    closeOnSelect: false,
+                    width: '100%'
+                };
+
+                // Add maximumSelectionLength if max selection is set
+                if (maxSelection && maxSelection !== '') {
+                    select2Options.maximumSelectionLength = parseInt(maxSelection);
+                    select2Options.language = {
+                        maximumSelected: function (e) {
+                            return 'You can only select ' + e.maximum + ' package(s) / คุณสามารถเลือกได้สูงสุด ' + e.maximum + ' แพคเกจเท่านั้น';
+                        }
+                    };
+                }
+
+                packageSelect.select2(select2Options);
+
+                // Handle validation for required field
+                if (packageSelect.prop('required')) {
+                    packageSelect.on('change', function() {
+                        if ($(this).val() && $(this).val().length > 0) {
+                            $(this).removeClass('is-invalid');
+                        }
+                    });
+                }
+            }
+
+            // Validate when package changes
+            packageSelect.on('change', function() {
+                const selectedGrade = gradeSelect.val();
+                let selectedPackages = [];
+
+                if (isMultiSelect) {
+                    selectedPackages = $(this).val() || [];
+                } else {
+                    const singleValue = $(this).val();
+                    if (singleValue) {
+                        selectedPackages = [parseInt(singleValue)];
+                    }
+                }
+
+                if (selectedPackages.length > 0 && selectedGrade) {
+                    const validation = validatePackageGradeCompatibility(selectedPackages, selectedGrade);
+
+                    if (!validation.valid) {
+                        const packageNames = validation.incompatiblePackages.map(p => p.name).join(', ');
+                        const gradeName = validation.incompatiblePackages[0].gradeName;
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: '<span style="color: #dc3545;"><i class="fa fa-exclamation-triangle"></i> ไม่สามารถเลือกแพคเกจนี้ได้</span>',
+                            html: `
+                                <div style="text-align: left; padding: 15px;">
+                                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin-bottom: 15px;">
+                                        <p style="margin: 0; font-size: 15px; color: #856404;">
+                                            <strong><i class="fa fa-info-circle"></i> แพคเกจที่ไม่สามารถเลือกได้:</strong>
+                                        </p>
+                                        <p style="margin: 10px 0 0 0; font-size: 16px; color: #333;">
+                                            <strong style="color: #dc3545;">${packageNames}</strong>
+                                        </p>
+                                    </div>
+
+                                    <div style="background: #f8d7da; padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545; margin-bottom: 15px;">
+                                        <p style="margin: 0; font-size: 15px; color: #721c24;">
+                                            <strong><i class="fa fa-times-circle"></i> เหตุผล:</strong>
+                                        </p>
+                                        <p style="margin: 10px 0 0 0; font-size: 15px; color: #333;">
+                                            แพคเกจนี้ไม่เหมาะสำหรับระดับชั้น <strong style="color: #6351a2;">${gradeName}</strong>
+                                        </p>
+                                    </div>
+
+                                    <div style="background: #d1ecf1; padding: 12px; border-radius: 6px; border-left: 4px solid #17a2b8;">
+                                        <p style="margin: 0; font-size: 14px; color: #0c5460;">
+                                            <i class="fa fa-lightbulb"></i> <strong>คำแนะนำ:</strong> กรุณาเลือกแพคเกจอื่น หรือเปลี่ยนระดับชั้นที่เลือก
+                                        </p>
+                                    </div>
+                                </div>
+                            `,
+                            confirmButtonText: '<i class="fa fa-check"></i> รับทราบ',
+                            confirmButtonColor: '#6351a2',
+                            width: '550px'
+                        }).then(() => {
+                            // Remove incompatible packages from selection
+                            if (isMultiSelect) {
+                                const validPackages = selectedPackages.filter(id =>
+                                    !validation.incompatiblePackages.some(p => p.id == id)
+                                );
+                                packageSelect.val(validPackages).trigger('change.select2');
+                            } else {
+                                packageSelect.val('').trigger('change');
+                            }
+                        });
+                    }
+                }
+            });
+
+            // Validate when grade changes
+            gradeSelect.on('change', function() {
+                const selectedGrade = $(this).val();
+                let selectedPackages = [];
+
+                if (isMultiSelect) {
+                    selectedPackages = packageSelect.val() || [];
+                } else {
+                    const singleValue = packageSelect.val();
+                    if (singleValue) {
+                        selectedPackages = [parseInt(singleValue)];
+                    }
+                }
+
+                if (selectedPackages.length > 0 && selectedGrade) {
+                    const validation = validatePackageGradeCompatibility(selectedPackages, selectedGrade);
+
+                    if (!validation.valid) {
+                        const packageNames = validation.incompatiblePackages.map(p => p.name).join(', ');
+                        const gradeName = validation.incompatiblePackages[0].gradeName;
+
+                        Swal.fire({
+                            icon: 'warning',
+                            title: '<span style="color: #ff9800;"><i class="fa fa-exclamation-circle"></i> แจ้งเตือนการเปลี่ยนระดับชั้น</span>',
+                            html: `
+                                <div style="text-align: left; padding: 15px;">
+                                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin-bottom: 15px;">
+                                        <p style="margin: 0; font-size: 15px; color: #856404;">
+                                            <strong><i class="fa fa-graduation-cap"></i> ระดับชั้นที่เลือก:</strong>
+                                        </p>
+                                        <p style="margin: 10px 0 0 0; font-size: 16px; color: #333;">
+                                            <strong style="color: #6351a2;">${gradeName}</strong>
+                                        </p>
+                                    </div>
+
+                                    <div style="background: #ffe5e5; padding: 15px; border-radius: 8px; border-left: 4px solid #ff9800; margin-bottom: 15px;">
+                                        <p style="margin: 0; font-size: 15px; color: #8b4513;">
+                                            <strong><i class="fa fa-times-circle"></i> แพคเกจที่ไม่รองรับระดับชั้นนี้:</strong>
+                                        </p>
+                                        <p style="margin: 10px 0 0 0; font-size: 16px; color: #333;">
+                                            <strong style="color: #dc3545;">${packageNames}</strong>
+                                        </p>
+                                    </div>
+
+                                    <div style="background: #d1ecf1; padding: 12px; border-radius: 6px; border-left: 4px solid #17a2b8;">
+                                        <p style="margin: 0; font-size: 14px; color: #0c5460;">
+                                            <i class="fa fa-info-circle"></i> <strong>การดำเนินการ:</strong> แพคเกจที่ไม่รองรับจะถูกลบออกจากการเลือกโดยอัตโนมัติ
+                                        </p>
+                                    </div>
+                                </div>
+                            `,
+                            confirmButtonText: '<i class="fa fa-check"></i> เข้าใจแล้ว',
+                            confirmButtonColor: '#ff9800',
+                            width: '550px'
+                        }).then(() => {
+                            // Remove incompatible packages from selection
+                            if (isMultiSelect) {
+                                const validPackages = selectedPackages.filter(id =>
+                                    !validation.incompatiblePackages.some(p => p.id == id)
+                                );
+                                packageSelect.val(validPackages).trigger('change.select2');
+                            } else {
+                                packageSelect.val('').trigger('change');
+                            }
+                        });
+                    }
+                }
+            });
         });
     </script>
     <script type="text/javascript">
