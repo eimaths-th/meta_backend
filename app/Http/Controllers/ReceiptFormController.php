@@ -2069,20 +2069,31 @@ class ReceiptFormController extends Controller
     public function deleteImg($id, $id2)
     {
         $dataimg = ReceiptForm::find($id2);
-        $img = $dataimg->file_att;
-        $img = explode("|", $img);
+        $receipt = Receipt::where('recform_id', $id2)->first();
 
-        if (($key = array_search($id, $img)) !== false) {
-            unset($img[$key]);
+        $img = $dataimg->file_att ? explode("|", $dataimg->file_att) : [];
+        $receiptimg = $receipt->file_att ?? '';
+
+        $baseUrl = url('/');
+        $receiptimg = preg_split('/(?=' . preg_quote($baseUrl, '/') . ')/', $receiptimg, -1, PREG_SPLIT_NO_EMPTY);
+
+        // ลบรูปจาก ReceiptForm
+        $idFile = basename($id); // ชื่อไฟล์ เช่น abc.png
+
+        foreach ($img as $key => $value) {
+            if (str_contains($value, $idFile)) unset($img[$key]);
         }
-        $dataNew = "";
-        foreach ($img as $fileb) {
-            $dataNew .= $fileb . "|";
+
+        foreach ($receiptimg as $key => $value) {
+            if (str_contains($value, $idFile)) unset($receiptimg[$key]);
         }
-        $dataNew = rtrim($dataNew, "|");
 
+        // อัปเดตกลับ DB
+        $dataNew = implode("|", $img);
+        $receiptNew = implode("|", $receiptimg);
 
-        ReceiptForm::find($id2)->update(['file_att' => $dataNew]);
+        $dataimg->update(['file_att' => $dataNew]);
+        $receipt->update(['file_att' => $receiptNew]);
 
 
         $link = (url('/') . '/receipts_form/' . $id);
