@@ -1969,14 +1969,15 @@ class ReceiptFormController extends Controller
     public function update(Request $request)
     {
         //
-
+        // dd($request->all());
 
         $this->check_permission();
 
         $img = $request->get('img');
         $stu = "";
-        if ($img != Null || $img != "") {
+        $urlbr = "";
 
+        if ($img != Null || $img != "") {
 
             foreach ($img as $fileb) {
                 //echo $filea;
@@ -1984,6 +1985,14 @@ class ReceiptFormController extends Controller
                 $oldfile = FileUpload::where('oldname', $fileb)->get();
                 $stu .= $oldfile[0]->filename . "|";
                 File::move(public_path() . '/form_images/' . $oldfile[0]->filename, public_path() . '/receipt_form_images/' . $oldfile[0]->filename);
+
+                $urlb = url('/') . '/receipt_form_images/' . $oldfile[0]->filename;
+
+                //watermark
+                $fileex = explode("/", $urlb);
+                $this->textWatermark(end($fileex), 'Date Register : ' . $request->get('submission_date'));
+                $urlbr .= str_replace('receipt_form_images', 'receipt_form_watermark_images', $urlb) . "|";
+
                 FileUpload::where('filename', $oldfile[0]->filename)->delete();
             }
         }
@@ -1993,6 +2002,16 @@ class ReceiptFormController extends Controller
             $stu = $dataimg->file_att . "|" . $stu;
         }
         $stu = rtrim($stu, "|");
+
+
+        $datare = Receipt::where('recform_id', $request->get('fid'))->first();
+        if ($datare->file_att != Null && $datare->file_att != "") {
+            $urlbr = $datare->file_att .  $urlbr;
+        }
+        $urlbr = rtrim($urlbr, "|");
+
+        // dd($datare->file_att,$urlbr);
+        $datare->update(['file_att' => $urlbr]);
         ReceiptForm::find($request->get('fid'))->update(['file_att' => $stu]);
 
         $validator =  Validator::make($request->all(), [

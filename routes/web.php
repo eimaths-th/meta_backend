@@ -237,6 +237,7 @@ Route::delete('/receipts_form/destroy_all', [ReceiptFormController::class, 'dest
 Route::delete('/receipts_form/export', [ReceiptFormController::class, 'exportForm'])->name('receipts_form.export');
 Route::post('/receipts_form/store', [ReceiptFormController::class, 'create'])->name('receipts_form.store');
 Route::post('/receipts_form/update', [ReceiptFormController::class, 'update'])->name('receipts_form.update');
+Route::put('/receipt_form/delete_img/{filename}/{id}', [ReceiptFormController::class, 'deleteImg'])->name('receipt_form.delete_img');
 Route::post('/receipts_form/resend-mail/{id}', [ReceiptFormController::class, 'reSendMail'])->name('receipts_form.resend_mail');
 
 Route::group(array('domain' => 'form.infinitebrain.co.th'), function () {
