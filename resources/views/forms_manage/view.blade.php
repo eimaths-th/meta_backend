@@ -418,7 +418,7 @@
                     <div align="center">
                         @if (isset($form->brand))
                             <img class="card-img" src="{{ asset('form_manage/brand/' . $form->brand) }}" alt="..."
-                                height="360">
+                                height="auto">
                         @else
                         @endif
                     </div>
