@@ -1041,13 +1041,21 @@
             $('#SubmitEditForm').click(function(e) {
                 //if (!confirm("Are you sure?")) return;
                 e.preventDefault();
-                // document.getElementById("loadingOverlay").style.display = "flex";
-                // $("#modalLoadingOverlay").show();
+                
+                // ป้องกันการกดซ้ำ
+                if ($(this).prop('disabled')) {
+                    return false;
+                }
+                
+                // แสดง loading และปิดปุ่ม
+                $("#modalLoadingOverlay").show();
+                $('#SubmitEditForm').prop('disabled', true);
+                
                 $('.alert-danger').html('');
                 $('.alert-danger').hide();
                 $('.alert-success').html('');
                 $('.alert-success').hide();
-                //alert($('#AddFile').val());
+                
                 var values = $("input[name='imgFiles[]']")
                     .map(function() {
                         return $(this).val();
@@ -1060,14 +1068,10 @@
                     alert("Please wait 2-3 second to send the email. !`");
                 }
 
-                //alert(values);
-                //exit();
-
                 $.ajax({
                     url: "{{ route('receipts_form.store') }}",
                     method: 'post',
                     data: {
-
                         img: values,
                         rec_id: $('#AddRecId').val(),
                         submission_date: $('#AddSubmissiondate').val(),
@@ -1099,6 +1103,7 @@
                         console.log(result);
                         if (result.errors) {
                             $("#modalLoadingOverlay").hide();
+                            $('#SubmitEditForm').prop('disabled', false);
                             $('.alert-danger').html('');
                             $.each(result.errors, function(key, value) {
                                 $('.alert-danger').show();
@@ -1108,7 +1113,7 @@
 
                         } else {
                             $("#modalLoadingOverlay").hide();
-                            // document.getElementById("loadingOverlay").style.display = "none";
+                            $('#SubmitEditForm').prop('disabled', false);
                             $('.alert-danger').hide();
                             $('.alert-success').show();
                             $('.alert-success').append('<strong><li>' + result.success +
@@ -1128,6 +1133,14 @@
                             //}, 10000);
 
                         }
+                    },
+                    error: function(xhr, status, error) {
+                        // จัดการ error และเปิดปุ่มกลับมาใช้งาน
+                        $("#modalLoadingOverlay").hide();
+                        $('#SubmitEditForm').prop('disabled', false);
+                        $('.alert-danger').show();
+                        $('.alert-danger').html('<strong><li>เกิดข้อผิดพลาด: ' + error + '</li></strong>');
+                        console.error('AJAX Error:', error);
                     }
                 });
             });

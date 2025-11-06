@@ -2012,13 +2012,15 @@ class ReceiptFormController extends Controller
 
 
         $datare = Receipt::where('recform_id', $request->get('fid'))->first();
-        if ($datare->file_att != Null && $datare->file_att != "") {
+        if ($datare && $datare->file_att != Null && $datare->file_att != "") {
             $urlbr = $datare->file_att .  $urlbr;
         }
         $urlbr = rtrim($urlbr, "|");
 
         // dd($datare->file_att,$urlbr);
-        $datare->update(['file_att' => $urlbr]);
+        if ($datare) {
+            $datare->update(['file_att' => $urlbr]);
+        }
         ReceiptForm::find($request->get('fid'))->update(['file_att' => $stu]);
 
         $validator =  Validator::make($request->all(), [
