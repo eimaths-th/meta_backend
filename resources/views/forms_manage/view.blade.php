@@ -302,17 +302,329 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+
+            .container {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .col-md-9 {
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+
+            /* Header adjustments */
+            .form-header-section {
+                padding: 1.5rem 0;
+                margin-bottom: 1rem;
+                border-radius: 0 0 30px 30px;
+            }
+
             .form_header {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
+                line-height: 1.3;
+                padding: 0 10px;
+            }
+
+            .form_sub_header {
+                font-size: 1rem;
+                padding: 0 10px;
+            }
+
+            /* Card adjustments */
+            .card.bg-light2 {
+                border-radius: 15px;
+                margin-bottom: 1rem;
             }
 
             .card-body {
-                padding: 1.5rem;
+                padding: 1rem;
             }
 
-            .submit-btn {
-                padding: 0.875rem 2rem;
+            .card-footer {
+                padding: 1rem !important;
+            }
+
+            /* Info badges - stack vertically on mobile */
+            .info-badge {
+                display: flex;
+                width: 100%;
+                margin: 0.5rem 0;
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .info-badge i {
                 font-size: 1rem;
+            }
+
+            /* Section headers */
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin: 1.5rem 0 1rem 0;
+            }
+
+            .section-header i {
+                font-size: 1.3rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .section-header h3 {
+                font-size: 1.2rem;
+            }
+
+            /* Form controls */
+            .form-control {
+                font-size: 14px;
+                padding: 0.6rem 0.8rem;
+            }
+
+            .form-label {
+                font-size: 14px;
+            }
+
+            .form-sub-label {
+                font-size: 12px;
+            }
+
+            /* Form rows - stack vertically */
+            .form-row {
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .form-row > [class*="col-"] {
+                padding-left: 0;
+                padding-right: 0;
+                margin-bottom: 1rem;
+            }
+
+            .col-md-6, .col-md-12 {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            /* Buttons */
+            .submit-btn {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.95rem;
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .btn-lg {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.95rem;
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            /* Package list */
+            .package-list {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .package-list li {
+                font-size: 0.9rem;
+            }
+
+            /* Dropzone */
+            .dropzone {
+                font-size: 1.2em !important;
+                padding: 1rem;
+            }
+
+            .dropzone .dz-message {
+                font-size: 0.9rem;
+            }
+
+            /* Footer */
+            .meta-footer {
+                padding: 2rem 0 1rem 0;
+                margin-top: 2rem;
+                border-radius: 30px 30px 0 0;
+            }
+
+            .meta-footer .col-md-4 {
+                margin-bottom: 1.5rem;
+                text-align: center;
+            }
+
+            .meta-footer h4 {
+                font-size: 1.1rem;
+            }
+
+            .meta-footer p {
+                font-size: 0.9rem;
+            }
+
+            .meta-footer .footer-logo {
+                max-width: 150px;
+            }
+
+            /* Checkbox and policy text */
+            .form-check {
+                padding: 1rem !important;
+            }
+
+            .form-check-label {
+                font-size: 0.9rem !important;
+                line-height: 1.5;
+            }
+
+            /* Warning and footer text boxes */
+            div[style*="background: linear-gradient(135deg, #fff3cd"] {
+                padding: 1rem !important;
+                font-size: 0.9rem !important;
+            }
+
+            div[style*="background: linear-gradient(135deg, #f8d7da"] {
+                padding: 1rem !important;
+                font-size: 0.9rem !important;
+            }
+
+            /* Admission criteria */
+            .custom-image2 {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+
+            /* Center content divs */
+            .col-md-10.div_center,
+            .col-md-11.div_center {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            /* Image payment */
+            div[align="center"] img {
+                max-width: 100%;
+                height: auto !important;
+            }
+
+            /* Error messages */
+            .error_div {
+                font-size: 0.9rem;
+                padding: 0.75rem;
+            }
+
+            /* Select2 adjustments */
+            .select2-container {
+                font-size: 14px;
+            }
+
+            .select2-container--default .select2-selection--multiple {
+                min-height: 40px;
+            }
+        }
+
+        /* Extra small devices (phones in portrait, less than 576px) */
+        @media (max-width: 575px) {
+            .form_header {
+                font-size: 1.3rem;
+            }
+
+            .form_sub_header {
+                font-size: 0.9rem;
+            }
+
+            .section-header h3 {
+                font-size: 1.1rem;
+            }
+
+            .info-badge {
+                font-size: 0.85rem;
+                padding: 0.5rem 0.8rem;
+            }
+
+            .card-body {
+                padding: 0.75rem;
+            }
+
+            .submit-btn, .btn-lg {
+                font-size: 0.9rem;
+                padding: 0.65rem 1.2rem;
+            }
+        }
+
+        /* Landscape orientation adjustments */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .form-header-section {
+                padding: 1rem 0;
+            }
+
+            .form_header {
+                font-size: 1.4rem;
+            }
+
+            .section-header {
+                margin: 1rem 0 0.75rem 0;
+            }
+        }
+
+        /* SweetAlert2 Mobile Responsive */
+        @media (max-width: 768px) {
+            .swal2-popup {
+                width: 90% !important;
+                max-width: 400px !important;
+                font-size: 0.9rem !important;
+                padding: 1rem !important;
+            }
+
+            .swal2-title {
+                font-size: 1.2rem !important;
+                padding: 0.5rem !important;
+            }
+
+            .swal2-html-container {
+                font-size: 0.85rem !important;
+                padding: 0.5rem !important;
+            }
+
+            .swal2-html-container div {
+                padding: 0.75rem !important;
+                margin-bottom: 0.75rem !important;
+            }
+
+            .swal2-html-container p {
+                font-size: 0.85rem !important;
+                margin: 0.5rem 0 !important;
+            }
+
+            .swal2-confirm {
+                font-size: 0.9rem !important;
+                padding: 0.6rem 1.5rem !important;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .swal2-popup {
+                width: 95% !important;
+                padding: 0.75rem !important;
+            }
+
+            .swal2-title {
+                font-size: 1.1rem !important;
+            }
+
+            .swal2-html-container {
+                font-size: 0.8rem !important;
+            }
+
+            .swal2-html-container p {
+                font-size: 0.8rem !important;
+            }
+
+            .swal2-confirm {
+                font-size: 0.85rem !important;
+                padding: 0.5rem 1.2rem !important;
             }
         }
 
@@ -1092,7 +1404,7 @@
                                     <div align="center" data-field-related="image_payment">
                                         @if (isset($form->image_payment))
                                             <img src="{{ asset('form_manage/payment/' . $form->image_payment) }}"
-                                                alt="..." height="500">
+                                                alt="..." height="500" width="auto">
                                         @endif
                                     </div>
                                     <br>
@@ -2095,7 +2407,7 @@
                             `,
                             confirmButtonText: '<i class="fa fa-check"></i> รับทราบ',
                             confirmButtonColor: '#6351a2',
-                            width: '550px'
+                            width: window.innerWidth < 768 ? '90%' : '550px'
                         }).then(() => {
                             // Remove incompatible packages from selection
                             if (isMultiSelect) {
@@ -2164,7 +2476,7 @@
                             `,
                             confirmButtonText: '<i class="fa fa-check"></i> เข้าใจแล้ว',
                             confirmButtonColor: '#ff9800',
-                            width: '550px'
+                            width: window.innerWidth < 768 ? '90%' : '550px'
                         }).then(() => {
                             // Remove incompatible packages from selection
                             if (isMultiSelect) {

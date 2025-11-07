@@ -3,7 +3,10 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -94,15 +97,77 @@
             }
         }
 
+        /* Mobile Responsive Styles */
         @media (max-width: 767px) {
+            body {
+                font-size: 14px;
+                overflow-x: hidden;
+            }
+
             .custom-image {
                 width: 100%;
                 height: auto;
             }
 
             .custom-image2 {
-                width: 80%;
+                width: 90%;
                 height: auto;
+            }
+
+            .container {
+                max-width: 100%;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            /* Prevent horizontal scroll */
+            html, body {
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+
+            /* Touch-friendly elements */
+            button, a, input, select, textarea {
+                -webkit-tap-highlight-color: rgba(255, 107, 53, 0.2);
+            }
+
+            /* Improve touch targets */
+            button, .btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            input, select, textarea {
+                min-height: 44px;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 575px) {
+            body {
+                font-size: 13px;
+            }
+
+            .custom-image2 {
+                width: 100%;
+            }
+
+            .container {
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+        /* Prevent zoom on input focus for iOS */
+        @media screen and (max-width: 768px) {
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            input[type="number"],
+            input[type="date"],
+            select,
+            textarea {
+                font-size: 16px !important;
             }
         }
     </style>
