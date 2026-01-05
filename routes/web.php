@@ -62,14 +62,16 @@ Route::group(['middleware' => 'check.opening.date.time'], function () {
     // Dynamic slug-based route for all forms
     Route::get('/form/{slug}', [ReceiptFormController::class, 'showFormBySlug'])->name('form.show');
     // Route::get('/gelosea', [ReceiptFormController::class, 'gelosea'])->name('gelosea');
-    Route::get('/spelling-bee-islo', [ReceiptFormController::class, 'spelling_bee_islo'])->name('spelling-bee-islo');
-    Route::get('/stemco_science', [ReceiptFormController::class, 'stemco_science'])->name('stemco_science');
-    Route::get('/advance_english_grammar', [ReceiptFormController::class, 'advance_english_grammar'])->name('advance_english_grammar');
-    Route::get('/isocsea-imocsea-national-round-2025', [ReceiptFormController::class, 'isocsea_imocsea_national_round_2025'])->name('isocsea-imocsea-national-round-2025');
-    Route::get('/isocsea-imocsea-national-round', [ReceiptFormController::class, 'isocsea_imocsea_national_round'])->name('isocsea-imocsea-national-round');
 
-    // Testing route
-    Route::get('/testing-form-manage', [FormManageController::class, 'testing_form_manage'])->name('testing-form-manage');
+
+    // Route::get('/spelling-bee-islo', [ReceiptFormController::class, 'spelling_bee_islo'])->name('spelling-bee-islo');
+    // Route::get('/stemco_science', [ReceiptFormController::class, 'stemco_science'])->name('stemco_science');
+    // Route::get('/advance_english_grammar', [ReceiptFormController::class, 'advance_english_grammar'])->name('advance_english_grammar');
+    // Route::get('/isocsea-imocsea-national-round-2025', [ReceiptFormController::class, 'isocsea_imocsea_national_round_2025'])->name('isocsea-imocsea-national-round-2025');
+    // Route::get('/isocsea-imocsea-national-round', [ReceiptFormController::class, 'isocsea_imocsea_national_round'])->name('isocsea-imocsea-national-round');
+
+    // // Testing route
+    // Route::get('/testing-form-manage', [FormManageController::class, 'testing_form_manage'])->name('testing-form-manage');
 });
 
 Route::group(['middleware' => ['auth', 'checkUserId']], function () {
@@ -208,7 +210,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/edit-option-package', [FormManageController::class, 'editOptionPackage'])->name('edit-option-package');
     Route::post('/delete-option-package', [FormManageController::class, 'deleteOptionPackage'])->name('delete-option-package');
     Route::post('/delete-all-packages', [FormManageController::class, 'deleteAllPackages'])->name('delete-all-packages');
-    
+
     // Package-Grade linking routes
     Route::post('/link-package-grades', [FormManageController::class, 'linkPackageGrades'])->name('link-package-grades');
     Route::get('/get-package-linked-grades', [FormManageController::class, 'getPackageLinkedGrades'])->name('get-package-linked-grades');

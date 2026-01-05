@@ -284,10 +284,13 @@ class Receipt_RunningNumber extends Model
         $number = $running_number->number;
         $number = str_pad($number, 3, '0', STR_PAD_LEFT);
 
+        // ใช้ปีจาก submission_date แทนปีปัจจุบัน เพื่อให้ receipt number สอดคล้องกับวันที่ลงทะเบียน
+        $yearShort = substr($year, -2);
+
         if (strlen($mergeArrayTYPE_PREFIX[$type]) > 1) {
-            return $mergeArrayTYPE_PREFIX[$type] . '' . date('y') . '' . $month . '' . $number;
+            return $mergeArrayTYPE_PREFIX[$type] . '' . $yearShort . '' . $month . '' . $number;
         }
 
-        return '0' . $mergeArrayTYPE_PREFIX[$type] . '' . date('y') . '' . $month . '' . $number;
+        return '0' . $mergeArrayTYPE_PREFIX[$type] . '' . $yearShort . '' . $month . '' . $number;
     }
 }
