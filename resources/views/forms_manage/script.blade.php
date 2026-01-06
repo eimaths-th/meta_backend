@@ -339,6 +339,16 @@
                     return;
                 }
 
+                // Skip fields with data-no-validation attribute
+                if ($field.data('no-validation') === true || $field.attr('data-no-validation') === 'true') {
+                    return;
+                }
+
+                // Skip fields inside form builder sections (these are for preview/template, not actual form data)
+                if ($field.closest('.form-html').length || $field.closest('#options_package').length) {
+                    return;
+                }
+
                 const ok = validateField($field);
                 if (!ok && !firstInvalid) firstInvalid = this;
             });

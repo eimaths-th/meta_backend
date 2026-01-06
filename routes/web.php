@@ -211,6 +211,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/delete-option-package', [FormManageController::class, 'deleteOptionPackage'])->name('delete-option-package');
     Route::post('/delete-all-packages', [FormManageController::class, 'deleteAllPackages'])->name('delete-all-packages');
 
+    // Exam Mode API Routes
+    Route::get('/get-packages-exam-mode', [FormManageController::class, 'getPackagesExamMode'])->name('get-packages-exam-mode');
+    Route::post('/update-package-exam-mode', [FormManageController::class, 'updatePackageExamMode'])->name('update-package-exam-mode');
+
     // Package-Grade linking routes
     Route::post('/link-package-grades', [FormManageController::class, 'linkPackageGrades'])->name('link-package-grades');
     Route::get('/get-package-linked-grades', [FormManageController::class, 'getPackageLinkedGrades'])->name('get-package-linked-grades');

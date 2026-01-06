@@ -7,7 +7,9 @@
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
         /* Modern Educational Theme Styles - Orange Palette */
         :root {
@@ -399,13 +401,14 @@
                 margin-right: 0;
             }
 
-            .form-row > [class*="col-"] {
+            .form-row>[class*="col-"] {
                 padding-left: 0;
                 padding-right: 0;
                 margin-bottom: 1rem;
             }
 
-            .col-md-6, .col-md-12 {
+            .col-md-6,
+            .col-md-12 {
                 width: 100%;
                 max-width: 100%;
             }
@@ -548,7 +551,8 @@
                 padding: 0.75rem;
             }
 
-            .submit-btn, .btn-lg {
+            .submit-btn,
+            .btn-lg {
                 font-size: 0.9rem;
                 padding: 0.65rem 1.2rem;
             }
@@ -634,6 +638,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -660,25 +665,48 @@
         }
 
         /* Enhanced Error Styling */
-        input.error, select.error, textarea.error {
+        input.error,
+        select.error,
+        textarea.error {
             border: 2px solid #ff6b6b !important;
             background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%) !important;
             animation: shakeError 0.5s ease-in-out;
         }
 
-        input.error:focus, select.error:focus, textarea.error:focus {
+        input.error:focus,
+        select.error:focus,
+        textarea.error:focus {
             border-color: #ff6b6b !important;
             box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25) !important;
         }
 
         @keyframes shakeError {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
         }
 
         /* Success State */
-        input.valid:not(:focus), select.valid:not(:focus), textarea.valid:not(:focus) {
+        input.valid:not(:focus),
+        select.valid:not(:focus),
+        textarea.valid:not(:focus) {
             border: 2px solid #51CF66 !important;
             background: linear-gradient(135deg, #f0fff4 0%, #ffffff 100%) !important;
         }
@@ -734,7 +762,8 @@
                         @else
                         @endif
                     </div>
-                    <form id="infinite" method="POST" action="{{ route('form.storeFormManage') }}" onsubmit="return check_input();">
+                    <form id="infinite" method="POST" action="{{ route('form.storeFormManage') }}"
+                        onsubmit="return check_input();">
                         @csrf
                         <div class="card-body">
                             <br>
@@ -765,7 +794,9 @@
                                     </div>
                                 @endif
                                 @php
-                                    $fieldSettingsData = is_array($form->field_settings ?? null) ? $form->field_settings : [];
+                                    $fieldSettingsData = is_array($form->field_settings ?? null)
+                                        ? $form->field_settings
+                                        : [];
                                     $fieldConfig = config('form_fields', []);
                                     $normalizeBoolean = function ($value, $default) {
                                         if ($value === true || $value === false) {
@@ -781,14 +812,22 @@
                                             return (bool) $default;
                                         }
                                         if (is_string($value)) {
-                                            $filtered = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                                            $filtered = filter_var(
+                                                $value,
+                                                FILTER_VALIDATE_BOOLEAN,
+                                                FILTER_NULL_ON_FAILURE,
+                                            );
                                             if ($filtered !== null) {
                                                 return $filtered;
                                             }
                                         }
                                         return (bool) ($value ?? $default);
                                     };
-                                    $resolveSetting = function ($key, $attribute, $fallback) use ($fieldSettingsData, $fieldConfig, $normalizeBoolean) {
+                                    $resolveSetting = function ($key, $attribute, $fallback) use (
+                                        $fieldSettingsData,
+                                        $fieldConfig,
+                                        $normalizeBoolean,
+                                    ) {
                                         $settings = $fieldSettingsData[$key] ?? null;
                                         if (is_array($settings) && array_key_exists($attribute, $settings)) {
                                             return $normalizeBoolean($settings[$attribute], $fallback);
@@ -796,13 +835,17 @@
                                         if (is_object($settings) && isset($settings->{$attribute})) {
                                             return $normalizeBoolean($settings->{$attribute}, $fallback);
                                         }
-                                        return $normalizeBoolean(data_get($fieldConfig, "$key.default_$attribute", $fallback), $fallback);
+                                        return $normalizeBoolean(
+                                            data_get($fieldConfig, "$key.default_$attribute", $fallback),
+                                            $fallback,
+                                        );
                                     };
                                     $isFieldEnabled = function ($key) use ($resolveSetting) {
                                         return $resolveSetting($key, 'enabled', true);
                                     };
                                     $isFieldRequired = function ($key) use ($resolveSetting) {
-                                        return $resolveSetting($key, 'required', false) && $resolveSetting($key, 'enabled', true);
+                                        return $resolveSetting($key, 'required', false) &&
+                                            $resolveSetting($key, 'enabled', true);
                                     };
                                 @endphp
                                 @if (session('error'))
@@ -813,7 +856,8 @@
                                 <div class="form-html" data-component="text" tabindex="0">
                                     <div style="text-align: center; margin-bottom: 2rem;">
                                         @if (isset($form->head_title))
-                                            <h3 style="color: #D84315; font-weight: 700; font-size: 1.8rem; margin-bottom: 1.5rem;">
+                                            <h3
+                                                style="color: #D84315; font-weight: 700; font-size: 1.8rem; margin-bottom: 1.5rem;">
                                                 <i class="fas fa-clipboard-list" style="color: #FF6B35;"></i>
                                                 {{ $form->head_title }}
                                             </h3>
@@ -868,7 +912,8 @@
 
 
                                     @if (isset($form->admission_criteria_text_label))
-                                        <div style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, #FFF8F0 0%, #FFE0B2 100%); border-radius: 15px; border-left: 5px solid #FF6B35;">
+                                        <div
+                                            style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, #FFF8F0 0%, #FFE0B2 100%); border-radius: 15px; border-left: 5px solid #FF6B35;">
                                             <h4 style="color: #D84315; font-weight: 700; margin-bottom: 1rem;">
                                                 <i class="fas fa-info-circle" style="color: #FF6B35;"></i>
                                                 {{ $form->admission_criteria_text_label }}
@@ -890,7 +935,8 @@
                                             </h4>
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <div class="text-center" style="padding: 1rem; background: #f8f9fa; border-radius: 15px;">
+                                                    <div class="text-center"
+                                                        style="padding: 1rem; background: #f8f9fa; border-radius: 15px;">
                                                         @if (isset($form->admission_criteria_image))
                                                             <img src="{{ asset('form_manage/admission_criteria_image/' . $form->admission_criteria_image) }}"
                                                                 class="custom-image2 my-3" alt="Admission Criteria"
@@ -930,8 +976,7 @@
                                 <input type="hidden" class="form-control" name="subject" id="subject" value=""
                                     maxlength="50" minlength="2" required>
                                 <input type="hidden" name="sfield" id="sfield" value="{{ $form->sfield }}">
-                                <input type="hidden" name="routeName" id="routeName"
-                                    value="{{ $form->form_route }}">
+                                <input type="hidden" name="routeName" id="routeName" value="{{ $form->form_route }}">
                                 <input type="hidden" name="referent_code" id="referent_code"
                                     value="{{ request()->referent_code }}">
 
@@ -1069,8 +1114,7 @@
                                     <div class="form-row form-focus">
                                         <div class="col-md-6 col-sm-12">
                                             <div class="position-relative form-group">
-                                                <label class="form-label form-label-top form-label-auto"
-                                                    for="ref_date">
+                                                <label class="form-label form-label-top form-label-auto" for="ref_date">
                                                     {{ $form->ref_date_label }}
                                                     <span class="form-required">*</span>
                                                     <div style="width: 270px"></div>
@@ -1111,7 +1155,8 @@
                                                         aria-hidden="false">School Name</label>
                                                     <div class="form-error-message" role="alert"><img
                                                             src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                                            height="10"> <span class="error-navigation-message">This field
+                                                            height="10"> <span class="error-navigation-message">This
+                                                            field
                                                             is
                                                             required.</span>
                                                         <div class="form-error-arrow">
@@ -1124,7 +1169,8 @@
                                         @if ($isFieldEnabled('student_grade'))
                                             <div class="col-md-6">
                                                 <div class="position-relative form-group">
-                                                    <label class="form-label form-label-top form-label-auto" for="grade">
+                                                    <label class="form-label form-label-top form-label-auto"
+                                                        for="grade">
                                                         {{ $form->student_grade }}
                                                         @if ($isFieldRequired('student_grade'))
                                                             <span class="form-required">*</span>
@@ -1137,14 +1183,16 @@
                                                         @if ($isFieldRequired('student_grade')) required @endif>
                                                         <option value="">Please Select</option>
                                                         @foreach ($form->grades as $grade)
-                                                            <option value="{{ $grade->id }}">{{ $grade->grade }}</option>
+                                                            <option value="{{ $grade->id }}">{{ $grade->grade }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                     <label class="form-sub-label" style="min-height:13px"
                                                         aria-hidden="false">{{-- Grade as per Academic Year 2022 --}}</label>
                                                     <div class="form-error-message" role="alert"><img
                                                             src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                                            height="10"> <span class="error-navigation-message">This field
+                                                            height="10"> <span class="error-navigation-message">This
+                                                            field
                                                             is
                                                             required.</span>
                                                         <div class="form-error-arrow">
@@ -1168,21 +1216,23 @@
                                                         <span class="form-required">*</span>
                                                     @endif
                                                     @if ($form->package_multiselect && $form->package_max_selection)
-                                                        <small class="text-muted">(Max: {{ $form->package_max_selection }} selections)</small>
+                                                        <small class="text-muted">(Max: {{ $form->package_max_selection }}
+                                                            selections)</small>
                                                     @endif
                                                 </label>
                                                 @if ($form->package_multiselect)
                                                     {{-- Multi-select dropdown with Select2 --}}
-                                                    <select class="form-control select2-package" id="package" name="package[]"
-                                                        aria-label="แพคเกจในการสอบ / Packages"
-                                                        multiple
+                                                    <select class="form-control select2-package" id="package"
+                                                        name="package[]" aria-label="แพคเกจในการสอบ / Packages" multiple
                                                         data-max-selection="{{ $form->package_max_selection ?? '' }}"
                                                         @if ($isFieldRequired('package')) required @endif>
                                                         @foreach ($form->packages as $package)
-                                                            <option value="{{ $package->id }}">{{ $package->package }}</option>
+                                                            <option value="{{ $package->id }}">{{ $package->package }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
-                                                    <small class="form-text text-muted">Select multiple packages from the dropdown</small>
+                                                    <small class="form-text text-muted">Select multiple packages from the
+                                                        dropdown</small>
                                                 @else
                                                     {{-- Single select dropdown --}}
                                                     <select class="form-control" id="package" name="package"
@@ -1190,7 +1240,8 @@
                                                         @if ($isFieldRequired('package')) required @endif>
                                                         <option value="">Please Select</option>
                                                         @foreach ($form->packages as $package)
-                                                            <option value="{{ $package->id }}">{{ $package->package }}</option>
+                                                            <option value="{{ $package->id }}">{{ $package->package }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                 @endif
@@ -1198,7 +1249,8 @@
                                                     aria-hidden="false">Packages</label>
                                                 <div class="form-error-message" role="alert"><img
                                                         src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                                        height="10"> <span class="error-navigation-message">This field is
+                                                        height="10"> <span class="error-navigation-message">This field
+                                                        is
                                                         required.</span>
                                                     <div class="form-error-arrow">
                                                         <div class="form-error-arrow-inner"></div>
@@ -1208,6 +1260,38 @@
                                         </div>
                                     </div>
                                 @endif
+
+                                {{-- Exam Mode Selection --}}
+                                <div class="form-row form-focus" id="exam_mode_container" style="display: none;">
+                                    <div class="col-md-12">
+                                        <div class="position-relative form-group">
+                                            <label class="form-label form-label-top form-label-auto">
+                                                Exam Mode / รูปแบบการสอบ
+                                                <span class="form-required">*</span>
+                                            </label>
+                                            <div class="p-3 bg-light rounded border">
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                    <input type="radio" id="exam_mode_online" name="exam_mode"
+                                                        value="online" class="custom-control-input" checked>
+                                                    <label class="custom-control-label" for="exam_mode_online">
+                                                        <i class="fas fa-laptop"></i> Online (สอบออนไลน์)
+                                                    </label>
+                                                </div>
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                    <input type="radio" id="exam_mode_onsite" name="exam_mode"
+                                                        value="onsite" class="custom-control-input">
+                                                    <label class="custom-control-label" for="exam_mode_onsite">
+                                                        <i class="fas fa-chalkboard-teacher"></i> Onsite (สอบนอกสถานที่)
+                                                    </label>
+                                                </div>
+                                                <small class="form-text text-muted mt-2">
+                                                    <i class="fas fa-info-circle"></i> โปรดระบุรูปแบบการสอบที่ท่านต้องการ
+                                                    (Online หรือ Onsite)
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 @if ($isFieldEnabled('student_address') || $isFieldEnabled('student_zip'))
                                     <div class="form-row form-focus">
@@ -1220,8 +1304,8 @@
                                                             <span class="form-required">*</span>
                                                         @endif
                                                     </label>
-                                                    <input type="text" class="form-control" name="address" id="address"
-                                                        maxlength="150" minlength="2"
+                                                    <input type="text" class="form-control" name="address"
+                                                        id="address" maxlength="150" minlength="2"
                                                         @if ($isFieldRequired('student_address')) required @endif>
                                                     <label class="form-sub-label" style="min-height:13px"
                                                         aria-hidden="false">Street Address</label>
@@ -1231,14 +1315,15 @@
                                         @if ($isFieldEnabled('student_zip'))
                                             <div class="col-md-12 col-sm-12">
                                                 <div class="form-group">
-                                                    <label class="form-label form-label-top form-label-auto" for="postcode">
+                                                    <label class="form-label form-label-top form-label-auto"
+                                                        for="postcode">
                                                         {{ $form->student_zip ?? ' ' }}
                                                         @if ($isFieldRequired('student_zip'))
                                                             <span class="form-required">*</span>
                                                         @endif
                                                     </label>
-                                                    <input type="text" class="form-control" name="postcode" id="postcode"
-                                                        maxlength="50" minlength="2"
+                                                    <input type="text" class="form-control" name="postcode"
+                                                        id="postcode" maxlength="50" minlength="2"
                                                         @if ($isFieldRequired('student_zip')) required @endif>
                                                     <label class="form-sub-label" style="min-height:13px"
                                                         aria-hidden="false">
@@ -1246,7 +1331,8 @@
                                                     <div class="form-error-message" role="alert"><img
                                                             src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
                                                             height="10">
-                                                        <span class="error-navigation-message">This field is required.</span>
+                                                        <span class="error-navigation-message">This field is
+                                                            required.</span>
                                                         <div class="form-error-arrow">
                                                             <div class="form-error-arrow-inner"></div>
                                                         </div>
@@ -1256,6 +1342,38 @@
                                         @endif
                                     </div>
                                 @endif
+
+                                {{-- Exam Mode Selection --}}
+                                <div class="form-row form-focus" id="exam_mode_container" style="display: none;">
+                                    <div class="col-md-12">
+                                        <div class="position-relative form-group">
+                                            <label class="form-label form-label-top form-label-auto">
+                                                Exam Mode / รูปแบบการสอบ
+                                                <span class="form-required">*</span>
+                                            </label>
+                                            <div class="p-3 bg-light rounded border">
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                    <input type="radio" id="exam_mode_online" name="exam_mode"
+                                                        value="online" class="custom-control-input" checked>
+                                                    <label class="custom-control-label" for="exam_mode_online">
+                                                        <i class="fas fa-laptop"></i> Online (สอบออนไลน์)
+                                                    </label>
+                                                </div>
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                    <input type="radio" id="exam_mode_onsite" name="exam_mode"
+                                                        value="onsite" class="custom-control-input">
+                                                    <label class="custom-control-label" for="exam_mode_onsite">
+                                                        <i class="fas fa-chalkboard-teacher"></i> Onsite (สอบนอกสถานที่)
+                                                    </label>
+                                                </div>
+                                                <small class="form-text text-muted mt-2">
+                                                    <i class="fas fa-info-circle"></i> โปรดระบุรูปแบบการสอบที่ท่านต้องการ
+                                                    (Online หรือ Onsite)
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <!-- Parent/Guardian Information Section -->
                                 <div class="section-header">
@@ -1268,20 +1386,22 @@
                                         @if ($isFieldEnabled('parent_name'))
                                             <div class="col-md-6">
                                                 <div class="position-relative form-group" style="padding-top:24px;">
-                                                    <label class="form-label form-label-top form-label-auto" for="parent">
+                                                    <label class="form-label form-label-top form-label-auto"
+                                                        for="parent">
                                                         {{ $form->parent_name ?? ' ' }}
                                                         @if ($isFieldRequired('parent_name'))
                                                             <span class="form-required">*</span>
                                                         @endif
                                                     </label>
-                                                    <input type="text" class="form-control" name="parent" id="parent"
-                                                        value="" maxlength="100"
+                                                    <input type="text" class="form-control" name="parent"
+                                                        id="parent" value="" maxlength="100"
                                                         @if ($isFieldRequired('parent_name')) required @endif>
                                                     <label class="form-sub-label" style="min-height:13px"
                                                         aria-hidden="false">Parent's name</label>
                                                     <div class="form-error-message" role="alert"><img
                                                             src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                                            height="10"> <span class="error-navigation-message">This field
+                                                            height="10"> <span class="error-navigation-message">This
+                                                            field
                                                             is
                                                             required.</span>
                                                         <div class="form-error-arrow">
@@ -1294,7 +1414,8 @@
                                         @if ($isFieldEnabled('parent_phone'))
                                             <div class="col-md-6 col-sm-12">
                                                 <div class="position-relative form-group" style="padding-top:24px;">
-                                                    <label class="form-label form-label-top form-label-auto" for="phone">
+                                                    <label class="form-label form-label-top form-label-auto"
+                                                        for="phone">
                                                         {{ $form->parent_phone ?? ' ' }}
                                                         @if ($isFieldRequired('parent_phone'))
                                                             <span class="form-required">*</span>
@@ -1308,7 +1429,8 @@
                                                         aria-hidden="false">Phone Number</label>
                                                     <div class="form-error-message" role="alert"><img
                                                             src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                                            height="10"> <span class="error-navigation-message">This field
+                                                            height="10"> <span class="error-navigation-message">This
+                                                            field
                                                             is
                                                             required.</span>
                                                         <div class="form-error-arrow">
@@ -1339,7 +1461,8 @@
                                                     aria-hidden="false">example@example.com</label>
                                                 <div class="form-error-message" role="alert"><img
                                                         src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                                        height="10"> <span class="error-navigation-message">Please input
+                                                        height="10"> <span class="error-navigation-message">Please
+                                                        input
                                                         correct email.</span>
                                                     <div class="form-error-arrow">
                                                         <div class="form-error-arrow-inner"></div>
@@ -1378,8 +1501,8 @@
                                                 </div>
                                                 <label class="form-sub-label" style="min-height:13px"
                                                     aria-hidden="false">Photo ขนาดไม่เกิน 5mb</label>
-                                                <div id="dropzone-photo-error" class="form-error-message" role="alert"><img
-                                                        src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                                                <div id="dropzone-photo-error" class="form-error-message" role="alert">
+                                                    <img src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
                                                         height="10">
                                                     <span class="error-navigation-message">This field is
                                                         required.</span>
@@ -1425,7 +1548,8 @@
                                                 <input type="text" id="drop2" name="drop2"
                                                     class="form-control form_none" value=""
                                                     @if ($isFieldRequired('student_slip_photo')) required @endif>
-                                                <div class="dropzone" id="my-awesome-dropzone2" style="font-size: 1.5em;">
+                                                <div class="dropzone" id="my-awesome-dropzone2"
+                                                    style="font-size: 1.5em;">
                                                     <div class="fallback">
                                                         {{--  <input name="file2" id="file2" type="file" multiple
                                                         class="form-control" /> --}}
@@ -1433,8 +1557,8 @@
                                                 </div>
                                                 <label class="form-sub-label" style="min-height:13px"
                                                     aria-hidden="false">Receipt Photo ขนาดไม่เกิน 5mb</label>
-                                                <div id="dropzone-att-error" class="form-error-message" role="alert"><img
-                                                        src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                                                <div id="dropzone-att-error" class="form-error-message" role="alert">
+                                                    <img src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
                                                         height="10">
                                                     <span class="error-navigation-message">This field is
                                                         required.</span>
@@ -1468,7 +1592,8 @@
                                                     aria-hidden="false"></label>
                                                 <div class="form-error-message" role="alert"><img
                                                         src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                                        height="10"> <span class="error-navigation-message">This field is
+                                                        height="10"> <span class="error-navigation-message">This field
+                                                        is
                                                         required.</span>
                                                     <div class="form-error-arrow">
                                                         <div class="form-error-arrow-inner"></div>
@@ -1480,31 +1605,36 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="card-footer text-center" style="background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%); padding: 2rem;">
+                        <div class="card-footer text-center"
+                            style="background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%); padding: 2rem;">
                             <br>
-                            @if(!empty($form->text_warning))
-                            <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); padding: 1.5rem; border-radius: 15px; border-left: 5px solid #ffc107; margin-bottom: 1.5rem;">
-                                <h3 style="color: #856404; font-weight: 700; margin-bottom: 1rem;">
-                                    <i class="fas fa-exclamation-triangle"></i> คำเตือนสำคัญ / Important Notice
-                                </h3>
-                                <div style="color: #856404; font-size: 1.1rem; line-height: 1.8;">
-                                    {!! nl2br($form->text_warning) ?? '' !!}
+                            @if (!empty($form->text_warning))
+                                <div
+                                    style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); padding: 1.5rem; border-radius: 15px; border-left: 5px solid #ffc107; margin-bottom: 1.5rem;">
+                                    <h3 style="color: #856404; font-weight: 700; margin-bottom: 1rem;">
+                                        <i class="fas fa-exclamation-triangle"></i> คำเตือนสำคัญ / Important Notice
+                                    </h3>
+                                    <div style="color: #856404; font-size: 1.1rem; line-height: 1.8;">
+                                        {!! nl2br($form->text_warning) ?? '' !!}
+                                    </div>
                                 </div>
-                            </div>
                             @endif
 
-                            @if(!empty($form->text_footer))
-                            <div style="background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%); padding: 1.5rem; border-radius: 15px; border-left: 5px solid #dc3545; margin-bottom: 1.5rem;">
-                                <div style="color: #721c24; font-size: 1rem; line-height: 1.8;">
-                                    {!! nl2br($form->text_footer) ?? '' !!}
+                            @if (!empty($form->text_footer))
+                                <div
+                                    style="background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%); padding: 1.5rem; border-radius: 15px; border-left: 5px solid #dc3545; margin-bottom: 1.5rem;">
+                                    <div style="color: #721c24; font-size: 1rem; line-height: 1.8;">
+                                        {!! nl2br($form->text_footer) ?? '' !!}
+                                    </div>
                                 </div>
-                            </div>
                             @endif
                             <br>
-                            <div class="form-group form-check" style="background: linear-gradient(135deg, #FFF8F0 0%, #FFE0B2 100%); padding: 1.5rem; border-radius: 15px; border: 2px solid #FF6B35; margin-bottom: 2rem;">
-                                <input type="checkbox" class="form-check-input" id="agreeCheckbox" required data-required-checkbox="true"
-                                    style="float: none; margin-right: 10px;">
-                                <label class="form-check-label" for="agreeCheckbox" style="font-size: 1.05rem; color: #2C3E50; font-weight: 500; text-align: left; display: inline-block;">
+                            <div class="form-group form-check"
+                                style="background: linear-gradient(135deg, #FFF8F0 0%, #FFE0B2 100%); padding: 1.5rem; border-radius: 15px; border: 2px solid #FF6B35; margin-bottom: 2rem;">
+                                <input type="checkbox" class="form-check-input" id="agreeCheckbox" required
+                                    data-required-checkbox="true" style="float: none; margin-right: 10px;">
+                                <label class="form-check-label" for="agreeCheckbox"
+                                    style="font-size: 1.05rem; color: #2C3E50; font-weight: 500; text-align: left; display: inline-block;">
                                     <i class="fas fa-check-circle" style="color: #FF6B35;"></i>
                                     {!! nl2br($form->text_policy) ?? '' !!}
                                 </label>
@@ -1513,7 +1643,8 @@
                             <button type="submit" class="submit-btn btn btn-lg btn-primary">
                                 <i class="fas fa-paper-plane"></i> Submit Application
                             </button>
-                            <button type="reset" class="btn btn-lg btn-primary" style="background: linear-gradient(135deg, #6c757d 0%, #495057 100%);">
+                            <button type="reset" class="btn btn-lg btn-primary"
+                                style="background: linear-gradient(135deg, #6c757d 0%, #495057 100%);">
                                 <i class="fas fa-redo"></i> Clear Form
                             </button><br><br><br>
                         </div>
@@ -1524,44 +1655,55 @@
     </div>
 
     <!-- Meta Knowledge Footer -->
-    @if($form->show_footer ?? true)
-    <footer class="meta-footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    @php
-                        $footerLogo = $form->footer_logo ?? 'logo_meta.png';
-                    @endphp
-                    <img src="{{ asset('images/' . $footerLogo) }}" alt="Footer Logo" class="footer-logo">
-                    <h4>{{ $form->footer_company_name ?? 'Meta Knowledge' }}</h4>
-                    <p>{{ $form->footer_description_1 ?? 'ศูนย์รวมความรู้และการพัฒนาทักษะสำหรับนักเรียนและผู้ปกครอง' }}</p>
-                    <p>{{ $form->footer_description_2 ?? 'พัฒนาศักยภาพ สร้างอนาคตที่ดีกว่า' }}</p>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <h4><i class="fas fa-info-circle"></i> {{ $form->footer_about_title ?? 'เกี่ยวกับเรา' }}</h4>
-                    <p><i class="fas fa-graduation-cap"></i> {{ $form->footer_feature_1 ?? 'ระบบสอบและแข่งขันออนไลน์' }}</p>
-                    <p><i class="fas fa-book-reader"></i> {{ $form->footer_feature_2 ?? 'หลักสูตรคุณภาพสำหรับทุกระดับชั้น' }}</p>
-                    <p><i class="fas fa-trophy"></i> {{ $form->footer_feature_3 ?? 'พัฒนาทักษะเพื่อความสำเร็จ' }}</p>
-                    <p><i class="fas fa-certificate"></i> {{ $form->footer_feature_4 ?? 'ใบประกาศนียบัตรรับรอง' }}</p>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <h4><i class="fas fa-envelope"></i> {{ $form->footer_contact_title ?? 'ติดต่อเรา' }}</h4>
-                    <p><i class="fas fa-phone"></i> โทร: {{ $form->footer_phone ?? '02-XXX-XXXX' }}</p>
-                    <p><i class="fas fa-envelope"></i> Email: {{ $form->footer_email ?? 'info@metaknowledge.com' }}</p>
-                    <p><i class="fas fa-map-marker-alt"></i> {{ $form->footer_address ?? 'กรุงเทพมหานคร ประเทศไทย' }}</p>
-                    <div class="social-links">
-                        <a href="{{ $form->footer_facebook ?? '#' }}" title="Facebook" target="_blank"><i class="fab fa-facebook"></i></a>
-                        <a href="{{ $form->footer_line ?? '#' }}" title="Line" target="_blank"><i class="fab fa-line"></i></a>
-                        <a href="{{ $form->footer_instagram ?? '#' }}" title="Instagram" target="_blank"><i class="fab fa-instagram"></i></a>
-                        <a href="{{ $form->footer_youtube ?? '#' }}" title="YouTube" target="_blank"><i class="fab fa-youtube"></i></a>
+    @if ($form->show_footer ?? true)
+        <footer class="meta-footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        @php
+                            $footerLogo = $form->footer_logo ?? 'logo_meta.png';
+                        @endphp
+                        <img src="{{ asset('images/' . $footerLogo) }}" alt="Footer Logo" class="footer-logo">
+                        <h4>{{ $form->footer_company_name ?? 'Meta Knowledge' }}</h4>
+                        <p>{{ $form->footer_description_1 ?? 'ศูนย์รวมความรู้และการพัฒนาทักษะสำหรับนักเรียนและผู้ปกครอง' }}
+                        </p>
+                        <p>{{ $form->footer_description_2 ?? 'พัฒนาศักยภาพ สร้างอนาคตที่ดีกว่า' }}</p>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <h4><i class="fas fa-info-circle"></i> {{ $form->footer_about_title ?? 'เกี่ยวกับเรา' }}</h4>
+                        <p><i class="fas fa-graduation-cap"></i>
+                            {{ $form->footer_feature_1 ?? 'ระบบสอบและแข่งขันออนไลน์' }}</p>
+                        <p><i class="fas fa-book-reader"></i>
+                            {{ $form->footer_feature_2 ?? 'หลักสูตรคุณภาพสำหรับทุกระดับชั้น' }}</p>
+                        <p><i class="fas fa-trophy"></i> {{ $form->footer_feature_3 ?? 'พัฒนาทักษะเพื่อความสำเร็จ' }}</p>
+                        <p><i class="fas fa-certificate"></i> {{ $form->footer_feature_4 ?? 'ใบประกาศนียบัตรรับรอง' }}</p>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <h4><i class="fas fa-envelope"></i> {{ $form->footer_contact_title ?? 'ติดต่อเรา' }}</h4>
+                        <p><i class="fas fa-phone"></i> โทร: {{ $form->footer_phone ?? '02-XXX-XXXX' }}</p>
+                        <p><i class="fas fa-envelope"></i> Email: {{ $form->footer_email ?? 'info@metaknowledge.com' }}
+                        </p>
+                        <p><i class="fas fa-map-marker-alt"></i> {{ $form->footer_address ?? 'กรุงเทพมหานคร ประเทศไทย' }}
+                        </p>
+                        <div class="social-links">
+                            <a href="{{ $form->footer_facebook ?? '#' }}" title="Facebook" target="_blank"><i
+                                    class="fab fa-facebook"></i></a>
+                            <a href="{{ $form->footer_line ?? '#' }}" title="Line" target="_blank"><i
+                                    class="fab fa-line"></i></a>
+                            <a href="{{ $form->footer_instagram ?? '#' }}" title="Instagram" target="_blank"><i
+                                    class="fab fa-instagram"></i></a>
+                            <a href="{{ $form->footer_youtube ?? '#' }}" title="YouTube" target="_blank"><i
+                                    class="fab fa-youtube"></i></a>
+                        </div>
                     </div>
                 </div>
+                <div class="copyright">
+                    <p>&copy; {{ date('Y') }}
+                        {{ $form->footer_copyright ?? 'Meta Knowledge. All Rights Reserved. | Empowering Education, Inspiring Excellence' }}
+                    </p>
+                </div>
             </div>
-            <div class="copyright">
-                <p>&copy; {{ date('Y') }} {{ $form->footer_copyright ?? 'Meta Knowledge. All Rights Reserved. | Empowering Education, Inspiring Excellence' }}</p>
-            </div>
-        </div>
-    </footer>
+        </footer>
     @endif
     <script>
         const allowedSuffixes = ['.com', '.net', '.co.th', '.ac.th', '.or.th', '.go.th', '.edu', '.org'];
@@ -2092,7 +2234,9 @@
                     }
 
                     jumpTo('agreeCheckbox');
-                    alert('กรุณาติ๊ก "ตกลงและยอมรับข้อกำหนดและเงื่อนไข รวมถึงตรวจสอบข้อมูลและเนื้อหาต่างๆเรียบร้อยแล้ว" ก่อนส่งฟอร์ม');
+                    alert(
+                        'กรุณาติ๊ก "ตกลงและยอมรับข้อกำหนดและเงื่อนไข รวมถึงตรวจสอบข้อมูลและเนื้อหาต่างๆเรียบร้อยแล้ว" ก่อนส่งฟอร์ม'
+                    );
                     $('#loader-container').hide();
                     $('#send_data').attr('disabled', false);
                     return false;
@@ -2103,8 +2247,10 @@
 
                 const $photoWrapper = $('#dropzone-photo');
                 const $slipWrapper = $('#dropzone-att');
-                const photoActive = $photoWrapper.length && $photoWrapper.is(':visible') && !$photoWrapper.find('input, textarea, select').filter(':enabled').length;
-                const slipActive = $slipWrapper.length && $slipWrapper.is(':visible') && !$slipWrapper.find('input, textarea, select').filter(':enabled').length;
+                const photoActive = $photoWrapper.length && $photoWrapper.is(':visible') && !$photoWrapper.find(
+                    'input, textarea, select').filter(':enabled').length;
+                const slipActive = $slipWrapper.length && $slipWrapper.is(':visible') && !$slipWrapper.find(
+                    'input, textarea, select').filter(':enabled').length;
 
                 let missing = false;
 
@@ -2256,18 +2402,22 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Package-Grade linking data
-        const packageGradeLinks = @json($form->packages->mapWithKeys(function($package) {
-            return [$package->id => $package->linked_grades];
-        }));
+        const packageGradeLinks = @json(
+            $form->packages->mapWithKeys(function ($package) {
+                return [$package->id => $package->linked_grades];
+            }));
 
-        const gradeNameMap = @json($form->grades->mapWithKeys(function($grade) {
-            return [$grade->id => $grade->grade];
-        }));
+        const gradeNameMap = @json(
+            $form->grades->mapWithKeys(function ($grade) {
+                return [$grade->id => $grade->grade];
+            }));
 
         // Validate package selection against grade
         function validatePackageGradeCompatibility(selectedPackageIds, selectedGradeId) {
             if (!selectedGradeId) {
-                return { valid: true };
+                return {
+                    valid: true
+                };
             }
 
             // Convert to integer for comparison
@@ -2286,7 +2436,8 @@
                 }
 
                 // Debug log
-                console.log('Package ID:', packageId, 'Linked Grades:', linkedGrades, 'Selected Grade ID:', selectedGradeId);
+                console.log('Package ID:', packageId, 'Linked Grades:', linkedGrades, 'Selected Grade ID:',
+                    selectedGradeId);
 
                 // If linkedGrades is null or empty, package is available for all grades
                 if (linkedGrades && linkedGrades.length > 0) {
@@ -2313,7 +2464,9 @@
                 };
             }
 
-            return { valid: true };
+            return {
+                valid: true
+            };
         }
 
         // Initialize Select2 for multi-select package
@@ -2336,8 +2489,9 @@
                 if (maxSelection && maxSelection !== '') {
                     select2Options.maximumSelectionLength = parseInt(maxSelection);
                     select2Options.language = {
-                        maximumSelected: function (e) {
-                            return 'You can only select ' + e.maximum + ' package(s) / คุณสามารถเลือกได้สูงสุด ' + e.maximum + ' แพคเกจเท่านั้น';
+                        maximumSelected: function(e) {
+                            return 'You can only select ' + e.maximum +
+                                ' package(s) / คุณสามารถเลือกได้สูงสุด ' + e.maximum + ' แพคเกจเท่านั้น';
                         }
                     };
                 }
@@ -2491,6 +2645,133 @@
                     }
                 }
             });
+        });
+    </script>
+    <script>
+        // Exam Mode Logic
+        $(document).ready(function() {
+            // Prepare data from server
+            const packageExamModes = {
+                @foreach ($form->packages as $pkg)
+                    "{{ $pkg->id }}": {{ $pkg->has_exam_mode ? 1 : 0 }},
+                @endforeach
+            };
+
+            // Form-level limits (not package-level)
+            const formLimits = {
+                online_limit: {{ $form->online_limit ?? 'null' }},
+                onsite_limit: {{ $form->onsite_limit ?? 'null' }},
+                online_registered: {{ $form->online_registered ?? 0 }},
+                onsite_registered: {{ $form->onsite_registered ?? 0 }}
+            };
+
+            function getAvailableSlots(mode) {
+                if (mode === 'online') {
+                    if (formLimits.online_limit === null) return { available: true, remaining: null };
+                    const remaining = formLimits.online_limit - formLimits.online_registered;
+                    return { available: remaining > 0, remaining: remaining };
+                } else {
+                    if (formLimits.onsite_limit === null) return { available: true, remaining: null };
+                    const remaining = formLimits.onsite_limit - formLimits.onsite_registered;
+                    return { available: remaining > 0, remaining: remaining };
+                }
+            }
+
+            function updateExamModeOptions() {
+                const onlineSlots = getAvailableSlots('online');
+                const onsiteSlots = getAvailableSlots('onsite');
+
+                const $onlineRadio = $('#exam_mode_online');
+                const $onsiteRadio = $('#exam_mode_onsite');
+                const $onlineLabel = $('label[for="exam_mode_online"]');
+                const $onsiteLabel = $('label[for="exam_mode_onsite"]');
+
+                // Update Online option
+                if (!onlineSlots.available) {
+                    $onlineRadio.prop('disabled', true);
+                    $onlineLabel.html('<i class="fas fa-laptop"></i> Online (สอบออนไลน์) <span class="badge badge-danger">เต็มแล้ว</span>');
+                    if ($onlineRadio.is(':checked')) {
+                        $onsiteRadio.prop('checked', true);
+                    }
+                } else {
+                    $onlineRadio.prop('disabled', false);
+                    let onlineText = '<i class="fas fa-laptop"></i> Online (สอบออนไลน์)';
+                    if (onlineSlots.remaining !== null) {
+                        onlineText += ' <span class="badge badge-info">เหลือ ' + onlineSlots.remaining + ' ที่นั่ง</span>';
+                    }
+                    $onlineLabel.html(onlineText);
+                }
+
+                // Update Onsite option
+                if (!onsiteSlots.available) {
+                    $onsiteRadio.prop('disabled', true);
+                    $onsiteLabel.html('<i class="fas fa-chalkboard-teacher"></i> Onsite (สอบนอกสถานที่) <span class="badge badge-danger">เต็มแล้ว</span>');
+                    if ($onsiteRadio.is(':checked')) {
+                        $onlineRadio.prop('checked', true);
+                    }
+                } else {
+                    $onsiteRadio.prop('disabled', false);
+                    let onsiteText = '<i class="fas fa-chalkboard-teacher"></i> Onsite (สอบนอกสถานที่)';
+                    if (onsiteSlots.remaining !== null) {
+                        onsiteText += ' <span class="badge badge-info">เหลือ ' + onsiteSlots.remaining + ' ที่นั่ง</span>';
+                    }
+                    $onsiteLabel.html(onsiteText);
+                }
+
+                // If both are full, show warning
+                if (!onlineSlots.available && !onsiteSlots.available) {
+                    $('#exam_mode_container').find('.form-text').html(
+                        '<i class="fas fa-exclamation-triangle text-danger"></i> <span class="text-danger">ขออภัย มีผู้สมัครเต็มทั้ง Online และ Onsite แล้ว</span>'
+                    );
+                } else {
+                    $('#exam_mode_container').find('.form-text').html(
+                        '<i class="fas fa-info-circle"></i> โปรดระบุรูปแบบการสอบที่ท่านต้องการ (Online หรือ Onsite)'
+                    );
+                }
+            }
+
+            function checkExamModeVisibility() {
+                const packageSelect = $('#package');
+                const examModeContainer = $('#exam_mode_container');
+                let selectedValues = packageSelect.val();
+
+                // Handle single select (string) or multi (array) or null
+                if (!selectedValues) {
+                    selectedValues = [];
+                } else if (!Array.isArray(selectedValues)) {
+                    selectedValues = [selectedValues];
+                }
+
+                let showExamMode = false;
+                selectedValues.forEach(function(pkgId) {
+                    if (pkgId && packageExamModes[pkgId] == 1) {
+                        showExamMode = true;
+                    }
+                });
+
+                if (showExamMode) {
+                    examModeContainer.slideDown();
+                    // Set required attribute
+                    $('input[name="exam_mode"]').attr('required', true);
+
+                    // Default to online if nothing checked
+                    if (!$('input[name="exam_mode"]:checked').length) {
+                        $('#exam_mode_online').prop('checked', true);
+                    }
+
+                    // Update available slots
+                    updateExamModeOptions();
+                } else {
+                    examModeContainer.slideUp();
+                    $('input[name="exam_mode"]').removeAttr('required');
+                }
+            }
+
+            // Bind change event
+            $('#package').on('change', checkExamModeVisibility);
+
+            // Initial Check (in case of validation error reload)
+            checkExamModeVisibility();
         });
     </script>
     <script type="text/javascript">

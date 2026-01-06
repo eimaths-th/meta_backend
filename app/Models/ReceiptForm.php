@@ -46,6 +46,7 @@ class ReceiptForm extends Model
         'contest',
         'discount_code',
         'referent_code',
+        'exam_mode',
     ];
 
     public function receipt()

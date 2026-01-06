@@ -616,6 +616,7 @@ class ReceiptFormController extends Controller
             //sleep(2);
             $receipt = ReceiptForm::select(
                 "receipt_forms.id as receipt_id",
+                "receipt_forms.exam_mode as exam_mode",
                 "receipt_forms.sfield as receipt_sfield",
                 "receipt_forms.submission_date as receipt_submission_date",
                 "receipt_forms.first_name as receipt_firstname",
@@ -659,6 +660,9 @@ class ReceiptFormController extends Controller
                 })
                 ->addColumn('referent_code', function ($row) {
                     return $row->referent_code;
+                })
+                ->addColumn('exam_mode', function ($row) {
+                    return $row->exam_mode;
                 })
                 ->addColumn('referent_name', function ($row) {
                     $name = '';
@@ -1556,6 +1560,33 @@ class ReceiptFormController extends Controller
         }
 
 
+        // Check Exam Mode Limits
+        $formManage = FormManage::where('id', $request->get('sfield'))->first();
+        $examMode = $request->get('exam_mode');
+        $packageId = $request->get('package');
+
+        // Check if selected package has exam mode enabled
+        if ($packageId) {
+            $selectedPackage = \App\Models\FormPakages::find($packageId);
+            if ($selectedPackage && $selectedPackage->has_exam_mode) {
+                // Validate exam_mode input
+                if (!$examMode || !in_array($examMode, ['online', 'onsite'])) {
+                    return back()->withInput()->with('error', 'กรุณาเลือกรูปแบบการสอบ (Online/Onsite)');
+                }
+            }
+        }
+
+        // Form-level exam mode check and limits
+        if ($formManage && $formManage->enable_exam_mode && $examMode) {
+            // Check form-level limits
+            if ($examMode === 'online' && !$formManage->HasAvailableOnlineSlots()) {
+                return back()->withInput()->with('error', 'ขออภัย ที่นั่งสอบ Online เต็มแล้ว');
+            }
+            if ($examMode === 'onsite' && !$formManage->HasAvailableOnsiteSlots()) {
+                return back()->withInput()->with('error', 'ขออภัย ที่นั่งสอบ Onsite เต็มแล้ว');
+            }
+        }
+
         $receiptForm = new ReceiptForm([
             'sfield' => $request->get('sfield'),
             'submission_date' => date("Y-m-d"),
@@ -1572,7 +1603,7 @@ class ReceiptFormController extends Controller
             'grade' => $request->get('grade'),
 
             'package' => $request->get('package'),
-            'package_id' => null,
+            'package_id' => null, // This seems unused or null in original, keeping it.
 
             'contest' => $request->get('contest'),
             'discount_code' => $request->get('dcode'),
@@ -1585,9 +1616,19 @@ class ReceiptFormController extends Controller
             'photo_att' => $fileas,
             'file_att' => $filebs,
             'referent_code' => $request->get('referent_code'),
+            'exam_mode' => $examMode, // Save exam mode
         ]);
 
         $receiptForm->save();
+
+        // Update Registered Count for Form (form-level limits only)
+        if ($formManage && $formManage->enable_exam_mode && $examMode) {
+            if ($examMode === 'online') {
+                $formManage->increment('online_registered');
+            } elseif ($examMode === 'onsite') {
+                $formManage->increment('onsite_registered');
+            }
+        }
 
         $adminEmail = $request->get('email');
 
@@ -1596,7 +1637,7 @@ class ReceiptFormController extends Controller
                 Mail::to($adminEmail)->send(new ContactMail($receiptForm));
             }
         }
-        $receiptForm->save();
+        // $receiptForm->save(); // Remove duplicate save
 
 
         return redirect('/form/complete/' . $route);
@@ -1792,10 +1833,33 @@ class ReceiptFormController extends Controller
         }
 
 
+        // Check Exam Mode Limits
+        $formManage = FormManage::find($request->get('sfield'));
+        if ($formManage && $formManage->enable_exam_mode) {
+            $examMode = $request->get('exam_mode');
+            if (!$examMode) {
+                return back()->withInput()->with('error', 'กรุณาเลือกรูปแบบการสอบ / Please select Exam Mode');
+            }
+
+            $currentCount = ReceiptForm::where('sfield', $request->get('sfield'))
+                ->where('exam_mode', $examMode)
+                ->count();
+
+            $limit = $examMode == 'online' ? $formManage->online_limit : $formManage->onsite_limit;
+
+            // If limit is set (not null) and greater than 0, check against count
+            // Assumption: If limit is null, it's unlimited. If 0, no seats.
+            if (!is_null($limit) && $currentCount >= $limit) {
+                $modeLabel = $examMode == 'online' ? 'Online' : 'Onsite';
+                return back()->withInput()->with('error', "ขออภัย ที่นั่งสอบรูปแบบ {$modeLabel} เต็มแล้ว / Sorry, {$modeLabel} exam seats are full.");
+            }
+        }
+
         $grade = FormGrades::find($request->get('grade'));
 
         $receiptForm = new ReceiptForm([
             'sfield' => $request->get('sfield'),
+            'exam_mode' => $request->get('exam_mode'),
             'submission_date' => date("Y-m-d"),
             'subject' => $request->get('subject'),
             'first_name' => $request->get('firstname'),

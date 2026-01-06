@@ -131,12 +131,62 @@ class FormManage extends Model
         'create_by',
         'update_by',
         'created_at',
-        'updated_at'
+        'updated_at',
+        // Exam mode fields
+        'enable_exam_mode',
+        'online_limit',
+        'onsite_limit',
+        'online_registered',
+        'onsite_registered',
     ];
 
     protected $casts = [
         'field_settings' => 'array',
+        'enable_exam_mode' => 'boolean',
+        'online_limit' => 'integer',
+        'onsite_limit' => 'integer',
+        'online_registered' => 'integer',
+        'onsite_registered' => 'integer',
     ];
+
+    // Helper methods for exam mode
+    public function HasAvailableOnlineSlots()
+    {
+        if (!$this->enable_exam_mode) {
+            return true;
+        }
+        if (is_null($this->online_limit)) {
+            return true; // ไม่จำกัด
+        }
+        return $this->online_registered < $this->online_limit;
+    }
+
+    public function HasAvailableOnsiteSlots()
+    {
+        if (!$this->enable_exam_mode) {
+            return true;
+        }
+        if (is_null($this->onsite_limit)) {
+            return true; // ไม่จำกัด
+        }
+        return $this->onsite_registered < $this->onsite_limit;
+    }
+
+    public function GetOnlineRemainingSlots()
+    {
+        if (!$this->enable_exam_mode || is_null($this->online_limit)) {
+            return null;
+        }
+        return max(0, $this->online_limit - $this->online_registered);
+    }
+
+    public function GetOnsiteRemainingSlots()
+    {
+        if (!$this->enable_exam_mode || is_null($this->onsite_limit)) {
+            return null;
+        }
+        return max(0, $this->onsite_limit - $this->onsite_registered);
+    }
     public function package()
     {
         return $this->belongsTo(FormPakages::class);

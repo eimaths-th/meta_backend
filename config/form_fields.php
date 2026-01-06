@@ -60,7 +60,7 @@ return [
     'package' => [
         'label' => 'Package',
         'description' => 'แพคเกจในการสอบ',
-        'builder_input' => '#package',
+        'builder_input' => '#package_label',
         'public_name' => 'package',
         'default_enabled' => true,
         'default_required' => true,

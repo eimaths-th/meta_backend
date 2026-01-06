@@ -38,10 +38,64 @@ class FormPakages extends Model
         'create_by',
         'update_by',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'has_exam_mode',
+        'online_limit',
+        'onsite_limit',
+        'online_registered',
+        'onsite_registered',
     ];
 
     protected $casts = [
         'linked_grades' => IntegerArray::class,
+        'has_exam_mode' => 'boolean',
+        'online_limit' => 'integer',
+        'onsite_limit' => 'integer',
+        'online_registered' => 'integer',
+        'onsite_registered' => 'integer',
     ];
+
+    /**
+     * Check if online slots are available for this package
+     */
+    public function hasAvailableOnlineSlots(): bool
+    {
+        if ($this->online_limit === null) {
+            return true; // No limit set
+        }
+        return $this->online_registered < $this->online_limit;
+    }
+
+    /**
+     * Check if onsite slots are available for this package
+     */
+    public function hasAvailableOnsiteSlots(): bool
+    {
+        if ($this->onsite_limit === null) {
+            return true; // No limit set
+        }
+        return $this->onsite_registered < $this->onsite_limit;
+    }
+
+    /**
+     * Get remaining online slots
+     */
+    public function getRemainingOnlineSlots(): ?int
+    {
+        if ($this->online_limit === null) {
+            return null; // Unlimited
+        }
+        return max(0, $this->online_limit - $this->online_registered);
+    }
+
+    /**
+     * Get remaining onsite slots
+     */
+    public function getRemainingOnsiteSlots(): ?int
+    {
+        if ($this->onsite_limit === null) {
+            return null; // Unlimited
+        }
+        return max(0, $this->onsite_limit - $this->onsite_registered);
+    }
 }

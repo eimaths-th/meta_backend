@@ -274,6 +274,9 @@ class FormManageController extends Controller
         $data = FormPakages::find($id);
         $data->package = $value;
         $data->price = $request->price;
+        $data->has_exam_mode = $request->has_exam_mode ?? false;
+        $data->online_limit = $request->online_limit ?: null;
+        $data->onsite_limit = $request->onsite_limit ?: null;
         $data->update_by = Auth::user()->id;
         $data->save();
         return response()->json([
@@ -341,7 +344,10 @@ class FormManageController extends Controller
         $request->validate([
             'form_id' => 'required|exists:forms_manage,id',
             'package_name' => 'required|string|max:255',
-            'package_price' => 'required|numeric|min:0'
+            'package_price' => 'required|numeric|min:0',
+            'has_exam_mode' => 'nullable|boolean',
+            'online_limit' => 'nullable|integer|min:0',
+            'onsite_limit' => 'nullable|integer|min:0'
         ]);
 
         $formId = $request->form_id;
@@ -368,6 +374,9 @@ class FormManageController extends Controller
         $package->form_id = $formId;
         $package->package = $packageName;
         $package->price = $packagePrice;
+        $package->has_exam_mode = $request->has_exam_mode ?? false;
+        $package->online_limit = $request->online_limit ?: null;
+        $package->onsite_limit = $request->onsite_limit ?: null;
         $package->sfield = $form->sfield ?? '';
         $package->form_name = $form->form_name ?? '';
         $package->form_route = $form->form_route ?? '';
@@ -646,6 +655,10 @@ class FormManageController extends Controller
             'field_settings' => 'nullable|array',
             'field_settings.*.enabled' => 'nullable|boolean',
             'field_settings.*.required' => 'nullable|boolean',
+            // Exam Mode
+            'enable_exam_mode' => 'nullable|boolean',
+            'online_limit' => 'nullable|integer|min:0',
+            'onsite_limit' => 'nullable|integer|min:0',
             // Image validation rules - only required if no old files exist
             'brand' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
             'image_payment' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
@@ -896,6 +909,9 @@ class FormManageController extends Controller
             'package' => $request->package,
             'package_multiselect' => $request->input('package_multiselect', 0) == 1 ? true : false,
             'package_max_selection' => $request->package_max_selection ? (int) $request->package_max_selection : null,
+            'enable_exam_mode' => $request->input('enable_exam_mode', 0) == 1 ? true : false,
+            'online_limit' => $request->online_limit ? (int) $request->online_limit : null,
+            'onsite_limit' => $request->onsite_limit ? (int) $request->onsite_limit : null,
             'student_address' => $request->student_address,
             'student_zip' => $request->student_zip,
             'parent_name' => $request->parent_name,
@@ -1138,6 +1154,39 @@ class FormManageController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Form deleted successfully'
+        ]);
+    }
+    // Exam Mode API Methods
+    public function getPackagesExamMode(Request $request)
+    {
+        $form_id = $request->form_id;
+
+        $packages = FormPakages::where('form_id', $form_id)
+            ->select('id', 'package', 'price', 'has_exam_mode')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'packages' => $packages
+        ]);
+    }
+
+    public function updatePackageExamMode(Request $request)
+    {
+        $request->validate([
+            'package_id' => 'required|exists:forms_pakages,id',
+            'has_exam_mode' => 'required|boolean',
+        ]);
+
+        $package = FormPakages::find($request->package_id);
+        $package->has_exam_mode = $request->has_exam_mode;
+        $package->update_by = Auth::user()->id;
+        $package->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'อัพเดตการตั้งค่า Exam Mode สำเร็จ',
+            'package' => $package
         ]);
     }
 }
