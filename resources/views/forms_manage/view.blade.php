@@ -739,6 +739,11 @@
             left: 0;
             right: 0;
         }
+        .badge-info {
+            background-color: var(--primary-color);
+            color: rgb(255, 255, 255);
+            font-weight: 500;
+        }
     </style>
 @endsection
 
