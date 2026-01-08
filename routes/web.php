@@ -195,6 +195,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/form-manage/{id}', [FormManageController::class, 'view'])->name('form-manage.view');
     //destroy
     Route::post('/form-manage/destroy', [FormManageController::class, 'destroy'])->name('form-manage.destroy');
+    // duplicate
+    Route::post('/form-manage/duplicate', [FormManageController::class, 'duplicate'])->name('form-manage.duplicate');
     Route::get('/select_route', [FormManageController::class, 'selectRoute'])->name('select_route');
     // Route::post('/create-form', [FormManageController::class, 'create'])->name('create-form');
     Route::match(['GET', 'POST'], '/create-form', [FormManageController::class, 'create'])->name('create-form');

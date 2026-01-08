@@ -1343,38 +1343,6 @@
                                     </div>
                                 @endif
 
-                                {{-- Exam Mode Selection --}}
-                                <div class="form-row form-focus" id="exam_mode_container" style="display: none;">
-                                    <div class="col-md-12">
-                                        <div class="position-relative form-group">
-                                            <label class="form-label form-label-top form-label-auto">
-                                                Exam Mode / รูปแบบการสอบ
-                                                <span class="form-required">*</span>
-                                            </label>
-                                            <div class="p-3 bg-light rounded border">
-                                                <div class="custom-control custom-radio custom-control-inline">
-                                                    <input type="radio" id="exam_mode_online" name="exam_mode"
-                                                        value="online" class="custom-control-input" checked>
-                                                    <label class="custom-control-label" for="exam_mode_online">
-                                                        <i class="fas fa-laptop"></i> Online (สอบออนไลน์)
-                                                    </label>
-                                                </div>
-                                                <div class="custom-control custom-radio custom-control-inline">
-                                                    <input type="radio" id="exam_mode_onsite" name="exam_mode"
-                                                        value="onsite" class="custom-control-input">
-                                                    <label class="custom-control-label" for="exam_mode_onsite">
-                                                        <i class="fas fa-chalkboard-teacher"></i> Onsite (สอบนอกสถานที่)
-                                                    </label>
-                                                </div>
-                                                <small class="form-text text-muted mt-2">
-                                                    <i class="fas fa-info-circle"></i> โปรดระบุรูปแบบการสอบที่ท่านต้องการ
-                                                    (Online หรือ Onsite)
-                                                </small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <!-- Parent/Guardian Information Section -->
                                 <div class="section-header">
                                     <i class="fas fa-users"></i>
@@ -2690,7 +2658,8 @@
                 if (!onlineSlots.available) {
                     $onlineRadio.prop('disabled', true);
                     $onlineLabel.html('<i class="fas fa-laptop"></i> Online (สอบออนไลน์) <span class="badge badge-danger">เต็มแล้ว</span>');
-                    if ($onlineRadio.is(':checked')) {
+                    // Auto switch to onsite if online is full and onsite is available
+                    if ($onlineRadio.is(':checked') && onsiteSlots.available) {
                         $onsiteRadio.prop('checked', true);
                     }
                 } else {
@@ -2706,7 +2675,8 @@
                 if (!onsiteSlots.available) {
                     $onsiteRadio.prop('disabled', true);
                     $onsiteLabel.html('<i class="fas fa-chalkboard-teacher"></i> Onsite (สอบนอกสถานที่) <span class="badge badge-danger">เต็มแล้ว</span>');
-                    if ($onsiteRadio.is(':checked')) {
+                    // Auto switch to online if onsite is full and online is available
+                    if ($onsiteRadio.is(':checked') && onlineSlots.available) {
                         $onlineRadio.prop('checked', true);
                     }
                 } else {
@@ -2754,13 +2724,22 @@
                     // Set required attribute
                     $('input[name="exam_mode"]').attr('required', true);
 
-                    // Default to online if nothing checked
-                    if (!$('input[name="exam_mode"]:checked').length) {
-                        $('#exam_mode_online').prop('checked', true);
-                    }
-
-                    // Update available slots
+                    // Update available slots first
                     updateExamModeOptions();
+                    
+                    // Auto-select available option (prefer online as default)
+                    const onlineSlots = getAvailableSlots('online');
+                    const onsiteSlots = getAvailableSlots('onsite');
+                    
+                    // If current selection is disabled, switch to available one
+                    const $currentChecked = $('input[name="exam_mode"]:checked');
+                    if ($currentChecked.prop('disabled') || !$currentChecked.length) {
+                        if (onlineSlots.available) {
+                            $('#exam_mode_online').prop('checked', true);
+                        } else if (onsiteSlots.available) {
+                            $('#exam_mode_onsite').prop('checked', true);
+                        }
+                    }
                 } else {
                     examModeContainer.slideUp();
                     $('input[name="exam_mode"]').removeAttr('required');

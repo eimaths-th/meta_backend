@@ -1156,6 +1156,98 @@ class FormManageController extends Controller
             'message' => 'Form deleted successfully'
         ]);
     }
+
+    /**
+     * Duplicate a form with all its settings, packages, and grades
+     */
+    public function duplicate(Request $request)
+    {
+        try {
+            $originalForm = FormManage::find($request->id);
+            
+            if (!$originalForm) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'ไม่พบฟอร์มต้นแบบ'
+                ], 404);
+            }
+            
+            $lastSfield = FormManage::orderBy('id', 'desc')->first();
+            // Generate new unique sfield
+            $newSfield = $lastSfield ? ($lastSfield->sfield + 1) : 1;
+            // dd($lastSfield,$newSfield);
+            
+            // Generate new form_name, form_route, slug with "- [ Duplicate ]" suffix
+            $newFormName = $originalForm->form_name . ' - [ Duplicate ]';
+            $newFormRoute = $originalForm->form_route . '-duplicate';
+            $newSlug = ($originalForm->slug ?? $originalForm->form_route) . '-duplicate';
+            
+            // Check if route/slug already exists and add number if needed
+            $counter = 1;
+            $baseRoute = $newFormRoute;
+            $baseSlug = $newSlug;
+            while (FormManage::where('form_route', $newFormRoute)->orWhere('slug', $newSlug)->exists()) {
+                $counter++;
+                $newFormRoute = $baseRoute . '-' . $counter;
+                $newSlug = $baseSlug . '-' . $counter;
+            }
+            // dd($newSfield);
+            // Clone the form
+            $newForm = $originalForm->replicate();
+            $newForm->sfield = $newSfield;
+            $newForm->form_name = $newFormName;
+            $newForm->form_route = $newFormRoute;
+            $newForm->slug = $newSlug;
+            $newForm->online_registered = 0; // Reset registration counts
+            $newForm->onsite_registered = 0;
+            $newForm->create_by = Auth::user()->id;
+            $newForm->update_by = Auth::user()->id;
+            $newForm->created_at = now();
+            $newForm->updated_at = now();
+            $newForm->save();
+
+            // Duplicate packages
+            $originalPackages = FormPakages::where('form_id', $originalForm->id)->get();
+            foreach ($originalPackages as $package) {
+                $newPackage = $package->replicate();
+                $newPackage->form_id = $newForm->id;
+                $newPackage->sfield = $newSfield;
+                $newPackage->form_name = $newFormName;
+                $newPackage->form_route = $newFormRoute;
+                $newPackage->online_registered = 0;
+                $newPackage->onsite_registered = 0;
+                $newPackage->create_by = Auth::user()->id;
+                $newPackage->update_by = Auth::user()->id;
+                $newPackage->save();
+            }
+
+            // Duplicate grades
+            $originalGrades = FormGrades::where('form_id', $originalForm->id)->get();
+            foreach ($originalGrades as $grade) {
+                $newGrade = $grade->replicate();
+                $newGrade->form_id = $newForm->id;
+                $newGrade->sfield = $newSfield;
+                $newGrade->form_name = $newFormName;
+                $newGrade->form_route = $newFormRoute;
+                $newGrade->create_by = Auth::user()->id;
+                $newGrade->update_by = Auth::user()->id;
+                $newGrade->save();
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Duplicate ฟอร์มสำเร็จ: ' . $newFormName,
+                'new_id' => $newForm->id
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'เกิดข้อผิดพลาด: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     // Exam Mode API Methods
     public function getPackagesExamMode(Request $request)
     {

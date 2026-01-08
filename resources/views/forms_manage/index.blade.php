@@ -62,17 +62,18 @@
                                     <td>{{ $item->form_name }}</td>
                                     <td>{{ $item->form_route }}</td>
                                     <td>
-                                        <a href="{{ route('form-manage.view', $item->id) }}" class="btn btn-primary">
+                                        <a href="{{ route('form-manage.view', $item->id) }}" class="btn btn-primary btn-sm" title="View">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('create-form', ['id' => $item->id]) }}" class="btn btn-warning">
+                                        <a href="{{ route('create-form', ['id' => $item->id]) }}" class="btn btn-warning btn-sm" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
-
-                                        <button type="button" class="btn btn-danger delete-btn" data-id="{{ $item->id }}">
+                                        <button type="button" class="btn btn-info btn-sm duplicate-btn" data-id="{{ $item->id }}" title="Duplicate">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="{{ $item->id }}" title="Delete">
                                             <i class="fas fa-trash"></i>
                                         </button>
-
                                     </td>
                                 </tr>
                             @endforeach
@@ -97,7 +98,7 @@
             // delete btn
             $('.delete-btn').click(function() {
                 var id = $(this).data('id');
-                if (confirm("Are you sure?")) {
+                if (confirm("Are you sure you want to delete this form?")) {
                     $.ajax({
                         url: "{{ route('form-manage.destroy') }}",
                         method: 'POST',
@@ -125,6 +126,54 @@
                             toastr.error(message, {
                                 timeOut: 2000
                             });
+                        }
+                    });
+                }
+            });
+
+            // duplicate btn
+            $('.duplicate-btn').click(function() {
+                var id = $(this).data('id');
+                var $btn = $(this);
+                
+                if (confirm("Are you sure you want to duplicate this form?")) {
+                    $btn.prop('disabled', true);
+                    $btn.find('i').removeClass('fa-copy').addClass('fa-spinner fa-spin');
+                    
+                    $.ajax({
+                        url: "{{ route('form-manage.duplicate') }}",
+                        method: 'POST',
+                        data: {
+                            id: id,
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(result) {
+                            if (result.status === 'success') {
+                                toastr.success(result.message, {
+                                    timeOut: 2000
+                                });
+
+                                setTimeout(() => {
+                                    window.location.href = "{{ route('form-manage.index') }}";
+                                }, 2000);
+                            } else {
+                                toastr.error(result.message || 'เกิดข้อผิดพลาด', {
+                                    timeOut: 2000
+                                });
+                                $btn.prop('disabled', false);
+                                $btn.find('i').removeClass('fa-spinner fa-spin').addClass('fa-copy');
+                            }
+                        },
+                        error: function(xhr) {
+                            let message = 'เกิดข้อผิดพลาดในการ Duplicate ฟอร์ม';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                message = xhr.responseJSON.message;
+                            }
+                            toastr.error(message, {
+                                timeOut: 2000
+                            });
+                            $btn.prop('disabled', false);
+                            $btn.find('i').removeClass('fa-spinner fa-spin').addClass('fa-copy');
                         }
                     });
                 }
