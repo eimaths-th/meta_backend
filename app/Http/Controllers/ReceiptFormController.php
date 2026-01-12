@@ -1561,7 +1561,7 @@ class ReceiptFormController extends Controller
 
 
         // Check Exam Mode Limits
-        $formManage = FormManage::where('id', $request->get('sfield'))->first();
+        $formManage = FormManage::where('sfield', $request->get('sfield'))->first();
         $examMode = $request->get('exam_mode');
         $packageId = $request->get('package');
 
@@ -1834,7 +1834,7 @@ class ReceiptFormController extends Controller
 
 
         // Check Exam Mode Limits
-        $formManage = FormManage::find($request->get('sfield'));
+        $formManage = FormManage::where('sfield', $request->get('sfield'))->first();
         if ($formManage && $formManage->enable_exam_mode) {
             $examMode = $request->get('exam_mode');
             if (!$examMode) {
@@ -1889,6 +1889,16 @@ class ReceiptFormController extends Controller
 
         $receiptForm->save();
 
+        // Update Registered Count for Form (form-level limits)
+        if ($formManage && $formManage->enable_exam_mode) {
+            $examMode = $request->get('exam_mode');
+            if ($examMode === 'online') {
+                $formManage->increment('online_registered');
+            } elseif ($examMode === 'onsite') {
+                $formManage->increment('onsite_registered');
+            }
+        }
+
         $adminEmail = $request->get('email');
 
         if (!in_array($request->get('sfield'), [0, 17], true) && $adminEmail) {
@@ -1896,7 +1906,6 @@ class ReceiptFormController extends Controller
                 Mail::to($adminEmail)->send(new ContactMail($receiptForm));
             }
         }
-        $receiptForm->save();
 
 
         return redirect('/form/completed/' . $route);
