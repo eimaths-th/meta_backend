@@ -39,6 +39,7 @@ class Receipt extends Model
         'description2',
         'contest',
         'referent_code',
+        'exam_mode',
     ];
     public function recform()
     {

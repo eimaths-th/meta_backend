@@ -662,6 +662,7 @@ class ReceiptController extends Controller
             $receipt = Receipt::select(
                 "receipts.id as receipt_id",
                 "receipts.type as receipt_type",
+                "receipts.exam_mode as exam_mode",
                 "receipts.submission_date as receipt_submission_date",
                 "receipts.receipt_number as receipt_number",
                 "receipts.receipt_customer_number as receipt_customer_number",
@@ -701,6 +702,15 @@ class ReceiptController extends Controller
                     }
                     return $mes;
                 })
+                ->addColumn('exam_mode', function ($row) {
+                    $mode = $row->exam_mode;
+                    if ($mode === 'online') {
+                        return '<span class="text-dark"><i class="fas fa-laptop"></i> Online</span>';
+                    } elseif ($mode === 'onsite') {
+                        return '<span class="text-dark"><i class="fas fa-chalkboard-teacher"></i> Onsite</span>';
+                    }
+                    return '-';
+                })
                 ->editColumn('referent_code', function (Receipt $receipt) {
                     // dd($receipt);
                     return $receipt->receipt_referent_code;
@@ -725,7 +735,9 @@ class ReceiptController extends Controller
                     $html .= '<a href="#" class="btn btn-xs btn-info btn-edit" id="getConvData" data-id="' . $row->receipt_id . '"><i class="fa fa-code-compare"></i></i> Credit Note</a> ';
                     //$html .= '<a href="#" data-rowid="' . $row->receipt_id . '" class="btn btn-xs btn-danger btn-delete"><i class="fa fa-trash"></i> Delete</a>';
                     return $html;
-                })->toJson();
+                })
+                ->rawColumns(['checkbox', 'action', 'exam_mode'])
+                ->toJson();
         }
 
         //get subject

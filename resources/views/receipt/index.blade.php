@@ -193,6 +193,7 @@
                             <tr>
                                 <th width="10px"><input type="checkbox" id="check-all" class="flat"></th>
                                 <th>Type</th>
+                                <th>Exam Mode</th>
                                 <th>Submission Date</th>
                                 <th>Referent Code</th>
                                 <th>Referent Name</th>
@@ -1467,6 +1468,10 @@
                     {
                         data: 'receipt_type',
                         name: 'receipt_type'
+                    },
+                    {
+                        data: 'exam_mode',
+                        name: 'exam_mode'
                     },
                     {
                         data: 'receipt_submission_date',

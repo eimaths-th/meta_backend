@@ -1084,6 +1084,7 @@ class ReceiptFormController extends Controller
         $receipt = new Receipt($request->all());
         $receipt->recform_id =  $form->id;
         $receipt->referent_code = $request->get('referent_code');
+        $receipt->exam_mode = $request->get('exam_mode') ?: $form->exam_mode;
         $receipt->save();
         // dd(
         //     $request,
@@ -2033,6 +2034,11 @@ class ReceiptFormController extends Controller
         }
 
         $data->ref_date_label = optional($data->formManage)->ref_date_label ? optional($data->formManage)->ref_date_label . ' : ' : 'Reference Date :';
+        
+        // Add exam_mode info
+        $data->exam_mode = $data->exam_mode ?? '';
+        $data->enable_exam_mode = optional($data->formManage)->enable_exam_mode ?? false;
+        
         // dd($data);
         return response()->json([
             'data' =>  $data

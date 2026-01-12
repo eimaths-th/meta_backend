@@ -583,6 +583,30 @@
                                     </div>
                                 </div>
                             </div>
+                            {{-- Exam Mode --}}
+                            <div class="form-row" id="examModeRow" style="display: none;">
+                                <div class="col-md-12">
+                                    <div class="position-relative form-group">
+                                        <label for="ExamMode">Exam Mode / รูปแบบการสอบ:</label>
+                                        <div class="p-2 bg-light rounded border">
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="AddExamModeOnline" name="exam_mode"
+                                                    value="online" class="custom-control-input">
+                                                <label class="custom-control-label" for="AddExamModeOnline">
+                                                    <i class="fas fa-laptop"></i> Online
+                                                </label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="AddExamModeOnsite" name="exam_mode"
+                                                    value="onsite" class="custom-control-input">
+                                                <label class="custom-control-label" for="AddExamModeOnsite">
+                                                    <i class="fas fa-chalkboard-teacher"></i>  Onsite
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <div class="col-md-6">
                                     <div class="position-relative form-group">
@@ -1035,6 +1059,22 @@
                             $('#AddRefDateLabel').text(res.data.ref_date_label);
                             $('#showrefdate').css('display', 'block');
                         }
+                        
+                        // Exam Mode handling
+                        if (res.data.enable_exam_mode) {
+                            $('#examModeRow').show();
+                            if (res.data.exam_mode === 'online') {
+                                $('#AddExamModeOnline').prop('checked', true);
+                            } else if (res.data.exam_mode === 'onsite') {
+                                $('#AddExamModeOnsite').prop('checked', true);
+                            } else {
+                                // Default to online if no value
+                                $('#AddExamModeOnline').prop('checked', true);
+                            }
+                        } else {
+                            $('#examModeRow').hide();
+                        }
+                        
                         //console.log(res.data.photo);
                         $('#EditModal').modal('show');
 
@@ -1101,6 +1141,7 @@
                         file_att: $('#AddFile').val(),
                         sfield: $('#Sfield').val(),
                         fid: $('#fid').val(),
+                        exam_mode: $('input[name="exam_mode"]:checked').val() || '',
                         _token: token,
                     },
 

@@ -49,6 +49,7 @@ class ExportExcel implements FromCollection, WithHeadings
             "first_name",
             "last_name",
             "ref_date",
+            "exam_mode",
             // "nick_name",
             // "email",
             // "school_name",
@@ -104,6 +105,7 @@ class ExportExcel implements FromCollection, WithHeadings
                 return [
                     "submission_date" => $receipt->submission_date,
                     "ref_date" => $receipt->ref_date ?? null,
+                    "exam_mode" => $receipt->exam_mode ? ucfirst($receipt->exam_mode) : '',
                     "first_name" => $receipt->first_name,
                     "last_name" => $receipt->last_name,
                     "nick_name" => $receipt->recform->nick_name,
@@ -131,6 +133,7 @@ class ExportExcel implements FromCollection, WithHeadings
                 return [
                 "submission_date" => $receipt->submission_date,
                 "ref_date" => $receipt->ref_date ?? null,
+                "exam_mode" => $receipt->exam_mode ? ucfirst($receipt->exam_mode) : '',
                 "first_name" => $receipt->first_name,
                 "last_name" => $receipt->last_name,
                 "nick_name" => $null,
@@ -143,6 +146,8 @@ class ExportExcel implements FromCollection, WithHeadings
                 "name_parent" => $receipt->name_parent,
                 "mobile" => $receipt->mobile,
                 "package" => $receipt->package,
+                "award" => $null,
+                "street_address2" => $null,
                 "price" => preg_replace("/[^0-9.]/", "", $this->delete_all_between('(', ')', $receipt->package)),
                 "contest" => $receipt->contest,
                 "photo" => $null,
@@ -161,6 +166,7 @@ class ExportExcel implements FromCollection, WithHeadings
         return [
             'Submission Date',
             'Ref Date',
+            'Exam Mode',
             'First Name',
             'Last Name',
             'Nick Name',
