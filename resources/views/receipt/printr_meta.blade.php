@@ -86,6 +86,31 @@
             margin-top: 1rem;
             margin-bottom: 1rem;
         }
+
+        /* Print page break styles */
+        @media print {
+            .main-card {
+                page-break-after: always;
+                page-break-inside: avoid;
+                break-after: page;
+                break-inside: avoid;
+            }
+
+            .main-card:last-child {
+                page-break-after: auto;
+                break-after: auto;
+            }
+
+            @page {
+                size: A4;
+                margin: 10mm;
+            }
+
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
     </style>
 </head>
 
