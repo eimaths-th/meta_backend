@@ -1084,7 +1084,6 @@ class ReceiptFormController extends Controller
         $receipt = new Receipt($request->all());
         $receipt->recform_id =  $form->id;
         $receipt->referent_code = $request->get('referent_code');
-        $receipt->exam_mode = $request->get('exam_mode') ?: $form->exam_mode;
         $receipt->save();
         // dd(
         //     $request,
@@ -1562,7 +1561,7 @@ class ReceiptFormController extends Controller
 
 
         // Check Exam Mode Limits
-        $formManage = FormManage::where('sfield', $request->get('sfield'))->first();
+        $formManage = FormManage::where('id', $request->get('sfield'))->first();
         $examMode = $request->get('exam_mode');
         $packageId = $request->get('package');
 
@@ -1835,7 +1834,7 @@ class ReceiptFormController extends Controller
 
 
         // Check Exam Mode Limits
-        $formManage = FormManage::where('sfield', $request->get('sfield'))->first();
+        $formManage = FormManage::find($request->get('sfield'));
         if ($formManage && $formManage->enable_exam_mode) {
             $examMode = $request->get('exam_mode');
             if (!$examMode) {
@@ -1890,16 +1889,6 @@ class ReceiptFormController extends Controller
 
         $receiptForm->save();
 
-        // Update Registered Count for Form (form-level limits)
-        if ($formManage && $formManage->enable_exam_mode) {
-            $examMode = $request->get('exam_mode');
-            if ($examMode === 'online') {
-                $formManage->increment('online_registered');
-            } elseif ($examMode === 'onsite') {
-                $formManage->increment('onsite_registered');
-            }
-        }
-
         $adminEmail = $request->get('email');
 
         if (!in_array($request->get('sfield'), [0, 17], true) && $adminEmail) {
@@ -1907,6 +1896,7 @@ class ReceiptFormController extends Controller
                 Mail::to($adminEmail)->send(new ContactMail($receiptForm));
             }
         }
+        $receiptForm->save();
 
 
         return redirect('/form/completed/' . $route);
@@ -2034,11 +2024,6 @@ class ReceiptFormController extends Controller
         }
 
         $data->ref_date_label = optional($data->formManage)->ref_date_label ? optional($data->formManage)->ref_date_label . ' : ' : 'Reference Date :';
-        
-        // Add exam_mode info
-        $data->exam_mode = $data->exam_mode ?? '';
-        $data->enable_exam_mode = optional($data->formManage)->enable_exam_mode ?? false;
-        
         // dd($data);
         return response()->json([
             'data' =>  $data

@@ -705,7 +705,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-row form-focus">
+                                <div class="form-row form-focus" data-field-input="package">
 
                                     <div class="col-md-12">
 
@@ -717,9 +717,6 @@
                                             <input type="text" class="form-control mb-3" name="package"
                                                 id="package_label" value="{{ $data->package }}"
                                                 placeholder="{{ $data->package }}" data-no-validation="true">
-                                            <input type="hidden" name="field_settings[package][enabled]" value="1">
-                                            <input type="hidden" name="field_settings[package][required]"
-                                                value="1">
 
                                             {{-- Multi-select checkbox --}}
 

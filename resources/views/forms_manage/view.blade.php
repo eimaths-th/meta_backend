@@ -1733,6 +1733,34 @@
         });
     </script>
     <script>
+        // Global AJAX error handler for CSRF token expiration
+        $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
+            if (jqxhr.status === 419) {
+                alert('เซสชันหมดอายุ กรุณารีเฟรชหน้าเว็บแล้วลองใหม่อีกครั้ง\n\nSession expired. Please refresh the page and try again.');
+                $('#loader-container').hide();
+                $('#send_data').attr('disabled', false);
+                location.reload();
+            }
+        });
+
+        // Refresh CSRF token every 30 minutes to prevent expiration
+        setInterval(function() {
+            $.get('/sanctum/csrf-cookie').fail(function() {
+                // Fallback: try to refresh token from meta tag
+                $.ajax({
+                    url: window.location.href,
+                    type: 'GET',
+                    success: function(response) {
+                        var newToken = $(response).find('meta[name="csrf-token"]').attr('content');
+                        if (newToken) {
+                            $('meta[name="csrf-token"]').attr('content', newToken);
+                            $('input[name="_token"]').val(newToken);
+                        }
+                    }
+                });
+            });
+        }, 30 * 60 * 1000); // 30 minutes
+
         $(document).ready(function() {
             var inputlist = ["firstname", "lastname", "address", "postcode"];
             $(".form-control").focusout(function() {
@@ -2265,8 +2293,110 @@
                     return false;
                 }
 
-                form.submit();
-                return true;
+                // Use AJAX to submit form with better error handling
+                var formData = new FormData(form);
+                
+                $.ajax({
+                    url: $(form).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    timeout: 120000, // 2 minute timeout
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        // Upload progress
+                        xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                                $('#loading-message').text('กำลังอัพโหลด... ' + percentComplete + '%');
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    beforeSend: function() {
+                        $('#loading-message').text('กำลังส่งข้อมูล...');
+                    },
+                    success: function(response, textStatus, xhr) {
+                        $('#loading-message').text('กำลังดำเนินการ...');
+                        // Check if response is a redirect (HTML page)
+                        if (xhr.getResponseHeader('Content-Type') && xhr.getResponseHeader('Content-Type').includes('text/html')) {
+                            // Follow the redirect by replacing page content or redirecting
+                            if (response.includes('form/completed/') || response.includes('complete')) {
+                                // Extract redirect URL from response if possible
+                                var redirectMatch = response.match(/window\.location\s*=\s*['"]([^'"]+)['"]/);
+                                if (redirectMatch) {
+                                    window.location.href = redirectMatch[1];
+                                } else {
+                                    // Assume success, redirect to completed page
+                                    var routeName = $('input[name="routeName"]').val();
+                                    window.location.href = '/form/completed/' + routeName;
+                                }
+                            } else {
+                                // Server returned HTML (possibly error page or redirect)
+                                document.open();
+                                document.write(response);
+                                document.close();
+                            }
+                        } else if (response.redirect) {
+                            window.location.href = response.redirect;
+                        } else if (response.success) {
+                            var routeName = $('input[name="routeName"]').val();
+                            window.location.href = '/form/completed/' + routeName;
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#loader-container').hide();
+                        $('#send_data').attr('disabled', false);
+                        
+                        if (xhr.status === 419) {
+                            alert('เซสชันหมดอายุ กรุณารีเฟรชหน้าเว็บแล้วลองใหม่อีกครั้ง\n\nSession expired. Please refresh the page and try again.');
+                            location.reload();
+                        } else if (xhr.status === 422) {
+                            // Validation errors
+                            var response = xhr.responseJSON;
+                            var errorMsg = '';
+                            
+                            if (response && response.errors) {
+                                if (Array.isArray(response.errors)) {
+                                    // errors is an array of strings
+                                    errorMsg = response.errors.join('\n');
+                                } else {
+                                    // errors is an object with field => [messages]
+                                    $.each(response.errors, function(key, value) {
+                                        if (Array.isArray(value)) {
+                                            errorMsg += value[0] + '\n';
+                                        } else {
+                                            errorMsg += value + '\n';
+                                        }
+                                    });
+                                }
+                            }
+                            
+                            if (errorMsg) {
+                                alert('กรุณาตรวจสอบข้อมูล:\n' + errorMsg);
+                            } else if (response && response.message) {
+                                alert(response.message);
+                            } else {
+                                alert('กรุณาตรวจสอบข้อมูลให้ครบถ้วน');
+                            }
+                        } else if (xhr.status === 413) {
+                            alert('ไฟล์มีขนาดใหญ่เกินไป กรุณาลดขนาดไฟล์แล้วลองใหม่\n\nFile too large. Please reduce file size and try again.');
+                        } else if (xhr.status === 500) {
+                            alert('เกิดข้อผิดพลาดที่เซิร์ฟเวอร์ กรุณาลองใหม่อีกครั้ง หรือติดต่อผู้ดูแลระบบ\n\nServer error. Please try again or contact support.');
+                        } else if (xhr.status === 0) {
+                            if (status === 'timeout') {
+                                alert('การเชื่อมต่อหมดเวลา กรุณาลองใหม่อีกครั้ง\n\nConnection timeout. Please try again.');
+                            } else {
+                                alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต\n\nConnection error. Please check your internet connection.');
+                            }
+                        } else {
+                            alert('เกิดข้อผิดพลาด (' + xhr.status + ') กรุณาลองใหม่อีกครั้ง\n\nError occurred. Please try again.');
+                        }
+                    }
+                });
+                
+                return false; // Prevent default form submission
             }
         }
 

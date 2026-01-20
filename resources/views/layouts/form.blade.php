@@ -15,8 +15,8 @@
     <meta name="description" content="Meta Knowledge - ศูนย์รวมความรู้และการพัฒนาทักษะสำหรับนักเรียนและผู้ปกครอง">
     <link rel="icon" type="image/png" href="{{ asset('images/logo_meta.png') }}">
 
-    <script src="https://code.jquery.com/jquery-3.5.1.js" type="text/javascript"></script>
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.21.0/dist/jquery.validate.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/jquery.inputmask.min.js"></script>
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

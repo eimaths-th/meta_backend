@@ -94,12 +94,16 @@
                 const $input = $(this);
                 const inputName = $input.attr('name');
 
+                // Skip inputs with data-no-validation attribute
+                if ($input.data('no-validation') === true || $input.attr('data-no-validation') === 'true') {
+                    $input.prop('required', false).removeAttr('required');
+                    return;
+                }
+
                 if (shouldRequire) {
                     $input.prop('required', true).attr('required', 'required');
-                    console.log('Set required=true for:', inputName);
                 } else {
                     $input.prop('required', false).removeAttr('required');
-                    console.log('Removed required for:', inputName);
                 }
             });
         }
@@ -130,7 +134,6 @@
             }
 
             if (!$wrapper.length) {
-                console.log('Wrapper not found for field:', fieldKey, 'public_name:', config.public_name);
                 $('[data-field-enabled="' + fieldKey + '"]').prop('disabled', true).prop('checked', false);
                 $('[data-field-required="' + fieldKey + '"]').prop('disabled', true).prop('checked', false);
                 return;
@@ -140,9 +143,6 @@
             const $related = $('[data-field-related="' + config.public_name + '"]');
             const hasExistingImagePayment = (fieldKey === 'image_payment') && $('#oldImagePayment').length && $('#oldImagePayment').val();
             const settings = ensureFieldSetting(fieldKey);
-
-            console.log('Applying field state:', fieldKey, 'enabled:', settings.enabled, 'required:', settings
-                .required, 'inputs:', $inputs.length);
 
             storeOriginalRequired($inputs);
 
@@ -408,7 +408,6 @@
                     } else {
                         $('#loader-container').hide();
                         const $submitBtn = $('#send_data').prop('disabled', false);
-                        console.log(resp);
                         // If it redirected server-side, we may get HTML; replace document
                         //each error message show with toastr
                         $.each(resp.errors, function(key, value) {
@@ -438,7 +437,6 @@
                     }
                 },
                 error: function(xhr) {
-                    console.log(xhr);
                     // Validation errors (Laravel 422)
                     if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
                         const errors = xhr.responseJSON.errors;
