@@ -1650,9 +1650,9 @@ class ReceiptFormController extends Controller
 
         if ($receiptForm) {
             return redirect('/form/complete/' . $route);
+        } else {
+            return back()->with('error', 'บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
         }
-
-        return back()->with('error', 'บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
     }
 
     public function storeFormManage(Request $request)
