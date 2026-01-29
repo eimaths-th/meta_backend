@@ -1647,7 +1647,12 @@ class ReceiptFormController extends Controller
         // $receiptForm->save(); // Remove duplicate save
 
 
-        return redirect('/form/complete/' . $route);
+
+        if ($receiptForm) {
+            return redirect('/form/complete/' . $route);
+        }
+
+        return back()->with('error', 'บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
     }
 
     public function storeFormManage(Request $request)
@@ -1915,8 +1920,9 @@ class ReceiptFormController extends Controller
         }
         // $receiptForm->save();
 
-
-        return redirect('/form/completed/' . $route);
+        if ($receiptForm) {
+            return redirect('/form/completed/' . $route);
+        }
     }
 
     public function reSendMail($id)
