@@ -511,9 +511,16 @@ class ReceiptFormController extends Controller
 
         $filename =  $request->get('name');
         $oldfile = FileUpload::where('oldname', $filename)->get();
+
+        if ($oldfile->isEmpty()) {
+            return $filename;
+        }
+
         $path = public_path() . '/form_images/' . $oldfile[0]->filename;
         if (file_exists($path)) {
             unlink($path);
+            FileUpload::where('oldname', $filename)->delete();
+        } else {
             FileUpload::where('oldname', $filename)->delete();
         }
         return $filename;
