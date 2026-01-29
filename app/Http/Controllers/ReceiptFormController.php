@@ -1645,6 +1645,7 @@ class ReceiptFormController extends Controller
 
     public function storeFormManage(Request $request)
     {
+        \Illuminate\Support\Facades\Log::info("storeFormManage started", ['request' => $request->except(['imgFiles', 'imgFiles2', 'photo_att', 'file_att'])]);
         // dd($request->all());
 
         $allowedTLDs = ['.com', '.net', '.co.th', '.ac.th', '.or.th', '.go.th', '.edu', '.org'];
@@ -1661,6 +1662,7 @@ class ReceiptFormController extends Controller
         );
 
         if ($result['checkRegisted']) {
+            \Illuminate\Support\Facades\Log::info("Duplicate registration detected", ['result' => $result]);
             // 1) บล็อกกรณีข้อมูลซ้ำแบบตรงตัว
             if ($result['matchType'] === 'exact') {
                 $message = "พบข้อมูลการลงทะเบียนซ้ำกับชื่อ-นามสกุล: {$result['receipt']->first_name} {$result['receipt']->last_name}\n";
@@ -1698,6 +1700,7 @@ class ReceiptFormController extends Controller
 
 
         if ($validator->fails()) {
+            \Illuminate\Support\Facades\Log::warning("Form Validation Failed", ['errors' => $validator->errors()->all(), 'request' => $request->all()]);
             //return response()->json(['errors' => $validator->errors()->all()]);
             return back()->withErrors(['errors' => $validator->errors()->all()]);
         }
@@ -1889,14 +1892,21 @@ class ReceiptFormController extends Controller
 
         $receiptForm->save();
 
+        \Illuminate\Support\Facades\Log::info("ReceiptForm Saved. ID: {$receiptForm->id}, Route: {$route}");
+
         $adminEmail = $request->get('email');
 
         if (!in_array($request->get('sfield'), [0, 17], true) && $adminEmail) {
             if (filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
-                Mail::to($adminEmail)->send(new ContactMail($receiptForm));
+                try {
+                    Mail::to($adminEmail)->send(new ContactMail($receiptForm));
+                    \Illuminate\Support\Facades\Log::info("Email sent to: {$adminEmail}");
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error("Failed to send email to {$adminEmail}: " . $e->getMessage());
+                }
             }
         }
-        $receiptForm->save();
+        // $receiptForm->save();
 
 
         return redirect('/form/completed/' . $route);

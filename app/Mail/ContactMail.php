@@ -28,8 +28,21 @@ class ContactMail extends Mailable
     {
         //
         $this->data = $data;
-        $this->url1 = '<img height="200px" src="' . asset('receipt_form_images/' . $data->photo_att) . '" alt="..." style="vertical-align: middle;">';
-        $this->url2 = '<img src=" ' . asset('receipt_form_images/' . $data->file_att) . ' " alt="..." style="vertical-align: middle; height: 200px;">';
+        // Helper function to generate image HTML
+        $generateImageHtml = function ($files, $path, $height = '200px') {
+            if (!$files) return '';
+            $html = '';
+            $filesArray = explode('|', $files);
+            foreach ($filesArray as $file) {
+                if (!empty($file)) {
+                    $html .= '<img height="' . $height . '" src="' . asset($path . '/' . $file) . '" alt="..." style="vertical-align: middle; margin-right: 5px;"> ';
+                }
+            }
+            return $html;
+        };
+
+        $this->url1 = $generateImageHtml($data->photo_att, 'receipt_form_images');
+        $this->url2 = $generateImageHtml($data->file_att, 'receipt_form_images');
         // $this->url2 = asset('receipt_form_images/' . $data->file_att);
 
         $sfield = $data->sfield;
@@ -40,8 +53,7 @@ class ContactMail extends Mailable
             $this->check = true;
             $this->head_title = ($formManage->head_title) ?? 'Contact Mail';
             $this->news_title = ($formManage->form_name) ?? 'Contact Mail' . ' ' . date('Y');
-
-        }else{
+        } else {
             $this->check = false;
         }
         // dd($this->message);
@@ -50,7 +62,6 @@ class ContactMail extends Mailable
         } else {
             $this->subject('Contact Mail');
         }
-
     }
 
     /**
