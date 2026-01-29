@@ -497,7 +497,9 @@
                                                                 <td class="pad">
                                                                     <div
                                                                         style="direction:ltr;font-family:Inter, sans-serif;font-size:12px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">{{ $data->formPackage->package ??  $data->package }}</p>
+                                                                        <p style="margin: 0;">
+                                                                            {{ $data->formPackage->package ?? $data->package }}
+                                                                        </p>
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -780,7 +782,16 @@
                                                                     <div
                                                                         style="font-size:12px;font-weight:400;ext-align:left;mso-line-height-alt:25.2px;">
 
-                                                                        {!! $url2 !!}
+                                                                        @php
+                                                                            $files = explode('|', $url2);
+                                                                        @endphp
+                                                                        @foreach ($files as $file)
+                                                                            @if (!empty($file) && file_exists(public_path('receipt_form_images/' . $file)))
+                                                                                <img src="{{ $message->embed(public_path('receipt_form_images/' . $file)) }}"
+                                                                                    alt="Payment Proof"
+                                                                                    style="vertical-align: middle; margin-right: 5px; height: 200px;">
+                                                                            @endif
+                                                                        @endforeach
 
                                                                     </div>
                                                                 </td>
@@ -972,838 +983,15 @@
 
                                             </tbody>
                                         </table>
-                                        {{-- @php
-                                            dd($data, $url2);
-                                        @endphp --}}
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                        {{-- @php
-                            dd('error');
-                        @endphp --}}
                     @elseif ($data->sfield == '18' || $data->sfield == '19')
                         @if ($data->first_name || $data->last_name)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-4"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400; margin-left:30px; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span class="tinyMce-placeholder">Name -
-                                                                            Surname<br>(English)/ชื่อและนามสกุล<br>ภาษาอังกฤษ</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">{{ $data->first_name ?? ''}}
-                                                                            {{ $data->last_name ?? '' }}</p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        @endif
-                        @if ($data->nick_name)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-5"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0;  font-size: 14px; font-weight: 400; text-align: start;margin-left:30px;  margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span
-                                                                            class="tinyMce-placeholder">Nickname(english)/ชื่อ<br>เล่น(ภาษาอังกฤษ)</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">{{ $data->nick_name }}
-                                                                        </p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        @endif
-
-                        @if ($data->birth_date)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-6"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span class="tinyMce-placeholder">Birth Date /
-                                                                            วันเกิด</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;"><?php echo date('d/m/Y', strtotime($data->birth_date)); ?></p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        @endif
-
-                        @if ($data->school_name)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span class="tinyMce-placeholder">School
-                                                                            name(English)/<br>ชื่อโรงเรียน(ภาษาอังกฤษ)</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">{{ $data->school_name }}
-                                                                        </p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        @endif
-
-                        @if ($data->grade)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400;  text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span class="tinyMce-placeholder">Grade /
-                                                                            ระดับชั้น</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">{{ $data->grade }}</p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        @endif
-
-                        @if ($data->package)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span
-                                                                            class="tinyMce-placeholder">แพคเกจในการติว
-                                                                            /<br> Packages</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:12px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">{{ $data->formPackage->package ??  $data->package }}</p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        @endif
-
-                        @if ($data->name_parent)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400;  text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span class="tinyMce-placeholder">Parent's name
-                                                                            /
-                                                                            ชื่อและ<br>นามสกุลผู้ปกครอง</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">{{ $data->name_parent }}
-                                                                        </p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        @endif
-                        @if ($data->street_address || $data->postcode)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400; text-align: start; margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span class="tinyMce-placeholder">Address /
-                                                                            ที่อยู่ภาษาไทย</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">
-                                                                            {{ $data->street_address ?? '' }}
-                                                                            / {{ $data->postcode ?? '' }}</p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        @endif
-
-                        @if ($data->mobile)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span class="tinyMce-placeholder">Phone Number
-                                                                            /
-                                                                            เบอร์<br>โทรศัพท์</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">{{ $data->mobile }}</p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        @endif
-
-                        @if ($data->email)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span
-                                                                            class="tinyMce-placeholder">E-mail(กรุณาตรวจสอบที่<br>อยู่อีเมลให้ถูกต้อง
-                                                                            หาก<br>กรอกผิด
-                                                                            จะไม่สามารถส่งข้อมูลในการสอบได้)</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">{{ $data->email }}</p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        @endif
-
-                        @if ($data->photo_att)
-                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8"
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-4"
                                 role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
                                 width="100%">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                                class="row-content stack" role="presentation"
-                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                                width="700">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="column column-1"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                            width="33.333333333333336%">
-                                                            <table border="0" cellpadding="0" cellspacing="0"
-                                                                class="heading_block block-1" role="presentation"
-                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                                width="100%">
-                                                                <tr>
-                                                                    <td class="pad"
-                                                                        style="text-align:left;width:100%;">
-                                                                        <h2
-                                                                            style="margin: 0; font-size: 14px; font-weight: 400;  text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                            <span
-                                                                                class="tinyMce-placeholder">อัพโหลดรูปภาพผู้สมัคร</span>
-                                                                        </h2>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                        <td class="column column-2"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                            width="66.66666666666667%">
-                                                            <table border="0" cellpadding="10" cellspacing="0"
-                                                                class="paragraph_block block-1" role="presentation"
-                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                                width="100%">
-                                                                <tr>
-                                                                    <td class="pad">
-                                                                        <div
-                                                                            style="direction:ltr;font-family:Inter, sans-serif;font-size:12px;font-weight:400;letter-spacing:0px;">
-
-                                                                            {!! $url1 !!}
-
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        @endif
-
-                        @if ($data->file_att)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span
-                                                                            class="tinyMce-placeholder">อัพโหลดหลักฐานการชำระ<br>เงิน</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="font-size:12px;font-weight:400;ext-align:left;mso-line-height-alt:25.2px;">
-
-                                                                        {!! $url2 !!}
-
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        @endif
-                    @else
-                        @if ($data->last_name)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-4"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400; margin-left:30px; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span class="tinyMce-placeholder">Name -
-                                                                            Surname<br>(English)/ชื่อและนามสกุล<br>ภาษาอังกฤษ</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">{{ $data->first_name }}
-                                                                            {{ $data->last_name }}</p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        @endif
-                        @if ($data->nick_name)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-5"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                            width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0;  font-size: 14px; font-weight: 400; text-align: start;margin-left:30px;  margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span
-                                                                            class="tinyMce-placeholder">Nickname(english)/ชื่อ<br>เล่น(ภาษาอังกฤษ)</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">{{ $data->nick_name }}
-                                                                        </p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        @endif
-                        <!-- รางวัล -->
-                        @if ($data->sfield == '21')
-                        @elseif ($data->sfield == '31' || $data->sfield == '32')
-
-                        @if ($data->award)
-                            <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                class="row row-6" role="presentation"
-                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
                                 <tbody>
                                     <tr>
                                         <td>
@@ -1824,9 +1012,9 @@
                                                                     <td class="pad"
                                                                         style="text-align:left;width:100%;">
                                                                         <h2
-                                                                            style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                            <span class="tinyMce-placeholder">รางวัล /
-                                                                                Reward</span>
+                                                                            style="margin: 0; font-size: 14px; font-weight: 400; margin-left:30px; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span class="tinyMce-placeholder">Name -
+                                                                                Surname<br>(English)/ชื่อและนามสกุล<br>ภาษาอังกฤษ</span>
                                                                         </h2>
                                                                     </td>
                                                                 </tr>
@@ -1844,13 +1032,66 @@
                                                                         <div
                                                                             style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
                                                                             <p style="margin: 0;">
-                                                                                {{-- its json format --}}
-                                                                                @foreach (json_decode($data->award, true) as $award)
-                                                                                    <span>{{ $award }}</span>
-                                                                                    @if (!$loop->last)
-                                                                                        ,
-                                                                                    @endif
-                                                                                @endforeach
+                                                                                {{ $data->first_name ?? '' }}
+                                                                                {{ $data->last_name ?? '' }}</p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        @endif
+                        @if ($data->nick_name)
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-5"
+                                role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                                class="row-content stack" role="presentation"
+                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                width="700">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="column column-1"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="33.333333333333336%">
+                                                            <table border="0" cellpadding="0" cellspacing="0"
+                                                                class="heading_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad"
+                                                                        style="text-align:left;width:100%;">
+                                                                        <h2
+                                                                            style="margin: 0;  font-size: 14px; font-weight: 400; text-align: start;margin-left:30px;  margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span
+                                                                                class="tinyMce-placeholder">Nickname(english)/ชื่อ<br>เล่น(ภาษาอังกฤษ)</span>
+                                                                        </h2>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td class="column column-2"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="66.66666666666667%">
+                                                            <table border="0" cellpadding="10" cellspacing="0"
+                                                                class="paragraph_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad">
+                                                                        <div
+                                                                            style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                            <p style="margin: 0;">
+                                                                                {{ $data->nick_name }}
                                                                             </p>
                                                                         </div>
                                                                     </td>
@@ -1864,12 +1105,12 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            @endif
-                        @else
-                            @if ($data->birth_date)
-                            <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                class="row row-6" role="presentation"
-                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                        @endif
+
+                        @if ($data->birth_date)
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-6"
+                                role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                width="100%">
                                 <tbody>
                                     <tr>
                                         <td>
@@ -1924,137 +1165,131 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            @endif
                         @endif
 
-                        <!-- School -->
                         @if ($data->school_name)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                            width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span class="tinyMce-placeholder">School
-                                                                            name(English)/<br>ชื่อโรงเรียน(ภาษาอังกฤษ)</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">
-                                                                            {{ $data->school_name }}
-                                                                        </p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7"
+                                role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                                class="row-content stack" role="presentation"
+                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                width="700">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="column column-1"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="33.333333333333336%">
+                                                            <table border="0" cellpadding="0" cellspacing="0"
+                                                                class="heading_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad"
+                                                                        style="text-align:left;width:100%;">
+                                                                        <h2
+                                                                            style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span class="tinyMce-placeholder">School
+                                                                                name(English)/<br>ชื่อโรงเรียน(ภาษาอังกฤษ)</span>
+                                                                        </h2>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td class="column column-2"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="66.66666666666667%">
+                                                            <table border="0" cellpadding="10" cellspacing="0"
+                                                                class="paragraph_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad">
+                                                                        <div
+                                                                            style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                            <p style="margin: 0;">
+                                                                                {{ $data->school_name }}
+                                                                            </p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         @endif
 
-                        <!-- Grade -->
                         @if ($data->grade)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                            width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400;  text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span class="tinyMce-placeholder">Grade /
-                                                                            ระดับชั้น</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">{{ $data->grade }}</p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8"
+                                role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                                class="row-content stack" role="presentation"
+                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                width="700">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="column column-1"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="33.333333333333336%">
+                                                            <table border="0" cellpadding="0" cellspacing="0"
+                                                                class="heading_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad"
+                                                                        style="text-align:left;width:100%;">
+                                                                        <h2
+                                                                            style="margin: 0; font-size: 14px; font-weight: 400;  text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span class="tinyMce-placeholder">Grade /
+                                                                                ระดับชั้น</span>
+                                                                        </h2>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td class="column column-2"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="66.66666666666667%">
+                                                            <table border="0" cellpadding="10" cellspacing="0"
+                                                                class="paragraph_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad">
+                                                                        <div
+                                                                            style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                            <p style="margin: 0;">{{ $data->grade }}
+                                                                            </p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         @endif
 
-                        <!-- Packages -->
-                        @if ($data->sfield == '23')
-                        @else
-
-                            @if ($data->package)
-                            <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                class="row row-7" role="presentation"
-                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                        @if ($data->package)
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7"
+                                role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                width="100%">
                                 <tbody>
                                     <tr>
                                         <td>
@@ -2077,7 +1312,7 @@
                                                                         <h2
                                                                             style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
                                                                             <span
-                                                                                class="tinyMce-placeholder">แพคเกจในการสอบ
+                                                                                class="tinyMce-placeholder">แพคเกจในการติว
                                                                                 /<br> Packages</span>
                                                                         </h2>
                                                                     </td>
@@ -2096,7 +1331,7 @@
                                                                         <div
                                                                             style="direction:ltr;font-family:Inter, sans-serif;font-size:12px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
                                                                             <p style="margin: 0;">
-                                                                                {{ $data->formPackage->package ??  $data->package }}
+                                                                                {{ $data->formPackage->package ?? $data->package }}
                                                                             </p>
                                                                         </div>
                                                                     </td>
@@ -2110,80 +1345,73 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            @endif
                         @endif
 
-                        <!-- PackaParent's nameges -->
                         @if ($data->name_parent)
-
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                            width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400;  text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span class="tinyMce-placeholder">Parent's
-                                                                            name
-                                                                            /
-                                                                            ชื่อและ<br>นามสกุลผู้ปกครอง</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">
-                                                                            {{ $data->name_parent }}
-                                                                        </p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8"
+                                role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                                class="row-content stack" role="presentation"
+                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                width="700">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="column column-1"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="33.333333333333336%">
+                                                            <table border="0" cellpadding="0" cellspacing="0"
+                                                                class="heading_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad"
+                                                                        style="text-align:left;width:100%;">
+                                                                        <h2
+                                                                            style="margin: 0; font-size: 14px; font-weight: 400;  text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span class="tinyMce-placeholder">Parent's
+                                                                                name
+                                                                                /
+                                                                                ชื่อและ<br>นามสกุลผู้ปกครอง</span>
+                                                                        </h2>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td class="column column-2"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="66.66666666666667%">
+                                                            <table border="0" cellpadding="10" cellspacing="0"
+                                                                class="paragraph_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad">
+                                                                        <div
+                                                                            style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                            <p style="margin: 0;">
+                                                                                {{ $data->name_parent }}
+                                                                            </p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         @endif
-                        <!-- Address -->
-
-                        @if ($data->sfield == '31' || $data->sfield == '32')
-                        @else
                         @if ($data->street_address || $data->postcode)
-                            <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                class="row row-7" role="presentation"
-                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7"
+                                role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                width="100%">
                                 <tbody>
                                     <tr>
                                         <td>
@@ -2205,8 +1433,7 @@
                                                                         style="text-align:left;width:100%;">
                                                                         <h2
                                                                             style="margin: 0; font-size: 14px; font-weight: 400; text-align: start; margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                            <span class="tinyMce-placeholder">Address
-                                                                                /
+                                                                            <span class="tinyMce-placeholder">Address /
                                                                                 ที่อยู่ภาษาไทย</span>
                                                                         </h2>
                                                                     </td>
@@ -2239,136 +1466,134 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            @endif
                         @endif
 
-                        <!-- Phone -->
                         @if ($data->mobile)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                            width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span class="tinyMce-placeholder">Phone Number
-                                                                            /
-                                                                            เบอร์<br>โทรศัพท์</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">{{ $data->mobile ?? '' }}</p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8"
+                                role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                                class="row-content stack" role="presentation"
+                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                width="700">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="column column-1"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="33.333333333333336%">
+                                                            <table border="0" cellpadding="0" cellspacing="0"
+                                                                class="heading_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad"
+                                                                        style="text-align:left;width:100%;">
+                                                                        <h2
+                                                                            style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span class="tinyMce-placeholder">Phone
+                                                                                Number
+                                                                                /
+                                                                                เบอร์<br>โทรศัพท์</span>
+                                                                        </h2>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td class="column column-2"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="66.66666666666667%">
+                                                            <table border="0" cellpadding="10" cellspacing="0"
+                                                                class="paragraph_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad">
+                                                                        <div
+                                                                            style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                            <p style="margin: 0;">{{ $data->mobile }}
+                                                                            </p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         @endif
-                        <!-- Email -->
 
                         @if ($data->email)
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7"
-                            role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                            width="100%">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                            class="row-content stack" role="presentation"
-                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                            width="700">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="column column-1"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="33.333333333333336%">
-                                                        <table border="0" cellpadding="0" cellspacing="0"
-                                                            class="heading_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad"
-                                                                    style="text-align:left;width:100%;">
-                                                                    <h2
-                                                                        style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                        <span
-                                                                            class="tinyMce-placeholder">E-mail(กรุณาตรวจสอบที่<br>อยู่อีเมลให้ถูกต้อง
-                                                                            หาก<br>กรอกผิด
-                                                                            จะไม่สามารถส่งข้อมูลในการสอบได้)</span>
-                                                                    </h2>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td class="column column-2"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                        width="66.66666666666667%">
-                                                        <table border="0" cellpadding="10" cellspacing="0"
-                                                            class="paragraph_block block-1" role="presentation"
-                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                            width="100%">
-                                                            <tr>
-                                                                <td class="pad">
-                                                                    <div
-                                                                        style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                        <p style="margin: 0;">{{ $data->email }}</p>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7"
+                                role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                                class="row-content stack" role="presentation"
+                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                width="700">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="column column-1"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="33.333333333333336%">
+                                                            <table border="0" cellpadding="0" cellspacing="0"
+                                                                class="heading_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad"
+                                                                        style="text-align:left;width:100%;">
+                                                                        <h2
+                                                                            style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span
+                                                                                class="tinyMce-placeholder">E-mail(กรุณาตรวจสอบที่<br>อยู่อีเมลให้ถูกต้อง
+                                                                                หาก<br>กรอกผิด
+                                                                                จะไม่สามารถส่งข้อมูลในการสอบได้)</span>
+                                                                        </h2>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td class="column column-2"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="66.66666666666667%">
+                                                            <table border="0" cellpadding="10" cellspacing="0"
+                                                                class="paragraph_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad">
+                                                                        <div
+                                                                            style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                            <p style="margin: 0;">{{ $data->email }}
+                                                                            </p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         @endif
-                        <!-- อัพโหลดรูปภาพผู้สมัคร -->
-                        @if ($data->sfield == '23')
-                        @else
-                            @if ($data->photo_att)
-                            <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                class="row row-8" role="presentation"
-                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+
+                        @if ($data->photo_att)
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8"
+                                role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                width="100%">
                                 <tbody>
                                     <tr>
                                         <td>
@@ -2409,7 +1634,16 @@
                                                                         <div
                                                                             style="direction:ltr;font-family:Inter, sans-serif;font-size:12px;font-weight:400;letter-spacing:0px;">
 
-                                                                            {!! $url1 !!}
+                                                                            @php
+                                                                                $files = explode('|', $url1);
+                                                                            @endphp
+                                                                            @foreach ($files as $file)
+                                                                                @if (!empty($file) && file_exists(public_path('receipt_form_images/' . $file)))
+                                                                                    <img src="{{ $message->embed(public_path('receipt_form_images/' . $file)) }}"
+                                                                                        alt="Applicant Photo"
+                                                                                        style="vertical-align: middle; margin-right: 5px; height: 200px;">
+                                                                                @endif
+                                                                            @endforeach
 
                                                                         </div>
                                                                     </td>
@@ -2423,84 +1657,18 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            @endif
+                        @endif
 
-                            @if ($data->sfield == '31' || $data->sfield == '32')
-                            @else
-                            @if ($data->file_att)
-                                <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                    class="row row-7" role="presentation"
-                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <table align="center" border="0" cellpadding="0"
-                                                    cellspacing="0" class="row-content stack" role="presentation"
-                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
-                                                    width="700">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td class="column column-1"
-                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                                width="33.333333333333336%">
-                                                                <table border="0" cellpadding="0"
-                                                                    cellspacing="0" class="heading_block block-1"
-                                                                    role="presentation"
-                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
-                                                                    width="100%">
-                                                                    <tr>
-                                                                        <td class="pad"
-                                                                            style="text-align:left;width:100%;">
-                                                                            <h2
-                                                                                style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
-                                                                                <span
-                                                                                    class="tinyMce-placeholder">อัพโหลดหลักฐานการชำระ<br>เงิน</span>
-                                                                            </h2>
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </td>
-                                                            <td class="column column-2"
-                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
-                                                                width="66.66666666666667%">
-                                                                <table border="0" cellpadding="10"
-                                                                    cellspacing="0" class="paragraph_block block-1"
-                                                                    role="presentation"
-                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
-                                                                    width="100%">
-                                                                    <tr>
-                                                                        <td class="pad">
-                                                                            <div
-                                                                                style="font-size:12px;font-weight:400;ext-align:left;mso-line-height-alt:25.2px;">
-
-                                                                                {!! $url2 !!}
-
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                @endif
-                            @endif
-
-                            @if ($data->news_form)
-                            <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                class="row row-8" role="presentation"
-                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; margin-bottom:100px"
+                        @if ($data->file_att)
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7"
+                                role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
                                 width="100%">
                                 <tbody>
                                     <tr>
                                         <td>
                                             <table align="center" border="0" cellpadding="0" cellspacing="0"
                                                 class="row-content stack" role="presentation"
-                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
                                                 width="700">
                                                 <tbody>
                                                     <tr>
@@ -2515,113 +1683,336 @@
                                                                     <td class="pad"
                                                                         style="text-align:left;width:100%;">
                                                                         <h2
-                                                                            style="margin: 0;  font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 50px;">
-                                                                            <span class="tinyMce-placeholder">
-                                                                                @php
+                                                                            style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span
+                                                                                class="tinyMce-placeholder">อัพโหลดหลักฐานการชำระ<br>เงิน</span>
+                                                                        </h2>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td class="column column-2"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="66.66666666666667%">
+                                                            <table border="0" cellpadding="10" cellspacing="0"
+                                                                class="paragraph_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad">
+                                                                        <div
+                                                                            style="font-size:12px;font-weight:400;ext-align:left;mso-line-height-alt:25.2px;">
 
-                                                                                    if (!$check) {
-                                                                                        if ($data->sfield == 9) {
-                                                                                            $news_title = 'OLPCS';
-                                                                                        } elseif ($data->sfield == 11) {
-                                                                                            $news_title = 'Cambridge';
-                                                                                        } elseif ($data->sfield == 10) {
-                                                                                            $news_title = 'ASIAROPE';
-                                                                                        } elseif ($data->sfield == 6) {
-                                                                                            $news_title = 'GELOSEA';
-                                                                                        } elseif (
-                                                                                            $data->sfield == 4 ||
-                                                                                            $data->sfield == 28
-                                                                                        ) {
-                                                                                            $news_title = 'IMOCSEA';
-                                                                                        } elseif ($data->sfield == 13) {
-                                                                                            $news_title = 'ISOCSEA';
-                                                                                        } elseif ($data->sfield == 14) {
-                                                                                            $news_title =
-                                                                                                'IMOCSEA+ISOCSEA';
-                                                                                        } elseif (
-                                                                                            $data->sfield == 15 ||
-                                                                                            $data->sfield == 19
-                                                                                        ) {
-                                                                                            $news_title = 'Huaxiacup';
-                                                                                        } elseif (
-                                                                                            $data->sfield == 16 ||
-                                                                                            $data->sfield == 18
-                                                                                        ) {
-                                                                                            $news_title = 'Mathleague';
-                                                                                        } elseif ($data->sfield == 0) {
-                                                                                            $news_title = 'Img Reward';
-                                                                                        } elseif (
-                                                                                            $data->sfield == '17'
-                                                                                        ) {
-                                                                                            $news_title = 'Test Field';
-                                                                                        } elseif (
-                                                                                            $data->sfield == '20' ||
-                                                                                            $data->sfield == '21'
-                                                                                        ) {
-                                                                                            $news_title =
-                                                                                                'NEO Science Olympiad';
-                                                                                        } elseif (
-                                                                                            $data->sfield == '22'
-                                                                                        ) {
-                                                                                            $news_title =
-                                                                                                'China Mathematical Olympiad Final Round';
-                                                                                        } elseif (
-                                                                                            $data->sfield == '23'
-                                                                                        ) {
-                                                                                            $news_title =
-                                                                                                'International Hope cup mathematic invitational';
-                                                                                        } elseif (
-                                                                                            $data->sfield == '24'
-                                                                                        ) {
-                                                                                            $news_title =
-                                                                                                'International STEM Competitions ' .
-                                                                                                date('Y') .
-                                                                                                '';
-                                                                                        } elseif (
-                                                                                            $data->sfield == '25'
-                                                                                        ) {
-                                                                                            $news_title =
-                                                                                                'Southeast Asia Computer Science Olympiad ' .
-                                                                                                date('Y') .
-                                                                                                '';
-                                                                                        } elseif (
-                                                                                            $data->sfield == '26'
-                                                                                        ) {
-                                                                                            $news_title =
-                                                                                                'COPERNICUS OLYMPIAD ' .
-                                                                                                date('Y') .
-                                                                                                '';
-                                                                                        } elseif (
-                                                                                            $data->sfield == '27'
-                                                                                        ) {
-                                                                                            $news_title =
-                                                                                                'CODING OLYMPICS ' .
-                                                                                                date('Y') .
-                                                                                                '';
-                                                                                        } elseif (
-                                                                                            $data->sfield == '29'
-                                                                                        ) {
-                                                                                            $news_title =
-                                                                                                'STEMCO Science';
-                                                                                        } elseif (
-                                                                                            $data->sfield == '31'
-                                                                                        ) {
-                                                                                            $news_title =
-                                                                                                'Isocsea Imocsea National Round 2025';
-                                                                                        } elseif (
-                                                                                            $data->sfield == '32'
-                                                                                        ) {
-                                                                                            $news_title =
-                                                                                                'Isocsea Imocsea National Round';
-                                                                                        } else {
-                                                                                            $news_title =
-                                                                                                'Advance English Grammar';
-                                                                                        }
-                                                                                    }
+                                                                            {{-- {!! $url2 !!} --}}
+                                                                            @php
+                                                                                $files = explode('|', $url2);
+                                                                            @endphp
+                                                                            @foreach ($files as $file)
+                                                                                @if (!empty($file) && file_exists(public_path('receipt_form_images/' . $file)))
+                                                                                    <img src="{{ $message->embed(public_path('receipt_form_images/' . $file)) }}"
+                                                                                        alt="Applicant Photo"
+                                                                                        style="vertical-align: middle; margin-right: 5px; height: 200px;">
+                                                                                @endif
+                                                                            @endforeach
 
-                                                                                @endphp
-                                                                                สอบ {{ $news_title }}
-                                                                                จากช่องทาง<br>ใด</span>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        @endif
+                    @else
+                        @if ($data->last_name)
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-4"
+                                role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                                class="row-content stack" role="presentation"
+                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                width="700">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="column column-1"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="33.333333333333336%">
+                                                            <table border="0" cellpadding="0" cellspacing="0"
+                                                                class="heading_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad"
+                                                                        style="text-align:left;width:100%;">
+                                                                        <h2
+                                                                            style="margin: 0; font-size: 14px; font-weight: 400; margin-left:30px; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span class="tinyMce-placeholder">Name -
+                                                                                Surname<br>(English)/ชื่อและนามสกุล<br>ภาษาอังกฤษ</span>
+                                                                        </h2>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td class="column column-2"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="66.66666666666667%">
+                                                            <table border="0" cellpadding="10" cellspacing="0"
+                                                                class="paragraph_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad">
+                                                                        <div
+                                                                            style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                            <p style="margin: 0;">
+                                                                                {{ $data->first_name }}
+                                                                                {{ $data->last_name }}</p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        @endif
+                        @if ($data->nick_name)
+                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                class="row row-5" role="presentation"
+                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                                class="row-content stack" role="presentation"
+                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                width="700">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="column column-1"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="33.333333333333336%">
+                                                            <table border="0" cellpadding="0" cellspacing="0"
+                                                                class="heading_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad"
+                                                                        style="text-align:left;width:100%;">
+                                                                        <h2
+                                                                            style="margin: 0;  font-size: 14px; font-weight: 400; text-align: start;margin-left:30px;  margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span
+                                                                                class="tinyMce-placeholder">Nickname(english)/ชื่อ<br>เล่น(ภาษาอังกฤษ)</span>
+                                                                        </h2>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td class="column column-2"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="66.66666666666667%">
+                                                            <table border="0" cellpadding="10" cellspacing="0"
+                                                                class="paragraph_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad">
+                                                                        <div
+                                                                            style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                            <p style="margin: 0;">
+                                                                                {{ $data->nick_name }}
+                                                                            </p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        @endif
+                        <!-- รางวัล -->
+                        @if ($data->sfield == '21')
+                        @elseif ($data->sfield == '31' || $data->sfield == '32')
+                            @if ($data->award)
+                                <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                    class="row row-6" role="presentation"
+                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <table align="center" border="0" cellpadding="0"
+                                                    cellspacing="0" class="row-content stack" role="presentation"
+                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                    width="700">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="column column-1"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                                width="33.333333333333336%">
+                                                                <table border="0" cellpadding="0"
+                                                                    cellspacing="0" class="heading_block block-1"
+                                                                    role="presentation"
+                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                    width="100%">
+                                                                    <tr>
+                                                                        <td class="pad"
+                                                                            style="text-align:left;width:100%;">
+                                                                            <h2
+                                                                                style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                                <span
+                                                                                    class="tinyMce-placeholder">รางวัล
+                                                                                    /
+                                                                                    Reward</span>
+                                                                            </h2>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td class="column column-2"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                                width="66.66666666666667%">
+                                                                <table border="0" cellpadding="10"
+                                                                    cellspacing="0" class="paragraph_block block-1"
+                                                                    role="presentation"
+                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                    width="100%">
+                                                                    <tr>
+                                                                        <td class="pad">
+                                                                            <div
+                                                                                style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                                <p style="margin: 0;">
+                                                                                    {{-- its json format --}}
+                                                                                    @foreach (json_decode($data->award, true) as $award)
+                                                                                        <span>{{ $award }}</span>
+                                                                                        @if (!$loop->last)
+                                                                                            ,
+                                                                                        @endif
+                                                                                    @endforeach
+                                                                                </p>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            @endif
+                        @else
+                            @if ($data->birth_date)
+                                <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                    class="row row-6" role="presentation"
+                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <table align="center" border="0" cellpadding="0"
+                                                    cellspacing="0" class="row-content stack" role="presentation"
+                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                    width="700">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="column column-1"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                                width="33.333333333333336%">
+                                                                <table border="0" cellpadding="0"
+                                                                    cellspacing="0" class="heading_block block-1"
+                                                                    role="presentation"
+                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                    width="100%">
+                                                                    <tr>
+                                                                        <td class="pad"
+                                                                            style="text-align:left;width:100%;">
+                                                                            <h2
+                                                                                style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                                <span
+                                                                                    class="tinyMce-placeholder">Birth
+                                                                                    Date /
+                                                                                    วันเกิด</span>
+                                                                            </h2>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td class="column column-2"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                                width="66.66666666666667%">
+                                                                <table border="0" cellpadding="10"
+                                                                    cellspacing="0" class="paragraph_block block-1"
+                                                                    role="presentation"
+                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                    width="100%">
+                                                                    <tr>
+                                                                        <td class="pad">
+                                                                            <div
+                                                                                style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                                <p style="margin: 0;">
+                                                                                    <?php echo date('d/m/Y', strtotime($data->birth_date)); ?>
+                                                                                </p>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            @endif
+                        @endif
+
+                        <!-- School -->
+                        @if ($data->school_name)
+                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                class="row row-7" role="presentation"
+                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                                class="row-content stack" role="presentation"
+                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                width="700">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="column column-1"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="33.333333333333336%">
+                                                            <table border="0" cellpadding="0" cellspacing="0"
+                                                                class="heading_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad"
+                                                                        style="text-align:left;width:100%;">
+                                                                        <h2
+                                                                            style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span class="tinyMce-placeholder">School
+                                                                                name(English)/<br>ชื่อโรงเรียน(ภาษาอังกฤษ)</span>
                                                                         </h2>
                                                                     </td>
                                                                 </tr>
@@ -2638,9 +2029,9 @@
                                                                     <td class="pad">
                                                                         <div
                                                                             style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
-                                                                            <p
-                                                                                style="margin: 0; margin-bottom: 50px;">
-                                                                                {{ $data->news_form }}</p>
+                                                                            <p style="margin: 0;">
+                                                                                {{ $data->school_name }}
+                                                                            </p>
                                                                         </div>
                                                                     </td>
                                                                 </tr>
@@ -2653,6 +2044,723 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        @endif
+
+                        <!-- Grade -->
+                        @if ($data->grade)
+                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                class="row row-8" role="presentation"
+                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                                class="row-content stack" role="presentation"
+                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                width="700">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="column column-1"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="33.333333333333336%">
+                                                            <table border="0" cellpadding="0" cellspacing="0"
+                                                                class="heading_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad"
+                                                                        style="text-align:left;width:100%;">
+                                                                        <h2
+                                                                            style="margin: 0; font-size: 14px; font-weight: 400;  text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span class="tinyMce-placeholder">Grade /
+                                                                                ระดับชั้น</span>
+                                                                        </h2>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td class="column column-2"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="66.66666666666667%">
+                                                            <table border="0" cellpadding="10" cellspacing="0"
+                                                                class="paragraph_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad">
+                                                                        <div
+                                                                            style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                            <p style="margin: 0;">{{ $data->grade }}
+                                                                            </p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        @endif
+
+                        <!-- Packages -->
+                        @if ($data->sfield == '23')
+                        @else
+                            @if ($data->package)
+                                <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                    class="row row-7" role="presentation"
+                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <table align="center" border="0" cellpadding="0"
+                                                    cellspacing="0" class="row-content stack" role="presentation"
+                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                    width="700">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="column column-1"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                                width="33.333333333333336%">
+                                                                <table border="0" cellpadding="0"
+                                                                    cellspacing="0" class="heading_block block-1"
+                                                                    role="presentation"
+                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                    width="100%">
+                                                                    <tr>
+                                                                        <td class="pad"
+                                                                            style="text-align:left;width:100%;">
+                                                                            <h2
+                                                                                style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                                <span
+                                                                                    class="tinyMce-placeholder">แพคเกจในการสอบ
+                                                                                    /<br> Packages</span>
+                                                                            </h2>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td class="column column-2"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                                width="66.66666666666667%">
+                                                                <table border="0" cellpadding="10"
+                                                                    cellspacing="0" class="paragraph_block block-1"
+                                                                    role="presentation"
+                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                    width="100%">
+                                                                    <tr>
+                                                                        <td class="pad">
+                                                                            <div
+                                                                                style="direction:ltr;font-family:Inter, sans-serif;font-size:12px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                                <p style="margin: 0;">
+                                                                                    {{ $data->formPackage->package ?? $data->package }}
+                                                                                </p>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            @endif
+                        @endif
+
+                        <!-- PackaParent's nameges -->
+                        @if ($data->name_parent)
+                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                class="row row-8" role="presentation"
+                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                                class="row-content stack" role="presentation"
+                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                width="700">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="column column-1"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="33.333333333333336%">
+                                                            <table border="0" cellpadding="0" cellspacing="0"
+                                                                class="heading_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad"
+                                                                        style="text-align:left;width:100%;">
+                                                                        <h2
+                                                                            style="margin: 0; font-size: 14px; font-weight: 400;  text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span class="tinyMce-placeholder">Parent's
+                                                                                name
+                                                                                /
+                                                                                ชื่อและ<br>นามสกุลผู้ปกครอง</span>
+                                                                        </h2>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td class="column column-2"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="66.66666666666667%">
+                                                            <table border="0" cellpadding="10" cellspacing="0"
+                                                                class="paragraph_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad">
+                                                                        <div
+                                                                            style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                            <p style="margin: 0;">
+                                                                                {{ $data->name_parent }}
+                                                                            </p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        @endif
+                        <!-- Address -->
+
+                        @if ($data->sfield == '31' || $data->sfield == '32')
+                        @else
+                            @if ($data->street_address || $data->postcode)
+                                <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                    class="row row-7" role="presentation"
+                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <table align="center" border="0" cellpadding="0"
+                                                    cellspacing="0" class="row-content stack" role="presentation"
+                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                    width="700">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="column column-1"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                                width="33.333333333333336%">
+                                                                <table border="0" cellpadding="0"
+                                                                    cellspacing="0" class="heading_block block-1"
+                                                                    role="presentation"
+                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                    width="100%">
+                                                                    <tr>
+                                                                        <td class="pad"
+                                                                            style="text-align:left;width:100%;">
+                                                                            <h2
+                                                                                style="margin: 0; font-size: 14px; font-weight: 400; text-align: start; margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                                <span
+                                                                                    class="tinyMce-placeholder">Address
+                                                                                    /
+                                                                                    ที่อยู่ภาษาไทย</span>
+                                                                            </h2>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td class="column column-2"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                                width="66.66666666666667%">
+                                                                <table border="0" cellpadding="10"
+                                                                    cellspacing="0" class="paragraph_block block-1"
+                                                                    role="presentation"
+                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                    width="100%">
+                                                                    <tr>
+                                                                        <td class="pad">
+                                                                            <div
+                                                                                style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                                <p style="margin: 0;">
+                                                                                    {{ $data->street_address ?? '' }}
+                                                                                    / {{ $data->postcode ?? '' }}</p>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            @endif
+                        @endif
+
+                        <!-- Phone -->
+                        @if ($data->mobile)
+                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                class="row row-8" role="presentation"
+                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                                class="row-content stack" role="presentation"
+                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                width="700">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="column column-1"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="33.333333333333336%">
+                                                            <table border="0" cellpadding="0" cellspacing="0"
+                                                                class="heading_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad"
+                                                                        style="text-align:left;width:100%;">
+                                                                        <h2
+                                                                            style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span class="tinyMce-placeholder">Phone
+                                                                                Number
+                                                                                /
+                                                                                เบอร์<br>โทรศัพท์</span>
+                                                                        </h2>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td class="column column-2"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="66.66666666666667%">
+                                                            <table border="0" cellpadding="10" cellspacing="0"
+                                                                class="paragraph_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad">
+                                                                        <div
+                                                                            style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                            <p style="margin: 0;">
+                                                                                {{ $data->mobile ?? '' }}</p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        @endif
+                        <!-- Email -->
+
+                        @if ($data->email)
+                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                class="row row-7" role="presentation"
+                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                                class="row-content stack" role="presentation"
+                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                width="700">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="column column-1"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="33.333333333333336%">
+                                                            <table border="0" cellpadding="0" cellspacing="0"
+                                                                class="heading_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad"
+                                                                        style="text-align:left;width:100%;">
+                                                                        <h2
+                                                                            style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                            <span
+                                                                                class="tinyMce-placeholder">E-mail(กรุณาตรวจสอบที่<br>อยู่อีเมลให้ถูกต้อง
+                                                                                หาก<br>กรอกผิด
+                                                                                จะไม่สามารถส่งข้อมูลในการสอบได้)</span>
+                                                                        </h2>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td class="column column-2"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                            width="66.66666666666667%">
+                                                            <table border="0" cellpadding="10" cellspacing="0"
+                                                                class="paragraph_block block-1" role="presentation"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                width="100%">
+                                                                <tr>
+                                                                    <td class="pad">
+                                                                        <div
+                                                                            style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                            <p style="margin: 0;">{{ $data->email }}
+                                                                            </p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        @endif
+                        <!-- อัพโหลดรูปภาพผู้สมัคร -->
+                        @if ($data->sfield == '23')
+                        @else
+                            @if ($data->photo_att)
+                                <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                    class="row row-8" role="presentation"
+                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <table align="center" border="0" cellpadding="0"
+                                                    cellspacing="0" class="row-content stack" role="presentation"
+                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                    width="700">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="column column-1"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                                width="33.333333333333336%">
+                                                                <table border="0" cellpadding="0"
+                                                                    cellspacing="0" class="heading_block block-1"
+                                                                    role="presentation"
+                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                    width="100%">
+                                                                    <tr>
+                                                                        <td class="pad"
+                                                                            style="text-align:left;width:100%;">
+                                                                            <h2
+                                                                                style="margin: 0; font-size: 14px; font-weight: 400;  text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                                <span
+                                                                                    class="tinyMce-placeholder">อัพโหลดรูปภาพผู้สมัคร</span>
+                                                                            </h2>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td class="column column-2"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                                width="66.66666666666667%">
+                                                                <table border="0" cellpadding="10"
+                                                                    cellspacing="0" class="paragraph_block block-1"
+                                                                    role="presentation"
+                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                    width="100%">
+                                                                    <tr>
+                                                                        <td class="pad">
+                                                                            <div
+                                                                                style="direction:ltr;font-family:Inter, sans-serif;font-size:12px;font-weight:400;letter-spacing:0px;">
+
+                                                                                @php
+                                                                                $files = explode('|', $url1);
+                                                                            @endphp
+                                                                            @foreach ($files as $file)
+                                                                                @if (!empty($file) && file_exists(public_path('receipt_form_images/' . $file)))
+                                                                                    <img src="{{ $message->embed(public_path('receipt_form_images/' . $file)) }}"
+                                                                                        alt="Applicant Photo"
+                                                                                        style="vertical-align: middle; margin-right: 5px; height: 200px;">
+                                                                                @endif
+                                                                            @endforeach
+
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            @endif
+
+                            @if ($data->sfield == '31' || $data->sfield == '32')
+                            @else
+                                @if ($data->file_att)
+                                    <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                        class="row row-7" role="presentation"
+                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <table align="center" border="0" cellpadding="0"
+                                                        cellspacing="0" class="row-content stack"
+                                                        role="presentation"
+                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeef4; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                        width="700">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="column column-1"
+                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                                    width="33.333333333333336%">
+                                                                    <table border="0" cellpadding="0"
+                                                                        cellspacing="0"
+                                                                        class="heading_block block-1"
+                                                                        role="presentation"
+                                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                        width="100%">
+                                                                        <tr>
+                                                                            <td class="pad"
+                                                                                style="text-align:left;width:100%;">
+                                                                                <h2
+                                                                                    style="margin: 0; font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 10px;">
+                                                                                    <span
+                                                                                        class="tinyMce-placeholder">อัพโหลดหลักฐานการชำระ<br>เงิน</span>
+                                                                                </h2>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                                <td class="column column-2"
+                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                                    width="66.66666666666667%">
+                                                                    <table border="0" cellpadding="10"
+                                                                        cellspacing="0"
+                                                                        class="paragraph_block block-1"
+                                                                        role="presentation"
+                                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                        width="100%">
+                                                                        <tr>
+                                                                            <td class="pad">
+                                                                                <div
+                                                                                    style="font-size:12px;font-weight:400;ext-align:left;mso-line-height-alt:25.2px;">
+
+                                                                                    @php
+                                                                                $files = explode('|', $url2);
+                                                                            @endphp
+                                                                            @foreach ($files as $file)
+                                                                                @if (!empty($file) && file_exists(public_path('receipt_form_images/' . $file)))
+                                                                                    <img src="{{ $message->embed(public_path('receipt_form_images/' . $file)) }}"
+                                                                                        alt="Applicant Photo"
+                                                                                        style="vertical-align: middle; margin-right: 5px; height: 200px;">
+                                                                                @endif
+                                                                            @endforeach
+
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                @endif
+                            @endif
+
+                            @if ($data->news_form)
+                                <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                    class="row row-8" role="presentation"
+                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; margin-bottom:100px"
+                                    width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <table align="center" border="0" cellpadding="0"
+                                                    cellspacing="0" class="row-content stack" role="presentation"
+                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-bottom: 0 solid #EFEEF4; border-left: 0 solid #EFEEF4; border-right: 0px solid #EFEEF4; border-top: 0 solid #EFEEF4; color: #000000; width: 700px;"
+                                                    width="700">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="column column-1"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left;  vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                                width="33.333333333333336%">
+                                                                <table border="0" cellpadding="0"
+                                                                    cellspacing="0" class="heading_block block-1"
+                                                                    role="presentation"
+                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                                                    width="100%">
+                                                                    <tr>
+                                                                        <td class="pad"
+                                                                            style="text-align:left;width:100%;">
+                                                                            <h2
+                                                                                style="margin: 0;  font-size: 14px; font-weight: 400; text-align: start;margin-left:30px; margin-top: 10px; margin-bottom: 50px;">
+                                                                                <span class="tinyMce-placeholder">
+                                                                                    @php
+
+                                                                                        if (!$check) {
+                                                                                            if ($data->sfield == 9) {
+                                                                                                $news_title = 'OLPCS';
+                                                                                            } elseif (
+                                                                                                $data->sfield == 11
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'Cambridge';
+                                                                                            } elseif (
+                                                                                                $data->sfield == 10
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'ASIAROPE';
+                                                                                            } elseif (
+                                                                                                $data->sfield == 6
+                                                                                            ) {
+                                                                                                $news_title = 'GELOSEA';
+                                                                                            } elseif (
+                                                                                                $data->sfield == 4 ||
+                                                                                                $data->sfield == 28
+                                                                                            ) {
+                                                                                                $news_title = 'IMOCSEA';
+                                                                                            } elseif (
+                                                                                                $data->sfield == 13
+                                                                                            ) {
+                                                                                                $news_title = 'ISOCSEA';
+                                                                                            } elseif (
+                                                                                                $data->sfield == 14
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'IMOCSEA+ISOCSEA';
+                                                                                            } elseif (
+                                                                                                $data->sfield == 15 ||
+                                                                                                $data->sfield == 19
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'Huaxiacup';
+                                                                                            } elseif (
+                                                                                                $data->sfield == 16 ||
+                                                                                                $data->sfield == 18
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'Mathleague';
+                                                                                            } elseif (
+                                                                                                $data->sfield == 0
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'Img Reward';
+                                                                                            } elseif (
+                                                                                                $data->sfield == '17'
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'Test Field';
+                                                                                            } elseif (
+                                                                                                $data->sfield == '20' ||
+                                                                                                $data->sfield == '21'
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'NEO Science Olympiad';
+                                                                                            } elseif (
+                                                                                                $data->sfield == '22'
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'China Mathematical Olympiad Final Round';
+                                                                                            } elseif (
+                                                                                                $data->sfield == '23'
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'International Hope cup mathematic invitational';
+                                                                                            } elseif (
+                                                                                                $data->sfield == '24'
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'International STEM Competitions ' .
+                                                                                                    date('Y') .
+                                                                                                    '';
+                                                                                            } elseif (
+                                                                                                $data->sfield == '25'
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'Southeast Asia Computer Science Olympiad ' .
+                                                                                                    date('Y') .
+                                                                                                    '';
+                                                                                            } elseif (
+                                                                                                $data->sfield == '26'
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'COPERNICUS OLYMPIAD ' .
+                                                                                                    date('Y') .
+                                                                                                    '';
+                                                                                            } elseif (
+                                                                                                $data->sfield == '27'
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'CODING OLYMPICS ' .
+                                                                                                    date('Y') .
+                                                                                                    '';
+                                                                                            } elseif (
+                                                                                                $data->sfield == '29'
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'STEMCO Science';
+                                                                                            } elseif (
+                                                                                                $data->sfield == '31'
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'Isocsea Imocsea National Round 2025';
+                                                                                            } elseif (
+                                                                                                $data->sfield == '32'
+                                                                                            ) {
+                                                                                                $news_title =
+                                                                                                    'Isocsea Imocsea National Round';
+                                                                                            } else {
+                                                                                                $news_title =
+                                                                                                    'Advance English Grammar';
+                                                                                            }
+                                                                                        }
+
+                                                                                    @endphp
+                                                                                    สอบ {{ $news_title }}
+                                                                                    จากช่องทาง<br>ใด</span>
+                                                                            </h2>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td class="column column-2"
+                                                                style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: middle; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
+                                                                width="66.66666666666667%">
+                                                                <table border="0" cellpadding="10"
+                                                                    cellspacing="0" class="paragraph_block block-1"
+                                                                    role="presentation"
+                                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;"
+                                                                    width="100%">
+                                                                    <tr>
+                                                                        <td class="pad">
+                                                                            <div
+                                                                                style="direction:ltr;font-family:Inter, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:25.2px;">
+                                                                                <p
+                                                                                    style="margin: 0; margin-bottom: 50px;">
+                                                                                    {{ $data->news_form }}</p>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             @endif
                         @endif
 
