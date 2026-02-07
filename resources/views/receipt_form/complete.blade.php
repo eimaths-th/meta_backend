@@ -71,7 +71,8 @@
                     </div>
                     <div class="card-footer text-center">
                         <br><br>
-                        <a class="btn btn-lg btn-primary" href="{{ route($sfield) }}">Go Back To Form</a><br><br>
+                        <a class="btn btn-lg btn-primary" href="{{ route('form.show', ['slug' => $sfield]) }}">Go Back To
+                            Form</a><br><br>
                     </div>
                 </div>
 

@@ -1967,7 +1967,7 @@ class ReceiptFormController extends Controller
 
 
         if ($receiptForm) {
-            return redirect('/form/complete/' . $route);
+            return redirect('/form/completed/' . $route);
         } else {
             return back()->with('error', 'บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
         }
