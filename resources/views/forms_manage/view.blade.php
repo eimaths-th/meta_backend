@@ -739,6 +739,7 @@
             left: 0;
             right: 0;
         }
+
         .badge-info {
             background-color: var(--primary-color);
             color: rgb(255, 255, 255);
@@ -858,6 +859,7 @@
                                         {!! nl2br(e(session('error'))) !!}
                                     </div>
                                 @endif
+                                <div id="js-validator-error" class="alert alert-danger" style="display:none;"></div>
                                 <div class="form-html" data-component="text" tabindex="0">
                                     <div style="text-align: center; margin-bottom: 2rem;">
                                         @if (isset($form->head_title))
@@ -1736,7 +1738,9 @@
         // Global AJAX error handler for CSRF token expiration
         $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
             if (jqxhr.status === 419) {
-                alert('เซสชันหมดอายุ กรุณารีเฟรชหน้าเว็บแล้วลองใหม่อีกครั้ง\n\nSession expired. Please refresh the page and try again.');
+                alert(
+                    'เซสชันหมดอายุ กรุณารีเฟรชหน้าเว็บแล้วลองใหม่อีกครั้ง\n\nSession expired. Please refresh the page and try again.'
+                    );
                 $('#loader-container').hide();
                 $('#send_data').attr('disabled', false);
                 location.reload();
@@ -1751,7 +1755,8 @@
                     url: window.location.href,
                     type: 'GET',
                     success: function(response) {
-                        var newToken = $(response).find('meta[name="csrf-token"]').attr('content');
+                        var newToken = $(response).find('meta[name="csrf-token"]').attr(
+                            'content');
                         if (newToken) {
                             $('meta[name="csrf-token"]').attr('content', newToken);
                             $('input[name="_token"]').val(newToken);
@@ -2295,7 +2300,7 @@
 
                 // Use AJAX to submit form with better error handling
                 var formData = new FormData(form);
-                
+
                 $.ajax({
                     url: $(form).attr('action'),
                     type: 'POST',
@@ -2308,8 +2313,10 @@
                         // Upload progress
                         xhr.upload.addEventListener("progress", function(evt) {
                             if (evt.lengthComputable) {
-                                var percentComplete = Math.round((evt.loaded / evt.total) * 100);
-                                $('#loading-message').text('กำลังอัพโหลด... ' + percentComplete + '%');
+                                var percentComplete = Math.round((evt.loaded / evt.total) *
+                                    100);
+                                $('#loading-message').text('กำลังอัพโหลด... ' +
+                                    percentComplete + '%');
                             }
                         }, false);
                         return xhr;
@@ -2320,11 +2327,13 @@
                     success: function(response, textStatus, xhr) {
                         $('#loading-message').text('กำลังดำเนินการ...');
                         // Check if response is a redirect (HTML page)
-                        if (xhr.getResponseHeader('Content-Type') && xhr.getResponseHeader('Content-Type').includes('text/html')) {
+                        if (xhr.getResponseHeader('Content-Type') && xhr.getResponseHeader(
+                                'Content-Type').includes('text/html')) {
                             // Follow the redirect by replacing page content or redirecting
                             if (response.includes('form/completed/') || response.includes('complete')) {
                                 // Extract redirect URL from response if possible
-                                var redirectMatch = response.match(/window\.location\s*=\s*['"]([^'"]+)['"]/);
+                                var redirectMatch = response.match(
+                                    /window\.location\s*=\s*['"]([^'"]+)['"]/);
                                 if (redirectMatch) {
                                     window.location.href = redirectMatch[1];
                                 } else {
@@ -2348,15 +2357,17 @@
                     error: function(xhr, status, error) {
                         $('#loader-container').hide();
                         $('#send_data').attr('disabled', false);
-                        
+
                         if (xhr.status === 419) {
-                            alert('เซสชันหมดอายุ กรุณารีเฟรชหน้าเว็บแล้วลองใหม่อีกครั้ง\n\nSession expired. Please refresh the page and try again.');
+                            alert(
+                                'เซสชันหมดอายุ กรุณารีเฟรชหน้าเว็บแล้วลองใหม่อีกครั้ง\n\nSession expired. Please refresh the page and try again.'
+                                );
                             location.reload();
                         } else if (xhr.status === 422) {
                             // Validation errors
                             var response = xhr.responseJSON;
                             var errorMsg = '';
-                            
+
                             if (response && response.errors) {
                                 if (Array.isArray(response.errors)) {
                                     // errors is an array of strings
@@ -2372,30 +2383,48 @@
                                     });
                                 }
                             }
-                            
+
                             if (errorMsg) {
-                                alert('กรุณาตรวจสอบข้อมูล:\n' + errorMsg);
+                                // alert('กรุณาตรวจสอบข้อมูล:\n' + errorMsg);
+                                $('#js-validator-error').html(errorMsg.replace(/\n/g, '<br>')).show();
+                                $('html, body').animate({
+                                    scrollTop: $("#js-validator-error").offset().top - 100
+                                }, 500);
                             } else if (response && response.message) {
-                                alert(response.message);
+                                // alert(response.message);
+                                $('#js-validator-error').html(response.message.replace(/\n/g, '<br>'))
+                                    .show();
+                                $('html, body').animate({
+                                    scrollTop: $("#js-validator-error").offset().top - 100
+                                }, 500);
                             } else {
                                 alert('กรุณาตรวจสอบข้อมูลให้ครบถ้วน');
                             }
                         } else if (xhr.status === 413) {
-                            alert('ไฟล์มีขนาดใหญ่เกินไป กรุณาลดขนาดไฟล์แล้วลองใหม่\n\nFile too large. Please reduce file size and try again.');
+                            alert(
+                                'ไฟล์มีขนาดใหญ่เกินไป กรุณาลดขนาดไฟล์แล้วลองใหม่\n\nFile too large. Please reduce file size and try again.'
+                                );
                         } else if (xhr.status === 500) {
-                            alert('เกิดข้อผิดพลาดที่เซิร์ฟเวอร์ กรุณาลองใหม่อีกครั้ง หรือติดต่อผู้ดูแลระบบ\n\nServer error. Please try again or contact support.');
+                            alert(
+                                'เกิดข้อผิดพลาดที่เซิร์ฟเวอร์ กรุณาลองใหม่อีกครั้ง หรือติดต่อผู้ดูแลระบบ\n\nServer error. Please try again or contact support.'
+                                );
                         } else if (xhr.status === 0) {
                             if (status === 'timeout') {
-                                alert('การเชื่อมต่อหมดเวลา กรุณาลองใหม่อีกครั้ง\n\nConnection timeout. Please try again.');
+                                alert(
+                                    'การเชื่อมต่อหมดเวลา กรุณาลองใหม่อีกครั้ง\n\nConnection timeout. Please try again.'
+                                    );
                             } else {
-                                alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต\n\nConnection error. Please check your internet connection.');
+                                alert(
+                                    'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต\n\nConnection error. Please check your internet connection.'
+                                    );
                             }
                         } else {
-                            alert('เกิดข้อผิดพลาด (' + xhr.status + ') กรุณาลองใหม่อีกครั้ง\n\nError occurred. Please try again.');
+                            alert('เกิดข้อผิดพลาด (' + xhr.status +
+                                ') กรุณาลองใหม่อีกครั้ง\n\nError occurred. Please try again.');
                         }
                     }
                 });
-                
+
                 return false; // Prevent default form submission
             }
         }
@@ -2770,13 +2799,25 @@
 
             function getAvailableSlots(mode) {
                 if (mode === 'online') {
-                    if (formLimits.online_limit === null) return { available: true, remaining: null };
+                    if (formLimits.online_limit === null) return {
+                        available: true,
+                        remaining: null
+                    };
                     const remaining = formLimits.online_limit - formLimits.online_registered;
-                    return { available: remaining > 0, remaining: remaining };
+                    return {
+                        available: remaining > 0,
+                        remaining: remaining
+                    };
                 } else {
-                    if (formLimits.onsite_limit === null) return { available: true, remaining: null };
+                    if (formLimits.onsite_limit === null) return {
+                        available: true,
+                        remaining: null
+                    };
                     const remaining = formLimits.onsite_limit - formLimits.onsite_registered;
-                    return { available: remaining > 0, remaining: remaining };
+                    return {
+                        available: remaining > 0,
+                        remaining: remaining
+                    };
                 }
             }
 
@@ -2792,7 +2833,9 @@
                 // Update Online option
                 if (!onlineSlots.available) {
                     $onlineRadio.prop('disabled', true);
-                    $onlineLabel.html('<i class="fas fa-laptop"></i> Online (สอบออนไลน์) <span class="badge badge-danger">เต็มแล้ว</span>');
+                    $onlineLabel.html(
+                        '<i class="fas fa-laptop"></i> Online (สอบออนไลน์) <span class="badge badge-danger">เต็มแล้ว</span>'
+                    );
                     // Auto switch to onsite if online is full and onsite is available
                     if ($onlineRadio.is(':checked') && onsiteSlots.available) {
                         $onsiteRadio.prop('checked', true);
@@ -2801,7 +2844,8 @@
                     $onlineRadio.prop('disabled', false);
                     let onlineText = '<i class="fas fa-laptop"></i> Online (สอบออนไลน์)';
                     if (onlineSlots.remaining !== null) {
-                        onlineText += ' <span class="badge badge-info">เหลือ ' + onlineSlots.remaining + ' ที่นั่ง</span>';
+                        onlineText += ' <span class="badge badge-info">เหลือ ' + onlineSlots.remaining +
+                            ' ที่นั่ง</span>';
                     }
                     $onlineLabel.html(onlineText);
                 }
@@ -2809,7 +2853,9 @@
                 // Update Onsite option
                 if (!onsiteSlots.available) {
                     $onsiteRadio.prop('disabled', true);
-                    $onsiteLabel.html('<i class="fas fa-chalkboard-teacher"></i> Onsite (สอบนอกสถานที่) <span class="badge badge-danger">เต็มแล้ว</span>');
+                    $onsiteLabel.html(
+                        '<i class="fas fa-chalkboard-teacher"></i> Onsite (สอบนอกสถานที่) <span class="badge badge-danger">เต็มแล้ว</span>'
+                    );
                     // Auto switch to online if onsite is full and online is available
                     if ($onsiteRadio.is(':checked') && onlineSlots.available) {
                         $onlineRadio.prop('checked', true);
@@ -2818,7 +2864,8 @@
                     $onsiteRadio.prop('disabled', false);
                     let onsiteText = '<i class="fas fa-chalkboard-teacher"></i> Onsite (สอบนอกสถานที่)';
                     if (onsiteSlots.remaining !== null) {
-                        onsiteText += ' <span class="badge badge-info">เหลือ ' + onsiteSlots.remaining + ' ที่นั่ง</span>';
+                        onsiteText += ' <span class="badge badge-info">เหลือ ' + onsiteSlots.remaining +
+                            ' ที่นั่ง</span>';
                     }
                     $onsiteLabel.html(onsiteText);
                 }
@@ -2861,11 +2908,11 @@
 
                     // Update available slots first
                     updateExamModeOptions();
-                    
+
                     // Auto-select available option (prefer online as default)
                     const onlineSlots = getAvailableSlots('online');
                     const onsiteSlots = getAvailableSlots('onsite');
-                    
+
                     // If current selection is disabled, switch to available one
                     const $currentChecked = $('input[name="exam_mode"]:checked');
                     if ($currentChecked.prop('disabled') || !$currentChecked.length) {

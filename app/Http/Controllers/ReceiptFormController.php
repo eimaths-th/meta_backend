@@ -1409,256 +1409,254 @@ class ReceiptFormController extends Controller
         ];
     }
 
-    public function store(Request $request)
-    {
-        // dd($request->all());
+    // public function store(Request $request)
+    // {
+    //     return $this->storeFormManage($request);
+    //     $allowedTLDs = ['.com', '.net', '.co.th', '.ac.th', '.or.th', '.go.th', '.edu', '.org'];
+    //     $route = $request->get('routeName');
 
-        $allowedTLDs = ['.com', '.net', '.co.th', '.ac.th', '.or.th', '.go.th', '.edu', '.org'];
-        $route = $request->get('routeName');
+    //     $result = $this->checkRegisted(
+    //         $route,
+    //         $request->get('sfield'),
+    //         $request->get('firstname'),
+    //         $request->get('lastname'),
+    //         $request->get('birthdate'),
+    //         $request->get('phone'),
+    //         $request->get('email'),
+    //     );
 
-        $result = $this->checkRegisted(
-            $route,
-            $request->get('sfield'),
-            $request->get('firstname'),
-            $request->get('lastname'),
-            $request->get('birthdate'),
-            $request->get('phone'),
-            $request->get('email'),
-        );
+    //     if ($result['checkRegisted']) {
+    //         // 1) บล็อกกรณีข้อมูลซ้ำแบบตรงตัว
+    //         if ($result['matchType'] === 'exact') {
+    //             $message = "พบข้อมูลการลงทะเบียนซ้ำกับชื่อ-นามสกุล: {$result['receipt']->first_name} {$result['receipt']->last_name}\n";
+    //             $message .= "กรุณาตรวจสอบข้อมูลของคุณ";
+    //             return back()
+    //                 ->withInput()
+    //                 ->with('error', $message);
+    //         }
 
-        if ($result['checkRegisted']) {
-            // 1) บล็อกกรณีข้อมูลซ้ำแบบตรงตัว
-            if ($result['matchType'] === 'exact') {
-                $message = "พบข้อมูลการลงทะเบียนซ้ำกับชื่อ-นามสกุล: {$result['receipt']->first_name} {$result['receipt']->last_name}\n";
-                $message .= "กรุณาตรวจสอบข้อมูลของคุณ";
-                return back()
-                    ->withInput()
-                    ->with('error', $message);
-            }
+    //         // 2) ชื่อคล้ายกัน: บล็อกเฉพาะเมื่อระบุได้ว่าเป็นคนเดียวกันจริง (วันเกิดตรง และ เบอร์และอีเมลตรง)
+    //         if ($result['matchType'] === 'similar') {
+    //             $similarity = number_format($result['similarity'] ?? 0, 2);
+    //             if ($result['is_same_person']) {
+    //                 $message = "พบข้อมูลการลงทะเบียนซ้ำ (ชื่อคล้าย {$similarity}% + วันเกิดตรง + เบอร์และอีเมลตรง) กับผู้ลงทะเบียนรายอื่น\n";
+    //                 $message .= "ชื่อ-นามสกุล: {$result['receipt']->first_name} {$result['receipt']->last_name}\n";
+    //                 $message .= "กรุณาตรวจสอบข้อมูลของคุณหรือใช้ข้อมูลติดต่ออื่น หากเป็นคนเดิม";
+    //                 return back()
+    //                     ->withInput()
+    //                     ->with('error', $message);
+    //             } else {
+    //                 // ไม่ใช่คนเดียวกัน: เตือนและดำเนินการต่อ
+    //                 // dd('ไม่ใช่คนเดียวกัน', $result);
 
-            // 2) ชื่อคล้ายกัน: บล็อกเฉพาะเมื่อระบุได้ว่าเป็นคนเดียวกันจริง (วันเกิดตรง และ เบอร์และอีเมลตรง)
-            if ($result['matchType'] === 'similar') {
-                $similarity = number_format($result['similarity'] ?? 0, 2);
-                if ($result['is_same_person']) {
-                    $message = "พบข้อมูลการลงทะเบียนซ้ำ (ชื่อคล้าย {$similarity}% + วันเกิดตรง + เบอร์และอีเมลตรง) กับผู้ลงทะเบียนรายอื่น\n";
-                    $message .= "ชื่อ-นามสกุล: {$result['receipt']->first_name} {$result['receipt']->last_name}\n";
-                    $message .= "กรุณาตรวจสอบข้อมูลของคุณหรือใช้ข้อมูลติดต่ออื่น หากเป็นคนเดิม";
-                    return back()
-                        ->withInput()
-                        ->with('error', $message);
-                } else {
-                    // ไม่ใช่คนเดียวกัน: เตือนและดำเนินการต่อ
-                    // dd('ไม่ใช่คนเดียวกัน', $result);
+    //                 $message = "พบข้อมูลชื่อหรือนามสกุลที่คล้ายกัน ({$similarity}%) กับผู้ลงทะเบียนรายอื่น\n";
+    //                 $message .= "ชื่อ-นามสกุลที่พบ: {$result['receipt']->first_name} {$result['receipt']->last_name}\n";
+    //                 $message .= "ระบบจะดำเนินการต่อ หากมั่นใจว่าไม่ใช่คนเดิม";
+    //                 session()->flash('warning', $message);
+    //             }
+    //         }
+    //     }
 
-                    $message = "พบข้อมูลชื่อหรือนามสกุลที่คล้ายกัน ({$similarity}%) กับผู้ลงทะเบียนรายอื่น\n";
-                    $message .= "ชื่อ-นามสกุลที่พบ: {$result['receipt']->first_name} {$result['receipt']->last_name}\n";
-                    $message .= "ระบบจะดำเนินการต่อ หากมั่นใจว่าไม่ใช่คนเดิม";
-                    session()->flash('warning', $message);
-                }
-            }
-        }
-
-        // Build dynamic validation rules based on field_settings
-        $validationData = $this->buildDynamicValidationRules($route, $allowedTLDs);
-        $validator = Validator::make($request->all(), $validationData['rules'], $validationData['messages']);
-
-
-        if ($validator->fails()) {
-            //return response()->json(['errors' => $validator->errors()->all()]);
-            return back()->withErrors(['errors' => $validator->errors()->all()]);
-        }
-        // dd($request);
-
-        if (!file_exists(public_path() . '/receipt_form_images/')) {
-            mkdir(public_path() . '/receipt_form_images/', 0777, true);
-        }
-
-        if (!file_exists(public_path() . '/receipt_form_watermark_images/')) {
-            mkdir(public_path() . '/receipt_form_watermark_images/', 0777, true);
-        }
-
-        if ($request->get('sfield') == '17') {
-            $filesa = (array) $request->get('imgFiles', []);
-            $filesb = (array) $request->get('imgFiles2', []);
-
-            $fileas = "";
-            $filebs = "";
-
-            foreach ($filesb as $fileb) {
-                $oldfile = FileUpload::where('oldname', $fileb)->get();
-                if ($oldfile->isEmpty()) {
-                    continue;
-                }
-
-                $filebs .= $oldfile[0]->filename . "|";
-                File::move(public_path() . '/form_images/' . $oldfile[0]->filename, public_path() . '/receipt_form_images/' . $oldfile[0]->filename);
-                FileUpload::where('filename', $oldfile[0]->filename)->delete();
-            }
-
-            foreach ($filesa as $filea) {
-                $oldfile = FileUpload::where('oldname', $filea)->get();
-                if ($oldfile->isEmpty()) {
-                    continue;
-                }
-
-                $fileas .= $oldfile[0]->filename . "|";
-                File::move(public_path() . '/form_images/' . $oldfile[0]->filename, public_path() . '/receipt_form_images/' . $oldfile[0]->filename);
-                FileUpload::where('filename', $oldfile[0]->filename)->delete();
-            }
-
-            $filebs = rtrim($filebs, "|");
-            $fileas = rtrim($fileas, "|");
-        } else {
-            # code...
-            $fileas = '';
-            if ($request->has('imgFiles')) {
-                $filesa = (array) $request->get('imgFiles', []);
-                $fileas = "";
-                foreach ($filesa as $filea) {
-                    $oldfile = FileUpload::where('oldname', $filea)->get();
-                    if ($oldfile->isEmpty()) {
-                        continue;
-                    }
-
-                    $fileas .= $oldfile[0]->filename . "|";
-                    File::move(public_path() . '/form_images/' . $oldfile[0]->filename, public_path() . '/receipt_form_images/' . $oldfile[0]->filename);
-
-                    FileUpload::where('filename', $oldfile[0]->filename)->delete();
-                }
-                $fileas = rtrim($fileas, "|");
-            }
-            if ($request->get('sfield') == '23') {
-                # code...
-                $filebs = '';
-            } else {
-                $filebs = '';
-                if ($request->has('imgFiles2')) {
-                    $filesb = (array) $request->get('imgFiles2', []);
-                    $filebs = "";
-                    foreach ($filesb as $fileb) {
-                        $oldfile = FileUpload::where('oldname', $fileb)->get();
-                        if ($oldfile->isEmpty()) {
-                            continue;
-                        }
-
-                        $filebs .= $oldfile[0]->filename . "|";
-                        File::move(public_path() . '/form_images/' . $oldfile[0]->filename, public_path() . '/receipt_form_images/' . $oldfile[0]->filename);
-                        FileUpload::where('filename', $oldfile[0]->filename)->delete();
-                    }
-                    $filebs = rtrim($filebs, "|");
-                }
-            }
-        }
-
-        if ($request->get('sfield') == 22 || $request->get('sfield') == 31 || $request->get('sfield') == 32) {
-            # code...
-            // Handle award as array and convert to JSON
-            $awardInput = $request->get('award');
-            if (is_array($awardInput)) {
-                $award = json_encode($awardInput);
-            } else {
-                $award = $awardInput;
-            }
-            $street_address2 = $request->get('street_address2');
-        } else {
-            # code...
-            $award = '';
-            $street_address2 = '';
-        }
+    //     // Build dynamic validation rules based on field_settings
+    //     $validationData = $this->buildDynamicValidationRules($route, $allowedTLDs);
+    //     $validator = Validator::make($request->all(), $validationData['rules'], $validationData['messages']);
 
 
-        // Check Exam Mode Limits
-        $formManage = FormManage::where('id', $request->get('sfield'))->first();
-        $examMode = $request->get('exam_mode');
-        $packageId = $request->get('package');
+    //     if ($validator->fails()) {
+    //         //return response()->json(['errors' => $validator->errors()->all()]);
+    //         return back()->withErrors(['errors' => $validator->errors()->all()]);
+    //     }
+    //     // dd($request);
 
-        // Check if selected package has exam mode enabled
-        if ($packageId) {
-            $selectedPackage = \App\Models\FormPakages::find($packageId);
-            if ($selectedPackage && $selectedPackage->has_exam_mode) {
-                // Validate exam_mode input
-                if (!$examMode || !in_array($examMode, ['online', 'onsite'])) {
-                    return back()->withInput()->with('error', 'กรุณาเลือกรูปแบบการสอบ (Online/Onsite)');
-                }
-            }
-        }
+    //     if (!file_exists(public_path() . '/receipt_form_images/')) {
+    //         mkdir(public_path() . '/receipt_form_images/', 0777, true);
+    //     }
 
-        // Form-level exam mode check and limits
-        if ($formManage && $formManage->enable_exam_mode && $examMode) {
-            // Check form-level limits
-            if ($examMode === 'online' && !$formManage->HasAvailableOnlineSlots()) {
-                return back()->withInput()->with('error', 'ขออภัย ที่นั่งสอบ Online เต็มแล้ว');
-            }
-            if ($examMode === 'onsite' && !$formManage->HasAvailableOnsiteSlots()) {
-                return back()->withInput()->with('error', 'ขออภัย ที่นั่งสอบ Onsite เต็มแล้ว');
-            }
-        }
+    //     if (!file_exists(public_path() . '/receipt_form_watermark_images/')) {
+    //         mkdir(public_path() . '/receipt_form_watermark_images/', 0777, true);
+    //     }
 
-        $receiptForm = new ReceiptForm([
-            'sfield' => $request->get('sfield'),
-            'submission_date' => date("Y-m-d"),
-            'subject' => $request->get('subject'),
-            'first_name' => $request->get('firstname'),
-            'last_name' => $request->get('lastname'),
-            'nick_name' => $request->get('nickname'),
-            'gender' => $request->get('gender'),
-            'birth_date' => $request->get('birthdate') ?? null,
-            'ref_date' => $request->get('ref_date') ?? null,
-            'school_name' => $request->get('schoolname'),
-            'award' => $award ?? null,
-            'street_address2' => $street_address2 ?? null,
-            'grade' => $request->get('grade'),
+    //     if ($request->get('sfield') == '17') {
+    //         $filesa = (array) $request->get('imgFiles', []);
+    //         $filesb = (array) $request->get('imgFiles2', []);
 
-            'package' => $request->get('package'),
-            'package_id' => null, // This seems unused or null in original, keeping it.
+    //         $fileas = "";
+    //         $filebs = "";
 
-            'contest' => $request->get('contest'),
-            'discount_code' => $request->get('dcode'),
-            'name_parent' => $request->get('parent'),
-            'street_address' => $request->get('address'),
-            'postcode' => $request->get('postcode'),
-            'mobile' => $request->get('phone'),
-            'email' => $request->get('email'),
-            'news_form' => $request->get('newsf'),
-            'photo_att' => $fileas,
-            'file_att' => $filebs,
-            'referent_code' => $request->get('referent_code'),
-            'exam_mode' => $examMode, // Save exam mode
-        ]);
+    //         foreach ($filesb as $fileb) {
+    //             $oldfile = FileUpload::where('oldname', $fileb)->get();
+    //             if ($oldfile->isEmpty()) {
+    //                 continue;
+    //             }
 
-        $receiptForm->save();
+    //             $filebs .= $oldfile[0]->filename . "|";
+    //             File::move(public_path() . '/form_images/' . $oldfile[0]->filename, public_path() . '/receipt_form_images/' . $oldfile[0]->filename);
+    //             FileUpload::where('filename', $oldfile[0]->filename)->delete();
+    //         }
 
-        // Update Registered Count for Form (form-level limits only)
-        if ($formManage && $formManage->enable_exam_mode && $examMode) {
-            if ($examMode === 'online') {
-                $formManage->increment('online_registered');
-            } elseif ($examMode === 'onsite') {
-                $formManage->increment('onsite_registered');
-            }
-        }
+    //         foreach ($filesa as $filea) {
+    //             $oldfile = FileUpload::where('oldname', $filea)->get();
+    //             if ($oldfile->isEmpty()) {
+    //                 continue;
+    //             }
 
-        $adminEmail = $request->get('email');
+    //             $fileas .= $oldfile[0]->filename . "|";
+    //             File::move(public_path() . '/form_images/' . $oldfile[0]->filename, public_path() . '/receipt_form_images/' . $oldfile[0]->filename);
+    //             FileUpload::where('filename', $oldfile[0]->filename)->delete();
+    //         }
 
-        if (!in_array($request->get('sfield'), [0, 17], true) && $adminEmail) {
-            if (filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
-                Mail::to($adminEmail)->send(new ContactMail($receiptForm));
-            }
-        }
-        // $receiptForm->save(); // Remove duplicate save
+    //         $filebs = rtrim($filebs, "|");
+    //         $fileas = rtrim($fileas, "|");
+    //     } else {
+    //         # code...
+    //         $fileas = '';
+    //         if ($request->has('imgFiles')) {
+    //             $filesa = (array) $request->get('imgFiles', []);
+    //             $fileas = "";
+    //             foreach ($filesa as $filea) {
+    //                 $oldfile = FileUpload::where('oldname', $filea)->get();
+    //                 if ($oldfile->isEmpty()) {
+    //                     continue;
+    //                 }
+
+    //                 $fileas .= $oldfile[0]->filename . "|";
+    //                 File::move(public_path() . '/form_images/' . $oldfile[0]->filename, public_path() . '/receipt_form_images/' . $oldfile[0]->filename);
+
+    //                 FileUpload::where('filename', $oldfile[0]->filename)->delete();
+    //             }
+    //             $fileas = rtrim($fileas, "|");
+    //         }
+    //         if ($request->get('sfield') == '23') {
+    //             # code...
+    //             $filebs = '';
+    //         } else {
+    //             $filebs = '';
+    //             if ($request->has('imgFiles2')) {
+    //                 $filesb = (array) $request->get('imgFiles2', []);
+    //                 $filebs = "";
+    //                 foreach ($filesb as $fileb) {
+    //                     $oldfile = FileUpload::where('oldname', $fileb)->get();
+    //                     if ($oldfile->isEmpty()) {
+    //                         continue;
+    //                     }
+
+    //                     $filebs .= $oldfile[0]->filename . "|";
+    //                     File::move(public_path() . '/form_images/' . $oldfile[0]->filename, public_path() . '/receipt_form_images/' . $oldfile[0]->filename);
+    //                     FileUpload::where('filename', $oldfile[0]->filename)->delete();
+    //                 }
+    //                 $filebs = rtrim($filebs, "|");
+    //             }
+    //         }
+    //     }
+
+    //     if ($request->get('sfield') == 22 || $request->get('sfield') == 31 || $request->get('sfield') == 32) {
+    //         # code...
+    //         // Handle award as array and convert to JSON
+    //         $awardInput = $request->get('award');
+    //         if (is_array($awardInput)) {
+    //             $award = json_encode($awardInput);
+    //         } else {
+    //             $award = $awardInput;
+    //         }
+    //         $street_address2 = $request->get('street_address2');
+    //     } else {
+    //         # code...
+    //         $award = '';
+    //         $street_address2 = '';
+    //     }
+
+
+    //     // Check Exam Mode Limits
+    //     $formManage = FormManage::where('id', $request->get('sfield'))->first();
+    //     $examMode = $request->get('exam_mode');
+    //     $packageId = $request->get('package');
+
+    //     // Check if selected package has exam mode enabled
+    //     if ($packageId) {
+    //         $selectedPackage = \App\Models\FormPakages::find($packageId);
+    //         if ($selectedPackage && $selectedPackage->has_exam_mode) {
+    //             // Validate exam_mode input
+    //             if (!$examMode || !in_array($examMode, ['online', 'onsite'])) {
+    //                 return back()->withInput()->with('error', 'กรุณาเลือกรูปแบบการสอบ (Online/Onsite)');
+    //             }
+    //         }
+    //     }
+
+    //     // Form-level exam mode check and limits
+    //     if ($formManage && $formManage->enable_exam_mode && $examMode) {
+    //         // Check form-level limits
+    //         if ($examMode === 'online' && !$formManage->HasAvailableOnlineSlots()) {
+    //             return back()->withInput()->with('error', 'ขออภัย ที่นั่งสอบ Online เต็มแล้ว');
+    //         }
+    //         if ($examMode === 'onsite' && !$formManage->HasAvailableOnsiteSlots()) {
+    //             return back()->withInput()->with('error', 'ขออภัย ที่นั่งสอบ Onsite เต็มแล้ว');
+    //         }
+    //     }
+
+    //     $receiptForm = new ReceiptForm([
+    //         'sfield' => $request->get('sfield'),
+    //         'submission_date' => date("Y-m-d"),
+    //         'subject' => $request->get('subject'),
+    //         'first_name' => $request->get('firstname'),
+    //         'last_name' => $request->get('lastname'),
+    //         'nick_name' => $request->get('nickname'),
+    //         'gender' => $request->get('gender'),
+    //         'birth_date' => $request->get('birthdate') ?? null,
+    //         'ref_date' => $request->get('ref_date') ?? null,
+    //         'school_name' => $request->get('schoolname'),
+    //         'award' => $award ?? null,
+    //         'street_address2' => $street_address2 ?? null,
+    //         'grade' => $request->get('grade'),
+
+    //         'package' => $request->get('package'),
+    //         'package_id' => null, // This seems unused or null in original, keeping it.
+
+    //         'contest' => $request->get('contest'),
+    //         'discount_code' => $request->get('dcode'),
+    //         'name_parent' => $request->get('parent'),
+    //         'street_address' => $request->get('address'),
+    //         'postcode' => $request->get('postcode'),
+    //         'mobile' => $request->get('phone'),
+    //         'email' => $request->get('email'),
+    //         'news_form' => $request->get('newsf'),
+    //         'photo_att' => $fileas,
+    //         'file_att' => $filebs,
+    //         'referent_code' => $request->get('referent_code'),
+    //         'exam_mode' => $examMode, // Save exam mode
+    //     ]);
+
+    //     $receiptForm->save();
+
+    //     // Update Registered Count for Form (form-level limits only)
+    //     if ($formManage && $formManage->enable_exam_mode && $examMode) {
+    //         if ($examMode === 'online') {
+    //             $formManage->increment('online_registered');
+    //         } elseif ($examMode === 'onsite') {
+    //             $formManage->increment('onsite_registered');
+    //         }
+    //     }
+
+    //     $adminEmail = $request->get('email');
+
+    //     if (!in_array($request->get('sfield'), [0, 17], true) && $adminEmail) {
+    //         if (filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
+    //             Mail::to($adminEmail)->send(new ContactMail($receiptForm));
+    //         }
+    //     }
+    //     // $receiptForm->save(); // Remove duplicate save
 
 
 
-        if ($receiptForm) {
-            return redirect('/form/complete/' . $route);
-        } else {
-            return back()->with('error', 'บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
-        }
-    }
+    //     if ($receiptForm) {
+    //         return redirect('/form/complete/' . $route);
+    //     } else {
+    //         return back()->with('error', 'บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+    //     }
+    // }
 
     public function storeFormManage(Request $request)
     {
         \Illuminate\Support\Facades\Log::info("storeFormManage started", ['request' => $request->except(['imgFiles', 'imgFiles2', 'photo_att', 'file_att'])]);
-        // dd($request->all());
 
         $allowedTLDs = ['.com', '.net', '.co.th', '.ac.th', '.or.th', '.go.th', '.edu', '.org'];
         $route = $request->get('routeName');
@@ -1672,32 +1670,45 @@ class ReceiptFormController extends Controller
             $request->get('phone'),
             $request->get('email'),
         );
+        // dd($request->all(), '0');
 
         if ($result['checkRegisted']) {
             \Illuminate\Support\Facades\Log::info("Duplicate registration detected", ['result' => $result]);
+
             // 1) บล็อกกรณีข้อมูลซ้ำแบบตรงตัว
             if ($result['matchType'] === 'exact') {
+                \Illuminate\Support\Facades\Log::info("Duplicate exact match blocked", ['receipt' => $result['receipt']]);
                 $message = "พบข้อมูลการลงทะเบียนซ้ำกับชื่อ-นามสกุล: {$result['receipt']->first_name} {$result['receipt']->last_name}\n";
                 $message .= "กรุณาตรวจสอบข้อมูลของคุณ";
+
+                if ($request->ajax()) {
+                    return response()->json(['message' => $message], 422);
+                }
+
                 return back()
                     ->withInput()
                     ->with('error', $message);
             }
 
-            // 2) ชื่อคล้ายกัน: บล็อกเฉพาะเมื่อระบุได้ว่าเป็นคนเดียวกันจริง (วันเกิดตรง และ เบอร์และอีเมลตรง)
+            // 2) ชื่อคล้ายกัน
             if ($result['matchType'] === 'similar') {
                 $similarity = number_format($result['similarity'] ?? 0, 2);
+
+                // 2.1) เป็นคนเดียวกัน (วันเกิด + เบอร์/อีเมล ตรงกัน) -> บล็อก
                 if ($result['is_same_person']) {
                     $message = "พบข้อมูลการลงทะเบียนซ้ำ (ชื่อคล้าย {$similarity}% + วันเกิดตรง + เบอร์และอีเมลตรง) กับผู้ลงทะเบียนรายอื่น\n";
                     $message .= "ชื่อ-นามสกุล: {$result['receipt']->first_name} {$result['receipt']->last_name}\n";
                     $message .= "กรุณาตรวจสอบข้อมูลของคุณหรือใช้ข้อมูลติดต่ออื่น หากเป็นคนเดิม";
+
+                    if ($request->ajax()) {
+                        return response()->json(['message' => $message], 422);
+                    }
+
                     return back()
                         ->withInput()
                         ->with('error', $message);
                 } else {
-                    // ไม่ใช่คนเดียวกัน: เตือนและดำเนินการต่อ
-                    // dd('ไม่ใช่คนเดียวกัน', $result);
-
+                    // 2.2) ไม่ใช่คนเดียวกัน: เตือนและดำเนินการต่อ
                     $message = "พบข้อมูลชื่อหรือนามสกุลที่คล้ายกัน ({$similarity}%) กับผู้ลงทะเบียนรายอื่น\n";
                     $message .= "ชื่อ-นามสกุลที่พบ: {$result['receipt']->first_name} {$result['receipt']->last_name}\n";
                     $message .= "ระบบจะดำเนินการต่อ หากมั่นใจว่าไม่ใช่คนเดิม";
@@ -1705,6 +1716,7 @@ class ReceiptFormController extends Controller
                 }
             }
         }
+
 
         // Build dynamic validation rules based on field_settings
         $validationData = $this->buildDynamicValidationRules($route, $allowedTLDs);
@@ -1713,7 +1725,11 @@ class ReceiptFormController extends Controller
 
         if ($validator->fails()) {
             \Illuminate\Support\Facades\Log::warning("Form Validation Failed", ['errors' => $validator->errors()->all(), 'request' => $request->all()]);
-            //return response()->json(['errors' => $validator->errors()->all()]);
+
+            if ($request->ajax()) {
+                return response()->json(['errors' => $validator->errors()->all()], 422);
+            }
+
             return back()->withErrors(['errors' => $validator->errors()->all()]);
         }
         // dd($request);
@@ -1847,13 +1863,17 @@ class ReceiptFormController extends Controller
             }
         }
 
-
+        // dd($request->all(), '1');
         // Check Exam Mode Limits
         $formManage = FormManage::find($request->get('sfield'));
         if ($formManage && $formManage->enable_exam_mode) {
             $examMode = $request->get('exam_mode');
             if (!$examMode) {
-                return back()->withInput()->with('error', 'กรุณาเลือกรูปแบบการสอบ / Please select Exam Mode');
+                $message = 'กรุณาเลือกรูปแบบการสอบ / Please select Exam Mode';
+                if ($request->ajax()) {
+                    return response()->json(['message' => $message], 422);
+                }
+                return back()->withInput()->with('error', $message);
             }
 
             $currentCount = ReceiptForm::where('sfield', $request->get('sfield'))
@@ -1866,11 +1886,18 @@ class ReceiptFormController extends Controller
             // Assumption: If limit is null, it's unlimited. If 0, no seats.
             if (!is_null($limit) && $currentCount >= $limit) {
                 $modeLabel = $examMode == 'online' ? 'Online' : 'Onsite';
-                return back()->withInput()->with('error', "ขออภัย ที่นั่งสอบรูปแบบ {$modeLabel} เต็มแล้ว / Sorry, {$modeLabel} exam seats are full.");
+                $message = "ขออภัย ที่นั่งสอบรูปแบบ {$modeLabel} เต็มแล้ว / Sorry, {$modeLabel} exam seats are full.";
+
+                if ($request->ajax()) {
+                    return response()->json(['message' => $message], 422);
+                }
+
+                return back()->withInput()->with('error', $message);
             }
         }
 
         $grade = FormGrades::find($request->get('grade'));
+        // dd($request->all());
 
         $receiptForm = new ReceiptForm([
             'sfield' => $request->get('sfield'),
@@ -1920,8 +1947,29 @@ class ReceiptFormController extends Controller
         }
         // $receiptForm->save();
 
+        if ($formManage && $formManage->enable_exam_mode && $examMode) {
+            if ($examMode === 'online') {
+                $formManage->increment('online_registered');
+            } elseif ($examMode === 'onsite') {
+                $formManage->increment('onsite_registered');
+            }
+        }
+
+        $adminEmail = $request->get('email');
+
+        if (!in_array($request->get('sfield'), [0, 17], true) && $adminEmail) {
+            if (filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
+                Mail::to($adminEmail)->send(new ContactMail($receiptForm));
+            }
+        }
+        // $receiptForm->save(); // Remove duplicate save
+
+
+
         if ($receiptForm) {
-            return redirect('/form/completed/' . $route);
+            return redirect('/form/complete/' . $route);
+        } else {
+            return back()->with('error', 'บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
         }
     }
 
