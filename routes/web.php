@@ -41,6 +41,7 @@ use App\Http\Controllers\FormManageController;
 use App\Http\Controllers\LineController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\AzureTTSController;
+use App\Http\Controllers\SystemStatusController;
 // use App\Http\Controllers\RouteToggleController;
 
 /*
@@ -96,6 +97,8 @@ Route::group(['middleware' => ['auth', 'checkUserId']], function () {
     Route::get('/report-reciept-student', [StdlogController::class, 'reportRecieptStd'])->name('reportRecieptStd');
     Route::get('/report-reciept-student-search', [StdlogController::class, 'reportRecieptStdSearch'])->name('reportRecieptStdSearch');
     Route::get('/report-reciept-student/{id}', [StdlogController::class, 'reportRecieptStdShow'])->name('reportRecieptStdShow');
+
+    Route::get('/system-status', [SystemStatusController::class, 'index'])->name('system.status');
 });
 Route::get('/stdLog-search', [StdlogController::class, 'search_id'])->name('searchTestLog');
 
