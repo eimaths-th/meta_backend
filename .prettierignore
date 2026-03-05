@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+vendor/
+
+# build
+dist/
+build/
+
+# coverage
+coverage/
+
+# lock_files
+*.lock
+*.lockb
+package-lock.json
+pnpm-lock.yaml
+composer.lock
+
+# minified
+*.min.js
+*.min.css
+
+# environment
+.env
+.env.*
+
+# laravel
+vendor/
+storage/
+bootstrap/cache/
+public/build/
+public/hot

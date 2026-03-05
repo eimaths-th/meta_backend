@@ -145,7 +145,7 @@
                             <font class="grey">K.</font>
                             <b>
                                 @if ($data->sfield == 17)
-                                    {{ $data->first_name }} {{ $data->last_name }}
+                                    {{ $data->first_name }} {{ $data->middle_name }} {{ $data->last_name }}
                                 @else
                                     {{ $data->name_parent }}
                                 @endif
@@ -161,7 +161,7 @@
                             <td align="right" style="padding-left:20px;" class="grey">ชื่อนักเรียน/Nickname</td>
                             <td align="left" style="padding-left:15px;">
                                 <b>
-                                    {{ $data->first_name }} {{ $data->last_name }}
+                                    {{ $data->first_name }} {{ $data->middle_name }} {{ $data->last_name }}
                                 </b>
                             </td>
                         @endif

@@ -207,6 +207,7 @@
                                 <th>Voucher Number</th>
                                 <th>Customer Code</th>
                                 <th>First Name</th>
+                                <th>Middle Name</th>
                                 <th>Last Name</th>
                                 <th>Parent Name</th>
                                 <th>Mobile</th>
@@ -700,14 +701,21 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="position-relative form-group">
                                     <label for="firstname">First Name:</label>
                                     <input type="text" class="form-control" name="firstname" id="AddFirstname"
                                         value="">
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <div class="position-relative form-group">
+                                    <label for="middlename">Middle Name:</label>
+                                    <input type="text" class="form-control" name="middlename" id="AddMiddlename"
+                                        value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="position-relative form-group">
                                     <label for="lastname">Last Name:</label>
                                     <input type="text" class="form-control" name="lastname" id="AddLastname"
@@ -892,14 +900,21 @@
                                         </div>
                                     </div>
                                     <div class="form-row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="position-relative form-group">
                                                 <label for="firstname">First Name:</label>
                                                 <input type="text" class="form-control" name="firstname"
                                                     id="EditFirstname" value="">
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
+                                            <div class="position-relative form-group">
+                                                <label for="middlename">Middle Name:</label>
+                                                <input type="text" class="form-control" name="middlename"
+                                                    id="EditMiddlename" value="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
                                             <div class="position-relative form-group">
                                                 <label for="lastname">Last Name:</label>
                                                 <input type="text" class="form-control" name="lastname"
@@ -1161,14 +1176,21 @@
                                         </div> --}}
                                     </div>
                                     <div class="form-row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="position-relative form-group">
                                                 <label for="firstname">First Name:</label>
                                                 <input type="text" class="form-control" name="conv_firstname"
                                                     id="ConvFirstname" value="">
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
+                                            <div class="position-relative form-group">
+                                                <label for="middlename">Middle Name:</label>
+                                                <input type="text" class="form-control" name="conv_middlename"
+                                                    id="ConvMiddlename" value="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
                                             <div class="position-relative form-group">
                                                 <label for="lastname">Last Name:</label>
                                                 <input type="text" class="form-control" name="conv_lastname"
@@ -1508,6 +1530,10 @@
                         name: 'receipt_firstname'
                     },
                     {
+                        data: 'receipt_middlename',
+                        name: 'receipt_middlename'
+                    },
+                    {
                         data: 'receipt_lastname',
                         name: 'receipt_lastname'
                     },
@@ -1638,6 +1664,7 @@
                         $('#EditSubmissiondate').val(res.data.submission_date);
                         //$('#EditPackage').val(res.data.package);
                         $('#EditFirstname').val(res.data.first_name);
+                        $('#EditMiddlename').val(res.data.middle_name);
                         $('#EditLastname').val(res.data.last_name);
                         $('#EditDes').val(res.data.description);
                         $('#EditGrade').val(res.data.grade);
@@ -1682,6 +1709,7 @@
                         $('#ConvSubmissiondate').val(res.data.submission_date);
                         $('#ConvPackage').val(res.data.package);
                         $('#ConvFirstname').val(res.data.first_name);
+                        $('#ConvMiddlename').val(res.data.middle_name);
                         $('#ConvLastname').val(res.data.last_name);
                         $('#ConvDes').val(res.data.description);
                         $('#ConvGrade').val(res.data.grade);
@@ -1718,6 +1746,7 @@
                         type: $('#type').val(),
                         submission_date: $('#AddSubmissiondate').val(),
                         first_name: $('#AddFirstname').val(),
+                        middle_name: $('#AddMiddlename').val(),
                         last_name: $('#AddLastname').val(),
                         grade: $('#AddGrade').val(),
                         description: $('#AddDes').val(),
@@ -1812,6 +1841,7 @@
                     data: {
                         submission_date: $('#EditSubmissiondate').val(),
                         first_name: $('#EditFirstname').val(),
+                        middle_name: $('#EditMiddlename').val(),
                         last_name: $('#EditLastname').val(),
                         grade: $('#EditGrade').val(),
                         description: $('#EditDes').val(),
@@ -1912,6 +1942,7 @@
                         receipt_customer_number: $('#conv_customer_code').val(),
                         submission_date: $('#ConvSubmissiondate').val(),
                         first_name: $('#ConvFirstname').val(),
+                        middle_name: $('#ConvMiddlename').val(),
                         last_name: $('#ConvLastname').val(),
                         grade: $('#ConvGrade').val(),
                         //description: $('#ConvDes').val(),

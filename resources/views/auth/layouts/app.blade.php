@@ -1,16 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-
-<head>
+  <head>
     @include('auth.layouts.head')
-</head>
+  </head>
 
-<body>
-
+  <body>
     @yield('content')
     @include('auth.layouts.js')
-</body>
-
+  </body>
 </html>
