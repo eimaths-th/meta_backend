@@ -1,33 +1,56 @@
-/node_modules
-/public/build
-/public/hot
-/public/form_images
-/public/comment_images
-/public/receipt_form_images
-/public/receipt_form_watermark_images
-/public/receipt_form_school
-/public/receipts_form_school
-/public/storage
-/public/form_manage/*
-/public/form_manage/admission_criteria_image/*
-/public/form_manage/brand/*
-/public/form_manage/payment/*
-/storage/*.key
-/vendor
-/public/app_download
-/storage/app_download
-composer.json
+# dependencies
+node_modules/
+/vendor/
+
+# lock_files
+*.lock
+*.lockb
+package-lock.json
+pnpm-lock.yaml
 composer.lock
+
+# coverage
+junit.xml
+*.junit.xml
+
+# environment
 .env
-.scritp
-.env.backup
-.env.production
+.env.*
+!.env.example
+
+# logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ide
+.DS_Store
+
+# laravel
+/public/build/
+/public/hot
+/public/storage
+/public/form*
+/public/receipt*
+/storage/*.key
+/storage/pail
+
+# php_testing
+/.phpunit.cache
 .phpunit.result.cache
-Homestead.json
-Homestead.yaml
-auth.json
-npm-debug.log
-yarn-error.log
+
+# php_tools
+.phpactor.json
+/auth.json
+
+# laravel_ide
 /.fleet
 /.idea
+/.nova
 /.vscode
+/.zed
+
+# misc
+*.tgz

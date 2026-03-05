@@ -1,290 +1,291 @@
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+/>
+<link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet" />
 
 {{-- <link rel="stylesheet" href="style.css"> --}}
-<meta name="csrf-token" content="{{ csrf_token() }}">
-<link rel="icon" href="{{ asset('images/logo_meta.png') }}" type="image/png">
+<meta name="csrf-token" content="{{ csrf_token() }}" />
+<link rel="icon" href="{{ asset('images/logo_meta.png') }}" type="image/png" />
 
 <title>Meta | @yield('title', 'META Knowledge')</title>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Montserrat', sans-serif;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  body {
+    background-color: #ffe5d0;
+    background: linear-gradient(to right, #fff5e6, #ffcc80);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  .container {
+    background-color: #fff;
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+    position: relative;
+    overflow: hidden;
+    width: 768px;
+    max-width: 100%;
+    min-height: 480px;
+  }
+
+  .container p {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: 20px 0;
+  }
+
+  .container span {
+    font-size: 12px;
+  }
+
+  .container a {
+    color: #333;
+    font-size: 13px;
+    text-decoration: none;
+    margin: 15px 0 10px;
+  }
+
+  .container button {
+    background-color: #ff8c42;
+    color: #fff;
+    font-size: 12px;
+    padding: 10px 45px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+
+  .container button.hidden {
+    background-color: transparent;
+    border-color: #fff;
+  }
+
+  .container form {
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    height: 100%;
+  }
+
+  .container input {
+    background-color: #ffffff;
+    border: solid 2px #d97706;
+    margin: 8px 0;
+    padding: 10px 15px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: 100%;
+    outline: none;
+  }
+
+  .form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+  }
+
+  .sign-in {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+  }
+
+  .container.active .sign-in {
+    transform: translateX(100%);
+  }
+
+  .sign-up {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+  }
+
+  .container.active .sign-up {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: move 0.6s;
+  }
+
+  @keyframes move {
+    0%,
+    49.99% {
+      opacity: 0;
+      z-index: 1;
     }
 
-    body {
-        background-color: #ffe5d0;
-        background: linear-gradient(to right, #fff5e6, #ffcc80);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        height: 100vh;
+    50%,
+    100% {
+      opacity: 1;
+      z-index: 5;
     }
+  }
 
-    .container {
-        background-color: #fff;
-        border-radius: 30px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
-        position: relative;
-        overflow: hidden;
-        width: 768px;
-        max-width: 100%;
-        min-height: 480px;
-    }
+  .social-icons {
+    margin: 20px 0;
+  }
 
-    .container p {
-        font-size: 14px;
-        line-height: 20px;
-        letter-spacing: 0.3px;
-        margin: 20px 0;
-    }
+  .social-icons a {
+    border: 1px solid #ccc;
+    border-radius: 20%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 3px;
+    width: 40px;
+    height: 40px;
+  }
 
-    .container span {
-        font-size: 12px;
-    }
+  .toggle-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: all 0.6s ease-in-out;
+    border-radius: 150px 0 0 100px;
+    z-index: 1000;
+  }
 
-    .container a {
-        color: #333;
-        font-size: 13px;
-        text-decoration: none;
-        margin: 15px 0 10px;
-    }
+  .container.active .toggle-container {
+    transform: translateX(-100%);
+    border-radius: 0 150px 100px 0;
+  }
 
-    .container button {
-        background-color: #ff8c42;
-        color: #fff;
-        font-size: 12px;
-        padding: 10px 45px;
-        border: 1px solid transparent;
-        border-radius: 8px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        margin-top: 10px;
-        cursor: pointer;
-    }
+  .toggle {
+    background-color: #ff8c42;
+    height: 100%;
+    background: linear-gradient(288deg, #ffab77, #ffa33a);
+    color: #fff;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: all 0.6s ease-in-out;
+  }
 
-    .container button.hidden {
-        background-color: transparent;
-        border-color: #fff;
-    }
+  .container.active .toggle {
+    transform: translateX(50%);
+  }
 
-    .container form {
-        background-color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        padding: 0 40px;
-        height: 100%;
-    }
+  .toggle-panel {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 30px;
+    text-align: center;
+    top: 0;
+    transform: translateX(0);
+    transition: all 0.6s ease-in-out;
+  }
 
-    .container input {
-        background-color: #ffffff;
-        border: solid 2px #d97706;
-        margin: 8px 0;
-        padding: 10px 15px;
-        font-size: 13px;
-        border-radius: 8px;
-        width: 100%;
-        outline: none;
-    }
+  .toggle-left {
+    transform: translateX(-200%);
+  }
 
-    .form-container {
-        position: absolute;
-        top: 0;
-        height: 100%;
-        transition: all 0.6s ease-in-out;
-    }
+  .container.active .toggle-left {
+    transform: translateX(0);
+  }
 
-    .sign-in {
-        left: 0;
-        width: 50%;
-        z-index: 2;
-    }
+  .toggle-right {
+    right: 0;
+    transform: translateX(0);
+  }
 
-    .container.active .sign-in {
-        transform: translateX(100%);
-    }
-
-    .sign-up {
-        left: 0;
-        width: 50%;
-        opacity: 0;
-        z-index: 1;
-    }
-
-    .container.active .sign-up {
-        transform: translateX(100%);
-        opacity: 1;
-        z-index: 5;
-        animation: move 0.6s;
-    }
-
-    @keyframes move {
-
-        0%,
-        49.99% {
-            opacity: 0;
-            z-index: 1;
-        }
-
-        50%,
-        100% {
-            opacity: 1;
-            z-index: 5;
-        }
-    }
-
-    .social-icons {
-        margin: 20px 0;
-    }
-
-    .social-icons a {
-        border: 1px solid #ccc;
-        border-radius: 20%;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0 3px;
-        width: 40px;
-        height: 40px;
-    }
-
-    .toggle-container {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        width: 50%;
-        height: 100%;
-        overflow: hidden;
-        transition: all 0.6s ease-in-out;
-        border-radius: 150px 0 0 100px;
-        z-index: 1000;
-    }
-
-    .container.active .toggle-container {
-        transform: translateX(-100%);
-        border-radius: 0 150px 100px 0;
-    }
-
-    .toggle {
-        background-color: #ff8c42;
-        height: 100%;
-        background: linear-gradient(288deg, #ffab77, #ffa33a);
-        color: #fff;
-        position: relative;
-        left: -100%;
-        height: 100%;
-        width: 200%;
-        transform: translateX(0);
-        transition: all 0.6s ease-in-out;
-    }
-
-    .container.active .toggle {
-        transform: translateX(50%);
-    }
-
-    .toggle-panel {
-        position: absolute;
-        width: 50%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        padding: 0 30px;
-        text-align: center;
-        top: 0;
-        transform: translateX(0);
-        transition: all 0.6s ease-in-out;
-    }
-
-    .toggle-left {
-        transform: translateX(-200%);
-    }
-
-    .container.active .toggle-left {
-        transform: translateX(0);
-    }
-
-    .toggle-right {
-        right: 0;
-        transform: translateX(0);
-    }
-
-    .container.active .toggle-right {
-        transform: translateX(200%);
-    }
+  .container.active .toggle-right {
+    transform: translateX(200%);
+  }
 </style>
 <style>
-    .form-check {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
+  .form-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
-    .form-check-input {
-        width: 16px;
-        height: 16px;
-        border: 1px solid #d1d5db;
-        /* Light gray border */
-        border-radius: 4px;
-        cursor: pointer;
-        accent-color: #ff8c42;
-        /* Orange color when checked */
-    }
+  .form-check-input {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #d1d5db;
+    /* Light gray border */
+    border-radius: 4px;
+    cursor: pointer;
+    accent-color: #ff8c42;
+    /* Orange color when checked */
+  }
 
-    .form-check-input:focus {
-        /* outline: 2px solid #91c045; */
-        /* outline-offset: 2px; */
-    }
+  .form-check-input:focus {
+    /* outline: 2px solid #91c045; */
+    /* outline-offset: 2px; */
+  }
 
-    .form-check-label {
-        color: #374151;
-        /* Dark gray text */
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-    }
+  .form-check-label {
+    color: #374151;
+    /* Dark gray text */
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+  }
 
-    .spacer-30 {
-        margin: 30px 0;
-    }
+  .spacer-30 {
+    margin: 30px 0;
+  }
 
-    .spacer-10 {
-        margin: 10px 0;
-    }
+  .spacer-10 {
+    margin: 10px 0;
+  }
 
-    .space {
-        width: 40px;
-        height: 40px;
-    }
+  .space {
+    width: 40px;
+    height: 40px;
+  }
 
-    .title-brand {
-        background: linear-gradient(288deg, #ff8c42, #d97706);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
+  .title-brand {
+    background: linear-gradient(288deg, #ff8c42, #d97706);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 
-    .logo-brand {
-        width: 250px;
-        /* Set your desired width */
-        height: auto;
-        /* Maintain aspect ratio */
-        /* max-height: 100px; */
-        /* Optional: Prevents the image from getting too large */
-        object-fit: cover;
-        /* Adjust how the image fits */
-    }
+  .logo-brand {
+    width: 250px;
+    /* Set your desired width */
+    height: auto;
+    /* Maintain aspect ratio */
+    /* max-height: 100px; */
+    /* Optional: Prevents the image from getting too large */
+    object-fit: cover;
+    /* Adjust how the image fits */
+  }
 </style>
 {{-- @vite(['resources/sass/app.scss']) --}}
-

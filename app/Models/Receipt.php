@@ -21,6 +21,7 @@ class Receipt extends Model
         'submission_date',
         'ref_date',
         'first_name',
+        'middle_name',
         'last_name',
         'street_address',
         'street_address2',

@@ -564,6 +564,7 @@ class ReceiptController extends Controller
             "receipts.receipt_number as receipt_number",
             "receipts.receipt_customer_number as receipt_customer_number",
             "receipts.first_name as receipt_firstname",
+            "receipts.middle_name as receipt_middlename",
             "receipts.last_name as receipt_lastname",
             "receipts.name_parent as receipt_parent_name",
             "receipts.mobile as receipt_mobile",
@@ -667,6 +668,7 @@ class ReceiptController extends Controller
                 "receipts.receipt_number as receipt_number",
                 "receipts.receipt_customer_number as receipt_customer_number",
                 "receipts.first_name as receipt_firstname",
+                "receipts.middle_name as receipt_middlename",
                 "receipts.last_name as receipt_lastname",
                 "receipts.name_parent as receipt_parent_name",
                 "receipts.mobile as receipt_mobile",
@@ -785,6 +787,7 @@ class ReceiptController extends Controller
                 "receipts.receipt_number as receipt_number",
                 "receipts.receipt_customer_number as receipt_customer_number",
                 "receipts.first_name as receipt_firstname",
+                "receipts.middle_name as receipt_middlename",
                 "receipts.last_name as receipt_lastname",
                 "receipts.name_parent as receipt_parent_name",
                 "receipts.mobile as receipt_mobile",
@@ -1209,6 +1212,7 @@ class ReceiptController extends Controller
             "receipts.receipt_number as receipt_number",
             "receipts.receipt_customer_number as receipt_customer_number",
             "receipts.first_name as receipt_firstname",
+            "receipts.middle_name as receipt_middlename",
             "receipts.last_name as receipt_lastname",
             "receipts.name_parent as receipt_name_parent",
             "receipts.package as receipt_price",
@@ -1258,6 +1262,7 @@ class ReceiptController extends Controller
             $ret_receipt[$result->id]['number'] = $result->receipt_number;
             $ret_receipt[$result->id]['customer_number'] = $result->receipt_customer_number;
             $ret_receipt[$result->id]['first_name'] = $result->receipt_firstname;
+            $ret_receipt[$result->id]['middle_name'] = $result->receipt_middlename;
             $ret_receipt[$result->id]['last_name'] = $result->receipt_lastname;
             $ret_receipt[$result->id]['name_parent'] = $result->receipt_name_parent;
             $ret_receipt[$result->id]['submission_date'] = $result->receipt_submission_date;
@@ -1417,6 +1422,7 @@ class ReceiptController extends Controller
             "receipts.submission_date as receipt_submission_date",
             "receipts.receipt_number as receipt_number",
             "receipts.first_name as receipt_firstname",
+            "receipts.middle_name as receipt_middlename",
             "receipts.last_name as receipt_lastname",
             "receipts.package as receipt_price",
             "receipts.type as receipt_type",
@@ -1576,6 +1582,7 @@ class ReceiptController extends Controller
             "receipts.submission_date as receipt_submission_date",
             "receipts.receipt_number as receipt_number",
             "receipts.first_name as receipt_firstname",
+            "receipts.middle_name as receipt_middlename",
             "receipts.last_name as receipt_lastname",
             "receipts.package as receipt_price",
             "receipts.type as receipt_type",
@@ -1772,6 +1779,7 @@ class ReceiptController extends Controller
             "receipts.submission_date as receipt_submission_date",
             "receipts.receipt_number as receipt_number",
             "receipts.first_name as receipt_firstname",
+            "receipts.middle_name as receipt_middlename",
             "receipts.last_name as receipt_lastname",
             "receipts.package as receipt_price",
             "receipts.type as receipt_type",

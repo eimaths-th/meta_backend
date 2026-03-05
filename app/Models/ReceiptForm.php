@@ -18,6 +18,7 @@ class ReceiptForm extends Model
         'submission_date',
         'subject',
         'first_name',
+        'middle_name',
         'last_name',
         'nick_name',
         'gender',
