@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
@@ -37,7 +37,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -109,7 +109,12 @@
                         <option value="">เลือกเดือน</option>
                         @for ($i = 1; $i <= 12; $i++)
                           <option value="{{ $i }}">
-                            {{ date('F', mktime(0, 0, 0, $i, 1)) }}
+                            {{
+                              date(
+                                'F',
+                                mktime(0, 0, 0, $i, 1),
+                              )
+                            }}
                           </option>
                         @endfor
                       </select>
@@ -147,8 +152,12 @@
 
             <h3 class="">
               <i class="fa fa-cog"></i>
-              ตารางการมาทำงาน
-              {{ date('F-Y', strtotime("$year-$month")) }}
+              ตารางการมาทำงาน {{
+                date(
+                  'F-Y',
+                  strtotime("$year-$month"),
+                )
+              }}
             </h3>
             <table
               style="width: 100%"
@@ -161,9 +170,7 @@
                   <th width="1%">Code</th>
                   <th>User</th>
                   @foreach ($stwork as $status)
-                    <th>
-                      {{ $status->name }}
-                    </th>
+                    <th>{{ $status->name }}</th>
                   @endforeach
 
                   <th>Late Time</th>
@@ -180,9 +187,17 @@
                   <tr>
                     <td class="text-center">{{ (int) $loops }}</td>
                     <td class="text-center">
-                      {{ $records->first()->user->code ?? 'code' }}
+                      {{
+                        $records->first()->user->code ??
+                          'code'
+                      }}
                     </td>
-                    <td>{{ $records->first()->user->name }}</td>
+                    <td>
+                      {{
+                        $records->first()->user
+                          ->name
+                      }}
+                    </td>
 
                     @foreach ($stwork as $status)
                       <td>
@@ -312,9 +327,7 @@
                   <th class="text-center">Code</th>
                   <th>User</th>
                   @foreach ($stwork as $status)
-                    <th>
-                      {{ $status->name }}
-                    </th>
+                    <th>{{ $status->name }}</th>
                   @endforeach
                 </tr>
               </thead>
@@ -324,7 +337,10 @@
                   <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td class="text-center">
-                      {{ $records->first()->user->code ?? 'code' }}
+                      {{
+                        $records->first()->user->code ??
+                          'code'
+                      }}
                     </td>
                     <td>
                       <a
@@ -336,7 +352,10 @@
                         "
                         class="text-dark"
                       >
-                        {{ $records->first()->user->name ?? 'ไม่พบพนักงาน' }}
+                        {{
+                          $records->first()->user->name ??
+                            'ไม่พบพนักงาน'
+                        }}
                       </a>
                       {{-- {{ $records->first()->user->name ?? 'ไม่พบพนักงาน' }} --}}
                     </td>
@@ -362,7 +381,11 @@
                               # code...
                               $remain = 6;
                             }
-                            if ($status->name === 'ลากิจ' || $status->name === 'ลาป่วย' || $status->name === 'ลาพักร้อน') {
+                            if (
+                              $status->name === 'ลากิจ' ||
+                              $status->name === 'ลาป่วย' ||
+                              $status->name === 'ลาพักร้อน'
+                            ) {
                               # code...
                               $text = 'remain : ' . $remain - $statusCount ?? '';
                             }
@@ -450,7 +473,10 @@
                         href="{{ route('find_statusRecTime', ['status' => 5, 'month' => $overlate->month, 'year' => $overlate->year]) }}"
                         class="text-dark"
                       >
-                        {{ $overlate->late_time_all ?? '0' }} นาที
+                        {{
+                          $overlate->late_time_all ??
+                            '0'
+                        }} นาที
                       </a>
                     </td>
                     <td>
@@ -458,10 +484,18 @@
                         href="{{ route('find_statusRecTime', ['status' => 13, 'month' => $overlate->month, 'year' => $overlate->year]) }}"
                         class="text-dark"
                       >
-                        {{ $overlate->missing_work_all ?? '0' }} วัน
+                        {{
+                          $overlate->missing_work_all ??
+                            '0'
+                        }} วัน
                       </a>
                     </td>
-                    <td>{{ $overlate->updated_at ?? 'null' }}</td>
+                    <td>
+                      {{
+                        $overlate->updated_at ??
+                          'null'
+                      }}
+                    </td>
                   </tr>
                 @endforeach
               </tbody>
@@ -473,7 +507,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   {{-- <script src="https://d3js.org/d3.v7.min.js"></script> --}}
   <script src="../assets/plugins/d3/d3.min.js"></script>
@@ -488,7 +522,6 @@
   <script src="../assets/plugins/flot/source/jquery.flot.drawSeries.js"></script>
   <script src="../assets/plugins/flot/source/jquery.flot.uiConstants.js"></script>
   <script src="/assets/plugins/switchery/dist/switchery.min.js"></script>
-
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -509,27 +542,23 @@
   --}}
   <script>
     function export_report1() {
-      url =
-        '{{ route('search_reportMonthTime', ['type' => 'print', 'tap' => '1', 'month' => $month, 'year' => $year]) }}';
+      url = '{{ route('search_reportMonthTime', ['type' => 'print', 'tap' => '1', 'month' => $month, 'year' => $year]) }}';
 
       window.open(url.replace(/&amp;/g, '&'));
     }
 
     function export_report2() {
-      url =
-        '{{ route('search_reportMonthTime', ['type' => 'print', 'tap' => '2', 'year' => $year]) }}';
+      url = '{{ route('search_reportMonthTime', ['type' => 'print', 'tap' => '2', 'year' => $year]) }}';
 
       window.open(url.replace(/&amp;/g, '&'));
     }
 
     function export_report3() {
-      url =
-        '{{ route('search_reportMonthTime', ['type' => 'print', 'tap' => '3']) }}';
+      url = '{{ route('search_reportMonthTime', ['type' => 'print', 'tap' => '3']) }}';
 
       window.open(url.replace(/&amp;/g, '&'));
     }
-    let baseUrl =
-      '{{ route('search_reportMonthTime', ['type' => 'print', 'tap' => '4', 'year' => $year]) }}';
+    let baseUrl = '{{ route('search_reportMonthTime', ['type' => 'print', 'tap' => '4', 'year' => $year]) }}';
 
     function export_report_user(user_id) {
       let url = `${baseUrl}&user_id=${user_id}`;
@@ -601,7 +630,6 @@
       // });
     });
   </script>
-
   {{--
     <script>
     var checkboxes = document.querySelectorAll('input[id^="switchery-default-"]');
@@ -612,7 +640,6 @@
     });
     </script>
   --}}
-
   {{--
     <script>
     var groupLabels = [
@@ -702,7 +729,6 @@
     });
     </script>
   --}}
-
   {{--
     <script>
     var groupLabels = [

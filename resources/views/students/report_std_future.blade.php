@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
@@ -33,7 +33,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -103,7 +103,12 @@
                     <option value="">เลือกเดือน</option>
                     @for ($i = 1; $i <= 12; $i++)
                       <option value="{{ sprintf('%02d', $i) }}">
-                        {{ date('F', mktime(0, 0, 0, $i, 1)) }}
+                        {{
+                          date(
+                            'F',
+                            mktime(0, 0, 0, $i, 1),
+                          )
+                        }}
                       </option>
                     @endfor
                   </select>
@@ -177,7 +182,12 @@
                     <option value="">เลือกเดือน</option>
                     @for ($i = 1; $i <= 12; $i++)
                       <option value="{{ $i }}">
-                        {{ date('F', mktime(0, 0, 0, $i, 1)) }}
+                        {{
+                          date(
+                            'F',
+                            mktime(0, 0, 0, $i, 1),
+                          )
+                        }}
                       </option>
                     @endfor
                   </select>
@@ -243,10 +253,10 @@
                 $group = $record->group;
                 $status = $record->status;
 
-                if (! isset($groupStatusCounts[$group])) {
+                if (!isset($groupStatusCounts[$group])) {
                   $groupStatusCounts[$group] = [];
                 }
-                if (! isset($groupStatusCounts[$group][$status])) {
+                if (!isset($groupStatusCounts[$group][$status])) {
                   $groupStatusCounts[$group][$status] = 0;
                 }
                 $groupStatusCounts[$group][$status]++;
@@ -272,52 +282,90 @@
                   @endif
                 </td>
                 <td>
-                  {{ isset($statusCounts['New Student']) ? $statusCounts['New Student'] : 0 }}
-                  คน
-                </td>
-                <td>
-                  {{ isset($statusCounts['studying . . .']) ? $statusCounts['studying . . .'] : 0 }}
-                  คน
-                </td>
-                <td>
-                  {{ isset($statusCounts['Termination of study']) ? $statusCounts['Termination of study'] : 0 }}
-                  คน
-                </td>
-                <td>
-                  {{ isset($statusCounts['drop']) ? $statusCounts['drop'] : 0 }}
-                  คน
-                </td>
-                <td>
-                  {{ isset($statusCounts['resume']) ? $statusCounts['resume'] : 0 }}
-                  คน
-                </td>
-                <td>
-                  {{ isset($statusCounts['waitting . . .']) ? $statusCounts['waitting . . .'] : 0 }}
-                  คน
+                  {{
+                    isset($statusCounts['New Student'])
+                      ? $statusCounts['New Student']
+                      : 0
+                  }} คน
                 </td>
                 <td>
                   {{
-                    (isset($statusCounts['New Student']) ? $statusCounts['New Student'] : 0) +
-                      (isset($statusCounts['studying . . .']) ? $statusCounts['studying . . .'] : 0) +
-                      (isset($statusCounts['resume']) ? $statusCounts['resume'] : 0)
-                  }}
-                  คน
+                    isset($statusCounts['studying . . .'])
+                      ? $statusCounts['studying . . .']
+                      : 0
+                  }} คน
                 </td>
                 <td>
-                  {{ isset($statusCounts['None Receipt']) ? $statusCounts['None Receipt'] : 0 }}
-                  คน
+                  {{
+                    isset(
+                      $statusCounts['Termination of study'],
+                    )
+                      ? $statusCounts['Termination of study']
+                      : 0
+                  }} คน
+                </td>
+                <td>
+                  {{
+                    isset($statusCounts['drop'])
+                      ? $statusCounts['drop']
+                      : 0
+                  }} คน
+                </td>
+                <td>
+                  {{
+                    isset($statusCounts['resume'])
+                      ? $statusCounts['resume']
+                      : 0
+                  }} คน
+                </td>
+                <td>
+                  {{
+                    isset($statusCounts['waitting . . .'])
+                      ? $statusCounts['waitting . . .']
+                      : 0
+                  }} คน
+                </td>
+                <td>
+                  {{
+                    (isset($statusCounts['New Student'])
+                      ? $statusCounts['New Student']
+                      : 0) +
+                      (isset($statusCounts['studying . . .'])
+                        ? $statusCounts['studying . . .']
+                        : 0) +
+                      (isset($statusCounts['resume'])
+                        ? $statusCounts['resume']
+                        : 0)
+                  }} คน
+                </td>
+                <td>
+                  {{
+                    isset($statusCounts['None Receipt'])
+                      ? $statusCounts['None Receipt']
+                      : 0
+                  }} คน
                 </td>
                 <td>{{ now() }}</td>
                 <!-- You can replace this with the actual date time if needed -->
               </tr>
               @php
-                $totalNewStudents += isset($statusCounts['New Student']) ? $statusCounts['New Student'] : 0;
-                $totalStudying += isset($statusCounts['studying . . .']) ? $statusCounts['studying . . .'] : 0;
-                $totalTermination += isset($statusCounts['Termination of study']) ? $statusCounts['Termination of study'] : 0;
+                $totalNewStudents += isset($statusCounts['New Student'])
+                  ? $statusCounts['New Student']
+                  : 0;
+                $totalStudying += isset($statusCounts['studying . . .'])
+                  ? $statusCounts['studying . . .']
+                  : 0;
+                $totalTermination += isset($statusCounts['Termination of study'])
+                  ? $statusCounts['Termination of study']
+                  : 0;
                 $totalDrop += isset($statusCounts['drop']) ? $statusCounts['drop'] : 0;
                 $totalResume += isset($statusCounts['resume']) ? $statusCounts['resume'] : 0;
-                $totalWait += isset($statusCounts['waitting . . .']) ? $statusCounts['waitting . . .'] : 0;
-                $totalNoneReceipt += isset($statusCounts['None Receipt']) ? $statusCounts['None Receipt'] : 0;
+                $totalWait += isset($statusCounts['waitting . . .'])
+                  ? $statusCounts['waitting . . .']
+                  : 0;
+                $totalNoneReceipt += isset($statusCounts['None Receipt'])
+                  ? $statusCounts['None Receipt']
+                  : 0;
               @endphp
             @endforeach
 
@@ -330,7 +378,11 @@
               <td>{{ $totalResume }} คน</td>
               <td>{{ $totalWait }} คน</td>
               <td>
-                {{ $totalNewStudents + $totalStudying + $totalResume }} คน
+                {{
+                  $totalNewStudents +
+                    $totalStudying +
+                    $totalResume
+                }} คน
               </td>
               <td>{{ $totalNoneReceipt }} คน</td>
               <td>{{ now() }}</td>
@@ -361,8 +413,18 @@
             @foreach ($latestStatusByStudent as $key => $status)
               <tr>
                 <td class="text-center">{{ $key + 1 }}</td>
-                <td class="text-center">{{ $status->student->code }}</td>
-                <td>{{ $status->student->nick_name }}</td>
+                <td class="text-center">
+                  {{
+                    $status->student
+                      ->code
+                  }}
+                </td>
+                <td>
+                  {{
+                    $status->student
+                      ->nick_name
+                  }}
+                </td>
                 <td>
                   @if ($status->group === 'M')
                     Math
@@ -411,7 +473,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   {{-- <script src="https://d3js.org/d3.v7.min.js"></script> --}}
   <script src="../assets/plugins/d3/d3.min.js"></script>
@@ -424,7 +486,6 @@
   <script src="../assets/plugins/flot/source/jquery.flot.browser.js"></script>
   <script src="../assets/plugins/flot/source/jquery.flot.drawSeries.js"></script>
   <script src="../assets/plugins/flot/source/jquery.flot.uiConstants.js"></script>
-
   <script>
     $(document).ready(function () {
       //$.noConflict();
@@ -479,7 +540,6 @@
       // });
     });
   </script>
-
   {{-- กราฟนี้ใช้ได้ --}}
   {{--
     <script>
@@ -528,7 +588,6 @@
     });
     </script>
   --}}
-
   {{--
     <script>
     // Extracted data from your table
@@ -568,7 +627,6 @@
     });
     </script>
   --}}
-
   {{--
     <script>
     Chart.defaults.color = 'gray';
@@ -614,127 +672,199 @@
     </script>
   --}}
   <script>
-    var groupLabels = ['New Student', 'Studying', 'Termination of study', 'Drop', 'Resume', 'Waiting'];
+    var groupLabels = [
+      'New Student',
+      'Studying',
+      'Termination of study',
+      'Drop',
+      'Resume',
+      'Waiting'
+    ];
     var data = [
-        @foreach ($groupStatusCounts as $group => $statusCounts)
-            @if ($group !== 'N')
+      @foreach ($groupStatusCounts as $group => $statusCounts)
+      @if ($group !== 'N')
 
-                {
-                    label: '{{ $group }}',
-                    data: [
-                        {{ isset($statusCounts['New Student']) ? $statusCounts['New Student'] : 0 }},
-                        {{ isset($statusCounts['studying . . .']) ? $statusCounts['studying . . .'] : 0 }},
-                        {{ isset($statusCounts['Termination of study']) ? $statusCounts['Termination of study'] : 0 }},
-                        {{ isset($statusCounts['drop']) ? $statusCounts['drop'] : 0 }},
-                        {{ isset($statusCounts['resume']) ? $statusCounts['resume'] : 0 }},
-                        {{ isset($statusCounts['waitting . . .']) ? $statusCounts['waitting . . .'] : 0 }},
-                        // {{ isset($statusCounts['None Receipt']) ? $statusCounts['None Receipt'] : 0 }},
-                    ]
-                },
-            @endif
-        @endforeach
+      {
+        label: '{{ $group }}',
+        data: [
+          {{
+      isset($statusCounts['New Student'])
+        ? $statusCounts['New Student']
+        : 0
+    }},
+          {{
+      isset($statusCounts['studying . . .'])
+        ? $statusCounts['studying . . .']
+        : 0
+    }},
+          {{
+      isset(
+        $statusCounts['Termination of study'],
+      )
+        ? $statusCounts['Termination of study']
+        : 0
+    }},
+          {{
+      isset($statusCounts['drop'])
+        ? $statusCounts['drop']
+        : 0
+    }},
+          {{
+      isset($statusCounts['resume'])
+        ? $statusCounts['resume']
+        : 0
+    }},
+          {{
+      isset($statusCounts['waitting . . .'])
+        ? $statusCounts['waitting . . .']
+        : 0
+    }}
+          // {{
+      isset($statusCounts['None Receipt'])
+        ? $statusCounts['None Receipt']
+        : 0
+    }},
+        ]
+      }
+      @endif
+      @endforeach
     ];
     // var ran2 = Math.floor(Math.random() * 255);
     // var ran3 = Math.floor(Math.random() * 255);
     var ctx = document.getElementById('lineChart').getContext('2d');
     var lineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: groupLabels,
-            datasets: data.map(function(item) {
-                // var ran1 = Math.floor(Math.random() * 255);
-                // var randomColor = 'rgba(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ', 1)';
-                var groupColors = {
-                    'M': 'rgba(52, 143, 226,.65)',
-                    'E': 'rgba(0, 172, 172,.65)',
-                    // 'N': 'rgba(255, 99, 132,.65)' // Add more colors if needed
-                };
-                var grouplabels = {
-                    'M': 'Math',
-                    'E': 'English',
-                    // 'N': 'None' // Add more colors if needed
-                };
-                return {
-                    label: grouplabels[item.label],
-                    data: item.data,
-                    pointBackgroundColor: groupColors[item.label],
-                    borderColor: groupColors[item.label],
-                    backgroundColor: groupColors[item.label],
-                    pointRadius: 4,
-                    borderWidth: 2,
-                    // fill: false
-                }
-            })
-        },
+      type: 'line',
+      data: {
+        labels: groupLabels,
+        datasets: data.map(function (item) {
+          // var ran1 = Math.floor(Math.random() * 255);
+          // var randomColor = 'rgba(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ', 1)';
+          var groupColors = {
+            M: 'rgba(52, 143, 226,.65)',
+            E: 'rgba(0, 172, 172,.65)'
+            // 'N': 'rgba(255, 99, 132,.65)' // Add more colors if needed
+          };
+          var grouplabels = {
+            M: 'Math',
+            E: 'English'
+            // 'N': 'None' // Add more colors if needed
+          };
+          return {
+            label: grouplabels[item.label],
+            data: item.data,
+            pointBackgroundColor: groupColors[item.label],
+            borderColor: groupColors[item.label],
+            backgroundColor: groupColors[item.label],
+            pointRadius: 4,
+            borderWidth: 2
+            // fill: false
+          };
+        })
+      },
 
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
         }
+      }
     });
   </script>
-
   <script>
-    var groupLabels = ['New Student', 'Studying', 'Termination of study', 'Drop', 'Resume', 'waitting'];
+    var groupLabels = [
+      'New Student',
+      'Studying',
+      'Termination of study',
+      'Drop',
+      'Resume',
+      'waitting'
+    ];
     var data = [
-        @foreach ($groupStatusCounts as $group => $statusCounts)
-            @if ($group !== 'N')
+      @foreach ($groupStatusCounts as $group => $statusCounts)
+      @if ($group !== 'N')
 
-                {
-                    label: '{{ $group }}',
-                    data: [
-                        {{ isset($statusCounts['New Student']) ? $statusCounts['New Student'] : 0 }},
-                        {{ isset($statusCounts['studying . . .']) ? $statusCounts['studying . . .'] : 0 }},
-                        {{ isset($statusCounts['Termination of study']) ? $statusCounts['Termination of study'] : 0 }},
-                        {{ isset($statusCounts['drop']) ? $statusCounts['drop'] : 0 }},
-                        {{ isset($statusCounts['resume']) ? $statusCounts['resume'] : 0 }},
-                        {{ isset($statusCounts['waitting . . .']) ? $statusCounts['waitting . . .'] : 0 }},
-                        // {{ isset($statusCounts['None Receipt']) ? $statusCounts['None Receipt'] : 0 }},
-                    ]
-                },
-            @endif
-        @endforeach
+      {
+        label: '{{ $group }}',
+        data: [
+          {{
+      isset($statusCounts['New Student'])
+        ? $statusCounts['New Student']
+        : 0
+    }},
+          {{
+      isset($statusCounts['studying . . .'])
+        ? $statusCounts['studying . . .']
+        : 0
+    }},
+          {{
+      isset(
+        $statusCounts['Termination of study'],
+      )
+        ? $statusCounts['Termination of study']
+        : 0
+    }},
+          {{
+      isset($statusCounts['drop'])
+        ? $statusCounts['drop']
+        : 0
+    }},
+          {{
+      isset($statusCounts['resume'])
+        ? $statusCounts['resume']
+        : 0
+    }},
+          {{
+      isset($statusCounts['waitting . . .'])
+        ? $statusCounts['waitting . . .']
+        : 0
+    }}
+          // {{
+      isset($statusCounts['None Receipt'])
+        ? $statusCounts['None Receipt']
+        : 0
+    }},
+        ]
+      }
+      @endif
+      @endforeach
     ];
 
     var ctx = document.getElementById('barChart').getContext('2d');
     var barChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: groupLabels,
-            datasets: data.map(function(item) {
-                var groupColors = {
-                    'M': 'rgba(52, 143, 226,.65)',
-                    'E': 'rgba(0, 172, 172,.65)',
-                    'N': 'rgba(255, 99, 132,.65)' // Add more colors if needed
-                };
-                var grouplabels = {
-                    'M': 'Math',
-                    'E': 'English',
-                    'N': 'None' // Add more colors if needed
-                };
-                return {
-                    label: grouplabels[item.label],
-                    data: item.data,
-                    backgroundColor: groupColors[item.label],
-                    borderColor: groupColors[item.label],
-                    borderWidth: 1
-                }
-            })
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    maxTicksLimit: 5, // Set the maximum number of ticks on the Y-axis
-                }
-            }
+      type: 'bar',
+      data: {
+        labels: groupLabels,
+        datasets: data.map(function (item) {
+          var groupColors = {
+            M: 'rgba(52, 143, 226,.65)',
+            E: 'rgba(0, 172, 172,.65)',
+            N: 'rgba(255, 99, 132,.65)' // Add more colors if needed
+          };
+          var grouplabels = {
+            M: 'Math',
+            E: 'English',
+            N: 'None' // Add more colors if needed
+          };
+          return {
+            label: grouplabels[item.label],
+            data: item.data,
+            backgroundColor: groupColors[item.label],
+            borderColor: groupColors[item.label],
+            borderWidth: 1
+          };
+        })
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            maxTicksLimit: 5 // Set the maximum number of ticks on the Y-axis
+          }
         }
+      }
     });
   </script>
-
   {{--
     <script>
     // Chart.defaults.color = 'rgba(' + app.color.componentColorRgb + ', .65)';
@@ -775,7 +905,6 @@
     });
     </script>
   --}}
-
   {{--
     <script>
     // Assuming you have already extracted the data as $totalNewStudents, $totalStudying, etc.
@@ -805,7 +934,6 @@
     });
     </script>
   --}}
-
   {{--
     <script>
     var groupLabels = [];

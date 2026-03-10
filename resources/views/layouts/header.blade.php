@@ -267,7 +267,11 @@
             </div>
             <div class="widget-content-left header-user-info ms-3">
               <div class="widget-heading">
-                {{ Str::upper(Auth::user()->name) }}
+                {{
+                  Str::upper(
+                    Auth::user()->name,
+                  )
+                }}
               </div>
               <div class="widget-subheading">
                 @if (Auth::user()->level == 1)

@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -39,7 +39,7 @@
   />
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <!--<div class="alert alert-success">
@@ -70,8 +70,15 @@
             <i class="pe-7s-note2 icon-gradient bg-tempting-azure"></i>
           </div>
           <div>
-            {{ $sfielda[request()->get('pmsfield')] }} Receipts Report
-            {{ request()->get('print_month') }}
+            {{
+              $sfielda[
+                request()->get('pmsfield')
+              ]
+            }} Receipts Report {{
+              request()->get(
+                'print_month',
+              )
+            }}
             <div class="page-title-subheading">
               META Knowledge Receipt Report
             </div>
@@ -142,19 +149,35 @@
             @foreach ($data as $receipt)
               <tr>
                 <td align="center" width="15%">
-                  {{ $receipt['receipt_submission_date'] }}
+                  {{
+                    $receipt[
+                      'receipt_submission_date'
+                    ]
+                  }}
                 </td>
                 <td align="left" width="40%">
                   &nbsp; {{ $receipt['description'] }}
                 </td>
                 <td align="center" width="15%">
-                  {{ $receipt['receipt_numbers'] }}
+                  {{
+                    $receipt[
+                      'receipt_numbers'
+                    ]
+                  }}
                 </td>
                 <td align="center" width="15%">
-                  {{ $receipt['total_price'] }}
+                  {{
+                    $receipt[
+                      'total_price'
+                    ]
+                  }}
                 </td>
                 <td align="center" width="15%">
-                  {{ $receipt['receipt_price_label'] }}
+                  {{
+                    $receipt[
+                      'receipt_price_label'
+                    ]
+                  }}
                 </td>
               </tr>
             @endforeach
@@ -174,7 +197,6 @@
       </div>
     </div>
   </div>
-
   <div class="body-block-example-2" style="display: none" id="loder_bar">
     <br />
     <div class="loader" id="loder_bar_div">
@@ -190,7 +212,6 @@
     </div>
     <br />
   </div>
-
   <!-- PrintMonth Modal -->
   <div
     class="fade modal bd-example-modal-lg"
@@ -263,7 +284,11 @@
                   @foreach ($sfielda as $key => $value)
                     <option
                       value="{{ $key }}"
-                      {{ request()->get('pmsfield') == $key ? 'selected' : '' }}
+                      {{
+                        request()->get('pmsfield') == $key
+                          ? 'selected'
+                          : ''
+                      }}
                     >
                       {{ $value }}
                     </option>
@@ -331,7 +356,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     $(document).ready(function () {
       $('.dropdown-toggle').dropdown();
@@ -405,14 +430,30 @@
           rotate: -45
         },
         title: {
-          text: 'ยอดรวมรายได้ {{ $sfielda[request()->get('pmsfield')] }} ประจำเดือน {{ request()->get('print_month') }}'
+          text: 'ยอดรวมรายได้ {{
+      $sfielda[
+        request()->get('pmsfield')
+      ]
+    }} ประจำเดือน {{
+      request()->get(
+        'print_month',
+      )
+    }}'
         },
 
         categories: [{!! $chart_date !!}]
       },
       yaxis: {
         /*  title: {
-            text: 'ยอดรวมรายได้ {{ $sfielda[request()->get('pmsfield')] }} ประจำเดือน {{ request()->get('print_month') }}'
+            text: 'ยอดรวมรายได้ {{
+      $sfielda[
+        request()->get('pmsfield')
+      ]
+    }} ประจำเดือน {{
+      request()->get(
+        'print_month',
+      )
+    }}'
           } */
       },
       fill: {

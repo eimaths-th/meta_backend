@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -10,7 +10,6 @@
     type="text/javascript"
   ></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <link
     rel="stylesheet"
@@ -24,7 +23,6 @@
     href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
     rel="stylesheet"
   />
-
   @if ($template === 'meta' || $template === 'meta2')
     <style>
       /* ------------------- */
@@ -145,7 +143,7 @@
   @endif
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -270,7 +268,11 @@
               <td align="center" width="15%" class="active_left grey"></td>
               <td align="center" width="40%">
                 <font class="grey">รวมรายรับ</font>
-                <b>{{ $sfielda[$sfield] }}</b>
+                <b>{{
+                  $sfielda[
+                    $sfield
+                  ]
+                }}</b>
                 <b>{{ $thaimonth }} {{ $thaiyear }}</b>
               </td>
               <td align="center" width="15%"></td>
@@ -278,7 +280,13 @@
                 <font class="grey">รหัสเอกสาร</font>
               </td>
               <td align="center" width="15%" class="active_right">
-                <b>{{ $sfieldas[$sfield] }}{{ $ymcode }}</b>
+                <b
+                  >{{
+                    $sfieldas[
+                      $sfield
+                    ]
+                  }}{{ $ymcode }}</b
+                >
               </td>
             </tr>
           </table>
@@ -302,20 +310,40 @@
             @foreach ($data as $receipt)
               <tr class="activeda" height="30">
                 <td align="center" width="15%" class="actived">
-                  <b>{{ $receipt['receipt_submission_date'] }}</b>
+                  <b>{{
+                    $receipt[
+                      'receipt_submission_date'
+                    ]
+                  }}</b>
                 </td>
                 <td align="left" width="40%" class="actived">
                   &nbsp;
-                  <b>{!! $receipt['description'] !!}</b>
+                  <b>{!!
+                    $receipt[
+                      'description'
+                    ]
+                  !!}</b>
                 </td>
                 <td align="center" width="15%" class="actived">
-                  <b>{{ $receipt['receipt_numbers'] }}</b>
+                  <b>{{
+                    $receipt[
+                      'receipt_numbers'
+                    ]
+                  }}</b>
                 </td>
                 <td align="center" width="15%" class="actived">
-                  <b>{{ $receipt['total_price'] }}</b>
+                  <b>{{
+                    $receipt[
+                      'total_price'
+                    ]
+                  }}</b>
                 </td>
                 <td align="center" width="15%" class="actived grey">
-                  <b>{{ $receipt['receipt_price_label'] }}</b>
+                  <b>{{
+                    $receipt[
+                      'receipt_price_label'
+                    ]
+                  }}</b>
                 </td>
               </tr>
             @endforeach
@@ -360,11 +388,10 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     function export_report() {
-      url =
-        '{{ route('receipts.print_month', ['type' => 'print', 'pmsfield' => $pmsfield, 'fontsize' => $fontsize, 'print_month' => $print_month, 'Pmdescription' => $pmdes, 'printMonthTemplate' => $template]) }}';
+      url = '{{ route('receipts.print_month', ['type' => 'print', 'pmsfield' => $pmsfield, 'fontsize' => $fontsize, 'print_month' => $print_month, 'Pmdescription' => $pmdes, 'printMonthTemplate' => $template]) }}';
       console.log(url.replace(/&amp;/g, '&'));
       window.open(url.replace(/&amp;/g, '&'));
     }

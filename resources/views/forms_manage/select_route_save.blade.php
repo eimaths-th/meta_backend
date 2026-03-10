@@ -150,7 +150,11 @@
               toastr.success(resp.message || 'สร้างฟอร์มสำเร็จ');
               setTimeout(function () {
                 window.location.href =
-                  resp.redirect || '{{ route('form-manage.index') }}';
+                  resp.redirect || '{{
+    route(
+      'form-manage.index',
+    )
+  }}';
               }, 1200);
               return;
             }

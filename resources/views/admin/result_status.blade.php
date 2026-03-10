@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
@@ -26,13 +26,12 @@
   />
 @endsection
 
-@section('content')
+@section ('content')
   @if ($message = Session::get('error'))
     <div class="alert alert-danger mb-5">
       <p>{{ $message }}</p>
     </div>
   @endif
-
   <div class="row">
     <div class="app-page-title">
       <div class="page-title-wrapper">
@@ -127,19 +126,33 @@
               @foreach ($lists as $key => $list)
                 <tr>
                   <td>{{ $key + 1 }}</td>
-                  <td>{{ $list->student->code }}</td>
+                  <td>
+                    {{
+                      $list->student
+                        ->code
+                    }}
+                  </td>
                   <td>
                     <a
                       target="_blank"
                       class="text-dark"
                       href="{{ route('students.show', $list->student->id) }}"
                     >
-                      {{ $list->student->full_name }} (
-                      {{ $list->student->nick_name }} )
+                      {{ $list->student->full_name }} ( {{ $list->student->nick_name }} )
                     </a>
                   </td>
-                  <td>{{ $list->student->parent->name_parent }}</td>
-                  <td>{{ $list->student->parent->mobile }}</td>
+                  <td>
+                    {{
+                      $list->student->parent
+                        ->name_parent
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      $list->student->parent
+                        ->mobile
+                    }}
+                  </td>
                   <td>{{ $list->group }}</td>
                   <td align="center">{{ $list->status }}</td>
                 </tr>
@@ -150,7 +163,6 @@
       </div>
     </div>
   </div>
-
   <div class="body-block-example-2" style="display: none" id="loder_bar">
     <br />
     <div class="loader" id="loder_bar_div">
@@ -168,7 +180,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     var table = $('#Listview').DataTable({
       // serverSide: true,

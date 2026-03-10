@@ -1,5 +1,5 @@
-@extends('layouts.main_template')
-@section('content')
+@extends ('layouts.main_template')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -127,7 +127,7 @@
                     </a>
 
                     @csrf
-                    @method('DELETE')
+                    @method ('DELETE')
 
                     <button type="submit" class="btn btn-danger">Delete</button>
                   </form>
@@ -142,10 +142,9 @@
       </div>
     </div>
   </div>
-
-  @vite(['resources/js/Users.js'])
+  @vite (['resources/js/Users.js'])
 @endsection
 
-@section('footer-scripts')
-  
+@section ('footer-scripts')
+
 @endsection

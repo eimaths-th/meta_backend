@@ -1,7 +1,11 @@
-@extends('layout')
+@extends ('layout')
 <style>
   .card-header-custom {
-    background-image: url('{{ asset('images/school_309241295.jpg') }}');
+    background-image: url('{{
+    asset(
+      'images/school_309241295.jpg',
+    )
+  }}');
     height: 420px;
     background-repeat: no-repeat;
   }
@@ -17,7 +21,7 @@
     font-size: 35px;
   }
 </style>
-@section('content')
+@section ('content')
   <body style="background-color: #d8e8b0">
     <main class="login-form">
       <div class="cotainer">
@@ -51,10 +55,7 @@
                 Reset Password
               </div>
               <div class="card-body">
-                <form
-                  action="{{ route('reset.password.post') }}"
-                  method="POST"
-                >
+                <form action="{{ route('reset.password.post') }}" method="POST">
                   @csrf
                   <input type="hidden" name="token" value="{{ $token }}" />
 
@@ -76,7 +77,11 @@
                       />
                       @if ($errors->has('email'))
                         <span class="text-danger">
-                          {{ $errors->first('email') }}
+                          {{
+                            $errors->first(
+                              'email',
+                            )
+                          }}
                         </span>
                       @endif
                     </div>
@@ -100,7 +105,11 @@
                       />
                       @if ($errors->has('password'))
                         <span class="text-danger">
-                          {{ $errors->first('password') }}
+                          {{
+                            $errors->first(
+                              'password',
+                            )
+                          }}
                         </span>
                       @endif
                     </div>
@@ -124,7 +133,11 @@
                       />
                       @if ($errors->has('password_confirmation'))
                         <span class="text-danger">
-                          {{ $errors->first('password_confirmation') }}
+                          {{
+                            $errors->first(
+                              'password_confirmation',
+                            )
+                          }}
                         </span>
                       @endif
                     </div>

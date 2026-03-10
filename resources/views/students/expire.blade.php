@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
@@ -26,13 +26,12 @@
   />
 @endsection
 
-@section('content')
+@section ('content')
   @if ($message = Session::get('error'))
     <div class="alert alert-danger mb-5">
       <p>{{ $message }}</p>
     </div>
   @endif
-
   <div class="row">
     <div class="app-page-title">
       <div class="page-title-wrapper">
@@ -158,19 +157,33 @@
                   <td>{{ $key + 1 }}</td>
                   <td>{{ $list->period }}</td>
 
-                  <td>{{ $list->std->code }}</td>
+                  <td>
+                    {{
+                      $list->std
+                        ->code
+                    }}
+                  </td>
                   <td>
                     <a
                       target="_blank"
                       class="text-dark"
                       href="{{ route('students.show', $list->std->id) }}"
                     >
-                      {{ $list->std->full_name }} (
-                      {{ $list->std->nick_name }} )
+                      {{ $list->std->full_name }} ( {{ $list->std->nick_name }} )
                     </a>
                   </td>
-                  <td>{{ $list->std->parent->name_parent }}</td>
-                  <td>{{ $list->std->parent->mobile }}</td>
+                  <td>
+                    {{
+                      $list->std->parent
+                        ->name_parent
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      $list->std->parent
+                        ->mobile
+                    }}
+                  </td>
                   <td>{{ $list->group }}</td>
                   {{-- <td align="center">{{ $list->status }}</td> --}}
                 </tr>
@@ -181,7 +194,6 @@
       </div>
     </div>
   </div>
-
   <div class="body-block-example-2" style="display: none" id="loder_bar">
     <br />
     <div class="loader" id="loder_bar_div">
@@ -199,7 +211,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     // Get a reference to the select element
     // $('#selectGroup').change(function() {
@@ -208,7 +220,11 @@
 
     //     // Make an AJAX call to the Laravel route
     //     $.ajax({
-    //         url: '{{ route('students.expire') }}', // Route URL
+    //         url: '{{
+      route(
+        'students.expire',
+      )
+    }}', // Route URL
     //         type: 'GET', // Request type
     //         data: {
     //             group: selectedMonth

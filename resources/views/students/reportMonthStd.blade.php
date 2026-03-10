@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <link
     rel="stylesheet"
     href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css"
@@ -18,7 +18,6 @@
     href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
     rel="stylesheet"
   />
-
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script
@@ -76,7 +75,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -113,10 +112,7 @@
           <div class="card-body">
             <div class="tab-content">
               {{--  --}}
-              <canvas
-                id="barChart"
-                {{-- width="800" height="200" --}}
-              ></canvas>
+              <canvas id="barChart" {{-- width="800" height="200" --}}></canvas>
             </div>
           </div>
         </div>
@@ -280,10 +276,13 @@
                             $name = $subject->first()->title ?? 'Unknown';
                         }
                       @endphp
-
                       <option
                         value="{{ $subjectGroup }}"
-                        {{ $groupSubject === $subjectGroup ? 'selected' : '' }}
+                        {{
+                          $groupSubject === $subjectGroup
+                            ? 'selected'
+                            : ''
+                        }}
                       >
                         {{ $name }}
                       </option>
@@ -303,9 +302,18 @@
                     @for ($i = 1; $i <= 12; $i++)
                       <option
                         value="{{ $i }}"
-                        {{ $i == $monthf ? 'selected' : '' }}
+                        {{
+                          $i == $monthf
+                            ? 'selected'
+                            : ''
+                        }}
                       >
-                        {{ date('F', mktime(0, 0, 0, $i, 1)) }}
+                        {{
+                          date(
+                            'F',
+                            mktime(0, 0, 0, $i, 1),
+                          )
+                        }}
                       </option>
                     @endfor
                   </select>
@@ -401,9 +409,7 @@
               <div class="col-lg-6">
                 <h3 class="mt-10px">
                   <i class="fa fa-cog"></i>
-                  ตารางค่าสมัครเรียนเดือน
-                  {{ thaidate('F', $month) }}
-                  {{ $year }}
+                  ตารางค่าสมัครเรียนเดือน {{ thaidate('F', $month) }} {{ $year }}
                 </h3>
               </div>
               <div class="col-lg-6 text-end">
@@ -477,7 +483,6 @@
                       }
                       // dd($checkStatus);
                     @endphp
-
                     {{--
                       @if ($checkStatus === 'all')
                       <tr>
@@ -545,30 +550,63 @@
                     <tr>
                       <td class="text-center">{{ $key + 1 }}</td>
                       <td class="text-center">
-                        {{ $data->std->code ?? 'Null' }}
+                        {{
+                          $data->std->code ??
+                            'Null'
+                        }}
                       </td>
                       <td class="{{ $class }}">
-                        {{ $data->std->nick_name ?? 'Null' }}
+                        {{
+                          $data->std->nick_name ??
+                            'Null'
+                        }}
                       </td>
                       <td>
-                        {{ $data->rec_school->submission_date ?? 'Null' }}
+                        {{
+                          $data->rec_school->submission_date ??
+                            'Null'
+                        }}
                       </td>
-                      <td>{{ $data->period ?? 'Null' }}</td>
+                      <td>
+                        {{
+                          $data->period ??
+                            'Null'
+                        }}
+                      </td>
 
                       <td>
-                        {{ $data->rec_school->receipt_number ?? 'Null' }}
+                        {{
+                          $data->rec_school->receipt_number ??
+                            'Null'
+                        }}
                       </td>
-                      <td>{{ $data->school_sub->title }}</td>
+                      <td>
+                        {{
+                          $data->school_sub
+                            ->title
+                        }}
+                      </td>
                       <td>{{ $data->group }}</td>
 
                       <td class="{{ $class }}">
                         {{-- @if ($data->std->status_log && $data->std->status_log->count() > 0 && $status->last()->group == $data->group) --}}
-                        {{ $statusValue ?? 'Null' }}
+                        {{
+                          $statusValue ??
+                            'Null'
+                        }}
                       </td>
-                      <td>{{ $data->course_type ?? 'Null' }}</td>
+                      <td>
+                        {{
+                          $data->course_type ??
+                            'Null'
+                        }}
+                      </td>
                       {{-- <td class="text-end">{{ number_format($data->total) }} บาท</td> --}}
                       <td class="text-end">
-                        {{ number_format($data->total) ?? 'Null' }} บาท
+                        {{
+                          number_format($data->total) ??
+                            'Null'
+                        }} บาท
                       </td>
                       {{-- <td class="text-end"><input type="checkbox" id="switchery-default" checked /></td> --}}
                       {{--
@@ -586,9 +624,7 @@
                           'receipt_school_id' => $data->rec_school->id,
                           'school_price_id' => $data->id,
                         ];
-                        $routeUrl = htmlspecialchars_decode(
-                          route('saveCheck', $routeParameters),
-                        );
+                        $routeUrl = htmlspecialchars_decode(route('saveCheck', $routeParameters));
                       @endphp
 
                       <td class="text-center" width="1%">
@@ -659,23 +695,69 @@
               <tbody>
                 @foreach ($check_recp as $key => $check)
                   <tr>
-                    <td width="1%">{{ $key + 1 ?? 'null' }}</td>
-                    <td width="1%">{{ $check->student->code ?? 'null' }}</td>
-                    <td>
-                      {{ $check->student->nick_name ?? 'null' }} /
-                      {{ $check->student->full_name ?? 'null' }}
+                    <td width="1%">
+                      {{
+                        $key + 1 ??
+                          'null'
+                      }}
+                    </td>
+                    <td width="1%">
+                      {{
+                        $check->student->code ??
+                          'null'
+                      }}
                     </td>
                     <td>
-                      {{ $check->receiptSchool->submission_date ?? 'null' }}
+                      {{
+                        $check->student->nick_name ??
+                          'null'
+                      }} / {{
+                        $check->student->full_name ??
+                          'null'
+                      }}
                     </td>
                     <td>
-                      {{ $check->receiptSchool->receipt_number ?? 'null' }}
+                      {{
+                        $check->receiptSchool->submission_date ??
+                          'null'
+                      }}
                     </td>
-                    <td>{{ $check->school_price->period ?? 'null' }}</td>
-                    <td>{{ $check->school_price->group ?? 'null' }}</td>
-                    <td>{{ $check->date_check ?? 'null' }}</td>
-                    <td>{{ $check->note ?? 'null' }}</td>
-                    <td>{{ $check->user->name ?? 'null' }}</td>
+                    <td>
+                      {{
+                        $check->receiptSchool->receipt_number ??
+                          'null'
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        $check->school_price->period ??
+                          'null'
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        $check->school_price->group ??
+                          'null'
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        $check->date_check ??
+                          'null'
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        $check->note ??
+                          'null'
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        $check->user->name ??
+                          'null'
+                      }}
+                    </td>
                   </tr>
                 @endforeach
               </tbody>
@@ -685,8 +767,7 @@
             <blockquote class="blockquote">
               <div class="d-flex justify-content-between align-items-center">
                 <p class="mb-0">
-                  ตารางแสดงผลบันทึกใบปะหน้าประจำเดือน
-                  {{ thaidate('F', date('F')) }} {{ date('Y') }}
+                  ตารางแสดงผลบันทึกใบปะหน้าประจำเดือน {{ thaidate('F', date('F')) }} {{ date('Y') }}
                 </p>
               </div>
             </blockquote>
@@ -718,13 +799,31 @@
                     <td class="text-center">{{ $key + 1 }}</td>
                     <td class="text-center">{{ $paper_rep->no }}</td>
                     <td>{{ $paper_rep->submission_date }}</td>
-                    <td>{{ $paper_rep->student->nick_name }}</td>
+                    <td>
+                      {{
+                        $paper_rep->student
+                          ->nick_name
+                      }}
+                    </td>
                     <td>{{ $paper_rep->receipt_number }}</td>
-                    <td>{{ $paper_rep->school_price->period ?? null }}</td>
-                    <td>{{ $paper_rep->school_price->group ?? null }}</td>
+                    <td>
+                      {{
+                        $paper_rep->school_price->period ??
+                          null
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        $paper_rep->school_price->group ??
+                          null
+                      }}
+                    </td>
                     <td class="text-end">
-                      {{ number_format($paper_rep->school_price->total) ?? null }}
-                      บาท
+                      {{
+                        number_format(
+                          $paper_rep->school_price->total,
+                        ) ?? null
+                      }} บาท
                     </td>
                   </tr>
                 @endforeach
@@ -735,10 +834,10 @@
       </div>
     </div>
   </div>
-  @include('students.modal')
+  @include ('students.modal')
 @endsection
 
-@section('script')
+@section ('script')
   {{--
     <script>
     var checkboxes = document.querySelectorAll('input[id^="switchery-default-"]');
@@ -836,7 +935,11 @@
           });
         } else {
           $.ajax({
-            url: '{{ route('saveCheck') }}',
+            url: '{{
+      route(
+        'saveCheck',
+      )
+    }}',
             method: 'POST',
             data: {
               isChecked: isChecked,
@@ -876,7 +979,11 @@
         var labelElement = checkbox.siblings('.label-text');
         var note2 = $('#note2').val();
         $.ajax({
-          url: '{{ route('saveCheck') }}',
+          url: '{{
+      route(
+        'saveCheck',
+      )
+    }}',
           method: 'POST',
           data: {
             isChecked: isChecked,
@@ -938,7 +1045,11 @@
         // });
       });
       $.ajax({
-        url: '{{ route('fetchCheckboxStates') }}',
+        url: '{{
+      route(
+        'fetchCheckboxStates',
+      )
+    }}',
         method: 'GET',
         success: function (response) {
           // console.log(response);
@@ -992,7 +1103,6 @@
     //     }
     // });
   </script>
-
   {{--
     <script>
     var checkboxes = document.querySelectorAll('input[id^="switchery-default-"]');
@@ -1003,35 +1113,39 @@
     });
     </script>
   --}}
-
   <script>
     function export_report() {
+      url = '{{ route('reportMonthStd', ['type' => 'print', 'tap' => '1', 'month' => $cMonth, 'year' => $year]) }}';
 
-        url = '{{ route('reportMonthStd', ['type' => 'print', 'tap' => '1', 'month' => $cMonth, 'year' => $year]) }}';
-
-        window.open(
-            url.replace(/&amp;/g, "&")
-        );
+      window.open(url.replace(/&amp;/g, '&'));
     }
     var groupLabels = [
-        @foreach ($totalForAllMonths as $month => $total)
+      @foreach ($totalForAllMonths as $month => $total)
 
-            '{{ $month }} ',
-        @endforeach
+      '{{ $month }} '
+      @endforeach
     ];
 
     var groupLabels2 = [
-        @foreach ($totalForAllMonths as $month => $total)
-            @if (isset($percentageChangeForAllMonths[$month]))
-                @if ($percentageChangeForAllMonths[$month] > 0)
-                    '{{ $month }}\n+{{ $percentageChangeForAllMonths[$month] }}%',
-                @else
-                    '{{ $month }}\n{{ $percentageChangeForAllMonths[$month] }}%',
-                @endif
-            @else
-                '{{ $month }}  ',
-            @endif
-        @endforeach
+      @foreach ($totalForAllMonths as $month => $total)
+      @if (isset($percentageChangeForAllMonths[$month]))
+      @if ($percentageChangeForAllMonths[$month] > 0)
+      '{{ $month }}\n+{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}%',
+      @else
+      '{{ $month }}\n{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}%',
+      @endif
+      @else
+      '{{ $month }}  '
+      @endif
+      @endforeach
     ];
 
     // var data = {
@@ -1053,118 +1167,128 @@
     // };
     var ctx = document.getElementById('lineChart').getContext('2d');
     var lineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: groupLabels2,
-            // label: groupLabels,
-            datasets: [{
-                label: 'ยอดรวมแต่ละเดือน ',
-                data: [
-                    @foreach ($totalForAllMonths as $month => $total)
-                        {{ $total }},
-                    @endforeach
-                ],
-                pointBackgroundColor: 'rgba(52, 143, 226,.65)',
-                borderColor: 'rgba(52, 143, 226,.65)',
-                backgroundColor: 'rgba(52, 143, 226,.65)',
-                pointRadius: 4,
-                borderWidth: 2,
-            }, ]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                tooltip: {
-                    mode: 'index', // Display multiple tooltips at once
-                    intersect: false, // Don't intersect with other elements
-                },
-                // title: {
-                //     display: true,
-                //     text: 'Chart Title',
-                // },
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-            },
-            animation: {
-                duration: 2000, // Animation duration in milliseconds
-                easing: 'easeInOutQuad', // Easing function
-            },
-
-        }
-    });
-  </script>
-
-  <script>
-    var groupLabels = [
-        @foreach ($totalForAllMonths as $month => $total)
-            '{{ $month }}',
-        @endforeach
-    ];
-    var groupLabels2 = [
-        @foreach ($totalForAllMonths as $month => $total)
-            @if (isset($percentageChangeForAllMonths[$month]))
-                @if ($percentageChangeForAllMonths[$month] > 0)
-                    '{{ $month }}\n+{{ $percentageChangeForAllMonths[$month] }}%',
-                @else
-                    '{{ $month }}\n{{ $percentageChangeForAllMonths[$month] }}%',
-                @endif
-            @else
-                '{{ $month }}  ',
-            @endif
-        @endforeach
-    ];
-
-    var data = {
+      type: 'line',
+      data: {
         labels: groupLabels2,
-        datasets: [{
+        // label: groupLabels,
+        datasets: [
+          {
             label: 'ยอดรวมแต่ละเดือน ',
             data: [
-                @foreach ($totalForAllMonths as $month => $total)
-                    {{ $total }},
-                @endforeach
+              @foreach ($totalForAllMonths as $month => $total)
+              {{ $total }}
+              @endforeach
             ],
             pointBackgroundColor: 'rgba(52, 143, 226,.65)',
             borderColor: 'rgba(52, 143, 226,.65)',
             backgroundColor: 'rgba(52, 143, 226,.65)',
             pointRadius: 4,
-            borderWidth: 2,
-        }]
+            borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          tooltip: {
+            mode: 'index', // Display multiple tooltips at once
+            intersect: false // Don't intersect with other elements
+          },
+          // title: {
+          //     display: true,
+          //     text: 'Chart Title',
+          // },
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        },
+        animation: {
+          duration: 2000, // Animation duration in milliseconds
+          easing: 'easeInOutQuad' // Easing function
+        }
+      }
+    });
+  </script>
+  <script>
+    var groupLabels = [
+      @foreach ($totalForAllMonths as $month => $total)
+      '{{ $month }}'
+      @endforeach
+    ];
+    var groupLabels2 = [
+      @foreach ($totalForAllMonths as $month => $total)
+      @if (isset($percentageChangeForAllMonths[$month]))
+      @if ($percentageChangeForAllMonths[$month] > 0)
+      '{{ $month }}\n+{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}%',
+      @else
+      '{{ $month }}\n{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}%',
+      @endif
+      @else
+      '{{ $month }}  '
+      @endif
+      @endforeach
+    ];
+
+    var data = {
+      labels: groupLabels2,
+      datasets: [
+        {
+          label: 'ยอดรวมแต่ละเดือน ',
+          data: [
+            @foreach ($totalForAllMonths as $month => $total)
+            {{ $total }}
+            @endforeach
+          ],
+          pointBackgroundColor: 'rgba(52, 143, 226,.65)',
+          borderColor: 'rgba(52, 143, 226,.65)',
+          backgroundColor: 'rgba(52, 143, 226,.65)',
+          pointRadius: 4,
+          borderWidth: 2
+        }
+      ]
     };
     var ctx = document.getElementById('barChart').getContext('2d');
     var barChart = new Chart(ctx, {
-        type: 'bar',
-        data: data,
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                tooltip: {
-                    mode: 'index', // Display multiple tooltips at once
-                    intersect: false, // Don't intersect with other elements
-                },
-                // title: {
-                //     display: true,
-                //     text: 'Chart Title',
-                // },
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-            },
-            animation: {
-                duration: 2000, // Animation duration in milliseconds
-                easing: 'easeInOutQuad', // Easing function
-            },
+      type: 'bar',
+      data: data,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          tooltip: {
+            mode: 'index', // Display multiple tooltips at once
+            intersect: false // Don't intersect with other elements
+          },
+          // title: {
+          //     display: true,
+          //     text: 'Chart Title',
+          // },
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        },
+        animation: {
+          duration: 2000, // Animation duration in milliseconds
+          easing: 'easeInOutQuad' // Easing function
         }
+      }
     });
   </script>
 @endsection

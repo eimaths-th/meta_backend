@@ -1,6 +1,6 @@
-@extends('layouts.form')
+@extends ('layouts.form')
 
-@section('style')
+@section ('style')
   <style>
     body {
       background-color: #d8e8b0;
@@ -23,7 +23,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div id="loader"></div>
   <div class="container">
     <div class="row justify-content-center">

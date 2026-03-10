@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
@@ -33,7 +33,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -108,7 +108,12 @@
                     <option value="">เลือกเดือน</option>
                     @for ($i = 1; $i <= 12; $i++)
                       <option value="{{ $i }}">
-                        {{ date('F', mktime(0, 0, 0, $i, 1)) }}
+                        {{
+                          date(
+                            'F',
+                            mktime(0, 0, 0, $i, 1),
+                          )
+                        }}
                       </option>
                     @endfor
                   </select>
@@ -211,13 +216,13 @@
                 $status_log_ids = 'ids';
                 // $ids = [];
 
-                if (! isset($groupStatusCounts[$group])) {
+                if (!isset($groupStatusCounts[$group])) {
                   $groupStatusCounts[$group] = [];
                 }
-                if (! isset($groupStatusCounts[$group][$status])) {
+                if (!isset($groupStatusCounts[$group][$status])) {
                   $groupStatusCounts[$group][$status] = 0;
                 }
-                if (! isset($groupStatusCounts[$group][$status_log_ids][$status])) {
+                if (!isset($groupStatusCounts[$group][$status_log_ids][$status])) {
                   $groupStatusCounts[$group][$status_log_ids][$status] = [];
                 }
                 $groupStatusCounts[$group][$status]++;
@@ -255,7 +260,9 @@
                       'month' => $month,
                       'year' => $year,
                       'group' => $group,
-                      'New Student' => isset($statusCounts['ids']['New Student']) ? $statusCounts['ids']['New Student'] : '',
+                      'New Student' => isset($statusCounts['ids']['New Student'])
+                        ? $statusCounts['ids']['New Student']
+                        : '',
                       'ids' => [],
                     ];
                     if (isset($statusCounts['ids']['New Student'])) {
@@ -268,8 +275,11 @@
                     class="text-dark"
                     href="{{ route('searchTestLog', $routeParameters) }}"
                   >
-                    {{ isset($statusCounts['New Student']) ? $statusCounts['New Student'] : 0 }}
-                    คน
+                    {{
+                      isset($statusCounts['New Student'])
+                        ? $statusCounts['New Student']
+                        : 0
+                    }} คน
                   </a>
                 </td>
                 <td>
@@ -280,7 +290,9 @@
                       'month' => $month,
                       'year' => $year,
                       'group' => $group,
-                      'studying . . .' => isset($statusCounts['ids']['studying . . .']) ? $statusCounts['ids']['studying . . .'] : '',
+                      'studying . . .' => isset($statusCounts['ids']['studying . . .'])
+                        ? $statusCounts['ids']['studying . . .']
+                        : '',
                       'ids' => [],
                     ];
                     if (isset($statusCounts['ids']['studying . . .'])) {
@@ -293,8 +305,11 @@
                     class="text-dark"
                     href="{{ route('searchTestLog', $routeParameters) }}"
                   >
-                    {{ isset($statusCounts['studying . . .']) ? $statusCounts['studying . . .'] : 0 }}
-                    คน
+                    {{
+                      isset($statusCounts['studying . . .'])
+                        ? $statusCounts['studying . . .']
+                        : 0
+                    }} คน
                   </a>
                 </td>
                 <td>
@@ -320,8 +335,13 @@
                     class="text-dark"
                     href="{{ route('searchTestLog', $routeParameters) }}"
                   >
-                    {{ isset($statusCounts['Termination of study']) ? $statusCounts['Termination of study'] : 0 }}
-                    คน
+                    {{
+                      isset(
+                        $statusCounts['Termination of study'],
+                      )
+                        ? $statusCounts['Termination of study']
+                        : 0
+                    }} คน
                   </a>
                 </td>
                 <td>
@@ -332,7 +352,9 @@
                       'month' => $month,
                       'year' => $year,
                       'group' => $group,
-                      'drop' => isset($statusCounts['ids']['drop']) ? $statusCounts['ids']['drop'] : '',
+                      'drop' => isset($statusCounts['ids']['drop'])
+                        ? $statusCounts['ids']['drop']
+                        : '',
                       'ids' => [],
                     ];
                     if (isset($statusCounts['ids']['drop'])) {
@@ -345,8 +367,11 @@
                     class="text-dark"
                     href="{{ route('searchTestLog', $routeParameters) }}"
                   >
-                    {{ isset($statusCounts['drop']) ? $statusCounts['drop'] : 0 }}
-                    คน
+                    {{
+                      isset($statusCounts['drop'])
+                        ? $statusCounts['drop']
+                        : 0
+                    }} คน
                   </a>
                 </td>
                 <td>
@@ -357,7 +382,9 @@
                       'month' => $month,
                       'year' => $year,
                       'group' => $group,
-                      'resume' => isset($statusCounts['ids']['resume']) ? $statusCounts['ids']['resume'] : '',
+                      'resume' => isset($statusCounts['ids']['resume'])
+                        ? $statusCounts['ids']['resume']
+                        : '',
                       'ids' => [],
                     ];
                     if (isset($statusCounts['ids']['resume'])) {
@@ -370,8 +397,11 @@
                     class="text-dark"
                     href="{{ route('searchTestLog', $routeParameters) }}"
                   >
-                    {{ isset($statusCounts['resume']) ? $statusCounts['resume'] : 0 }}
-                    คน
+                    {{
+                      isset($statusCounts['resume'])
+                        ? $statusCounts['resume']
+                        : 0
+                    }} คน
                   </a>
                 </td>
                 <td>
@@ -382,7 +412,9 @@
                       'month' => $month,
                       'year' => $year,
                       'group' => $group,
-                      'waitting . . .' => isset($statusCounts['ids']['waitting . . .']) ? $statusCounts['ids']['waitting . . .'] : '',
+                      'waitting . . .' => isset($statusCounts['ids']['waitting . . .'])
+                        ? $statusCounts['ids']['waitting . . .']
+                        : '',
                       'ids' => [],
                     ];
                     if (isset($statusCounts['ids']['waitting . . .'])) {
@@ -395,8 +427,11 @@
                     class="text-dark"
                     href="{{ route('searchTestLog', $routeParameters) }}"
                   >
-                    {{ isset($statusCounts['waitting . . .']) ? $statusCounts['waitting . . .'] : 0 }}
-                    คน
+                    {{
+                      isset($statusCounts['waitting . . .'])
+                        ? $statusCounts['waitting . . .']
+                        : 0
+                    }} คน
                   </a>
                 </td>
                 <td>
@@ -408,9 +443,15 @@
                       'month' => $month,
                       'year' => $year,
                       'group' => $group,
-                      'resume' => isset($statusCounts['ids']['resume']) ? $statusCounts['ids']['resume'] : '',
-                      'New Student' => isset($statusCounts['ids']['New Student']) ? $statusCounts['ids']['New Student'] : '',
-                      'studying . . .' => isset($statusCounts['ids']['studying . . .']) ? $statusCounts['ids']['studying . . .'] : '',
+                      'resume' => isset($statusCounts['ids']['resume'])
+                        ? $statusCounts['ids']['resume']
+                        : '',
+                      'New Student' => isset($statusCounts['ids']['New Student'])
+                        ? $statusCounts['ids']['New Student']
+                        : '',
+                      'studying . . .' => isset($statusCounts['ids']['studying . . .'])
+                        ? $statusCounts['ids']['studying . . .']
+                        : '',
                       'ids' => [],
                     ];
                     if (isset($statusCounts['ids']['resume'])) {
@@ -433,28 +474,46 @@
                     href="{{ route('searchTestLog', $routeParameters) }}"
                   >
                     {{
-                      (isset($statusCounts['New Student']) ? $statusCounts['New Student'] : 0) +
-                        (isset($statusCounts['studying . . .']) ? $statusCounts['studying . . .'] : 0) +
-                        (isset($statusCounts['resume']) ? $statusCounts['resume'] : 0)
-                    }}
-                    คน
+                      (isset($statusCounts['New Student'])
+                        ? $statusCounts['New Student']
+                        : 0) +
+                        (isset($statusCounts['studying . . .'])
+                          ? $statusCounts['studying . . .']
+                          : 0) +
+                        (isset($statusCounts['resume'])
+                          ? $statusCounts['resume']
+                          : 0)
+                    }} คน
                   </a>
                 </td>
                 <td>
-                  {{ isset($statusCounts['None Receipt']) ? $statusCounts['None Receipt'] : 0 }}
-                  คน
+                  {{
+                    isset($statusCounts['None Receipt'])
+                      ? $statusCounts['None Receipt']
+                      : 0
+                  }} คน
                 </td>
 
                 <td>{{ now() }}</td>
               </tr>
               @php
-                $totalNewStudents += isset($statusCounts['New Student']) ? $statusCounts['New Student'] : 0;
-                $totalStudying += isset($statusCounts['studying . . .']) ? $statusCounts['studying . . .'] : 0;
-                $totalTermination += isset($statusCounts['Termination of study']) ? $statusCounts['Termination of study'] : 0;
+                $totalNewStudents += isset($statusCounts['New Student'])
+                  ? $statusCounts['New Student']
+                  : 0;
+                $totalStudying += isset($statusCounts['studying . . .'])
+                  ? $statusCounts['studying . . .']
+                  : 0;
+                $totalTermination += isset($statusCounts['Termination of study'])
+                  ? $statusCounts['Termination of study']
+                  : 0;
                 $totalDrop += isset($statusCounts['drop']) ? $statusCounts['drop'] : 0;
                 $totalResume += isset($statusCounts['resume']) ? $statusCounts['resume'] : 0;
-                $totalWait += isset($statusCounts['waitting . . .']) ? $statusCounts['waitting . . .'] : 0;
-                $totalNoneReceipt += isset($statusCounts['None Receipt']) ? $statusCounts['None Receipt'] : 0;
+                $totalWait += isset($statusCounts['waitting . . .'])
+                  ? $statusCounts['waitting . . .']
+                  : 0;
+                $totalNoneReceipt += isset($statusCounts['None Receipt'])
+                  ? $statusCounts['None Receipt']
+                  : 0;
               @endphp
             @endforeach
 
@@ -468,7 +527,11 @@
               <td>{{ $totalWait }} คน</td>
               <td>
                 <b>
-                  {{ $totalNewStudents + $totalStudying + $totalResume }} คน
+                  {{
+                    $totalNewStudents +
+                      $totalStudying +
+                      $totalResume
+                  }} คน
                 </b>
               </td>
               <td>{{ $totalNoneReceipt }} คน</td>
@@ -506,15 +569,19 @@
             @foreach ($latestStatusByStudent as $key => $status)
               <tr>
                 <td class="text-center">{{ $key + 1 }}</td>
-                <td class="text-center">{{ $status->student->code }}</td>
+                <td class="text-center">
+                  {{
+                    $status->student
+                      ->code
+                  }}
+                </td>
                 <td>
                   <a
                     target="_blank"
                     class="text-dark"
                     href="{{ route('students.show', $status->student_id) }}"
                   >
-                    {{ $status->student->full_name }} (
-                    {{ $status->nick_name }} )
+                    {{ $status->student->full_name }} ( {{ $status->nick_name }} )
                   </a>
                   {{-- {{ $status->nick_name }} --}}
                 </td>
@@ -556,7 +623,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   {{-- <script src="https://d3js.org/d3.v7.min.js"></script> --}}
   <script src="../assets/plugins/d3/d3.min.js"></script>
@@ -569,11 +636,9 @@
   <script src="../assets/plugins/flot/source/jquery.flot.browser.js"></script>
   <script src="../assets/plugins/flot/source/jquery.flot.drawSeries.js"></script>
   <script src="../assets/plugins/flot/source/jquery.flot.uiConstants.js"></script>
-
   <script>
     function export_report() {
-      url =
-        '{{ route('search_status', ['type' => 'print', 'month' => $month, 'year' => $year]) }}';
+      url = '{{ route('search_status', ['type' => 'print', 'month' => $month, 'year' => $year]) }}';
 
       window.open(url.replace(/&amp;/g, '&'));
     }
@@ -630,7 +695,6 @@
       // });
     });
   </script>
-
   {{-- กราฟนี้ใช้ได้ --}}
   {{--
     <script>
@@ -679,7 +743,6 @@
     });
     </script>
   --}}
-
   {{--
     <script>
     // Extracted data from your table
@@ -719,7 +782,6 @@
     });
     </script>
   --}}
-
   {{--
     <script>
     Chart.defaults.color = 'gray';
@@ -765,208 +827,277 @@
     </script>
   --}}
   <script>
-    var groupLabels = ['New Student', 'Studying', 'Termination of study', 'Drop', 'Resume', 'Waiting'];
+    var groupLabels = [
+      'New Student',
+      'Studying',
+      'Termination of study',
+      'Drop',
+      'Resume',
+      'Waiting'
+    ];
     var data = [
-        @foreach ($groupStatusCounts as $group => $statusCounts)
-            @if ($group !== 'N')
+      @foreach ($groupStatusCounts as $group => $statusCounts)
+      @if ($group !== 'N')
 
-                {
-                    label: '{{ $group }}',
-                    data: [
-                        {{ isset($statusCounts['New Student']) ? $statusCounts['New Student'] : 0 }},
-                        {{ isset($statusCounts['studying . . .']) ? $statusCounts['studying . . .'] : 0 }},
-                        {{ isset($statusCounts['Termination of study']) ? $statusCounts['Termination of study'] : 0 }},
-                        {{ isset($statusCounts['drop']) ? $statusCounts['drop'] : 0 }},
-                        {{ isset($statusCounts['resume']) ? $statusCounts['resume'] : 0 }},
-                        {{ isset($statusCounts['waitting . . .']) ? $statusCounts['waitting . . .'] : 0 }},
-                        // {{ isset($statusCounts['None Receipt']) ? $statusCounts['None Receipt'] : 0 }},
-                    ]
-                },
-            @endif
-        @endforeach
+      {
+        label: '{{ $group }}',
+        data: [
+          {{
+      isset($statusCounts['New Student'])
+        ? $statusCounts['New Student']
+        : 0
+    }},
+          {{
+      isset($statusCounts['studying . . .'])
+        ? $statusCounts['studying . . .']
+        : 0
+    }},
+          {{
+      isset(
+        $statusCounts['Termination of study'],
+      )
+        ? $statusCounts['Termination of study']
+        : 0
+    }},
+          {{
+      isset($statusCounts['drop'])
+        ? $statusCounts['drop']
+        : 0
+    }},
+          {{
+      isset($statusCounts['resume'])
+        ? $statusCounts['resume']
+        : 0
+    }},
+          {{
+      isset($statusCounts['waitting . . .'])
+        ? $statusCounts['waitting . . .']
+        : 0
+    }}
+          // {{
+      isset($statusCounts['None Receipt'])
+        ? $statusCounts['None Receipt']
+        : 0
+    }},
+        ]
+      }
+      @endif
+      @endforeach
     ];
     var ctx = document.getElementById('lineChart').getContext('2d');
     var colors = [
-        'rgba(245, 156, 26,.65)',
-        'rgba(0, 172, 172,.65)',
-        'rgba(52, 143, 226,.65)',
-        'rgba(135, 83, 217,.65)',
-        // more colors
-        'rgba(255, 91, 87,.65)',
-        'rgba(114, 124, 182,.65)',
-        'rgba(50, 169, 50,.65)',
-        'rgba(144, 202, 75,.65)',
-        'rgba(73, 182, 214,.65)',
-        'rgba(108, 117, 125,.65)',
-        'rgba(251, 85, 151,.65)',
-
+      'rgba(245, 156, 26,.65)',
+      'rgba(0, 172, 172,.65)',
+      'rgba(52, 143, 226,.65)',
+      'rgba(135, 83, 217,.65)',
+      // more colors
+      'rgba(255, 91, 87,.65)',
+      'rgba(114, 124, 182,.65)',
+      'rgba(50, 169, 50,.65)',
+      'rgba(144, 202, 75,.65)',
+      'rgba(73, 182, 214,.65)',
+      'rgba(108, 117, 125,.65)',
+      'rgba(251, 85, 151,.65)'
     ];
     var lineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: groupLabels,
+      type: 'line',
+      data: {
+        labels: groupLabels,
 
-            datasets: data.map(function(item, index) {
-                // var ran1 = Math.floor(Math.random() * 255);
-                // var randomColor = 'rgba(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ', 1)';
-                // var grouplabels = item.label;
+        datasets: data.map(function (item, index) {
+          // var ran1 = Math.floor(Math.random() * 255);
+          // var randomColor = 'rgba(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ', 1)';
+          // var grouplabels = item.label;
 
-                // var groupColors = {
-                //     'M': 'rgba(52, 143, 226,.65)',
-                //     'E': 'rgba(0, 172, 172,.65)',
-                //     'Sci': 'rgba(135, 83, 217,.65)',
-                //     'CHN': 'rgba(245, 156, 26,.65)',
-                // };
-                // var grouplabels = {
-                //     'M': 'Math',
-                //     'E': 'English',
-                //     'Sci': 'Science',
-                //     'CHN': 'Chinese' ,
-                // };
-                return {
-                    // label: grouplabels[item.label],
-                    label: item.label,
-                    data: item.data,
-                    // pointBackgroundColor: groupColors[item.label],
-                    // borderColor: groupColors[item.label],
-                    // backgroundColor: groupColors[item.label],
-                    pointBackgroundColor: colors[index % colors.length],
-                    borderColor: colors[index % colors.length],
-                    backgroundColor: colors[index % colors.length],
-                    pointRadius: 4,
-                    borderWidth: 2,
-                    // fill: false
-                };
-            })
+          // var groupColors = {
+          //     'M': 'rgba(52, 143, 226,.65)',
+          //     'E': 'rgba(0, 172, 172,.65)',
+          //     'Sci': 'rgba(135, 83, 217,.65)',
+          //     'CHN': 'rgba(245, 156, 26,.65)',
+          // };
+          // var grouplabels = {
+          //     'M': 'Math',
+          //     'E': 'English',
+          //     'Sci': 'Science',
+          //     'CHN': 'Chinese' ,
+          // };
+          return {
+            // label: grouplabels[item.label],
+            label: item.label,
+            data: item.data,
+            // pointBackgroundColor: groupColors[item.label],
+            // borderColor: groupColors[item.label],
+            // backgroundColor: groupColors[item.label],
+            pointBackgroundColor: colors[index % colors.length],
+            borderColor: colors[index % colors.length],
+            backgroundColor: colors[index % colors.length],
+            pointRadius: 4,
+            borderWidth: 2
+            // fill: false
+          };
+        })
+      },
+
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
         },
-
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                tooltip: {
-                    mode: 'index', // Display multiple tooltips at once
-                    intersect: false, // Don't intersect with other elements
-                },
-                // title: {
-                //     display: true,
-                //     text: 'Chart Title',
-                // },
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-            },
-            animation: {
-                duration: 2000, // Animation duration in milliseconds
-                easing: 'easeInOutQuad', // Easing function
-            },
+        plugins: {
+          tooltip: {
+            mode: 'index', // Display multiple tooltips at once
+            intersect: false // Don't intersect with other elements
+          },
+          // title: {
+          //     display: true,
+          //     text: 'Chart Title',
+          // },
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        },
+        animation: {
+          duration: 2000, // Animation duration in milliseconds
+          easing: 'easeInOutQuad' // Easing function
         }
+      }
     });
   </script>
-
   <script>
-    var groupLabels = ['New Student', 'Studying', 'Termination of study', 'Drop', 'Resume', 'waitting'];
+    var groupLabels = [
+      'New Student',
+      'Studying',
+      'Termination of study',
+      'Drop',
+      'Resume',
+      'waitting'
+    ];
     var data = [
-        @foreach ($groupStatusCounts as $group => $statusCounts)
-            @if ($group !== 'N')
+      @foreach ($groupStatusCounts as $group => $statusCounts)
+      @if ($group !== 'N')
 
-                {
-                    label: '{{ $group }}',
-                    data: [
-                        {{ isset($statusCounts['New Student']) ? $statusCounts['New Student'] : 0 }},
-                        {{ isset($statusCounts['studying . . .']) ? $statusCounts['studying . . .'] : 0 }},
-                        {{ isset($statusCounts['Termination of study']) ? $statusCounts['Termination of study'] : 0 }},
-                        {{ isset($statusCounts['drop']) ? $statusCounts['drop'] : 0 }},
-                        {{ isset($statusCounts['resume']) ? $statusCounts['resume'] : 0 }},
-                        {{ isset($statusCounts['waitting . . .']) ? $statusCounts['waitting . . .'] : 0 }},
-                        // {{ isset($statusCounts['None Receipt']) ? $statusCounts['None Receipt'] : 0 }},
-                    ]
-                },
-            @endif
-        @endforeach
+      {
+        label: '{{ $group }}',
+        data: [
+          {{
+      isset($statusCounts['New Student'])
+        ? $statusCounts['New Student']
+        : 0
+    }},
+          {{
+      isset($statusCounts['studying . . .'])
+        ? $statusCounts['studying . . .']
+        : 0
+    }},
+          {{
+      isset(
+        $statusCounts['Termination of study'],
+      )
+        ? $statusCounts['Termination of study']
+        : 0
+    }},
+          {{
+      isset($statusCounts['drop'])
+        ? $statusCounts['drop']
+        : 0
+    }},
+          {{
+      isset($statusCounts['resume'])
+        ? $statusCounts['resume']
+        : 0
+    }},
+          {{
+      isset($statusCounts['waitting . . .'])
+        ? $statusCounts['waitting . . .']
+        : 0
+    }}
+          // {{
+      isset($statusCounts['None Receipt'])
+        ? $statusCounts['None Receipt']
+        : 0
+    }},
+        ]
+      }
+      @endif
+      @endforeach
     ];
     var colors = [
-        'rgba(245, 156, 26,.65)',
-        'rgba(0, 172, 172,.65)',
-        'rgba(52, 143, 226,.65)',
-        'rgba(135, 83, 217,.65)',
-        // more colors
-        'rgba(255, 91, 87,.65)',
-        'rgba(114, 124, 182,.65)',
-        'rgba(50, 169, 50,.65)',
-        'rgba(144, 202, 75,.65)',
-        'rgba(73, 182, 214,.65)',
-        'rgba(108, 117, 125,.65)',
-        'rgba(251, 85, 151,.65)',
-
+      'rgba(245, 156, 26,.65)',
+      'rgba(0, 172, 172,.65)',
+      'rgba(52, 143, 226,.65)',
+      'rgba(135, 83, 217,.65)',
+      // more colors
+      'rgba(255, 91, 87,.65)',
+      'rgba(114, 124, 182,.65)',
+      'rgba(50, 169, 50,.65)',
+      'rgba(144, 202, 75,.65)',
+      'rgba(73, 182, 214,.65)',
+      'rgba(108, 117, 125,.65)',
+      'rgba(251, 85, 151,.65)'
     ];
 
     var ctx = document.getElementById('barChart').getContext('2d');
     var barChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: groupLabels,
-            datasets: data.map(function(item, index) {
-                // var groupColors = {
-                //     'M': 'rgba(52, 143, 226,.65)',
-                //     'E': 'rgba(0, 172, 172,.65)',
-                //     'Sci': 'rgba(135, 83, 217,.65)', // Add more colors if needed
-                //     'CHN': 'rgba(245, 156, 26,.65)', // Add more colors if needed
-                // };
-                // var grouplabels = {
-                //     'M': 'Math',
-                //     'E': 'English',
-                //     'Sci': 'Science', // Add more colors if needed
-                //     'CHN': 'Chinese', // Add more colors if needed
-                // };
-                return {
-                    label: item.label,
-                    // label: grouplabels[item.label],
-                    data: item.data,
-                    // backgroundColor: groupColors[item.label],
-                    // borderColor: groupColors[item.label],
+      type: 'bar',
+      data: {
+        labels: groupLabels,
+        datasets: data.map(function (item, index) {
+          // var groupColors = {
+          //     'M': 'rgba(52, 143, 226,.65)',
+          //     'E': 'rgba(0, 172, 172,.65)',
+          //     'Sci': 'rgba(135, 83, 217,.65)', // Add more colors if needed
+          //     'CHN': 'rgba(245, 156, 26,.65)', // Add more colors if needed
+          // };
+          // var grouplabels = {
+          //     'M': 'Math',
+          //     'E': 'English',
+          //     'Sci': 'Science', // Add more colors if needed
+          //     'CHN': 'Chinese', // Add more colors if needed
+          // };
+          return {
+            label: item.label,
+            // label: grouplabels[item.label],
+            data: item.data,
+            // backgroundColor: groupColors[item.label],
+            // borderColor: groupColors[item.label],
 
-
-                    // pointBackgroundColor: colors[index % colors.length],
-                    borderColor: colors[index % colors.length],
-                    backgroundColor: colors[index % colors.length],
-                    borderWidth: 1
-                }
-            })
+            // pointBackgroundColor: colors[index % colors.length],
+            borderColor: colors[index % colors.length],
+            backgroundColor: colors[index % colors.length],
+            borderWidth: 1
+          };
+        })
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            maxTicksLimit: 5 // Set the maximum number of ticks on the Y-axis
+          }
         },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    maxTicksLimit: 5, // Set the maximum number of ticks on the Y-axis
-                }
-            },
-            plugins: {
-                tooltip: {
-                    mode: 'index', // Display multiple tooltips at once
-                    intersect: false, // Don't intersect with other elements
-                },
-                // title: {
-                //     display: true,
-                //     text: 'Chart Title',
-                // },
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-            },
-            animation: {
-                duration: 2000, // Animation duration in milliseconds
-                easing: 'easeInOutQuad', // Easing function
-            },
+        plugins: {
+          tooltip: {
+            mode: 'index', // Display multiple tooltips at once
+            intersect: false // Don't intersect with other elements
+          },
+          // title: {
+          //     display: true,
+          //     text: 'Chart Title',
+          // },
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        },
+        animation: {
+          duration: 2000, // Animation duration in milliseconds
+          easing: 'easeInOutQuad' // Easing function
         }
+      }
     });
   </script>
-
   {{--
     <script>
     // Chart.defaults.color = 'rgba(' + app.color.componentColorRgb + ', .65)';
@@ -1007,7 +1138,6 @@
     });
     </script>
   --}}
-
   {{--
     <script>
     // Assuming you have already extracted the data as $totalNewStudents, $totalStudying, etc.
@@ -1037,7 +1167,6 @@
     });
     </script>
   --}}
-
   {{--
     <script>
     var groupLabels = [];

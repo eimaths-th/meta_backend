@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
@@ -26,13 +26,12 @@
   />
 @endsection
 
-@section('content')
+@section ('content')
   @if ($message = Session::get('error'))
     <div class="alert alert-danger mb-5">
       <p>{{ $message }}</p>
     </div>
   @endif
-
   <div class="row">
     <div class="app-page-title">
       <div class="page-title-wrapper">
@@ -110,7 +109,11 @@
                         class="f5 text-black"
                         href="{{ route($control->route) }}"
                       >
-                        {{ route($control->route) }}
+                        {{
+                          route(
+                            $control->route,
+                          )
+                        }}
                       </a>
                     @else
                       <a
@@ -118,7 +121,11 @@
                         class="f5 text-black"
                         href="{{ route('form.show', ['slug' => $control->route]) }}"
                       >
-                        {{ route('form.show', ['slug' => $control->route]) }}
+                        {{
+                          route('form.show', [
+                            'slug' => $control->route,
+                          ])
+                        }}
                       </a>
                     @endif
                   </td>
@@ -156,7 +163,12 @@
                   @endif
 
                   <td>{{ $control->created_at }}</td>
-                  <td>{{ $control->user->name }}</td>
+                  <td>
+                    {{
+                      $control->user
+                        ->name
+                    }}
+                  </td>
                   <td>{{ $control->comments }}</td>
                   <td>
                     {{--
@@ -177,7 +189,6 @@
       </div>
     </div>
   </div>
-
   <div class="body-block-example-2" style="display: none" id="loder_bar">
     <br />
     <div class="loader" id="loder_bar_div">
@@ -195,7 +206,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     var table = $('#Listview').DataTable({
       // serverSide: true,

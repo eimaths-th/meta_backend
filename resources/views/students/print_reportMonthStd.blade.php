@@ -1,16 +1,16 @@
-@extends('layouts.print_temp')
+@extends ('layouts.print_temp')
 
-@section('style')
+@section ('style')
   <style>
     /* @media print {
-                                                                                @page {
-                                                                                    size: landscape;
-                                                                                }
-                                                                            } */
+                                                                                        @page {
+                                                                                            size: landscape;
+                                                                                        }
+                                                                                    } */
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -58,10 +58,7 @@
         </div>
         <div class="card-body">
           <div class="tab-content">
-            <canvas
-              id="lineChart"
-              {{-- width="800" height="200" --}}
-            ></canvas>
+            <canvas id="lineChart" {{-- width="800" height="200" --}}></canvas>
           </div>
         </div>
       </div>
@@ -139,16 +136,33 @@
               }
               // dd($checkStatus);
             @endphp
-
             <tr>
               <td class="text-center">{{ $key + 1 }}</td>
-              <td class="text-center">{{ $data->std->code ?? 'Null' }}</td>
-              <td class="{{ $class }}">
-                {{ $data->std->nick_name ?? 'Null' }}
+              <td class="text-center">
+                {{
+                  $data->std->code ??
+                    'Null'
+                }}
               </td>
-              <td>{{ $data->rec_school->submission_date }}</td>
+              <td class="{{ $class }}">
+                {{
+                  $data->std->nick_name ??
+                    'Null'
+                }}
+              </td>
+              <td>
+                {{
+                  $data->rec_school
+                    ->submission_date
+                }}
+              </td>
               <td>{{ $data->period }}</td>
-              <td>{{ $data->rec_school->receipt_number }}</td>
+              <td>
+                {{
+                  $data->rec_school
+                    ->receipt_number
+                }}
+              </td>
               <td>{{ $data->group }}</td>
               <td class="text-end">{{ number_format($data->total) }} บาท</td>
 
@@ -188,7 +202,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   {{--
     <script>
     var checkboxes = document.querySelectorAll('input[id^="switchery-default-"]');
@@ -199,27 +213,34 @@
     });
     </script>
   --}}
-
   <script>
     var groupLabels = [
-        @foreach ($totalForAllMonths as $month => $total)
+      @foreach ($totalForAllMonths as $month => $total)
 
-            '{{ $month }} ',
-        @endforeach
+      '{{ $month }} '
+      @endforeach
     ];
 
     var groupLabels2 = [
-        @foreach ($totalForAllMonths as $month => $total)
-            @if (isset($percentageChangeForAllMonths[$month]))
-                @if ($percentageChangeForAllMonths[$month] > 0)
-                    '{{ $month }}\n+{{ $percentageChangeForAllMonths[$month] }}%',
-                @else
-                    '{{ $month }}\n{{ $percentageChangeForAllMonths[$month] }}%',
-                @endif
-            @else
-                '{{ $month }}  ',
-            @endif
-        @endforeach
+      @foreach ($totalForAllMonths as $month => $total)
+      @if (isset($percentageChangeForAllMonths[$month]))
+      @if ($percentageChangeForAllMonths[$month] > 0)
+      '{{ $month }}\n+{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}%',
+      @else
+      '{{ $month }}\n{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}%',
+      @endif
+      @else
+      '{{ $month }}  '
+      @endif
+      @endforeach
     ];
 
     // var data = {
@@ -241,120 +262,130 @@
     // };
     var ctx = document.getElementById('lineChart').getContext('2d');
     var lineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: groupLabels2,
-            // label: groupLabels,
-            datasets: [{
-                label: 'ยอดรวมแต่ละเดือน ',
-                data: [
-                    @foreach ($totalForAllMonths as $month => $total)
-                        {{ $total }},
-                    @endforeach
-                ],
-                pointBackgroundColor: 'rgba(52, 143, 226,.65)',
-                borderColor: 'rgba(52, 143, 226,.65)',
-                backgroundColor: 'rgba(52, 143, 226,.65)',
-                pointRadius: 4,
-                borderWidth: 2,
-            }, ]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                tooltip: {
-                    mode: 'index', // Display multiple tooltips at once
-                    intersect: false, // Don't intersect with other elements
-                },
-                // title: {
-                //     display: true,
-                //     text: 'Chart Title',
-                // },
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-            },
-            animation: {
-                duration: 2000, // Animation duration in milliseconds
-                easing: 'easeInOutQuad', // Easing function
-            },
-
-        }
-    });
-    //
-  </script>
-  {{-- // line-grafh --}}
-
-  <script>
-    var groupLabels = [
-        @foreach ($totalForAllMonths as $month => $total)
-            '{{ $month }}',
-        @endforeach
-    ];
-    var groupLabels2 = [
-        @foreach ($totalForAllMonths as $month => $total)
-            @if (isset($percentageChangeForAllMonths[$month]))
-                @if ($percentageChangeForAllMonths[$month] > 0)
-                    '{{ $month }}\n+{{ $percentageChangeForAllMonths[$month] }}%',
-                @else
-                    '{{ $month }}\n{{ $percentageChangeForAllMonths[$month] }}%',
-                @endif
-            @else
-                '{{ $month }}  ',
-            @endif
-        @endforeach
-    ];
-
-    var data = {
+      type: 'line',
+      data: {
         labels: groupLabels2,
-        datasets: [{
+        // label: groupLabels,
+        datasets: [
+          {
             label: 'ยอดรวมแต่ละเดือน ',
             data: [
-                @foreach ($totalForAllMonths as $month => $total)
-                    {{ $total }},
-                @endforeach
+              @foreach ($totalForAllMonths as $month => $total)
+              {{ $total }}
+              @endforeach
             ],
             pointBackgroundColor: 'rgba(52, 143, 226,.65)',
             borderColor: 'rgba(52, 143, 226,.65)',
             backgroundColor: 'rgba(52, 143, 226,.65)',
             pointRadius: 4,
-            borderWidth: 2,
-        }]
+            borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          tooltip: {
+            mode: 'index', // Display multiple tooltips at once
+            intersect: false // Don't intersect with other elements
+          },
+          // title: {
+          //     display: true,
+          //     text: 'Chart Title',
+          // },
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        },
+        animation: {
+          duration: 2000, // Animation duration in milliseconds
+          easing: 'easeInOutQuad' // Easing function
+        }
+      }
+    });
+    //
+  </script>
+  {{-- // line-grafh --}}
+  <script>
+    var groupLabels = [
+      @foreach ($totalForAllMonths as $month => $total)
+      '{{ $month }}'
+      @endforeach
+    ];
+    var groupLabels2 = [
+      @foreach ($totalForAllMonths as $month => $total)
+      @if (isset($percentageChangeForAllMonths[$month]))
+      @if ($percentageChangeForAllMonths[$month] > 0)
+      '{{ $month }}\n+{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}%',
+      @else
+      '{{ $month }}\n{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}%',
+      @endif
+      @else
+      '{{ $month }}  '
+      @endif
+      @endforeach
+    ];
+
+    var data = {
+      labels: groupLabels2,
+      datasets: [
+        {
+          label: 'ยอดรวมแต่ละเดือน ',
+          data: [
+            @foreach ($totalForAllMonths as $month => $total)
+            {{ $total }}
+            @endforeach
+          ],
+          pointBackgroundColor: 'rgba(52, 143, 226,.65)',
+          borderColor: 'rgba(52, 143, 226,.65)',
+          backgroundColor: 'rgba(52, 143, 226,.65)',
+          pointRadius: 4,
+          borderWidth: 2
+        }
+      ]
     };
     var ctx = document.getElementById('barChart').getContext('2d');
     var barChart = new Chart(ctx, {
-        type: 'bar',
-        data: data,
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                tooltip: {
-                    mode: 'index', // Display multiple tooltips at once
-                    intersect: false, // Don't intersect with other elements
-                },
-                // title: {
-                //     display: true,
-                //     text: 'Chart Title',
-                // },
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-            },
-            animation: {
-                duration: 2000, // Animation duration in milliseconds
-                easing: 'easeInOutQuad', // Easing function
-            },
+      type: 'bar',
+      data: data,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          tooltip: {
+            mode: 'index', // Display multiple tooltips at once
+            intersect: false // Don't intersect with other elements
+          },
+          // title: {
+          //     display: true,
+          //     text: 'Chart Title',
+          // },
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        },
+        animation: {
+          duration: 2000, // Animation duration in milliseconds
+          easing: 'easeInOutQuad' // Easing function
         }
+      }
     });
   </script>
   {{-- //bar-grafh --}}

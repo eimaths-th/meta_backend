@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
@@ -39,7 +39,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   @if ($message = Session::get('error'))
     <script>
       toastr.error('{{ $message }}', {
@@ -47,7 +47,6 @@
       });
     </script>
   @endif
-
   @if ($message = Session::get('success'))
     <script>
       toastr.success('{{ $message }}', {
@@ -55,7 +54,6 @@
       });
     </script>
   @endif
-
   <div class="row">
     <div class="app-page-title">
       <div class="page-title-wrapper">
@@ -131,8 +129,18 @@
               @foreach ($timelogs as $key => $rec_time)
                 <tr>
                   <td align="center">{{ $key + 1 }}</td>
-                  <td>{{ $rec_time->user->code ?? 'null' }}</td>
-                  <td>{{ $rec_time->user->name ?? 'null' }}</td>
+                  <td>
+                    {{
+                      $rec_time->user->code ??
+                        'null'
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      $rec_time->user->name ??
+                        'null'
+                    }}
+                  </td>
 
                   <td>{{ $rec_time->old_date }}</td>
                   <td>{{ $rec_time->old_full_time }}</td>
@@ -270,7 +278,12 @@
                   </td>
                   <td>{{ $rec_time->new_explain }}</td>
 
-                  <td>{{ $rec_time->approv->name }}</td>
+                  <td>
+                    {{
+                      $rec_time->approv
+                        ->name
+                    }}
+                  </td>
                   <td>{{ $rec_time->updated_at }}</td>
                 </tr>
               @endforeach
@@ -280,7 +293,6 @@
       </div>
     </div>
   </div>
-
   <div class="body-block-example-2" style="display: none" id="loder_bar">
     <br />
     <div class="loader" id="loder_bar_div">
@@ -298,7 +310,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script src="/assets/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
   <script src="/assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
   <script>

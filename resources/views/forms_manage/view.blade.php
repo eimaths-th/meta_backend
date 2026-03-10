@@ -1,7 +1,7 @@
-@extends('layouts.form')
+@extends ('layouts.form')
 
-@section('style')
-  @include('forms_manage.css')
+@section ('style')
+  @include ('forms_manage.css')
   <!-- Select2 CSS -->
   <link
     href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
@@ -318,451 +318,456 @@
     }
 
     /* Responsive Design */
-    @media (max-width: 768px) {
-      body {
-        font-size: 14px;
-      }
-
-      .container {
-        padding-left: 10px;
-        padding-right: 10px;
-      }
-
-      .col-md-9 {
-        padding-left: 5px;
-        padding-right: 5px;
-      }
-
-      /* Header adjustments */
-      .form-header-section {
-        padding: 1.5rem 0;
-        margin-bottom: 1rem;
-        border-radius: 0 0 30px 30px;
-      }
-
-      .form_header {
-        font-size: 1.5rem;
-        line-height: 1.3;
-        padding: 0 10px;
-      }
-
-      .form_sub_header {
-        font-size: 1rem;
-        padding: 0 10px;
-      }
-
-      /* Card adjustments */
-      .card.bg-light2 {
-        border-radius: 15px;
-        margin-bottom: 1rem;
-      }
-
-      .card-body {
-        padding: 1rem;
-      }
-
-      .card-footer {
-        padding: 1rem !important;
-      }
-
-      /* Info badges - stack vertically on mobile */
-      .info-badge {
-        display: flex;
-        width: 100%;
-        margin: 0.5rem 0;
-        padding: 0.6rem 1rem;
-        font-size: 0.9rem;
-        justify-content: center;
-        text-align: center;
-      }
-
-      .info-badge i {
-        font-size: 1rem;
-      }
-
-      /* Section headers */
-      .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        margin: 1.5rem 0 1rem 0;
-      }
-
-      .section-header i {
-        font-size: 1.3rem;
-        margin-bottom: 0.5rem;
-      }
-
-      .section-header h3 {
-        font-size: 1.2rem;
-      }
-
-      /* Form controls */
-      .form-control {
-        font-size: 14px;
-        padding: 0.6rem 0.8rem;
-      }
-
-      .form-label {
-        font-size: 14px;
-      }
-
-      .form-sub-label {
-        font-size: 12px;
-      }
-
-      /* Form rows - stack vertically */
-      .form-row {
-        margin-left: 0;
-        margin-right: 0;
-      }
-
-      .form-row > [class*='col-'] {
-        padding-left: 0;
-        padding-right: 0;
-        margin-bottom: 1rem;
-      }
-
-      .col-md-6,
-      .col-md-12 {
-        width: 100%;
-        max-width: 100%;
-      }
-
-      /* Buttons */
-      .submit-btn {
-        padding: 0.75rem 1.5rem;
-        font-size: 0.95rem;
-        width: 100%;
-        margin-bottom: 0.5rem;
-      }
-
-      .btn-lg {
-        padding: 0.75rem 1.5rem;
-        font-size: 0.95rem;
-        width: 100%;
-        margin-bottom: 0.5rem;
-      }
-
-      /* Package list */
-      .package-list {
-        padding: 1rem;
-        font-size: 0.9rem;
-      }
-
-      .package-list li {
-        font-size: 0.9rem;
-      }
-
-      /* Dropzone */
-      .dropzone {
-        font-size: 1.2em !important;
-        padding: 1rem;
-      }
-
-      .dropzone .dz-message {
-        font-size: 0.9rem;
-      }
-
-      /* Footer */
-      .meta-footer {
-        padding: 2rem 0 1rem 0;
-        margin-top: 2rem;
-        border-radius: 30px 30px 0 0;
-      }
-
-      .meta-footer .col-md-4 {
-        margin-bottom: 1.5rem;
-        text-align: center;
-      }
-
-      .meta-footer h4 {
-        font-size: 1.1rem;
-      }
-
-      .meta-footer p {
-        font-size: 0.9rem;
-      }
-
-      .meta-footer .footer-logo {
-        max-width: 150px;
-      }
-
-      /* Checkbox and policy text */
-      .form-check {
-        padding: 1rem !important;
-      }
-
-      .form-check-label {
-        font-size: 0.9rem !important;
-        line-height: 1.5;
-      }
-
-      /* Warning and footer text boxes */
-      div[style*='background: linear-gradient(135deg, #fff3cd'] {
-        padding: 1rem !important;
-        font-size: 0.9rem !important;
-      }
-
-      div[style*='background: linear-gradient(135deg, #f8d7da'] {
-        padding: 1rem !important;
-        font-size: 0.9rem !important;
-      }
-
-      /* Admission criteria */
-      .custom-image2 {
-        max-width: 100% !important;
-        height: auto !important;
-      }
-
-      /* Center content divs */
-      .col-md-10.div_center,
-      .col-md-11.div_center {
-        padding-left: 10px;
-        padding-right: 10px;
-      }
-
-      /* Image payment */
-      div[align='center'] img {
-        max-width: 100%;
-        height: auto !important;
-      }
-
-      /* Error messages */
-      .error_div {
-        font-size: 0.9rem;
-        padding: 0.75rem;
-      }
-
-      /* Select2 adjustments */
-      .select2-container {
-        font-size: 14px;
-      }
-
-      .select2-container--default .select2-selection--multiple {
-        min-height: 40px;
-      }
-    }
-
-    /* Extra small devices (phones in portrait, less than 576px) */
-    @media (max-width: 575px) {
-      .form_header {
-        font-size: 1.3rem;
-      }
-
-      .form_sub_header {
-        font-size: 0.9rem;
-      }
-
-      .section-header h3 {
-        font-size: 1.1rem;
-      }
-
-      .info-badge {
-        font-size: 0.85rem;
-        padding: 0.5rem 0.8rem;
-      }
-
-      .card-body {
-        padding: 0.75rem;
-      }
-
-      .submit-btn,
-      .btn-lg {
-        font-size: 0.9rem;
-        padding: 0.65rem 1.2rem;
-      }
-    }
-
-    /* Landscape orientation adjustments */
-    @media (max-width: 768px) and (orientation: landscape) {
-      .form-header-section {
-        padding: 1rem 0;
-      }
-
-      .form_header {
-        font-size: 1.4rem;
-      }
-
-      .section-header {
-        margin: 1rem 0 0.75rem 0;
-      }
-    }
-
-    /* SweetAlert2 Mobile Responsive */
-    @media (max-width: 768px) {
-      .swal2-popup {
-        width: 90% !important;
-        max-width: 400px !important;
-        font-size: 0.9rem !important;
-        padding: 1rem !important;
-      }
-
-      .swal2-title {
-        font-size: 1.2rem !important;
-        padding: 0.5rem !important;
-      }
-
-      .swal2-html-container {
-        font-size: 0.85rem !important;
-        padding: 0.5rem !important;
-      }
-
-      .swal2-html-container div {
-        padding: 0.75rem !important;
-        margin-bottom: 0.75rem !important;
-      }
-
-      .swal2-html-container p {
-        font-size: 0.85rem !important;
-        margin: 0.5rem 0 !important;
-      }
-
-      .swal2-confirm {
-        font-size: 0.9rem !important;
-        padding: 0.6rem 1.5rem !important;
-      }
-    }
-
-    @media (max-width: 575px) {
-      .swal2-popup {
-        width: 95% !important;
-        padding: 0.75rem !important;
-      }
-
-      .swal2-title {
-        font-size: 1.1rem !important;
-      }
-
-      .swal2-html-container {
-        font-size: 0.8rem !important;
-      }
-
-      .swal2-html-container p {
-        font-size: 0.8rem !important;
-      }
-
-      .swal2-confirm {
-        font-size: 0.85rem !important;
-        padding: 0.5rem 1.2rem !important;
-      }
-    }
-
-    /* Animation */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .card {
-      animation: fadeInUp 0.6s ease-out;
-    }
-
-    /* Info Text Styling */
-    .form-html p {
-      line-height: 1.8;
-      margin-bottom: 1rem;
-    }
-
-    .form-html p span {
-      color: var(--primary-color) !important;
-      font-weight: 600;
-    }
-
-    .form-html strong {
-      color: var(--dark-orange);
-    }
-
-    /* Enhanced Error Styling */
-    input.error,
-    select.error,
-    textarea.error {
-      border: 2px solid #ff6b6b !important;
-      background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%) !important;
-      animation: shakeError 0.5s ease-in-out;
-    }
-
-    input.error:focus,
-    select.error:focus,
-    textarea.error:focus {
-      border-color: #ff6b6b !important;
-      box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25) !important;
-    }
-
-    @keyframes shakeError {
-      0%,
-      100% {
-        transform: translateX(0);
-      }
-
-      10%,
-      30%,
-      50%,
-      70%,
-      90% {
-        transform: translateX(-5px);
-      }
-
-      20%,
-      40%,
-      60%,
-      80% {
-        transform: translateX(5px);
-      }
-    }
-
-    /* Success State */
-    input.valid:not(:focus),
-    select.valid:not(:focus),
-    textarea.valid:not(:focus) {
-      border: 2px solid #51cf66 !important;
-      background: linear-gradient(135deg, #f0fff4 0%, #ffffff 100%) !important;
-    }
-
-    /* Error Label Enhancement */
-    label.error {
-      color: #ff6b6b !important;
-      font-size: 0.875rem !important;
-      margin-top: 0.5rem !important;
-      display: flex !important;
-      align-items: center !important;
-      font-weight: 500 !important;
-      animation: slideDown 0.3s ease-out !important;
-    }
-
-    label.error::before {
-      content: '⚠️';
-      margin-right: 0.5rem;
-      font-size: 1rem;
-    }
-
-    /* Tooltip Style Error */
-    .error-tooltip {
-      position: relative;
-    }
-
-    .error-tooltip .form-error-message {
-      position: absolute;
-      z-index: 1000;
-      left: 0;
-      right: 0;
-    }
-
-    .badge-info {
-      background-color: var(--primary-color);
-      color: rgb(255, 255, 255);
-      font-weight: 500;
-    }
+    @media (max-width: 768px)
+    {
+         body {
+           font-size: 14px;
+         }
+
+         .container {
+           padding-left: 10px;
+           padding-right: 10px;
+         }
+
+         .col-md-9 {
+           padding-left: 5px;
+           padding-right: 5px;
+         }
+
+         /* Header adjustments */
+         .form-header-section {
+           padding: 1.5rem 0;
+           margin-bottom: 1rem;
+           border-radius: 0 0 30px 30px;
+         }
+
+         .form_header {
+           font-size: 1.5rem;
+           line-height: 1.3;
+           padding: 0 10px;
+         }
+
+         .form_sub_header {
+           font-size: 1rem;
+           padding: 0 10px;
+         }
+
+         /* Card adjustments */
+         .card.bg-light2 {
+           border-radius: 15px;
+           margin-bottom: 1rem;
+         }
+
+         .card-body {
+           padding: 1rem;
+         }
+
+         .card-footer {
+           padding: 1rem !important;
+         }
+
+         /* Info badges - stack vertically on mobile */
+         .info-badge {
+           display: flex;
+           width: 100%;
+           margin: 0.5rem 0;
+           padding: 0.6rem 1rem;
+           font-size: 0.9rem;
+           justify-content: center;
+           text-align: center;
+         }
+
+         .info-badge i {
+           font-size: 1rem;
+         }
+
+         /* Section headers */
+         .section-header {
+           flex-direction: column;
+           align-items: flex-start;
+           margin: 1.5rem 0 1rem 0;
+         }
+
+         .section-header i {
+           font-size: 1.3rem;
+           margin-bottom: 0.5rem;
+         }
+
+         .section-header h3 {
+           font-size: 1.2rem;
+         }
+
+         /* Form controls */
+         .form-control {
+           font-size: 14px;
+           padding: 0.6rem 0.8rem;
+         }
+
+         .form-label {
+           font-size: 14px;
+         }
+
+         .form-sub-label {
+           font-size: 12px;
+         }
+
+         /* Form rows - stack vertically */
+         .form-row {
+           margin-left: 0;
+           margin-right: 0;
+         }
+
+         .form-row > [class*='col-'] {
+           padding-left: 0;
+           padding-right: 0;
+           margin-bottom: 1rem;
+         }
+
+         .col-md-6,
+         .col-md-12 {
+           width: 100%;
+           max-width: 100%;
+         }
+
+         /* Buttons */
+         .submit-btn {
+           padding: 0.75rem 1.5rem;
+           font-size: 0.95rem;
+           width: 100%;
+           margin-bottom: 0.5rem;
+         }
+
+         .btn-lg {
+           padding: 0.75rem 1.5rem;
+           font-size: 0.95rem;
+           width: 100%;
+           margin-bottom: 0.5rem;
+         }
+
+         /* Package list */
+         .package-list {
+           padding: 1rem;
+           font-size: 0.9rem;
+         }
+
+         .package-list li {
+           font-size: 0.9rem;
+         }
+
+         /* Dropzone */
+         .dropzone {
+           font-size: 1.2em !important;
+           padding: 1rem;
+         }
+
+         .dropzone .dz-message {
+           font-size: 0.9rem;
+         }
+
+         /* Footer */
+         .meta-footer {
+           padding: 2rem 0 1rem 0;
+           margin-top: 2rem;
+           border-radius: 30px 30px 0 0;
+         }
+
+         .meta-footer .col-md-4 {
+           margin-bottom: 1.5rem;
+           text-align: center;
+         }
+
+         .meta-footer h4 {
+           font-size: 1.1rem;
+         }
+
+         .meta-footer p {
+           font-size: 0.9rem;
+         }
+
+         .meta-footer .footer-logo {
+           max-width: 150px;
+         }
+
+         /* Checkbox and policy text */
+         .form-check {
+           padding: 1rem !important;
+         }
+
+         .form-check-label {
+           font-size: 0.9rem !important;
+           line-height: 1.5;
+         }
+
+         /* Warning and footer text boxes */
+         div[style*='background: linear-gradient(135deg, #fff3cd'] {
+           padding: 1rem !important;
+           font-size: 0.9rem !important;
+         }
+
+         div[style*='background: linear-gradient(135deg, #f8d7da'] {
+           padding: 1rem !important;
+           font-size: 0.9rem !important;
+         }
+
+         /* Admission criteria */
+         .custom-image2 {
+           max-width: 100% !important;
+           height: auto !important;
+         }
+
+         /* Center content divs */
+         .col-md-10.div_center,
+         .col-md-11.div_center {
+           padding-left: 10px;
+           padding-right: 10px;
+         }
+
+         /* Image payment */
+         div[align='center'] img {
+           max-width: 100%;
+           height: auto !important;
+         }
+
+         /* Error messages */
+         .error_div {
+           font-size: 0.9rem;
+           padding: 0.75rem;
+         }
+
+         /* Select2 adjustments */
+         .select2-container {
+           font-size: 14px;
+         }
+
+         .select2-container--default .select2-selection--multiple {
+           min-height: 40px;
+         }
+       }
+
+       /* Extra small devices (phones in portrait, less than 576px) */
+    @media (max-width: 575px)
+    {
+         .form_header {
+           font-size: 1.3rem;
+         }
+
+         .form_sub_header {
+           font-size: 0.9rem;
+         }
+
+         .section-header h3 {
+           font-size: 1.1rem;
+         }
+
+         .info-badge {
+           font-size: 0.85rem;
+           padding: 0.5rem 0.8rem;
+         }
+
+         .card-body {
+           padding: 0.75rem;
+         }
+
+         .submit-btn,
+         .btn-lg {
+           font-size: 0.9rem;
+           padding: 0.65rem 1.2rem;
+         }
+       }
+
+       /* Landscape orientation adjustments */
+    @media (max-width: 768px)
+    and (orientation: landscape) {
+         .form-header-section {
+           padding: 1rem 0;
+         }
+
+         .form_header {
+           font-size: 1.4rem;
+         }
+
+         .section-header {
+           margin: 1rem 0 0.75rem 0;
+         }
+       }
+
+       /* SweetAlert2 Mobile Responsive */
+    @media (max-width: 768px)
+    {
+         .swal2-popup {
+           width: 90% !important;
+           max-width: 400px !important;
+           font-size: 0.9rem !important;
+           padding: 1rem !important;
+         }
+
+         .swal2-title {
+           font-size: 1.2rem !important;
+           padding: 0.5rem !important;
+         }
+
+         .swal2-html-container {
+           font-size: 0.85rem !important;
+           padding: 0.5rem !important;
+         }
+
+         .swal2-html-container div {
+           padding: 0.75rem !important;
+           margin-bottom: 0.75rem !important;
+         }
+
+         .swal2-html-container p {
+           font-size: 0.85rem !important;
+           margin: 0.5rem 0 !important;
+         }
+
+         .swal2-confirm {
+           font-size: 0.9rem !important;
+           padding: 0.6rem 1.5rem !important;
+         }
+       }
+    @media (max-width: 575px)
+    {
+         .swal2-popup {
+           width: 95% !important;
+           padding: 0.75rem !important;
+         }
+
+         .swal2-title {
+           font-size: 1.1rem !important;
+         }
+
+         .swal2-html-container {
+           font-size: 0.8rem !important;
+         }
+
+         .swal2-html-container p {
+           font-size: 0.8rem !important;
+         }
+
+         .swal2-confirm {
+           font-size: 0.85rem !important;
+           padding: 0.5rem 1.2rem !important;
+         }
+       }
+
+       /* Animation */
+    @keyframes
+    fadeInUp {
+         from {
+           opacity: 0;
+           transform: translateY(30px);
+         }
+
+         to {
+           opacity: 1;
+           transform: translateY(0);
+         }
+       }
+
+       .card {
+         animation: fadeInUp 0.6s ease-out;
+       }
+
+       /* Info Text Styling */
+       .form-html p {
+         line-height: 1.8;
+         margin-bottom: 1rem;
+       }
+
+       .form-html p span {
+         color: var(--primary-color) !important;
+         font-weight: 600;
+       }
+
+       .form-html strong {
+         color: var(--dark-orange);
+       }
+
+       /* Enhanced Error Styling */
+       input.error,
+       select.error,
+       textarea.error {
+         border: 2px solid #ff6b6b !important;
+         background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%) !important;
+         animation: shakeError 0.5s ease-in-out;
+       }
+
+       input.error:focus,
+       select.error:focus,
+       textarea.error:focus {
+         border-color: #ff6b6b !important;
+         box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25) !important;
+       }
+    @keyframes
+    shakeError {
+         0%,
+         100% {
+           transform: translateX(0);
+         }
+
+         10%,
+         30%,
+         50%,
+         70%,
+         90% {
+           transform: translateX(-5px);
+         }
+
+         20%,
+         40%,
+         60%,
+         80% {
+           transform: translateX(5px);
+         }
+       }
+
+       /* Success State */
+       input.valid:not(:focus),
+       select.valid:not(:focus),
+       textarea.valid:not(:focus) {
+         border: 2px solid #51cf66 !important;
+         background: linear-gradient(135deg, #f0fff4 0%, #ffffff 100%) !important;
+       }
+
+       /* Error Label Enhancement */
+       label.error {
+         color: #ff6b6b !important;
+         font-size: 0.875rem !important;
+         margin-top: 0.5rem !important;
+         display: flex !important;
+         align-items: center !important;
+         font-weight: 500 !important;
+         animation: slideDown 0.3s ease-out !important;
+       }
+
+       label.error::before {
+         content: '⚠️';
+         margin-right: 0.5rem;
+         font-size: 1rem;
+       }
+
+       /* Tooltip Style Error */
+       .error-tooltip {
+         position: relative;
+       }
+
+       .error-tooltip .form-error-message {
+         position: absolute;
+         z-index: 1000;
+         left: 0;
+         right: 0;
+       }
+
+       .badge-info {
+         background-color: var(--primary-color);
+         color: rgb(255, 255, 255);
+         font-weight: 500;
+       }
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div id="loader-container" style="display: none">
     <div id="loader" class="spinner"></div>
     <p id="loading-message">Please wait, your request is being processed...</p>
@@ -821,12 +826,18 @@
               <div class="col-md-10 div_center" data-layout="full">
                 @if (session('warning'))
                   <div class="alert alert-warning">
-                    {!! nl2br(e(session('warning'))) !!}
+                    {!!
+                      nl2br(
+                        e(session('warning')),
+                      )
+                    !!}
                   </div>
                 @endif
 
                 @php
-                  $fieldSettingsData = is_array($form->field_settings ?? null) ? $form->field_settings : [];
+                  $fieldSettingsData = is_array($form->field_settings ?? null)
+                    ? $form->field_settings
+                    : [];
                   $fieldConfig = config('form_fields', []);
                   $normalizeBoolean = function ($value, $default) {
                     if ($value === true || $value === false) {
@@ -842,14 +853,22 @@
                       return (bool) $default;
                     }
                     if (is_string($value)) {
-                      $filtered = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                      $filtered = filter_var(
+                        $value,
+                        FILTER_VALIDATE_BOOLEAN,
+                        FILTER_NULL_ON_FAILURE,
+                      );
                       if ($filtered !== null) {
                         return $filtered;
                       }
                     }
                     return (bool) ($value ?? $default);
                   };
-                  $resolveSetting = function ($key, $attribute, $fallback) use ($fieldSettingsData, $fieldConfig, $normalizeBoolean) {
+                  $resolveSetting = function ($key, $attribute, $fallback) use (
+                    $fieldSettingsData,
+                    $fieldConfig,
+                    $normalizeBoolean,
+                  ) {
                     $settings = $fieldSettingsData[$key] ?? null;
                     if (is_array($settings) && array_key_exists($attribute, $settings)) {
                       return $normalizeBoolean($settings[$attribute], $fallback);
@@ -857,19 +876,27 @@
                     if (is_object($settings) && isset($settings->{$attribute})) {
                       return $normalizeBoolean($settings->{$attribute}, $fallback);
                     }
-                    return $normalizeBoolean(data_get($fieldConfig, "$key.default_$attribute", $fallback), $fallback);
+                    return $normalizeBoolean(
+                      data_get($fieldConfig, "$key.default_$attribute", $fallback),
+                      $fallback,
+                    );
                   };
                   $isFieldEnabled = function ($key) use ($resolveSetting) {
                     return $resolveSetting($key, 'enabled', true);
                   };
                   $isFieldRequired = function ($key) use ($resolveSetting) {
-                    return $resolveSetting($key, 'required', false) && $resolveSetting($key, 'enabled', true);
+                    return $resolveSetting($key, 'required', false) &&
+                      $resolveSetting($key, 'enabled', true);
                   };
                 @endphp
 
                 @if (session('error'))
                   <div class="alert alert-danger">
-                    {!! nl2br(e(session('error'))) !!}
+                    {!!
+                      nl2br(
+                        e(session('error')),
+                      )
+                    !!}
                   </div>
                 @endif
 
@@ -909,7 +936,7 @@
                           @if (isset($date))
                             {{ $date }}
                           @else
-                              Today - 25 October 2024
+                            Today - 25 October 2024
                           @endif
                         </span>
                       </div>
@@ -988,12 +1015,15 @@
                           class="fas fa-info-circle"
                           style="color: #ff6b35"
                         ></i>
-                        {{ $form->admission_criteria_text_label }}
-                        {{ $form->form_name }}
+                        {{ $form->admission_criteria_text_label }} {{ $form->form_name }}
                       </h4>
                       <div style="color: #495057; line-height: 1.8">
                         @if (isset($form->admission_criteria_text))
-                          {!! nl2br(e($form->admission_criteria_text ?? ' ')) !!}
+                          {!!
+                            nl2br(
+                              e($form->admission_criteria_text ?? ' '),
+                            )
+                          !!}
                         @endif
                       </div>
                     </div>
@@ -1009,8 +1039,7 @@
                         "
                       >
                         <i class="fas fa-image" style="color: #ff6b35"></i>
-                        {{ $form->admission_criteria_image_label }}
-                        {{ $form->form_name }}
+                        {{ $form->admission_criteria_image_label }} {{ $form->form_name }}
                       </h4>
                       <div class="row">
                         <div class="col-lg-12">
@@ -1100,7 +1129,8 @@
                   <h3>ข้อมูลนักเรียน / Student Information</h3>
                 </div>
 
-                @if ($isFieldEnabled('student_first_name') || $isFieldEnabled('student_middle_name'))
+                @if ($isFieldEnabled('student_first_name') ||
+                  $isFieldEnabled('student_middle_name'))
                   <div class="form-row form-focus">
                     @if ($isFieldEnabled('student_first_name'))
                       <div class="col-md-6">
@@ -1330,7 +1360,9 @@
                   </div>
                 @endif
 
-                @if ($isFieldEnabled('ref_date_label') && isset($form->ref_date_label) && ! empty($form->ref_date_label))
+                @if ($isFieldEnabled('ref_date_label') &&
+                  isset($form->ref_date_label) &&
+                  !empty($form->ref_date_label))
                   <div class="form-row form-focus">
                     <div class="col-md-6 col-sm-12">
                       <div class="position-relative form-group">
@@ -1483,15 +1515,17 @@
                           class="form-label form-label-top form-label-auto"
                           for="package"
                         >
-                          {{ $form->package ?? ' ' }}
+                          {{
+                            $form->package ??
+                              ' '
+                          }}
                           @if ($isFieldRequired('package'))
                             <span class="form-required">*</span>
                           @endif
 
                           @if ($form->package_multiselect && $form->package_max_selection)
                             <small class="text-muted">
-                              (Max: {{ $form->package_max_selection }}
-                              selections)
+                              (Max: {{ $form->package_max_selection }} selections)
                             </small>
                           @endif
                         </label>
@@ -1625,7 +1659,10 @@
                             class="form-label form-label-top form-label-auto"
                             for="address"
                           >
-                            {{ $form->student_address ?? ' ' }}
+                            {{
+                              $form->student_address ??
+                                ' '
+                            }}
                             @if ($isFieldRequired('student_address'))
                               <span class="form-required">*</span>
                             @endif
@@ -1657,7 +1694,10 @@
                             class="form-label form-label-top form-label-auto"
                             for="postcode"
                           >
-                            {{ $form->student_zip ?? ' ' }}
+                            {{
+                              $form->student_zip ??
+                                ' '
+                            }}
                             @if ($isFieldRequired('student_zip'))
                               <span class="form-required">*</span>
                             @endif
@@ -1714,7 +1754,10 @@
                             class="form-label form-label-top form-label-auto"
                             for="parent"
                           >
-                            {{ $form->parent_name ?? ' ' }}
+                            {{
+                              $form->parent_name ??
+                                ' '
+                            }}
                             @if ($isFieldRequired('parent_name'))
                               <span class="form-required">*</span>
                             @endif
@@ -1761,7 +1804,10 @@
                             class="form-label form-label-top form-label-auto"
                             for="phone"
                           >
-                            {{ $form->parent_phone ?? ' ' }}
+                            {{
+                              $form->parent_phone ??
+                                ' '
+                            }}
                             @if ($isFieldRequired('parent_phone'))
                               <span class="form-required">*</span>
                             @endif
@@ -1813,8 +1859,13 @@
                           class="form-label form-label-top form-label-auto"
                           for="grade"
                         >
-                          {{ $form->contact_email ?? ' ' }}
-                          {{ $form->contact_email_detail ?? ' ' }}
+                          {{
+                            $form->contact_email ??
+                              ' '
+                          }} {{
+                            $form->contact_email_detail ??
+                              ' '
+                          }}
                           @if ($isFieldRequired('contact_email'))
                             <span class="form-required">*</span>
                           @endif
@@ -1868,7 +1919,10 @@
                           class="form-label form-label-top form-label-auto"
                           for="photo"
                         >
-                          {{ $form->student_photo ?? ' ' }}
+                          {{
+                            $form->student_photo ??
+                              ' '
+                          }}
                           @if ($isFieldRequired('student_photo'))
                             <span class="form-required">*</span>
                           @endif
@@ -1916,7 +1970,6 @@
                       </div>
                     </div>
                   </div>
-
                   <div
                     class="dropzonex dz-default dz-message"
                     id="dropzone_preview"
@@ -1950,7 +2003,10 @@
                           class="form-label form-label-top form-label-auto"
                           for="att"
                         >
-                          {{ $form->student_slip_photo ?? ' ' }}
+                          {{
+                            $form->student_slip_photo ??
+                              ' '
+                          }}
                           @if ($isFieldRequired('student_slip_photo'))
                             <span class="form-required">*</span>
                           @endif
@@ -2020,7 +2076,10 @@
                           class="form-label form-label-top form-label-auto"
                           for="newsf"
                         >
-                          {{ $form->news ?? ' ' }}
+                          {{
+                            $form->news ??
+                              ' '
+                          }}
                           @if ($isFieldRequired('news'))
                             <span class="form-required">*</span>
                           @endif
@@ -2070,7 +2129,7 @@
               "
             >
               <br />
-              @if (! empty($form->text_warning))
+              @if (!empty($form->text_warning))
                 <div
                   style="
                     background: linear-gradient(
@@ -2097,12 +2156,15 @@
                   <div
                     style="color: #856404; font-size: 1.1rem; line-height: 1.8"
                   >
-                    {!! nl2br($form->text_warning) ?? '' !!}
+                    {!!
+                      nl2br($form->text_warning) ??
+                        ''
+                    !!}
                   </div>
                 </div>
               @endif
 
-              @if (! empty($form->text_footer))
+              @if (!empty($form->text_footer))
                 <div
                   style="
                     background: linear-gradient(
@@ -2119,7 +2181,10 @@
                   <div
                     style="color: #721c24; font-size: 1rem; line-height: 1.8"
                   >
-                    {!! nl2br($form->text_footer) ?? '' !!}
+                    {!!
+                      nl2br($form->text_footer) ??
+                        ''
+                    !!}
                   </div>
                 </div>
               @endif
@@ -2155,7 +2220,10 @@
                   "
                 >
                   <i class="fas fa-check-circle" style="color: #ff6b35"></i>
-                  {!! nl2br($form->text_policy) ?? '' !!}
+                  {!!
+                    nl2br($form->text_policy) ??
+                      ''
+                  !!}
                 </label>
               </div>
 
@@ -2182,7 +2250,6 @@
       </div>
     </div>
   </div>
-
   <!-- Meta Knowledge Footer -->
   @if ($form->show_footer ?? true)
     <footer class="meta-footer">
@@ -2198,52 +2265,90 @@
               alt="Footer Logo"
               class="footer-logo"
             />
-            <h4>{{ $form->footer_company_name ?? 'Meta Knowledge' }}</h4>
+            <h4>
+              {{
+                $form->footer_company_name ??
+                  'Meta Knowledge'
+              }}
+            </h4>
             <p>
-              {{ $form->footer_description_1 ?? 'ศูนย์รวมความรู้และการพัฒนาทักษะสำหรับนักเรียนและผู้ปกครอง' }}
+              {{
+                $form->footer_description_1 ??
+                  'ศูนย์รวมความรู้และการพัฒนาทักษะสำหรับนักเรียนและผู้ปกครอง'
+              }}
             </p>
             <p>
-              {{ $form->footer_description_2 ?? 'พัฒนาศักยภาพ สร้างอนาคตที่ดีกว่า' }}
+              {{
+                $form->footer_description_2 ??
+                  'พัฒนาศักยภาพ สร้างอนาคตที่ดีกว่า'
+              }}
             </p>
           </div>
           <div class="col-md-4 mb-4">
             <h4>
               <i class="fas fa-info-circle"></i>
-              {{ $form->footer_about_title ?? 'เกี่ยวกับเรา' }}
+              {{
+                $form->footer_about_title ??
+                  'เกี่ยวกับเรา'
+              }}
             </h4>
             <p>
               <i class="fas fa-graduation-cap"></i>
-              {{ $form->footer_feature_1 ?? 'ระบบสอบและแข่งขันออนไลน์' }}
+              {{
+                $form->footer_feature_1 ??
+                  'ระบบสอบและแข่งขันออนไลน์'
+              }}
             </p>
             <p>
               <i class="fas fa-book-reader"></i>
-              {{ $form->footer_feature_2 ?? 'หลักสูตรคุณภาพสำหรับทุกระดับชั้น' }}
+              {{
+                $form->footer_feature_2 ??
+                  'หลักสูตรคุณภาพสำหรับทุกระดับชั้น'
+              }}
             </p>
             <p>
               <i class="fas fa-trophy"></i>
-              {{ $form->footer_feature_3 ?? 'พัฒนาทักษะเพื่อความสำเร็จ' }}
+              {{
+                $form->footer_feature_3 ??
+                  'พัฒนาทักษะเพื่อความสำเร็จ'
+              }}
             </p>
             <p>
               <i class="fas fa-certificate"></i>
-              {{ $form->footer_feature_4 ?? 'ใบประกาศนียบัตรรับรอง' }}
+              {{
+                $form->footer_feature_4 ??
+                  'ใบประกาศนียบัตรรับรอง'
+              }}
             </p>
           </div>
           <div class="col-md-4 mb-4">
             <h4>
               <i class="fas fa-envelope"></i>
-              {{ $form->footer_contact_title ?? 'ติดต่อเรา' }}
+              {{
+                $form->footer_contact_title ??
+                  'ติดต่อเรา'
+              }}
             </h4>
             <p>
               <i class="fas fa-phone"></i>
-              โทร: {{ $form->footer_phone ?? '02-XXX-XXXX' }}
+              โทร: {{
+                $form->footer_phone ??
+                  '02-XXX-XXXX'
+              }}
             </p>
             <p>
               <i class="fas fa-envelope"></i>
-              Email: {{ $form->footer_email ?? 'info@metaknowledge.com' }}
+              Email: {{
+                $form->footer_email ??
+                  'info@metaknowledge.com'
+              }}
             </p>
             <p>
               <i class="fas fa-map-marker-alt"></i>
-              {{ $form->footer_address ?? 'กรุงเทพมหานคร ประเทศไทย' }}
+              {{
+                $form->footer_address ??
+                  'กรุงเทพมหานคร ประเทศไทย'
+              }}
             </p>
             <div class="social-links">
               <a
@@ -2279,14 +2384,15 @@
         </div>
         <div class="copyright">
           <p>
-            &copy; {{ date('Y') }}
-            {{ $form->footer_copyright ?? 'Meta Knowledge. All Rights Reserved. | Empowering Education, Inspiring Excellence' }}
+            &copy; {{ date('Y') }} {{
+              $form->footer_copyright ??
+                'Meta Knowledge. All Rights Reserved. | Empowering Education, Inspiring Excellence'
+            }}
           </p>
         </div>
       </div>
     </footer>
   @endif
-
   <script>
     const allowedSuffixes = [
       '.com',
@@ -2583,7 +2689,11 @@
     let imgFiles2 = document.getElementsByName('imgFiles2[]');
 
     Dropzone.options.myAwesomeDropzone = {
-      url: '{{ route('form.upload') }}',
+      url: '{{
+      route(
+        'form.upload',
+      )
+    }}',
       headers: {
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
       },
@@ -2636,7 +2746,11 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
               },
               type: 'POST',
-              url: '{{ route('form.delete') }}',
+              url: '{{
+      route(
+        'form.delete',
+      )
+    }}',
               data: {
                 name: name
               },
@@ -2675,9 +2789,7 @@
             let val1 = file.name;
             $('#dropzone_preview').css('display', 'block');
             $('#dropzone-photo').removeClass('form-focus-error');
-            $('#dropzone-photo')
-              .find('.form-error-message')
-              .css('display', 'none');
+            $('#dropzone-photo').find('.form-error-message').css('display', 'none');
             $('#dropzone-photo').css('border', 'solid 1px green');
             if (document.getElementsByName('imgFiles[]').length) {
               //$('#error_div').css('display', 'none');
@@ -2713,7 +2825,11 @@
     };
 
     Dropzone.options.myAwesomeDropzone2 = {
-      url: '{{ route('form.upload') }}',
+      url: '{{
+      route(
+        'form.upload',
+      )
+    }}',
       headers: {
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
       },
@@ -2765,7 +2881,11 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
               },
               type: 'POST',
-              url: '{{ route('form.delete') }}',
+              url: '{{
+      route(
+        'form.delete',
+      )
+    }}',
               data: {
                 name: name
               },
@@ -2806,9 +2926,7 @@
             let val1 = file.name;
             $('#dropzone_preview2').css('display', 'block');
             $('#dropzone-att').removeClass('form-focus-error');
-            $('#dropzone-att')
-              .find('.form-error-message')
-              .css('display', 'none');
+            $('#dropzone-att').find('.form-error-message').css('display', 'none');
             $('#dropzone-att').css('border', 'solid 1px green');
             if (document.getElementsByName('imgFiles2[]').length) {
               //$('#error_div').css('display', 'none');
@@ -2927,13 +3045,11 @@
         const photoActive =
           $photoWrapper.length &&
           $photoWrapper.is(':visible') &&
-          !$photoWrapper.find('input, textarea, select').filter(':enabled')
-            .length;
+          !$photoWrapper.find('input, textarea, select').filter(':enabled').length;
         const slipActive =
           $slipWrapper.length &&
           $slipWrapper.is(':visible') &&
-          !$slipWrapper.find('input, textarea, select').filter(':enabled')
-            .length;
+          !$slipWrapper.find('input, textarea, select').filter(':enabled').length;
 
         let missing = false;
 
@@ -2992,9 +3108,7 @@
               'progress',
               function (evt) {
                 if (evt.lengthComputable) {
-                  var percentComplete = Math.round(
-                    (evt.loaded / evt.total) * 100
-                  );
+                  var percentComplete = Math.round((evt.loaded / evt.total) * 100);
                   $('#loading-message').text(
                     'กำลังอัพโหลด... ' + percentComplete + '%'
                   );
@@ -3193,17 +3307,13 @@
       } else {
         if (!document.getElementsByName('imgFiles[]').length) {
           $('#dropzone-photo').addClass('form-focus-error');
-          $('#dropzone-photo')
-            .find('.form-error-message')
-            .css('display', 'block');
+          $('#dropzone-photo').find('.form-error-message').css('display', 'block');
           $('#dropzone-photo').css('border', 'solid 1px red');
           jumpTo('dphoto');
         }
         if (!document.getElementsByName('imgFiles2[]').length) {
           $('#dropzone-att').addClass('form-focus-error');
-          $('#dropzone-att')
-            .find('.form-error-message')
-            .css('display', 'block');
+          $('#dropzone-att').find('.form-error-message').css('display', 'block');
           $('#dropzone-att').css('border', 'solid 1px red');
           jumpTo('datt');
         }
@@ -3239,13 +3349,13 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     // Package-Grade linking data
-    const packageGradeLinks = @json($form->packages->mapWithKeys(function ($package) {
-      return [$package->id => $package->linked_grades];
-    }));
+    const packageGradeLinks = @json ($form->packages->mapWithKeys(function ($package) {
+        return [$package->id => $package->linked_grades];
+      }));
 
-    const gradeNameMap = @json($form->grades->mapWithKeys(function ($grade) {
-      return [$grade->id => $grade->grade];
-    }));
+    const gradeNameMap = @json ($form->grades->mapWithKeys(function ($grade) {
+        return [$grade->id => $grade->grade];
+      }));
 
     // Validate package selection against grade
     function validatePackageGradeCompatibility(
@@ -3510,158 +3620,185 @@
   </script>
   <script>
     // Exam Mode Logic
-    $(document).ready(function() {
-        // Prepare data from server
-        const packageExamModes = {
-            @foreach ($form->packages as $pkg)
-                "{{ $pkg->id }}": {{ $pkg->has_exam_mode ? 1 : 0 }},
-            @endforeach
-        };
+    $(document).ready(function () {
+      // Prepare data from server
+      const packageExamModes = {
+        @foreach ($form->packages as $pkg)
+        {{ $pkg->id }}: {{
+      $pkg->has_exam_mode
+        ? 1
+        : 0
+    }}
+        @endforeach
+      };
 
-        // Form-level limits (not package-level)
-        const formLimits = {
-            online_limit: {{ $form->online_limit ?? 'null' }},
-            onsite_limit: {{ $form->onsite_limit ?? 'null' }},
-            online_registered: {{ $form->online_registered ?? 0 }},
-            onsite_registered: {{ $form->onsite_registered ?? 0 }}
-        };
+      // Form-level limits (not package-level)
+      const formLimits = {
+        online_limit: {{
+      $form->online_limit ??
+        'null'
+    }},
+        onsite_limit: {{
+      $form->onsite_limit ??
+        'null'
+    }},
+        online_registered: {{
+      $form->online_registered ??
+        0
+    }},
+        onsite_registered: {{
+      $form->onsite_registered ??
+        0
+    }}
+      };
 
-        function getAvailableSlots(mode) {
-            if (mode === 'online') {
-                if (formLimits.online_limit === null) return {
-                    available: true,
-                    remaining: null
-                };
-                const remaining = formLimits.online_limit - formLimits.online_registered;
-                return {
-                    available: remaining > 0,
-                    remaining: remaining
-                };
-            } else {
-                if (formLimits.onsite_limit === null) return {
-                    available: true,
-                    remaining: null
-                };
-                const remaining = formLimits.onsite_limit - formLimits.onsite_registered;
-                return {
-                    available: remaining > 0,
-                    remaining: remaining
-                };
-            }
+      function getAvailableSlots(mode) {
+        if (mode === 'online') {
+          if (formLimits.online_limit === null)
+            return {
+              available: true,
+              remaining: null
+            };
+          const remaining = formLimits.online_limit - formLimits.online_registered;
+          return {
+            available: remaining > 0,
+            remaining: remaining
+          };
+        } else {
+          if (formLimits.onsite_limit === null)
+            return {
+              available: true,
+              remaining: null
+            };
+          const remaining = formLimits.onsite_limit - formLimits.onsite_registered;
+          return {
+            available: remaining > 0,
+            remaining: remaining
+          };
+        }
+      }
+
+      function updateExamModeOptions() {
+        const onlineSlots = getAvailableSlots('online');
+        const onsiteSlots = getAvailableSlots('onsite');
+
+        const $onlineRadio = $('#exam_mode_online');
+        const $onsiteRadio = $('#exam_mode_onsite');
+        const $onlineLabel = $('label[for="exam_mode_online"]');
+        const $onsiteLabel = $('label[for="exam_mode_onsite"]');
+
+        // Update Online option
+        if (!onlineSlots.available) {
+          $onlineRadio.prop('disabled', true);
+          $onlineLabel.html(
+            '<i class="fas fa-laptop"></i> Online (สอบออนไลน์) <span class="badge badge-danger">เต็มแล้ว</span>'
+          );
+          // Auto switch to onsite if online is full and onsite is available
+          if ($onlineRadio.is(':checked') && onsiteSlots.available) {
+            $onsiteRadio.prop('checked', true);
+          }
+        } else {
+          $onlineRadio.prop('disabled', false);
+          let onlineText = '<i class="fas fa-laptop"></i> Online (สอบออนไลน์)';
+          if (onlineSlots.remaining !== null) {
+            onlineText +=
+              ' <span class="badge badge-info">เหลือ ' +
+              onlineSlots.remaining +
+              ' ที่นั่ง</span>';
+          }
+          $onlineLabel.html(onlineText);
         }
 
-        function updateExamModeOptions() {
-            const onlineSlots = getAvailableSlots('online');
-            const onsiteSlots = getAvailableSlots('onsite');
-
-            const $onlineRadio = $('#exam_mode_online');
-            const $onsiteRadio = $('#exam_mode_onsite');
-            const $onlineLabel = $('label[for="exam_mode_online"]');
-            const $onsiteLabel = $('label[for="exam_mode_onsite"]');
-
-            // Update Online option
-            if (!onlineSlots.available) {
-                $onlineRadio.prop('disabled', true);
-                $onlineLabel.html(
-                    '<i class="fas fa-laptop"></i> Online (สอบออนไลน์) <span class="badge badge-danger">เต็มแล้ว</span>'
-                );
-                // Auto switch to onsite if online is full and onsite is available
-                if ($onlineRadio.is(':checked') && onsiteSlots.available) {
-                    $onsiteRadio.prop('checked', true);
-                }
-            } else {
-                $onlineRadio.prop('disabled', false);
-                let onlineText = '<i class="fas fa-laptop"></i> Online (สอบออนไลน์)';
-                if (onlineSlots.remaining !== null) {
-                    onlineText += ' <span class="badge badge-info">เหลือ ' + onlineSlots.remaining +
-                        ' ที่นั่ง</span>';
-                }
-                $onlineLabel.html(onlineText);
-            }
-
-            // Update Onsite option
-            if (!onsiteSlots.available) {
-                $onsiteRadio.prop('disabled', true);
-                $onsiteLabel.html(
-                    '<i class="fas fa-chalkboard-teacher"></i> Onsite (สอบนอกสถานที่) <span class="badge badge-danger">เต็มแล้ว</span>'
-                );
-                // Auto switch to online if onsite is full and online is available
-                if ($onsiteRadio.is(':checked') && onlineSlots.available) {
-                    $onlineRadio.prop('checked', true);
-                }
-            } else {
-                $onsiteRadio.prop('disabled', false);
-                let onsiteText = '<i class="fas fa-chalkboard-teacher"></i> Onsite (สอบนอกสถานที่)';
-                if (onsiteSlots.remaining !== null) {
-                    onsiteText += ' <span class="badge badge-info">เหลือ ' + onsiteSlots.remaining +
-                        ' ที่นั่ง</span>';
-                }
-                $onsiteLabel.html(onsiteText);
-            }
-
-            // If both are full, show warning
-            if (!onlineSlots.available && !onsiteSlots.available) {
-                $('#exam_mode_container').find('.form-text').html(
-                    '<i class="fas fa-exclamation-triangle text-danger"></i> <span class="text-danger">ขออภัย มีผู้สมัครเต็มทั้ง Online และ Onsite แล้ว</span>'
-                );
-            } else {
-                $('#exam_mode_container').find('.form-text').html(
-                    '<i class="fas fa-info-circle"></i> โปรดระบุรูปแบบการสอบที่ท่านต้องการ (Online หรือ Onsite)'
-                );
-            }
+        // Update Onsite option
+        if (!onsiteSlots.available) {
+          $onsiteRadio.prop('disabled', true);
+          $onsiteLabel.html(
+            '<i class="fas fa-chalkboard-teacher"></i> Onsite (สอบนอกสถานที่) <span class="badge badge-danger">เต็มแล้ว</span>'
+          );
+          // Auto switch to online if onsite is full and online is available
+          if ($onsiteRadio.is(':checked') && onlineSlots.available) {
+            $onlineRadio.prop('checked', true);
+          }
+        } else {
+          $onsiteRadio.prop('disabled', false);
+          let onsiteText =
+            '<i class="fas fa-chalkboard-teacher"></i> Onsite (สอบนอกสถานที่)';
+          if (onsiteSlots.remaining !== null) {
+            onsiteText +=
+              ' <span class="badge badge-info">เหลือ ' +
+              onsiteSlots.remaining +
+              ' ที่นั่ง</span>';
+          }
+          $onsiteLabel.html(onsiteText);
         }
 
-        function checkExamModeVisibility() {
-            const packageSelect = $('#package');
-            const examModeContainer = $('#exam_mode_container');
-            let selectedValues = packageSelect.val();
+        // If both are full, show warning
+        if (!onlineSlots.available && !onsiteSlots.available) {
+          $('#exam_mode_container')
+            .find('.form-text')
+            .html(
+              '<i class="fas fa-exclamation-triangle text-danger"></i> <span class="text-danger">ขออภัย มีผู้สมัครเต็มทั้ง Online และ Onsite แล้ว</span>'
+            );
+        } else {
+          $('#exam_mode_container')
+            .find('.form-text')
+            .html(
+              '<i class="fas fa-info-circle"></i> โปรดระบุรูปแบบการสอบที่ท่านต้องการ (Online หรือ Onsite)'
+            );
+        }
+      }
 
-            // Handle single select (string) or multi (array) or null
-            if (!selectedValues) {
-                selectedValues = [];
-            } else if (!Array.isArray(selectedValues)) {
-                selectedValues = [selectedValues];
-            }
+      function checkExamModeVisibility() {
+        const packageSelect = $('#package');
+        const examModeContainer = $('#exam_mode_container');
+        let selectedValues = packageSelect.val();
 
-            let showExamMode = false;
-            selectedValues.forEach(function(pkgId) {
-                if (pkgId && packageExamModes[pkgId] == 1) {
-                    showExamMode = true;
-                }
-            });
-
-            if (showExamMode) {
-                examModeContainer.slideDown();
-                // Set required attribute
-                $('input[name="exam_mode"]').attr('required', true);
-
-                // Update available slots first
-                updateExamModeOptions();
-
-                // Auto-select available option (prefer online as default)
-                const onlineSlots = getAvailableSlots('online');
-                const onsiteSlots = getAvailableSlots('onsite');
-
-                // If current selection is disabled, switch to available one
-                const $currentChecked = $('input[name="exam_mode"]:checked');
-                if ($currentChecked.prop('disabled') || !$currentChecked.length) {
-                    if (onlineSlots.available) {
-                        $('#exam_mode_online').prop('checked', true);
-                    } else if (onsiteSlots.available) {
-                        $('#exam_mode_onsite').prop('checked', true);
-                    }
-                }
-            } else {
-                examModeContainer.slideUp();
-                $('input[name="exam_mode"]').removeAttr('required');
-            }
+        // Handle single select (string) or multi (array) or null
+        if (!selectedValues) {
+          selectedValues = [];
+        } else if (!Array.isArray(selectedValues)) {
+          selectedValues = [selectedValues];
         }
 
-        // Bind change event
-        $('#package').on('change', checkExamModeVisibility);
+        let showExamMode = false;
+        selectedValues.forEach(function (pkgId) {
+          if (pkgId && packageExamModes[pkgId] == 1) {
+            showExamMode = true;
+          }
+        });
 
-        // Initial Check (in case of validation error reload)
-        checkExamModeVisibility();
+        if (showExamMode) {
+          examModeContainer.slideDown();
+          // Set required attribute
+          $('input[name="exam_mode"]').attr('required', true);
+
+          // Update available slots first
+          updateExamModeOptions();
+
+          // Auto-select available option (prefer online as default)
+          const onlineSlots = getAvailableSlots('online');
+          const onsiteSlots = getAvailableSlots('onsite');
+
+          // If current selection is disabled, switch to available one
+          const $currentChecked = $('input[name="exam_mode"]:checked');
+          if ($currentChecked.prop('disabled') || !$currentChecked.length) {
+            if (onlineSlots.available) {
+              $('#exam_mode_online').prop('checked', true);
+            } else if (onsiteSlots.available) {
+              $('#exam_mode_onsite').prop('checked', true);
+            }
+          }
+        } else {
+          examModeContainer.slideUp();
+          $('input[name="exam_mode"]').removeAttr('required');
+        }
+      }
+
+      // Bind change event
+      $('#package').on('change', checkExamModeVisibility);
+
+      // Initial Check (in case of validation error reload)
+      checkExamModeVisibility();
     });
   </script>
   <script type="text/javascript">

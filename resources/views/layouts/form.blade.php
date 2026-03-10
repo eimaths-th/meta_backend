@@ -1,227 +1,227 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes"
-    />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<head>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes"
+  />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
+  <!-- CSRF Token -->
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-    <title>Meta Knowledge - Educational Excellence</title>
-    <meta
-      name="description"
-      content="Meta Knowledge - ศูนย์รวมความรู้และการพัฒนาทักษะสำหรับนักเรียนและผู้ปกครอง"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      href="{{ asset('images/logo_meta.png') }}"
-    />
+  <title>Meta Knowledge - Educational Excellence</title>
+  <meta
+    name="description"
+    content="Meta Knowledge - ศูนย์รวมความรู้และการพัฒนาทักษะสำหรับนักเรียนและผู้ปกครอง"
+  />
+  <link
+    rel="icon"
+    type="image/png"
+    href="{{ asset('images/logo_meta.png') }}"
+  />
 
-    <script
-      src="https://code.jquery.com/jquery-3.7.1.min.js"
-      type="text/javascript"
-    ></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.21.0/dist/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/jquery.inputmask.min.js"></script>
-    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-      integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-      integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-      crossorigin="anonymous"
-    ></script>
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css"
-      type="text/css"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    @yield('style')
-    <style>
-      /* Global Layout Styles - Orange Theme */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+  <script
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    type="text/javascript"
+  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.21.0/dist/jquery.validate.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/jquery.inputmask.min.js"></script>
+  <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+    integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+    crossorigin="anonymous"
+  ></script>
+  <!-- Fonts -->
+  <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css"
+    type="text/css"
+  />
+  <link
+    href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  @yield ('style')
+  <style>
+    /* Global Layout Styles - Orange Theme */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Sarabun', 'Kanit', sans-serif;
+      background: linear-gradient(
+        135deg,
+        #ffb835 0%,
+        #ff8c42 50%,
+        #ffa500 100%
+      );
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
+    .custom-image {
+      width: 100%;
+      height: auto;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(255, 107, 53, 0.2);
+    }
+
+    .custom-image2 {
+      width: 50%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #ffe0b2;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+      border-radius: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #ff8c42 0%, #ffa500 100%);
+    }
+
+    /* Loading Animation */
+    @keyframes pulse {
+      0%,
+      100% {
+        opacity: 1;
       }
+      50% {
+        opacity: 0.5;
+      }
+    }
 
+    /* Mobile Responsive Styles */
+    @media (max-width: 767px) {
       body {
-        font-family: 'Sarabun', 'Kanit', sans-serif;
-        background: linear-gradient(
-          135deg,
-          #ffb835 0%,
-          #ff8c42 50%,
-          #ffa500 100%
-        );
-        min-height: 100vh;
+        font-size: 14px;
         overflow-x: hidden;
-      }
-
-      main {
-        position: relative;
-        z-index: 1;
       }
 
       .custom-image {
         width: 100%;
         height: auto;
-        border-radius: 15px;
-        box-shadow: 0 5px 20px rgba(255, 107, 53, 0.2);
       }
 
       .custom-image2 {
-        width: 50%;
+        width: 90%;
         height: auto;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       }
 
-      /* Scrollbar Styling */
-      ::-webkit-scrollbar {
-        width: 12px;
+      .container {
+        max-width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
       }
 
-      ::-webkit-scrollbar-track {
-        background: #ffe0b2;
+      /* Prevent horizontal scroll */
+      html,
+      body {
+        max-width: 100%;
+        overflow-x: hidden;
       }
 
-      ::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
-        border-radius: 6px;
+      /* Touch-friendly elements */
+      button,
+      a,
+      input,
+      select,
+      textarea {
+        -webkit-tap-highlight-color: rgba(255, 107, 53, 0.2);
       }
 
-      ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #ff8c42 0%, #ffa500 100%);
+      /* Improve touch targets */
+      button,
+      .btn {
+        min-height: 44px;
+        min-width: 44px;
       }
 
-      /* Loading Animation */
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.5;
-        }
+      input,
+      select,
+      textarea {
+        min-height: 44px;
+      }
+    }
+
+    /* Extra small devices */
+    @media (max-width: 575px) {
+      body {
+        font-size: 13px;
       }
 
-      /* Mobile Responsive Styles */
-      @media (max-width: 767px) {
-        body {
-          font-size: 14px;
-          overflow-x: hidden;
-        }
-
-        .custom-image {
-          width: 100%;
-          height: auto;
-        }
-
-        .custom-image2 {
-          width: 90%;
-          height: auto;
-        }
-
-        .container {
-          max-width: 100%;
-          padding-left: 10px;
-          padding-right: 10px;
-        }
-
-        /* Prevent horizontal scroll */
-        html,
-        body {
-          max-width: 100%;
-          overflow-x: hidden;
-        }
-
-        /* Touch-friendly elements */
-        button,
-        a,
-        input,
-        select,
-        textarea {
-          -webkit-tap-highlight-color: rgba(255, 107, 53, 0.2);
-        }
-
-        /* Improve touch targets */
-        button,
-        .btn {
-          min-height: 44px;
-          min-width: 44px;
-        }
-
-        input,
-        select,
-        textarea {
-          min-height: 44px;
-        }
+      .custom-image2 {
+        width: 100%;
       }
 
-      /* Extra small devices */
-      @media (max-width: 575px) {
-        body {
-          font-size: 13px;
-        }
-
-        .custom-image2 {
-          width: 100%;
-        }
-
-        .container {
-          padding-left: 5px;
-          padding-right: 5px;
-        }
+      .container {
+        padding-left: 5px;
+        padding-right: 5px;
       }
+    }
 
-      /* Prevent zoom on input focus for iOS */
-      @media screen and (max-width: 768px) {
-        input[type='text'],
-        input[type='email'],
-        input[type='tel'],
-        input[type='number'],
-        input[type='date'],
-        select,
-        textarea {
-          font-size: 16px !important;
-        }
+    /* Prevent zoom on input focus for iOS */
+    @media screen and (max-width: 768px) {
+      input[type='text'],
+      input[type='email'],
+      input[type='tel'],
+      input[type='number'],
+      input[type='date'],
+      select,
+      textarea {
+        font-size: 16px !important;
       }
-    </style>
-  </head>
+    }
+  </style>
+</head>
 
-  <body>
-    <main class="">
-      @yield('content')
-    </main>
-  </body>
+<body>
+  <main class="">
+    @yield ('content')
+  </main>
+</body>
 </html>

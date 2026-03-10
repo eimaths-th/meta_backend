@@ -1,5 +1,5 @@
 <form action="{{ route('recordtime.update', [$rect->id]) }}" method="post">
-  @method('PUT')
+  @method ('PUT')
   @csrf
   <div class="modal-header">
     <h5 class="modal-title" id="exampleModalLongTitle">Add Record Time</h5>
@@ -143,8 +143,7 @@
       rows="5"
       class="form-control"
       placeholder="หมายเหตุ"
-    >
-{{ $rect->explain }}</textarea
+      >{{ $rect->explain }}</textarea
     >
   </div>
   <!-- Modal footer -->

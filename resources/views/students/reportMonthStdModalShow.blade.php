@@ -46,12 +46,10 @@
       @php
         $matchingRecords = $school_pice->where('rid', $rec->id);
       @endphp
-
       @if ($matchingRecords->isNotEmpty())
         @php
           // dd($matchingRecords);
         @endphp
-
         <div class="row mb-5">
           <label for="Name">ใบเสร็จลำดับที่ {{ $key + 1 }}.</label>
 

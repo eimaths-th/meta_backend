@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -15,7 +15,7 @@
   />
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -56,9 +56,7 @@
                 >
                   <option value="">select subject</option>
                   @foreach ($subj as $subj)
-                    <option value="{{ $subj->id }}">
-                      {{ $subj->title }}
-                    </option>
+                    <option value="{{ $subj->id }}">{{ $subj->title }}</option>
                   @endforeach
                 </select>
               </div>
@@ -89,7 +87,6 @@
                       @php
                         $month = str_pad($i, 2, '0', STR_PAD_LEFT);
                       @endphp
-
                       <option value="{{ $month }}">{{ $month }}</option>
                     @endfor
                   </select>
@@ -146,14 +143,34 @@
               $i = 1;
             @endphp
 
-            @if (! empty($std))
+            @if (!empty($std))
               @foreach ($std as $std)
                 <tr>
                   <td>{{ $i }}</td>
-                  <td>{{ $std->student->code }}</td>
-                  <td>{{ $std->subject->title }}</td>
-                  <td>{{ $std->student->full_name }}</td>
-                  <td>{{ $std->student->nick_name }}</td>
+                  <td>
+                    {{
+                      $std->student
+                        ->code
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      $std->subject
+                        ->title
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      $std->student
+                        ->full_name
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      $std->student
+                        ->nick_name
+                    }}
+                  </td>
                 </tr>
                 @php
                   $i++;
@@ -167,7 +184,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     $(document).ready(function () {
       //$.noConflict();

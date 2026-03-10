@@ -55,8 +55,7 @@
           >
             @foreach ($students as $students)
               <option value="{{ $students->id }}">
-                {{ $students->code }} {{ $students->full_name }}
-                ({{ $students->nick_name }})
+                {{ $students->code }} {{ $students->full_name }} ({{ $students->nick_name }})
               </option>
             @endforeach
           </select>

@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -15,7 +15,7 @@
   />
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     <div class="app-page-title">
       <div class="page-title-wrapper">
@@ -94,7 +94,13 @@
                 <td>{{ $app->version }}</td>
                 <td>{{ $app->type }}</td>
                 <td>{{ $app->upload_by }}</td>
-                <td>{{ $app->updated_at->format('Y-m-d') }}</td>
+                <td>
+                  {{
+                    $app->updated_at->format(
+                      'Y-m-d',
+                    )
+                  }}
+                </td>
                 <td>
                   <a
                     href="{{ asset('app_download/' . $app->file_name) }}"
@@ -112,7 +118,7 @@
                       style="display: inline"
                     >
                       @csrf
-                      @method('DELETE')
+                      @method ('DELETE')
                       <button
                         type="submit"
                         class="btn btn-danger"
@@ -136,6 +142,6 @@
   </div>
 @endsection
 
-@section('script')
-  @include('app_download.script')
+@section ('script')
+  @include ('app_download.script')
 @endsection

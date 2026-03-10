@@ -1,29 +1,58 @@
 <form action="{{ route('generate_url.save') }}" method="post">
-    @csrf
-    <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Generate URL</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  @csrf
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLongTitle">Generate URL</h5>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+    ></button>
+  </div>
+  <!-- Modal body -->
+  <div class="modal-body">
+    <div
+      class="alert alert-danger alert-dismissible fade show"
+      role="alert"
+      style="display: none"
+    >
+      <button
+        type="button"
+        class="btn-close"
+        data-dismiss="alert"
+        aria-label="Close"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
-    <!-- Modal body -->
-    <div class="modal-body">
-        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none">
-            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none">
-            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true"></span>
-            </button>
-        </div>
+    <div
+      class="alert alert-success alert-dismissible fade show"
+      role="alert"
+      style="display: none"
+    >
+      <button
+        type="button"
+        class="btn-close"
+        data-dismiss="alert"
+        aria-label="Close"
+      >
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
 
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="form-group">
-                    <label for="Parent">Route :</label>
-                    <br />
-                    <select style="width: 100%" class="form-control" id="route" name="route" required>
-                        {{-- <option value="">Select Route</option>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label for="Parent">Route :</label>
+          <br />
+          <select
+            style="width: 100%"
+            class="form-control"
+            id="route"
+            name="route"
+            required
+          >
+            {{-- <option value="">Select Route</option>
                         <option value="gmec">gmec</option>
                         <option value="olpcs">olpcs</option>
                         <option value="asiarope">asiarope</option>
@@ -63,42 +92,61 @@
                             ( ไม่มา ) isocsea_imocsea_national_round
                         </option>
                         <option value="admin-test-field">admin-test-field</option> --}}
-                        @foreach ($formRoutes as $formRoute)
-                            <option value="{{ $formRoute->slug }}">
-                                {{ $formRoute->form_name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="form-group">
-                    <label for="Name">Referent Code:</label>
-                    {{-- <input type="text" class="form-control" name="referent_code" id="referent_code" required> --}}
-                    <select name="referent_code" id="referent_code" class="form-control" required>
-                        <option value="">Select Referent Code</option>
-                        @foreach ($referent_code as $item)
-                            <option value="{{ $item->referent_code }}">
-                                {{ $item->referent_code }} — ({{ $item->referent_name }})
-                            </option>
-                        @endforeach
-                    </select>
-                    <small class="form-text text-danger">* ตัวอย่าง : 1234567890</small>
-                </div>
-            </div>
+            @foreach ($formRoutes as $formRoute)
+              <option value="{{ $formRoute->slug }}">
+                {{ $formRoute->form_name }}
+              </option>
+            @endforeach
+          </select>
         </div>
-        <div class="form-group mt-3">
-            <label for="Parent">Explain :</label>
-            <br />
-            <textarea name="comments" class="form-control" id="comments" rows="5"></textarea>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label for="Name">Referent Code:</label>
+          {{-- <input type="text" class="form-control" name="referent_code" id="referent_code" required> --}}
+          <select
+            name="referent_code"
+            id="referent_code"
+            class="form-control"
+            required
+          >
+            <option value="">Select Referent Code</option>
+            @foreach ($referent_code as $item)
+              <option value="{{ $item->referent_code }}">
+                {{ $item->referent_code }} — ({{ $item->referent_name }})
+              </option>
+            @endforeach
+          </select>
+          <small class="form-text text-danger">* ตัวอย่าง : 1234567890</small>
         </div>
-        <input type="hidden" name="user_id" id="user_id" value="{{ auth()->user()->id }}" />
+      </div>
     </div>
-    <!-- Modal footer -->
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-success">Save</button>
-        <button type="button" class="btn btn-danger modelClose" data-bs-dismiss="modal">
-            Close
-        </button>
+    <div class="form-group mt-3">
+      <label for="Parent">Explain :</label>
+      <br />
+      <textarea
+        name="comments"
+        class="form-control"
+        id="comments"
+        rows="5"
+      ></textarea>
     </div>
+    <input
+      type="hidden"
+      name="user_id"
+      id="user_id"
+      value="{{ auth()->user()->id }}"
+    />
+  </div>
+  <!-- Modal footer -->
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-success">Save</button>
+    <button
+      type="button"
+      class="btn btn-danger modelClose"
+      data-bs-dismiss="modal"
+    >
+      Close
+    </button>
+  </div>
 </form>

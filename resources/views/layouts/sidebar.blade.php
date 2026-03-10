@@ -50,7 +50,9 @@
   <div class="scrollbar-sidebar">
     <div class="app-sidebar__inner">
       <ul class="vertical-nav-menu">
-        @if (Auth::user()->level == 3 || Auth::user()->level == 1 || Auth::user()->level == 0)
+        @if (Auth::user()->level == 3 ||
+          Auth::user()->level == 1 ||
+          Auth::user()->level == 0)
           <li class="app-sidebar__heading">สนามสอบ</li>
           <li>
             <a href="{{ route('formsControl') }}">
@@ -79,8 +81,9 @@
               </li>
             </ul>
           </li>
-
-          @if (Auth::user()->level == 3 || Auth::user()->level == 1 || Auth::user()->level == 0)
+          @if (Auth::user()->level == 3 ||
+            Auth::user()->level == 1 ||
+            Auth::user()->level == 0)
             <li>
               <a href="#">
                 {{-- find icon for forms management --}}
@@ -110,7 +113,6 @@
               </ul>
             </li>
           @endif
-
           <li>
             <a href="#">
               <i class="metismenu-icon pe-7s-note2"></i>
@@ -208,156 +210,155 @@
                                 <a href="{{ route('receipts_form', ['sfield' => '16']) }}">
                                     <i class="metismenu-icon"></i>
                                     Mathleague
-                                    {{-- <!-- ml --> --}}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '17']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    Test Field
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '18']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    Mathleague-II
-                                    {{-- <!-- ml --> --}}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '19']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    Huaxiacup-II
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '20']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    Neo science
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '21']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    Neo science - School
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '22']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    China-Final
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '23']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    International hope
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '24']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    International STEM
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '25']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    SEACSO
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '26']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    Copernicus
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '27']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    CODING OLYMPICS
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '28']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    IMOCSEA SPECIAL
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '29']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    STEMCO Science
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '30']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    Advance English Grammar
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '32']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    Award Ceremony ISOCSEA
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '33']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    IMOCSEA National Round
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="{{ route('receipts_form', ['sfield' => '0']) }}">
-                                    <i class="metismenu-icon"></i>
-                                    Img Reward
-                                </a>
-                            </li>
-                        </ul>
-                        -->
-
-            <ul>
-              <li>
-                <a href="{{ route('receipts_form_all') }}">
-                  <i class="metismenu-icon"></i>
-                  All
-                </a>
-              </li>
-              <li>
-                <a href="{{ route('receipts_form', ['sfield' => '31']) }}">
-                  <i class="metismenu-icon"></i>
-                  (มา) ISOCSEA IMOCSEA National Round 2025
-                </a>
-              </li>
-              <li>
-                <a href="{{ route('receipts_form', ['sfield' => '32']) }}">
-                  <i class="metismenu-icon"></i>
-                  (ไม่มา) ISOCSEA IMOCSEA National Round
-                </a>
-              </li>
-              @foreach ($formManages as $formManage)
-                <li>
-                  <a
-                    href="{{ route('receipts_form', ['sfield' => $formManage->sfield]) }}"
-                  >
-                    <i class="metismenu-icon"></i>
-                    {{ $formManage->form_name }}
-                  </a>
-                </li>
-              @endforeach
-            </ul>
+                                    {{-- <!-- ml -->
+            --}}
+            </a>
           </li>
           <li>
-            <a href="#">
-              <i class="metismenu-icon pe-7s-note2"></i>
-              Receipt (ค่าสมัครสอบ)
-              <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+            <a href="{{ route('receipts_form', ['sfield' => '17']) }}">
+              <i class="metismenu-icon"></i>
+              Test Field
             </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '18']) }}">
+              <i class="metismenu-icon"></i>
+              Mathleague-II
+              {{-- <!-- ml --> --}}
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '19']) }}">
+              <i class="metismenu-icon"></i>
+              Huaxiacup-II
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '20']) }}">
+              <i class="metismenu-icon"></i>
+              Neo science
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '21']) }}">
+              <i class="metismenu-icon"></i>
+              Neo science - School
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '22']) }}">
+              <i class="metismenu-icon"></i>
+              China-Final
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '23']) }}">
+              <i class="metismenu-icon"></i>
+              International hope
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '24']) }}">
+              <i class="metismenu-icon"></i>
+              International STEM
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '25']) }}">
+              <i class="metismenu-icon"></i>
+              SEACSO
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '26']) }}">
+              <i class="metismenu-icon"></i>
+              Copernicus
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '27']) }}">
+              <i class="metismenu-icon"></i>
+              CODING OLYMPICS
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '28']) }}">
+              <i class="metismenu-icon"></i>
+              IMOCSEA SPECIAL
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '29']) }}">
+              <i class="metismenu-icon"></i>
+              STEMCO Science
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '30']) }}">
+              <i class="metismenu-icon"></i>
+              Advance English Grammar
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '32']) }}">
+              <i class="metismenu-icon"></i>
+              Award Ceremony ISOCSEA
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '33']) }}">
+              <i class="metismenu-icon"></i>
+              IMOCSEA National Round
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts_form', ['sfield' => '0']) }}">
+              <i class="metismenu-icon"></i>
+              Img Reward
+            </a>
+          </li>
+      </ul>
+      -->
 
-            {{--
+      <ul>
+        <li>
+          <a href="{{ route('receipts_form_all') }}">
+            <i class="metismenu-icon"></i>
+            All
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('receipts_form', ['sfield' => '31']) }}">
+            <i class="metismenu-icon"></i>
+            (มา) ISOCSEA IMOCSEA National Round 2025
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('receipts_form', ['sfield' => '32']) }}">
+            <i class="metismenu-icon"></i>
+            (ไม่มา) ISOCSEA IMOCSEA National Round
+          </a>
+        </li>
+        @foreach ($formManages as $formManage)
+          <li>
+            <a
+              href="{{ route('receipts_form', ['sfield' => $formManage->sfield]) }}"
+            >
+              <i class="metismenu-icon"></i>
+              {{ $formManage->form_name }}
+            </a>
+          </li>
+        @endforeach
+      </ul>
+      </li>
+      <li>
+        <a href="#">
+          <i class="metismenu-icon pe-7s-note2"></i>
+          Receipt (ค่าสมัครสอบ)
+          <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+        </a>
+
+        {{--
               <ul>
               <li>
               <a href="{{ route('receipts_all') }}">
@@ -531,183 +532,184 @@
               </li>
               </ul>
             --}}
+        <ul>
+          <li>
+            <a href="{{ route('receipts_all') }}">
+              <i class="metismenu-icon"></i>
+              All
+            </a>
+          </li>
+
+          <li>
+            <a href="{{ route('receipts', ['sfield' => '31']) }}">
+              <i class="metismenu-icon"></i>
+              (มา) ISOCSEA IMOCSEA National Round 2025
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('receipts', ['sfield' => '32']) }}">
+              <i class="metismenu-icon"></i>
+              (ไม่มา) ISOCSEA IMOCSEA National Round
+            </a>
+          </li>
+          @foreach ($formManages as $formManage)
+            <li>
+              <a
+                href="{{ route('receipts', ['sfield' => $formManage->sfield]) }}"
+              >
+                <i class="metismenu-icon"></i>
+                {{ $formManage->form_name }}
+              </a>
+            </li>
+          @endforeach
+        </ul>
+      </li>
+
+      <li>
+        @php
+          $ymonth = date('Y-m');
+          $pmd = date('Y');
+        @endphp
+
+        <a href="#">
+          <i class="metismenu-icon pe-7s-graph2"></i>
+          Receipt Report
+          <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+        </a>
+        <ul>
+          <li>
+            <a
+              href="{{ route('receipts.print_month', ['pmsfield' => '9', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร OLPCS รอบแรก ' . $pmd]) }}"
+            >
+              <i class="metismenu-icon"></i>
+              OLPCS
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ route('receipts.print_month', ['pmsfield' => '10', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร ASIAROPE รอบแรก ' . $pmd]) }}"
+            >
+              <i class="metismenu-icon"></i>
+              ASIAROPE
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ route('receipts.print_month', ['pmsfield' => '11', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร Cambridge รอบแรก ' . $pmd]) }}"
+            >
+              <i class="metismenu-icon"></i>
+              Cambridge
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ route('receipts.print_month', ['pmsfield' => '2', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร GMEC รอบแรก ' . $pmd]) }}"
+            >
+              <i class="metismenu-icon"></i>
+              GMEC
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ route('receipts.print_month', ['pmsfield' => '4', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร IMOCSEA รอบแรก ' . $pmd]) }}"
+            >
+              <i class="metismenu-icon"></i>
+              IMOCSEA
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ route('receipts.print_month', ['pmsfield' => '28', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร IMOCSEA รอบแรก ' . $pmd]) }}"
+            >
+              <i class="metismenu-icon"></i>
+              IMOCSEA SPECIAL
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ route('receipts.print_month', ['pmsfield' => '5', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร INFINITE Spelling Bee รอบแรก ' . $pmd]) }}"
+            >
+              <i class="metismenu-icon"></i>
+              INFINITE Spelling Bee
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ route('receipts.print_month', ['pmsfield' => '6', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร GELOSEA รอบแรก ' . $pmd]) }}"
+            >
+              <i class="metismenu-icon"></i>
+              GELOSEA
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ route('receipts.print_month', ['pmsfield' => '7', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร LIMOC รอบแรก ' . $pmd]) }}"
+            >
+              <i class="metismenu-icon"></i>
+              LIMOC
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ route('receipts.print_month', ['pmsfield' => '8', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร STEM รอบแรก ' . $pmd]) }}"
+            >
+              <i class="metismenu-icon"></i>
+              STEM
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ route('receipts.print_month', ['pmsfield' => '29', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร STEMCO Science รอบแรก ' . $pmd]) }}"
+            >
+              <i class="metismenu-icon"></i>
+              STEMCO Science
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ route('receipts.print_month', ['pmsfield' => '30', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร Advance English Grammar รอบแรก ' . $pmd]) }}"
+            >
+              <i class="metismenu-icon"></i>
+              Advance English Grammar
+            </a>
+          </li>
+        </ul>
+      </li>
+      @endif
+
+      @if (Auth::user()->level != 3)
+        <li class="app-sidebar__heading">พนักงาน</li>
+        <li>
+          <a href="{{ route('home2') }}">
+            <i class="metismenu-icon pe-7s-home"></i>
+            Home
+          </a>
+        </li>
+      @endif
+
+      @if (Auth::user()->level == 1 ||
+        Auth::user()->level == 0 ||
+        Auth::user()->level == 4)
+        <li class="app-sidebar__heading">ผู้ดูแลระบบ</li>
+        <li>
+          <a href="#">
+            <i class="metismenu-icon pe-7s-user"></i>
+            พนักงาน
+            <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+          </a>
+
+          @if (Auth::user()->level == 1 || Auth::user()->level == 0)
             <ul>
               <li>
-                <a href="{{ route('receipts_all') }}">
+                <a href="{{ route('users') }}">
                   <i class="metismenu-icon"></i>
-                  All
-                </a>
-              </li>
-
-              <li>
-                <a href="{{ route('receipts', ['sfield' => '31']) }}">
-                  <i class="metismenu-icon"></i>
-                  (มา) ISOCSEA IMOCSEA National Round 2025
-                </a>
-              </li>
-              <li>
-                <a href="{{ route('receipts', ['sfield' => '32']) }}">
-                  <i class="metismenu-icon"></i>
-                  (ไม่มา) ISOCSEA IMOCSEA National Round
-                </a>
-              </li>
-              @foreach ($formManages as $formManage)
-                <li>
-                  <a
-                    href="{{ route('receipts', ['sfield' => $formManage->sfield]) }}"
-                  >
-                    <i class="metismenu-icon"></i>
-                    {{ $formManage->form_name }}
-                  </a>
-                </li>
-              @endforeach
-            </ul>
-          </li>
-
-          <li>
-            @php
-              $ymonth = date('Y-m');
-              $pmd = date('Y');
-            @endphp
-
-            <a href="#">
-              <i class="metismenu-icon pe-7s-graph2"></i>
-              Receipt Report
-              <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-            </a>
-            <ul>
-              <li>
-                <a
-                  href="{{ route('receipts.print_month', ['pmsfield' => '9', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร OLPCS รอบแรก ' . $pmd]) }}"
-                >
-                  <i class="metismenu-icon"></i>
-                  OLPCS
-                </a>
-              </li>
-              <li>
-                <a
-                  href="{{ route('receipts.print_month', ['pmsfield' => '10', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร ASIAROPE รอบแรก ' . $pmd]) }}"
-                >
-                  <i class="metismenu-icon"></i>
-                  ASIAROPE
-                </a>
-              </li>
-              <li>
-                <a
-                  href="{{ route('receipts.print_month', ['pmsfield' => '11', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร Cambridge รอบแรก ' . $pmd]) }}"
-                >
-                  <i class="metismenu-icon"></i>
-                  Cambridge
-                </a>
-              </li>
-              <li>
-                <a
-                  href="{{ route('receipts.print_month', ['pmsfield' => '2', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร GMEC รอบแรก ' . $pmd]) }}"
-                >
-                  <i class="metismenu-icon"></i>
-                  GMEC
-                </a>
-              </li>
-              <li>
-                <a
-                  href="{{ route('receipts.print_month', ['pmsfield' => '4', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร IMOCSEA รอบแรก ' . $pmd]) }}"
-                >
-                  <i class="metismenu-icon"></i>
-                  IMOCSEA
-                </a>
-              </li>
-              <li>
-                <a
-                  href="{{ route('receipts.print_month', ['pmsfield' => '28', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร IMOCSEA รอบแรก ' . $pmd]) }}"
-                >
-                  <i class="metismenu-icon"></i>
-                  IMOCSEA SPECIAL
-                </a>
-              </li>
-              <li>
-                <a
-                  href="{{ route('receipts.print_month', ['pmsfield' => '5', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร INFINITE Spelling Bee รอบแรก ' . $pmd]) }}"
-                >
-                  <i class="metismenu-icon"></i>
-                  INFINITE Spelling Bee
-                </a>
-              </li>
-              <li>
-                <a
-                  href="{{ route('receipts.print_month', ['pmsfield' => '6', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร GELOSEA รอบแรก ' . $pmd]) }}"
-                >
-                  <i class="metismenu-icon"></i>
-                  GELOSEA
-                </a>
-              </li>
-              <li>
-                <a
-                  href="{{ route('receipts.print_month', ['pmsfield' => '7', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร LIMOC รอบแรก ' . $pmd]) }}"
-                >
-                  <i class="metismenu-icon"></i>
-                  LIMOC
-                </a>
-              </li>
-              <li>
-                <a
-                  href="{{ route('receipts.print_month', ['pmsfield' => '8', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร STEM รอบแรก ' . $pmd]) }}"
-                >
-                  <i class="metismenu-icon"></i>
-                  STEM
-                </a>
-              </li>
-              <li>
-                <a
-                  href="{{ route('receipts.print_month', ['pmsfield' => '29', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร STEMCO Science รอบแรก ' . $pmd]) }}"
-                >
-                  <i class="metismenu-icon"></i>
-                  STEMCO Science
-                </a>
-              </li>
-              <li>
-                <a
-                  href="{{ route('receipts.print_month', ['pmsfield' => '30', 'type' => 'report_view', 'print_month' => $ymonth, 'Pmdescription' => 'ค่าสมัคร Advance English Grammar รอบแรก ' . $pmd]) }}"
-                >
-                  <i class="metismenu-icon"></i>
-                  Advance English Grammar
+                  รายชื่อพนักงาน
                 </a>
               </li>
             </ul>
-          </li>
-        @endif
-
-        @if (Auth::user()->level != 3)
-          <li class="app-sidebar__heading">พนักงาน</li>
-
-          <li>
-            <a href="{{ route('home2') }}">
-              <i class="metismenu-icon pe-7s-home"></i>
-              Home
-            </a>
-          </li>
-        @endif
-
-        @if (Auth::user()->level == 1 || Auth::user()->level == 0 || Auth::user()->level == 4)
-          <li class="app-sidebar__heading">ผู้ดูแลระบบ</li>
-          <li>
-            <a href="#">
-              <i class="metismenu-icon pe-7s-user"></i>
-              พนักงาน
-              <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-            </a>
-
-            @if (Auth::user()->level == 1 || Auth::user()->level == 0)
-              <ul>
-                <li>
-                  <a href="{{ route('users') }}">
-                    <i class="metismenu-icon"></i>
-                    รายชื่อพนักงาน
-                  </a>
-                </li>
-              </ul>
-            @endif
-          </li>
-        @endif
+          @endif
+        </li>
+      @endif
       </ul>
     </div>
   </div>

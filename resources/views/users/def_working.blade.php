@@ -1,12 +1,11 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <link
     href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
     rel="stylesheet"
   />
-
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -39,7 +38,6 @@
     }
   </style>
   {{-- <link href="../assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet"/> --}}
-
   {{--
     <link href="/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
     <script src="/assets/plugins/select2/dist/js/select2.min.js"></script>
@@ -47,7 +45,7 @@
   <script src="/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
 @endsection
 
-@section('content')
+@section ('content')
   @if ($message = Session::get('error'))
     <script>
       toastr.error('{{ $message }}', {
@@ -55,7 +53,6 @@
       });
     </script>
   @endif
-
   @if ($message = Session::get('success'))
     <script>
       toastr.success('{{ $message }}', {
@@ -63,7 +60,6 @@
       });
     </script>
   @endif
-
   <div class="row">
     <div class="app-page-title">
       <div class="page-title-wrapper">
@@ -170,7 +166,12 @@
                     <option value="">เลือกเดือน</option>
                     @for ($i = 1; $i <= 12; $i++)
                       <option value="{{ $i }}">
-                        {{ date('F', mktime(0, 0, 0, $i, 1)) }}
+                        {{
+                          date(
+                            'F',
+                            mktime(0, 0, 0, $i, 1),
+                          )
+                        }}
                       </option>
                     @endfor
                   </select>
@@ -227,11 +228,26 @@
             @foreach ($rec_times as $key => $rec_time)
               <tr>
                 <td align="center">{{ $key + 1 }}</td>
-                <td>INF{{ $rec_time->user->code ?? 'NUll' }}</td>
-
-                <td>{{ $rec_time->user->name ?? 'ไม่พบพนักงาน' }}</td>
                 <td>
-                  {{ date('D d-M-Y', strtotime($rec_time->date)) }}
+                  INF{{
+                    $rec_time->user->code ??
+                      'NUll'
+                  }}
+                </td>
+
+                <td>
+                  {{
+                    $rec_time->user->name ??
+                      'ไม่พบพนักงาน'
+                  }}
+                </td>
+                <td>
+                  {{
+                    date(
+                      'D d-M-Y',
+                      strtotime($rec_time->date),
+                    )
+                  }}
                 </td>
                 <td>{{ $rec_time->full_time }}</td>
 
@@ -338,7 +354,6 @@
       </div>
     </div>
   </div>
-
   <div class="body-block-example-2" style="display: none" id="loder_bar">
     <br />
     <div class="loader" id="loder_bar_div">
@@ -356,7 +371,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script src="/assets/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
   <script src="/assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
   <script>
@@ -381,7 +396,6 @@
     //     console.log(window.location);
     // });
   </script>
-
   {{--
     <script>
     document.addEventListener('DOMContentLoaded', function() {

@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <link
     rel="stylesheet"
     href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css"
@@ -18,7 +18,6 @@
     href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
     rel="stylesheet"
   />
-
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script
@@ -79,7 +78,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -116,10 +115,7 @@
           <div class="card-body">
             <div class="tab-content">
               {{--  --}}
-              <canvas
-                id="barChart"
-                {{-- width="800" height="200" --}}
-              ></canvas>
+              <canvas id="barChart" {{-- width="800" height="200" --}}></canvas>
             </div>
           </div>
         </div>
@@ -190,7 +186,7 @@
                   $uniqueYears = [];
                   foreach ($totalForAllGroupYear as $groupTotals) {
                     foreach ($groupTotals as $year => $value) {
-                      if (! in_array($year, $uniqueYears)) {
+                      if (!in_array($year, $uniqueYears)) {
                         $uniqueYears[] = $year;
                       }
                     }
@@ -235,8 +231,14 @@
                         @php
                           $sum[$year] += $value[$year] ?? 0;
                         @endphp
-
-                        <td>{{ number_format($value[$year] ?? 0, 0) }}</td>
+                        <td>
+                          {{
+                            number_format(
+                              $value[$year] ?? 0,
+                              0,
+                            )
+                          }}
+                        </td>
                       @endforeach
                     </tr>
                   @endforeach
@@ -245,7 +247,14 @@
                   <tr>
                     <th>Total</th>
                     @foreach ($uniqueYears as $year)
-                      <th>{{ number_format($sum[$year], 0) }}</th>
+                      <th>
+                        {{
+                          number_format(
+                            $sum[$year],
+                            0,
+                          )
+                        }}
+                      </th>
                     @endforeach
                   </tr>
                 </tfoot>
@@ -300,7 +309,6 @@
                           $name = $subject->first()->title;
                         }
                       @endphp
-
                       <option value="{{ $subjectGroup }}">{{ $name }}</option>
                     @endforeach
                   </select>
@@ -315,7 +323,12 @@
                     <option value="">เลือกเดือน</option>
                     @for ($i = 1; $i <= 12; $i++)
                       <option value="{{ $i }}">
-                        {{ date('F', mktime(0, 0, 0, $i, 1)) }}
+                        {{
+                          date(
+                            'F',
+                            mktime(0, 0, 0, $i, 1),
+                          )
+                        }}
                       </option>
                     @endfor
                   </select>
@@ -466,7 +479,10 @@
                         $class = 'text-black';
                       } elseif ($status->last() && $status->last()->status === 'waitting . . .') {
                         $class = 'text-primary';
-                      } elseif ($status->last() && $status->last()->status === 'Termination of study') {
+                      } elseif (
+                        $status->last() &&
+                        $status->last()->status === 'Termination of study'
+                      ) {
                         $class = 'text-warning';
                       } elseif ($status->last() && $status->last()->status === 'New Student') {
                         $class = 'text-red';
@@ -474,45 +490,73 @@
                         $class = 'text-blue';
                       }
                     @endphp
-
                     <tr>
                       <td class="text-center">{{ $key + 1 }}</td>
                       <td class="text-center">
-                        {{ $data1->std->code ?? 'Null' }}
+                        {{
+                          $data1->std->code ??
+                            'Null'
+                        }}
                       </td>
                       <td class="{{ $class }}">
-                        {{ $data1->std->nick_name ?? 'Null' }}
+                        {{
+                          $data1->std->nick_name ??
+                            'Null'
+                        }}
                       </td>
                       <td>
-                        {{ $data1->rec_school->submission_date ?? 'Null' }}
+                        {{
+                          $data1->rec_school->submission_date ??
+                            'Null'
+                        }}
                       </td>
-                      <td>{{ $data1->period ?? 'Null' }}</td>
+                      <td>
+                        {{
+                          $data1->period ??
+                            'Null'
+                        }}
+                      </td>
 
                       <td>
-                        {{ $data1->rec_school->receipt_number ?? 'Null' }}
+                        {{
+                          $data1->rec_school->receipt_number ??
+                            'Null'
+                        }}
                       </td>
                       <td class="text-center">
-                        {{ $data1->group ?? 'Null' }}
+                        {{
+                          $data1->group ??
+                            'Null'
+                        }}
                       </td>
 
                       <td class="{{ $class }} text-center">
                         @if (
-
                           $data1->std &&
                           $data1->std->status_log &&
                           $data1->std->status_log->count() > 0 &&
                           $status->last() &&
-                          $status->last()->group == $data1->group                        )
-                          {{ $status->last()->status ?? 'Null' }}
+                          $status->last()->group == $data1->group
+                        )
+                          {{
+                            $status->last()->status ??
+                              'Null'
+                          }}
                         @else
-                            null
+                          null
                         @endif
                       </td>
                       <td class="text-center">
-                        {{ $data1->course_type ?? 'Null' }}
+                        {{
+                          $data1->course_type ??
+                            'Null'
+                        }}
                       </td>
                       <td class="text-end">
-                        {{ number_format($data1->total) ?? 'Null' }} บาท
+                        {{
+                          number_format($data1->total) ??
+                            'Null'
+                        }} บาท
                       </td>
                       @php
                         $routeParameters = [
@@ -555,11 +599,9 @@
                       $sum1 += $data1->total;
                       $subg += $data1->total;
                     @endphp
-
                     {{-- @endforeach --}}
                   @endforeach
                 </tbody>
-
                 <tbody>
                   <tr>
                     <td class="text-center">#</td>
@@ -578,7 +620,10 @@
                     <td class="text-center" colspan="8">Sum {{ $keyG }}</td>
                     <!-- Merged cell -->
                     <td class="text-end">
-                      {{ number_format($subg) ?? 'Null' }} บาท
+                      {{
+                        number_format($subg) ??
+                          'Null'
+                      }} บาท
                     </td>
                     <td></td>
                   </tr>
@@ -638,23 +683,69 @@
               <tbody>
                 @foreach ($check_recp as $key => $check)
                   <tr>
-                    <td width="1%">{{ $key + 1 ?? 'null' }}</td>
-                    <td width="1%">{{ $check->student->code ?? 'null' }}</td>
-                    <td>
-                      {{ $check->student->nick_name ?? 'null' }} /
-                      {{ $check->student->full_name ?? 'null' }}
+                    <td width="1%">
+                      {{
+                        $key + 1 ??
+                          'null'
+                      }}
+                    </td>
+                    <td width="1%">
+                      {{
+                        $check->student->code ??
+                          'null'
+                      }}
                     </td>
                     <td>
-                      {{ $check->receiptSchool->submission_date ?? 'null' }}
+                      {{
+                        $check->student->nick_name ??
+                          'null'
+                      }} / {{
+                        $check->student->full_name ??
+                          'null'
+                      }}
                     </td>
                     <td>
-                      {{ $check->receiptSchool->receipt_number ?? 'null' }}
+                      {{
+                        $check->receiptSchool->submission_date ??
+                          'null'
+                      }}
                     </td>
-                    <td>{{ $check->school_price->period ?? 'null' }}</td>
-                    <td>{{ $check->school_price->group ?? 'null' }}</td>
-                    <td>{{ $check->date_check ?? 'null' }}</td>
-                    <td>{{ $check->note ?? 'null' }}</td>
-                    <td>{{ $check->user->name ?? 'null' }}</td>
+                    <td>
+                      {{
+                        $check->receiptSchool->receipt_number ??
+                          'null'
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        $check->school_price->period ??
+                          'null'
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        $check->school_price->group ??
+                          'null'
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        $check->date_check ??
+                          'null'
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        $check->note ??
+                          'null'
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        $check->user->name ??
+                          'null'
+                      }}
+                    </td>
                   </tr>
                 @endforeach
               </tbody>
@@ -665,8 +756,7 @@
             <blockquote class="blockquote">
               <div class="d-flex justify-content-between align-items-center">
                 <p class="mb-0">
-                  ตารางแสดงผลบันทึกใบปะหน้าประจำเดือน
-                  {{ thaidate('F', date('F')) }} {{ date('Y') }}
+                  ตารางแสดงผลบันทึกใบปะหน้าประจำเดือน {{ thaidate('F', date('F')) }} {{ date('Y') }}
                 </p>
               </div>
             </blockquote>
@@ -698,13 +788,31 @@
                     <td class="text-center">{{ $key + 1 }}</td>
                     <td class="text-center">{{ $paper_rep->no }}</td>
                     <td>{{ $paper_rep->submission_date }}</td>
-                    <td>{{ $paper_rep->student->nick_name }}</td>
+                    <td>
+                      {{
+                        $paper_rep->student
+                          ->nick_name
+                      }}
+                    </td>
                     <td>{{ $paper_rep->receipt_number }}</td>
-                    <td>{{ $paper_rep->school_price->period ?? null }}</td>
-                    <td>{{ $paper_rep->school_price->group ?? null }}</td>
+                    <td>
+                      {{
+                        $paper_rep->school_price->period ??
+                          null
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        $paper_rep->school_price->group ??
+                          null
+                      }}
+                    </td>
                     <td class="text-end">
-                      {{ number_format($paper_rep->school_price->total) ?? null }}
-                      บาท
+                      {{
+                        number_format(
+                          $paper_rep->school_price->total,
+                        ) ?? null
+                      }} บาท
                     </td>
                   </tr>
                 @endforeach
@@ -718,11 +826,10 @@
   @php
     // dd($totalForAllGroupYear);
   @endphp
-
-  @include('students.modal')
+  @include ('students.modal')
 @endsection
 
-@section('script')
+@section ('script')
   {{--
     <script>
     var checkboxes = document.querySelectorAll('input[id^="switchery-default-"]');
@@ -827,7 +934,11 @@
           });
         } else {
           $.ajax({
-            url: '{{ route('saveCheck') }}',
+            url: '{{
+      route(
+        'saveCheck',
+      )
+    }}',
             method: 'POST',
             data: {
               isChecked: isChecked,
@@ -866,7 +977,11 @@
         var labelElement = checkbox.siblings('.label-text');
         var note2 = $('#note2').val();
         $.ajax({
-          url: '{{ route('saveCheck') }}',
+          url: '{{
+      route(
+        'saveCheck',
+      )
+    }}',
           method: 'POST',
           data: {
             isChecked: isChecked,
@@ -893,7 +1008,11 @@
         });
       });
       $.ajax({
-        url: '{{ route('fetchCheckboxStates') }}',
+        url: '{{
+      route(
+        'fetchCheckboxStates',
+      )
+    }}',
         method: 'GET',
         success: function (response) {
           // console.log(response);
@@ -918,13 +1037,11 @@
     });
 
     function export_report() {
-      url =
-        '{{ route('reportYearStd', ['type' => 'print', 'tap' => '1', 'year' => $year]) }}';
+      url = '{{ route('reportYearStd', ['type' => 'print', 'tap' => '1', 'year' => $year]) }}';
 
       window.open(url.replace(/&amp;/g, '&'));
     }
   </script>
-
   {{--
     <script>
     var checkboxes = document.querySelectorAll('input[id^="switchery-default-"]');
@@ -935,363 +1052,406 @@
     });
     </script>
   --}}
-
   <script>
     var groupLabels = [
-        @foreach ($totalForAllMonths as $month => $total)
+      @foreach ($totalForAllMonths as $month => $total)
 
-            '{{ $month }} ',
-        @endforeach
+      '{{ $month }} '
+      @endforeach
     ];
 
     var groupLabels2 = [
-        @foreach ($totalForAllMonths as $month => $total)
-            @if (isset($percentageChangeForAllMonths[$month]))
-                @if ($percentageChangeForAllMonths[$month] > 0)
-                    'ปี {{ $month }} : {{ number_format($total, 2) }} \n+{{ $percentageChangeForAllMonths[$month] }}% ',
-                @else
-                    'ปี {{ $month }} : {{ number_format($total, 2) }} \n{{ $percentageChangeForAllMonths[$month] }}% ',
-                @endif
-            @else
-                'ปี {{ $month }} : {{ number_format($total, 2) }}',
-            @endif
-        @endforeach
+      @foreach ($totalForAllMonths as $month => $total)
+      @if (isset($percentageChangeForAllMonths[$month]))
+      @if ($percentageChangeForAllMonths[$month] > 0)
+      'ปี {{ $month }} : {{
+      number_format(
+        $total,
+        2,
+      )
+    }} \n+{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}% ',
+      @else
+      'ปี {{ $month }} : {{
+      number_format(
+        $total,
+        2,
+      )
+    }} \n{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}% ',
+      @endif
+      @else
+      'ปี {{ $month }} : {{
+      number_format(
+        $total,
+        2,
+      )
+    }}'
+      @endif
+      @endforeach
     ];
 
     var ctx = document.getElementById('lineChart').getContext('2d');
     var lineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: groupLabels2,
-            // label: groupLabels,
-            datasets: [{
-                label: 'ยอดรวมแต่ละปี',
-                data: [
-                    @foreach ($totalForAllMonths as $month => $total)
-                        {{ $total }},
-                    @endforeach
-                ],
-                pointBackgroundColor: 'rgba(52, 143, 226,.65)',
-                borderColor: 'rgba(52, 143, 226,.65)',
-                backgroundColor: 'rgba(52, 143, 226,.65)',
-                pointText: {{ $total }},
-                pointRadius: 4,
-                borderWidth: 2,
-                dataLabels: {
-                    display: true,
-                    color: 'black',
-                    formatter: function(value) {
-                        return value.y.toFixed(2);
-                    },
-                },
-
-            }],
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                // tooltip: {
-                //     mode: 'index', // Display multiple tooltips at once
-                //     intersect: true, // Don't intersect with other elements
-                // },
-                // title: {
-                //     display: true,
-                //     text: 'Chart Title',
-                // },
-                // legend: {
-                //     display: true,
-                //     position: 'top',
-                // },
-                datalabels: {
-                    display: true,
-                    color: 'black',
-                    formatter: function(value) {
-                        return value.y.toFixed(2);
-                    },
-                },
-            },
-            // animation: {
-            //     duration: 2000, // Animation duration in milliseconds
-            //     easing: 'easeInOutQuad', // Easing function
-            // },
-
-        }
-    });
-  </script>
-
-  <script>
-    var groupLabels = [
-        @foreach ($totalForAllMonths as $month => $total)
-            '{{ $month }}',
-        @endforeach
-    ];
-    var groupLabels2 = [
-        @foreach ($totalForAllMonths as $month => $total)
-            @if (isset($percentageChangeForAllMonths[$month]))
-                @if ($percentageChangeForAllMonths[$month] > 0)
-                    'ปี {{ $month }} :{{ number_format($total, 2) }}  \n+{{ $percentageChangeForAllMonths[$month] }}%',
-                @else
-                    'ปี {{ $month }} : {{ number_format($total, 2) }} \n {{ $percentageChangeForAllMonths[$month] }}%',
-                @endif
-            @else
-                'ปี {{ $month }} : {{ number_format($total, 2) }}',
-            @endif
-        @endforeach
-
-    ];
-
-    var data = {
+      type: 'line',
+      data: {
         labels: groupLabels2,
-        datasets: [{
-            label: 'ยอดรวมแต่ละเดือน ',
+        // label: groupLabels,
+        datasets: [
+          {
+            label: 'ยอดรวมแต่ละปี',
             data: [
-                @foreach ($totalForAllMonths as $month => $total)
-                    {{ $total }},
-                @endforeach
+              @foreach ($totalForAllMonths as $month => $total)
+              {{ $total }}
+              @endforeach
             ],
             pointBackgroundColor: 'rgba(52, 143, 226,.65)',
             borderColor: 'rgba(52, 143, 226,.65)',
             backgroundColor: 'rgba(52, 143, 226,.65)',
+            pointText: {{ $total }},
             pointRadius: 4,
             borderWidth: 2,
-        }]
+            dataLabels: {
+              display: true,
+              color: 'black',
+              formatter: function (value) {
+                return value.y.toFixed(2);
+              }
+            }
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          // tooltip: {
+          //     mode: 'index', // Display multiple tooltips at once
+          //     intersect: true, // Don't intersect with other elements
+          // },
+          // title: {
+          //     display: true,
+          //     text: 'Chart Title',
+          // },
+          // legend: {
+          //     display: true,
+          //     position: 'top',
+          // },
+          datalabels: {
+            display: true,
+            color: 'black',
+            formatter: function (value) {
+              return value.y.toFixed(2);
+            }
+          }
+        }
+        // animation: {
+        //     duration: 2000, // Animation duration in milliseconds
+        //     easing: 'easeInOutQuad', // Easing function
+        // },
+      }
+    });
+  </script>
+  <script>
+    var groupLabels = [
+      @foreach ($totalForAllMonths as $month => $total)
+      '{{ $month }}'
+      @endforeach
+    ];
+    var groupLabels2 = [
+      @foreach ($totalForAllMonths as $month => $total)
+      @if (isset($percentageChangeForAllMonths[$month]))
+      @if ($percentageChangeForAllMonths[$month] > 0)
+      'ปี {{ $month }} :{{
+      number_format(
+        $total,
+        2,
+      )
+    }}  \n+{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}%',
+      @else
+      'ปี {{ $month }} : {{
+      number_format(
+        $total,
+        2,
+      )
+    }} \n {{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}%',
+      @endif
+      @else
+      'ปี {{ $month }} : {{
+      number_format(
+        $total,
+        2,
+      )
+    }}'
+      @endif
+      @endforeach
+    ];
+
+    var data = {
+      labels: groupLabels2,
+      datasets: [
+        {
+          label: 'ยอดรวมแต่ละเดือน ',
+          data: [
+            @foreach ($totalForAllMonths as $month => $total)
+            {{ $total }}
+            @endforeach
+          ],
+          pointBackgroundColor: 'rgba(52, 143, 226,.65)',
+          borderColor: 'rgba(52, 143, 226,.65)',
+          backgroundColor: 'rgba(52, 143, 226,.65)',
+          pointRadius: 4,
+          borderWidth: 2
+        }
+      ]
     };
     var ctx = document.getElementById('barChart').getContext('2d');
     var barChart = new Chart(ctx, {
-        type: 'bar',
-        data: data,
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                tooltip: {
-                    mode: 'index', // Display multiple tooltips at once
-                    intersect: false, // Don't intersect with other elements
-                },
-                // title: {
-                //     display: true,
-                //     text: 'Chart Title',
-                // },
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-            },
-            animation: {
-                duration: 2000, // Animation duration in milliseconds
-                easing: 'easeInOutQuad', // Easing function
-            },
+      type: 'bar',
+      data: data,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          tooltip: {
+            mode: 'index', // Display multiple tooltips at once
+            intersect: false // Don't intersect with other elements
+          },
+          // title: {
+          //     display: true,
+          //     text: 'Chart Title',
+          // },
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        },
+        animation: {
+          duration: 2000, // Animation duration in milliseconds
+          easing: 'easeInOutQuad' // Easing function
         }
+      }
     });
   </script>
-
   {{-- 'ปี {{ $Year }} {{ $group }} {{ number_format($total, 2) }}', --}}
-
   <script>
-    var groupLabels = [
-        @php
-            $uniqueYears = [];
-            foreach ($totalForAllGroupYear as $groupTotals) {
-                foreach ($groupTotals as $year => $value) {
-                    if (!in_array($year, $uniqueYears)) {
-                        $uniqueYears[] = $year;
-                    }
-                }
-            }
-            sort($uniqueYears);
-            echo "'" . implode("', '", $uniqueYears) . "'";
-        @endphp
-    ];
-    // console.log(groupLabels);
-    var data = [
-        @foreach ($totalForAllGroupYear as $group => $groupTotals)
-            @php
-                $text_g = '';
-                if ($group === 'M') {
-                    $text_g = 'Math';
-                } elseif ($group === 'E') {
-                    $text_g = 'English';
-                } elseif ($group === 'CHN') {
-                    $text_g = 'Chinese';
-                } elseif ($group === 'Sci') {
-                    $text_g = 'Science';
-                } else {
-                    $text_g = 'null_group';
-                }
-            @endphp {
-                label: '{{ $text_g }}',
-                data: [
-                    @foreach ($uniqueYears as $year)
-                        {{ isset($groupTotals[$year]) ? $groupTotals[$year] : 0 }},
-                    @endforeach
+      var groupLabels = [
+          @php
+              $uniqueYears = [];
+              foreach ($totalForAllGroupYear as $groupTotals) {
+                  foreach ($groupTotals as $year => $value) {
+                      if (!in_array($year, $uniqueYears)) {
+                          $uniqueYears[] = $year;
+                      }
+                  }
+              }
+              sort($uniqueYears);
+              echo "'" . implode("', '", $uniqueYears) . "'";
+          @endphp
+      ];
+      // console.log(groupLabels);
+      var data = [
+          @foreach ($totalForAllGroupYear as $group => $groupTotals)
+              @php
+                  $text_g = '';
+                  if ($group === 'M') {
+                      $text_g = 'Math';
+                  } elseif ($group === 'E') {
+                      $text_g = 'English';
+                  } elseif ($group === 'CHN') {
+                      $text_g = 'Chinese';
+                  } elseif ($group === 'Sci') {
+                      $text_g = 'Science';
+                  } else {
+                      $text_g = 'null_group';
+                  }
+              @endphp {
+                  label: '{{ $text_g }}',
+                  data: [
+                      @foreach ($uniqueYears as $year)
+                          {{ isset($groupTotals[$year]) ? $groupTotals[$year] : 0 }},
+                      @endforeach
 
-                ]
-            },
-        @endforeach
-    ];
+                  ]
+              },
+          @endforeach
+      ];
 
-    var ctx = document.getElementById('lineGroupChart').getContext('2d');
-    var colors = [
-        'rgba(245, 156, 26,.65)',
-        'rgba(0, 172, 172,.65)',
-        'rgba(52, 143, 226,.65)',
-        'rgba(135, 83, 217,.65)',
-        // more colors
-        'rgba(255, 91, 87,.65)',
-        'rgba(114, 124, 182,.65)',
-        'rgba(50, 169, 50,.65)',
-        'rgba(144, 202, 75,.65)',
-        'rgba(73, 182, 214,.65)',
-        'rgba(108, 117, 125,.65)',
-        'rgba(251, 85, 151,.65)',
+      var ctx = document.getElementById('lineGroupChart').getContext('2d');
+      var colors = [
+          'rgba(245, 156, 26,.65)',
+          'rgba(0, 172, 172,.65)',
+          'rgba(52, 143, 226,.65)',
+          'rgba(135, 83, 217,.65)',
+          // more colors
+          'rgba(255, 91, 87,.65)',
+          'rgba(114, 124, 182,.65)',
+          'rgba(50, 169, 50,.65)',
+          'rgba(144, 202, 75,.65)',
+          'rgba(73, 182, 214,.65)',
+          'rgba(108, 117, 125,.65)',
+          'rgba(251, 85, 151,.65)',
 
-    ];
-    var lineChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: groupLabels,
+      ];
+      var lineChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: groupLabels,
 
-            datasets: data.map(function(item, index) {
+              datasets: data.map(function(item, index) {
 
-                return {
-                    label: item.label,
-                    data: item.data,
-                    pointBackgroundColor: colors[index % colors.length],
-                    borderColor: colors[index % colors.length],
-                    backgroundColor: colors[index % colors.length],
-                    pointRadius: 4,
-                    borderWidth: 2,
-                    // fill: false
-                };
-            })
-        },
+                  return {
+                      label: item.label,
+                      data: item.data,
+                      pointBackgroundColor: colors[index % colors.length],
+                      borderColor: colors[index % colors.length],
+                      backgroundColor: colors[index % colors.length],
+                      pointRadius: 4,
+                      borderWidth: 2,
+                      // fill: false
+                  };
+              })
+          },
 
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                tooltip: {
-                    mode: 'index', // Display multiple tooltips at once
-                    intersect: false, // Don't intersect with other elements
-                },
-                // title: {
-                //     display: true,
-                //     text: 'Chart Title',
-                // },
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-            },
-            animation: {
-                duration: 2000, // Animation duration in milliseconds
-                easing: 'easeInOutQuad', // Easing function
-            },
-        }
-    });
-  </script>
+          options: {
+              scales: {
+                  y: {
+                      beginAtZero: true
+                  }
+              },
+              plugins: {
+                  tooltip: {
+                      mode: 'index', // Display multiple tooltips at once
+                      intersect: false, // Don't intersect with other elements
+                  },
+                  // title: {
+                  //     display: true,
+                  //     text: 'Chart Title',
+                  // },
+                  legend: {
+                      display: true,
+                      position: 'top',
+                  },
+              },
+              animation: {
+                  duration: 2000, // Animation duration in milliseconds
+                  easing: 'easeInOutQuad', // Easing function
+              },
+          }
+      });
+    </script>
 
-  <script>
-    var groupLabels = [
-        @php
-            $uniqueYears = [];
-            foreach ($totalForAllGroupYear as $groupTotals) {
-                foreach ($groupTotals as $year => $value) {
-                    if (!in_array($year, $uniqueYears)) {
-                        $uniqueYears[] = $year;
-                    }
-                }
-            }
-            sort($uniqueYears);
-            echo "'" . implode("', '", $uniqueYears) . "'";
-        @endphp
-    ];
-    // console.log(groupLabels);
-    var data = [
-        @foreach ($totalForAllGroupYear as $group => $groupTotals)
-            {
-                label: '{{ $group }}',
-                data: [
-                    @foreach ($uniqueYears as $year)
-                        {{ isset($groupTotals[$year]) ? $groupTotals[$year] : 0 }},
-                    @endforeach
+    <script>
+      var groupLabels = [
+          @php
+              $uniqueYears = [];
+              foreach ($totalForAllGroupYear as $groupTotals) {
+                  foreach ($groupTotals as $year => $value) {
+                      if (!in_array($year, $uniqueYears)) {
+                          $uniqueYears[] = $year;
+                      }
+                  }
+              }
+              sort($uniqueYears);
+              echo "'" . implode("', '", $uniqueYears) . "'";
+          @endphp
+      ];
+      // console.log(groupLabels);
+      var data = [
+          @foreach ($totalForAllGroupYear as $group => $groupTotals)
+              {
+                  label: '{{ $group }}',
+                  data: [
+                      @foreach ($uniqueYears as $year)
+                          {{ isset($groupTotals[$year]) ? $groupTotals[$year] : 0 }},
+                      @endforeach
 
-                ]
-            },
-        @endforeach
-    ];
+                  ]
+              },
+          @endforeach
+      ];
 
-    var ctx = document.getElementById('lineGroup2Chart').getContext('2d');
-    var colors = [
-        'rgba(245, 156, 26,.65)',
-        'rgba(0, 172, 172,.65)',
-        'rgba(52, 143, 226,.65)',
-        'rgba(135, 83, 217,.65)',
-        // more colors
-        'rgba(255, 91, 87,.65)',
-        'rgba(114, 124, 182,.65)',
-        'rgba(50, 169, 50,.65)',
-        'rgba(144, 202, 75,.65)',
-        'rgba(73, 182, 214,.65)',
-        'rgba(108, 117, 125,.65)',
-        'rgba(251, 85, 151,.65)',
+      var ctx = document.getElementById('lineGroup2Chart').getContext('2d');
+      var colors = [
+          'rgba(245, 156, 26,.65)',
+          'rgba(0, 172, 172,.65)',
+          'rgba(52, 143, 226,.65)',
+          'rgba(135, 83, 217,.65)',
+          // more colors
+          'rgba(255, 91, 87,.65)',
+          'rgba(114, 124, 182,.65)',
+          'rgba(50, 169, 50,.65)',
+          'rgba(144, 202, 75,.65)',
+          'rgba(73, 182, 214,.65)',
+          'rgba(108, 117, 125,.65)',
+          'rgba(251, 85, 151,.65)',
 
-    ];
-    var lineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: groupLabels,
+      ];
+      var lineChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+              labels: groupLabels,
 
-            datasets: data.map(function(item, index) {
+              datasets: data.map(function(item, index) {
 
-                return {
-                    label: item.label,
-                    data: item.data,
-                    pointBackgroundColor: colors[index % colors.length],
-                    borderColor: colors[index % colors.length],
-                    backgroundColor: colors[index % colors.length],
-                    pointRadius: 4,
-                    borderWidth: 2,
-                    // fill: false
-                };
-            })
-        },
+                  return {
+                      label: item.label,
+                      data: item.data,
+                      pointBackgroundColor: colors[index % colors.length],
+                      borderColor: colors[index % colors.length],
+                      backgroundColor: colors[index % colors.length],
+                      pointRadius: 4,
+                      borderWidth: 2,
+                      // fill: false
+                  };
+              })
+          },
 
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                tooltip: {
-                    mode: 'index', // Display multiple tooltips at once
-                    intersect: false, // Don't intersect with other elements
-                },
-                // title: {
-                //     display: true,
-                //     text: 'Chart Title',
-                // },
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-            },
-            animation: {
-                duration: 2000, // Animation duration in milliseconds
-                easing: 'easeInOutQuad', // Easing function
-            },
-        }
-    });
+          options: {
+              scales: {
+                  y: {
+                      beginAtZero: true
+                  }
+              },
+              plugins: {
+                  tooltip: {
+                      mode: 'index', // Display multiple tooltips at once
+                      intersect: false, // Don't intersect with other elements
+                  },
+                  // title: {
+                  //     display: true,
+                  //     text: 'Chart Title',
+                  // },
+                  legend: {
+                      display: true,
+                      position: 'top',
+                  },
+              },
+              animation: {
+                  duration: 2000, // Animation duration in milliseconds
+                  easing: 'easeInOutQuad', // Easing function
+              },
+          }
+      });
   </script>
 @endsection

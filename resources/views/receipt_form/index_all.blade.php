@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -363,17 +363,15 @@
     type="text/css"
     href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
   />
-
   <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 @endsection
 
-@section('content')
+@section ('content')
   <div id="loadingOverlay" style="display: none">
     {{-- Loading... </br> --}}
     <div class="spinner"></div>
   </div>
-
   <style>
     /* Styling for overlay and spinner */
     #loadingOverlay {
@@ -422,7 +420,7 @@
           </div>
 
           <div>
-            @if (! request()->get('sfield'))
+            @if (!request()->get('sfield'))
               <span id="title">All</span>
               Online Form
               <div class="page-title-subheading">
@@ -435,7 +433,10 @@
               </div>
             @else
               <span id="title">
-                {{ $sfielda[request()->get('sfield')] ?? 'All' }}
+                {{
+                  $sfielda[request()->get('sfield')] ??
+                    'All'
+                }}
               </span>
               Online Form
               <div class="page-title-subheading">
@@ -489,7 +490,11 @@
                     <option
                       value="{{ $key }}"
                       data-title="{{ $form }}"
-                      {{ request()->get('sfield') == $key ? 'selected' : '' }}
+                      {{
+                        request()->get('sfield') == $key
+                          ? 'selected'
+                          : ''
+                      }}
                     >
                       {{ $form }}
                     </option>
@@ -522,10 +527,14 @@
                 @foreach ($referent_codes as $referent_code)
                   <option
                     value="{{ $referent_code->referent_code }}"
-                    {{ request('referent_code') == $referent_code->referent_code ? 'selected' : '' }}
+                    {{
+                      request('referent_code') ==
+                      $referent_code->referent_code
+                        ? 'selected'
+                        : ''
+                    }}
                   >
-                    {{ $referent_code->referent_code }} —
-                    ({{ $referent_code->referent_name }})
+                    {{ $referent_code->referent_code }} — ({{ $referent_code->referent_name }})
                   </option>
                 @endforeach
               </select>
@@ -539,7 +548,7 @@
         </form>
         <form method="post" action="" name="delete_all" id="delete_all">
           @csrf
-          @method('DELETE')
+          @method ('DELETE')
           <input
             type="hidden"
             name="sfield"
@@ -572,7 +581,6 @@
       </div>
     </div>
   </div>
-
   <div class="body-block-example-2" style="display: none" id="loder_bar">
     <br />
     <div class="loader" id="loder_bar_div">
@@ -588,7 +596,6 @@
     </div>
     <br />
   </div>
-
   <!-- Edit  Modal -->
   <div
     class="fade modal"
@@ -1021,7 +1028,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     let sfield = '';
     $(function () {
@@ -1060,7 +1067,11 @@
         $('#sfield').val($(this).val());
         $('#Listview')
           .DataTable()
-          .ajax.url('{{ route('receipts_form_all') }}?sfield=' + $(this).val())
+          .ajax.url('{{
+      route(
+        'receipts_form_all',
+      )
+    }}?sfield=' + $(this).val())
           .load();
       });
       $('#daterange').on('apply.daterangepicker', function (ev, picker) {
@@ -1073,7 +1084,11 @@
         $('#Listview')
           .DataTable()
           .ajax.url(
-            '{{ route('receipts_form_all') }}?start_date=' +
+            '{{
+      route(
+        'receipts_form_all',
+      )
+    }}?start_date=' +
               startDate +
               '&end_date=' +
               endDate +
@@ -1089,7 +1104,11 @@
         $('#Listview')
           .DataTable()
           .ajax.url(
-            '{{ route('receipts_form_all') }}?referent_code=' +
+            '{{
+      route(
+        'receipts_form_all',
+      )
+    }}?referent_code=' +
               referent_code +
               '&sfield=' +
               sfield
@@ -1119,7 +1138,11 @@
           if (confirm('Click OK to Delete?')) {
             $('form#delete_all').attr(
               'action',
-              '{{ route('receipts_form.destroy_all') }}'
+              '{{
+      route(
+        'receipts_form.destroy_all',
+      )
+    }}'
             ); //this fails silently
             $('form#delete_all').submit();
           }
@@ -1134,7 +1157,11 @@
           if (confirm('Click OK to Export?')) {
             $('form#delete_all').attr(
               'action',
-              '{{ route('receipts_form.export') }}'
+              '{{
+      route(
+        'receipts_form.export',
+      )
+    }}'
             ); //this fails silently
             $('form#delete_all').submit();
           }
@@ -1326,7 +1353,11 @@
         }
 
         $.ajax({
-          url: '{{ route('receipts_form.store') }}',
+          url: '{{
+      route(
+        'receipts_form.store',
+      )
+    }}',
           method: 'post',
           data: {
             img: values,
@@ -1465,7 +1496,11 @@
       //     }).then((value) => {
       //         if (value) {
       //             $.ajax({
-      //                 url: "{{ route('receipts_form.store') }}",
+      //                 url: "{{
+      route(
+        'receipts_form.store',
+      )
+    }}",
       //                 method: 'post',
       //                 data: {
 
@@ -1569,7 +1604,11 @@
       //     })
 
       //     // $.ajax({
-      //     //     url: "{{ route('receipts_form.store') }}",
+      //     //     url: "{{
+      route(
+        'receipts_form.store',
+      )
+    }}",
       //     //     method: 'post',
       //     //     data: {
 
@@ -1649,7 +1688,11 @@
         //exit();
 
         $.ajax({
-          url: '{{ route('receipts_form.update') }}',
+          url: '{{
+      route(
+        'receipts_form.update',
+      )
+    }}',
           method: 'post',
           data: {
             img: values,
@@ -1788,7 +1831,11 @@
 
     var myDropzone = {};
     Dropzone.options.myAwesomeDropzone = {
-      url: '{{ route('form.upload') }}',
+      url: '{{
+      route(
+        'form.upload',
+      )
+    }}',
       headers: {
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
       },
@@ -1841,7 +1888,11 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
               },
               type: 'POST',
-              url: '{{ route('form.delete') }}',
+              url: '{{
+      route(
+        'form.delete',
+      )
+    }}',
               data: {
                 name: name
               },
@@ -1880,9 +1931,7 @@
             let val1 = file.name;
             $('#dropzone_preview').css('display', 'block');
             $('#dropzone-photo').removeClass('form-focus-error');
-            $('#dropzone-photo')
-              .find('.form-error-message')
-              .css('display', 'none');
+            $('#dropzone-photo').find('.form-error-message').css('display', 'none');
             $('#dropzone-photo').css('border', 'solid 1px green');
             if (document.getElementsByName('imgFiles[]').length) {
               //$('#error_div').css('display', 'none');

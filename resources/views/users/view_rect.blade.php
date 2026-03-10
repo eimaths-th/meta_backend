@@ -1,12 +1,11 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <link
     href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
     rel="stylesheet"
   />
-
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -39,7 +38,6 @@
     }
   </style>
   {{-- <link href="../assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet"/> --}}
-
   {{--
     <link href="/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
     <script src="/assets/plugins/select2/dist/js/select2.min.js"></script>
@@ -47,7 +45,7 @@
   <script src="/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
 @endsection
 
-@section('content')
+@section ('content')
   @if ($message = Session::get('error'))
     <script>
       toastr.error('{{ $message }}', {
@@ -55,7 +53,6 @@
       });
     </script>
   @endif
-
   @if ($message = Session::get('success'))
     <script>
       toastr.success('{{ $message }}', {
@@ -63,7 +60,6 @@
       });
     </script>
   @endif
-
   <div class="row">
     <div class="app-page-title">
       <div class="page-title-wrapper">
@@ -181,7 +177,12 @@
                     <option value="">เลือกเดือน</option>
                     @for ($i = 1; $i <= 12; $i++)
                       <option value="{{ $i }}">
-                        {{ date('F', mktime(0, 0, 0, $i, 1)) }}
+                        {{
+                          date(
+                            'F',
+                            mktime(0, 0, 0, $i, 1),
+                          )
+                        }}
                       </option>
                     @endfor
                   </select>
@@ -259,9 +260,19 @@
                 <td align="center">{{ $key + 1 }}</td>
                 <td>INF{{ $rec_time->user->code }}</td>
 
-                <td>{{ $rec_time->user->name }}</td>
                 <td>
-                  {{ date('D d-M-Y', strtotime($rec_time->date)) }}
+                  {{
+                    $rec_time->user
+                      ->name
+                  }}
+                </td>
+                <td>
+                  {{
+                    date(
+                      'D d-M-Y',
+                      strtotime($rec_time->date),
+                    )
+                  }}
                 </td>
                 <td>{{ $rec_time->full_time }}</td>
 
@@ -368,7 +379,6 @@
       </div>
     </div>
   </div>
-
   <div class="body-block-example-2" style="display: none" id="loder_bar">
     <br />
     <div class="loader" id="loder_bar_div">
@@ -386,139 +396,139 @@
   </div>
 @endsection
 
-@section('script')
-  <script src="/assets/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
-  <script src="/assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/index.global.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.11/index.global.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.11/index.global.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.11/index.global.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/list@6.1.11/index.global.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/multimonth@6.1.11/index.global.min.js"></script>
-  <script>
-    var table = $('#Listview').DataTable({
-      // serverSide: true,
-      // processing: true,
-      lengthMenu: [31, 75, 100]
-    });
-    var successMessage = '{{ session('success') }}';
+@section ('script')
+<script src="/assets/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
+<script src="/assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.11/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.11/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.11/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/list@6.1.11/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/multimonth@6.1.11/index.global.min.js"></script>
+<script>
+  var table = $('#Listview').DataTable({
+    // serverSide: true,
+    // processing: true,
+    lengthMenu: [31, 75, 100]
+  });
+  var successMessage = '{{ session('success') }}';
 
-    if (successMessage) {
-      document.getElementById('successAlert').style.display = 'block';
-    }
-    $('.default-select2').select2();
+  if (successMessage) {
+    document.getElementById('successAlert').style.display = 'block';
+  }
+  $('.default-select2').select2();
 
-    $('#select2test').select2();
-    // $(document).on('click', '.f5', function(e) {
-    //     e.preventDefault();
-    //     window.open(event.target.href);
-    //     window.location.reload();
-    //     event.preventDefault();
-    //     console.log(window.location);
-    // });
-    function export_report() {
-      url =
-        '{{ route('search_rect', ['type' => 'print', 'user_id' => $user_id, 'month' => $month, 'year' => $year]) }}';
+  $('#select2test').select2();
+  // $(document).on('click', '.f5', function(e) {
+  //     e.preventDefault();
+  //     window.open(event.target.href);
+  //     window.location.reload();
+  //     event.preventDefault();
+  //     console.log(window.location);
+  // });
+  function export_report() {
+    url = '{{ route('search_rect', ['type' => 'print', 'user_id' => $user_id, 'month' => $month, 'year' => $year]) }}';
 
-      window.open(url.replace(/&amp;/g, '&'));
-    }
-  </script>
+    window.open(url.replace(/&amp;/g, '&'));
+  }
+</script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('hello world !!');
+<script>
+      document.addEventListener('DOMContentLoaded', function() {
+          console.log('hello world !!');
 
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            initialDate: '{{ $date }}',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth'
-            },
-            events: [
+          var calendarEl = document.getElementById('calendar');
+          var calendar = new FullCalendar.Calendar(calendarEl, {
+              initialView: 'dayGridMonth',
+              initialDate: '{{ $date }}',
+              headerToolbar: {
+                  left: 'prev,next today',
+                  center: 'title',
+                  right: 'dayGridMonth'
+              },
+              events: [
 
-                @php
-                    foreach ($rec_times_year2 as $rec_years) {
-                        $class = '';
-                        switch ($rec_years->status) {
-                            case 1:
-                                $color = 'rgba(58, 196, 125, 0.8)';
-                                break;
+                  @php
+                      foreach ($rec_times_year2 as $rec_years) {
+                          $class = '';
+                          switch ($rec_years->status) {
+                              case 1:
+                                  $color = 'rgba(58, 196, 125, 0.8)';
+                                  break;
 
-                            case 2:
-                            case 3:
-                            case 4:
-                            case 13:
-                                $color = 'rgba(247, 185, 36, 0.8)';
+                              case 2:
+                              case 3:
+                              case 4:
+                              case 13:
+                                  $color = 'rgba(247, 185, 36, 0.8)';
 
-                                break;
+                                  break;
 
-                            case 5:
-                            case 6:
-                            case 7:
-                            case 8:
-                            case 9:
-                                $color = 'rgba(255, 91, 87,0.8)';
+                              case 5:
+                              case 6:
+                              case 7:
+                              case 8:
+                              case 9:
+                                  $color = 'rgba(255, 91, 87,0.8)';
 
-                                break;
+                                  break;
 
-                            case 11:
-                            case 12:
-                                $color = 'rgba(63, 106, 216, 0.8)';
-                                break;
+                              case 11:
+                              case 12:
+                                  $color = 'rgba(63, 106, 216, 0.8)';
+                                  break;
 
-                            case 10:
-                                $color = 'rgba(52, 58, 64, 0.8)';
+                              case 10:
+                                  $color = 'rgba(52, 58, 64, 0.8)';
 
-                                break;
+                                  break;
 
-                            default:
-                                break;
-                        }
-                        $text_late = '';
-                        if ($rec_years->late_time) {
-                            $text_late = ' : ' . $rec_years->late_time . ' นาที';
-                        }
+                              default:
+                                  break;
+                          }
+                          $text_late = '';
+                          if ($rec_years->late_time) {
+                              $text_late = ' : ' . $rec_years->late_time . ' นาที';
+                          }
 
-                        echo '{';
-                        echo "title: '{$rec_years->status_name} {$text_late}',";
-                        echo "start: '{$rec_years->date}',";
-                        echo "color: '{$color}'";
-                        echo '},';
-                    }
-                @endphp
+                          echo '{';
+                          echo "title: '{$rec_years->status_name} {$text_late}',";
+                          echo "start: '{$rec_years->date}',";
+                          echo "color: '{$color}'";
+                          echo '},';
+                      }
+                  @endphp
 
-                // {
-                //     title: 'สาย : 5 นาที',
-                //     start: '2024-03-10',
-                //     color: 'rgba(255, 91, 87,0.8)',
-                // },
+                  // {
+                  //     title: 'สาย : 5 นาที',
+                  //     start: '2024-03-10',
+                  //     color: 'rgba(255, 91, 87,0.8)',
+                  // },
 
-            ]
-        });
-        calendar.render();
+              ]
+          });
+          calendar.render();
 
-        document.getElementById('clearEventsButton').addEventListener('click', function() {
-            console.log('Event listener triggered');
-            clearAllEvents();
-        });
+          document.getElementById('clearEventsButton').addEventListener('click', function() {
+              console.log('Event listener triggered');
+              clearAllEvents();
+          });
 
-        // Function to clear all events
-        function clearAllEvents() {
-            calendar.getEvents().forEach(function(event) {
-                event.remove();
-            });
+          // Function to clear all events
+          function clearAllEvents() {
+              calendar.getEvents().forEach(function(event) {
+                  event.remove();
+              });
 
-            // Clear the events array and re-render the calendar
-            calendar.setOption('events', []);
-            calendar.render();
-        }
+              // Clear the events array and re-render the calendar
+              calendar.setOption('events', []);
+              calendar.render();
+          }
 
-        // Render the calendar
-        // calendar.render();
-    });
-  </script>
-@endsection
+          // Render the calendar
+          // calendar.render();
+      });
+    </script>
+  @endsection
+

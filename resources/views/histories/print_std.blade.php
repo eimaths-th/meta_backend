@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -10,7 +10,6 @@
     type="text/javascript"
   ></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <link
     rel="stylesheet"
@@ -83,7 +82,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -209,7 +208,6 @@
                 $hour = $eHour - $sHour;
                 $total_hour += $hour;
               @endphp
-
               <tr class="activeda" height="30">
                 <td align="center" width="15%" class="actived">
                   <font size="{{ $fontsize }}">
@@ -220,8 +218,13 @@
                   &nbsp;
                   <font size="{{ $fontsize }}">
                     <b>
-                      {{ $hist_std->student->full_name }}
-                      ({{ $hist_std->student->nick_name }})
+                      {{
+                        $hist_std->student
+                          ->full_name
+                      }} ({{
+                        $hist_std->student
+                          ->nick_name
+                      }})
                     </b>
                   </font>
                 </td>
@@ -232,7 +235,10 @@
                 </td>
                 <td align="center" width="15%" class="actived">
                   <font size="{{ $fontsize }}">
-                    <b>{{ $hist_std->subject->title }}</b>
+                    <b>{{
+                      $hist_std->subject
+                        ->title
+                    }}</b>
                   </font>
                 </td>
                 <td align="center" width="15%" class="actived grey">
@@ -285,11 +291,10 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     function export_report() {
-      url =
-        '{{ route('histories.print_std', ['type' => 'print', 'fontsize' => $fontsize, 'student' => $std, 'date' => $date]) }}';
+      url = '{{ route('histories.print_std', ['type' => 'print', 'fontsize' => $fontsize, 'student' => $std, 'date' => $date]) }}';
 
       window.open(url.replace(/&amp;/g, '&'));
     }

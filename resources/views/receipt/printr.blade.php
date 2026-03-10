@@ -145,9 +145,17 @@
               <tr>
                 <td colspan="4" align="center">
                   <b>
-                    {{ $receipt_val['mes'] }}
+                    {{
+                      $receipt_val[
+                        'mes'
+                      ]
+                    }}
                     <br />
-                    {{ $receipt_val['text'] }}
+                    {{
+                      $receipt_val[
+                        'text'
+                      ]
+                    }}
                   </b>
                 </td>
 
@@ -174,33 +182,59 @@
                   รหัสลูกค้า/Customer's Code
                 </td>
                 <td width="20%" style="padding-left: 15px">
-                  <b>{{ $receipt_val['customer_number'] }}</b>
+                  <b>{{
+                    $receipt_val[
+                      'customer_number'
+                    ]
+                  }}</b>
                 </td>
                 <td width="20%" align="right" class="grey">
                   เลขที่ / Document No.
                 </td>
                 <td width="10%" style="padding-left: 10px">
-                  <b>{{ $receipt_val['number'] }}</b>
+                  <b>{{
+                    $receipt_val[
+                      'number'
+                    ]
+                  }}</b>
                 </td>
               </tr>
               <tr>
                 <td>
                   <font class="grey">K.</font>
-                  <b>{{ $receipt_val['name_parent'] }}</b>
+                  <b>{{
+                    $receipt_val[
+                      'name_parent'
+                    ]
+                  }}</b>
                 </td>
                 <td align="right" style="padding-left: 20px" class="grey">
                   ชื่อนักเรียน/Nickname
                 </td>
                 <td align="left" style="padding-left: 15px">
                   <b>
-                    {{ $receipt_val['first_name'] }}
-                    {{ $receipt_val['middle_name'] }}
-                    {{ $receipt_val['last_name'] }}
+                    {{
+                      $receipt_val[
+                        'first_name'
+                      ]
+                    }} {{
+                      $receipt_val[
+                        'middle_name'
+                      ]
+                    }} {{
+                      $receipt_val[
+                        'last_name'
+                      ]
+                    }}
                   </b>
                 </td>
                 <td align="right" class="grey">วันที่ / Date</td>
                 <td style="padding-left: 10px">
-                  <b>{{ $receipt_val['submission_date'] }}</b>
+                  <b>{{
+                    $receipt_val[
+                      'submission_date'
+                    ]
+                  }}</b>
                 </td>
               </tr>
               <tr>
@@ -270,17 +304,53 @@
                 @foreach ($receipt_val['detail'] as $receipt_detail)
                   <tr>
                     <td align="center" style="vertical-align: top">
-                      {{ $receipt_detail['no'] }}
+                      {{
+                        $receipt_detail[
+                          'no'
+                        ]
+                      }}
                     </td>
                     <td align="left">
-                      {!! $receipt_detail['description'] !!}
+                      {!!
+                        $receipt_detail[
+                          'description'
+                        ]
+                      !!}
                     </td>
-                    <td align="center">{{ $receipt_detail['quantity'] }}</td>
-                    <td align="center">{{ $receipt_detail['unit'] }}</td>
-                    <td align="center">{{ $receipt_detail['unitprice'] }}</td>
-                    <td align="center">{{ $receipt_detail['discount'] }}</td>
+                    <td align="center">
+                      {{
+                        $receipt_detail[
+                          'quantity'
+                        ]
+                      }}
+                    </td>
+                    <td align="center">
+                      {{
+                        $receipt_detail[
+                          'unit'
+                        ]
+                      }}
+                    </td>
+                    <td align="center">
+                      {{
+                        $receipt_detail[
+                          'unitprice'
+                        ]
+                      }}
+                    </td>
+                    <td align="center">
+                      {{
+                        $receipt_detail[
+                          'discount'
+                        ]
+                      }}
+                    </td>
                     <td align="center" style="vertical-align: top">
-                      {{ $receipt_detail['price'] }}
+                      {{
+                        $receipt_detail[
+                          'price'
+                        ]
+                      }}
                     </td>
                   </tr>
                 @endforeach
@@ -375,7 +445,11 @@
                         <!-- <td width="10%"></td> -->
                         <td width="15%" align="right">
                           <b>
-                            {{ $receipt_val['vat_price_val'] }}
+                            {{
+                              $receipt_val[
+                                'vat_price_val'
+                              ]
+                            }}
                             {{-- {{ $vat_price_val }} --}}
                           </b>
                         </td>
@@ -395,7 +469,11 @@
                           ภาษีมูลค่าเพิ่ม 7% / Vat 7%
                         </td>
                         <td width="15%" align="right">
-                          <b>{{ $receipt_val['vat_val'] }}</b>
+                          <b>{{
+                            $receipt_val[
+                              'vat_val'
+                            ]
+                          }}</b>
                         </td>
                         <td width="8%"></td>
                       </tr>
@@ -409,12 +487,24 @@
                     Grand Total
                   </td>
                   <td colspan="4" width="40%" align="left">
-                    <b>{{ $receipt_val['price_text'] }}</b>
+                    <b>{{
+                      $receipt_val[
+                        'price_text'
+                      ]
+                    }}</b>
                     <br />
-                    <b>{{ $receipt_val['price_texten'] }}</b>
+                    <b>{{
+                      $receipt_val[
+                        'price_texten'
+                      ]
+                    }}</b>
                   </td>
                   <td width="20%" align="center">
-                    <b>{{ $receipt_val['price_val'] }}</b>
+                    <b>{{
+                      $receipt_val[
+                        'price_val'
+                      ]
+                    }}</b>
                   </td>
 
                   <td width="20%" align="center" class="grey">
@@ -465,8 +555,12 @@
                 </tr>
               </table>
               <center>
-                @if (! empty($receipt_val['file_att']))
-                  {!! $receipt_val['file_att'] !!}
+                @if (!empty($receipt_val['file_att']))
+                  {!!
+                    $receipt_val[
+                      'file_att'
+                    ]
+                  !!}
                 @else
                   <img
                     src="{{ asset('images/infinite-c.png') }}"

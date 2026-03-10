@@ -1,6 +1,6 @@
-@extends('layouts.print_temp')
+@extends ('layouts.print_temp')
 
-@section('style')
+@section ('style')
   <style>
     @media print {
       @page {
@@ -10,7 +10,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     <div class="main-card card mb-3" id="x_content">
       <div class="card-header-tab card-header-tab-animation card-header">
@@ -53,10 +53,10 @@
                 $group = $record->group;
                 $status = $record->status;
 
-                if (! isset($groupStatusCounts[$group])) {
+                if (!isset($groupStatusCounts[$group])) {
                   $groupStatusCounts[$group] = [];
                 }
-                if (! isset($groupStatusCounts[$group][$status])) {
+                if (!isset($groupStatusCounts[$group][$status])) {
                   $groupStatusCounts[$group][$status] = 0;
                 }
                 $groupStatusCounts[$group][$status]++;
@@ -84,52 +84,90 @@
                   @endif
                 </td>
                 <td>
-                  {{ isset($statusCounts['New Student']) ? $statusCounts['New Student'] : 0 }}
-                  คน
-                </td>
-                <td>
-                  {{ isset($statusCounts['studying . . .']) ? $statusCounts['studying . . .'] : 0 }}
-                  คน
-                </td>
-                <td>
-                  {{ isset($statusCounts['Termination of study']) ? $statusCounts['Termination of study'] : 0 }}
-                  คน
-                </td>
-                <td>
-                  {{ isset($statusCounts['drop']) ? $statusCounts['drop'] : 0 }}
-                  คน
-                </td>
-                <td>
-                  {{ isset($statusCounts['resume']) ? $statusCounts['resume'] : 0 }}
-                  คน
-                </td>
-                <td>
-                  {{ isset($statusCounts['waitting . . .']) ? $statusCounts['waitting . . .'] : 0 }}
-                  คน
+                  {{
+                    isset($statusCounts['New Student'])
+                      ? $statusCounts['New Student']
+                      : 0
+                  }} คน
                 </td>
                 <td>
                   {{
-                    (isset($statusCounts['New Student']) ? $statusCounts['New Student'] : 0) +
-                      (isset($statusCounts['studying . . .']) ? $statusCounts['studying . . .'] : 0) +
-                      (isset($statusCounts['resume']) ? $statusCounts['resume'] : 0)
-                  }}
-                  คน
+                    isset($statusCounts['studying . . .'])
+                      ? $statusCounts['studying . . .']
+                      : 0
+                  }} คน
                 </td>
                 <td>
-                  {{ isset($statusCounts['None Receipt']) ? $statusCounts['None Receipt'] : 0 }}
-                  คน
+                  {{
+                    isset(
+                      $statusCounts['Termination of study'],
+                    )
+                      ? $statusCounts['Termination of study']
+                      : 0
+                  }} คน
+                </td>
+                <td>
+                  {{
+                    isset($statusCounts['drop'])
+                      ? $statusCounts['drop']
+                      : 0
+                  }} คน
+                </td>
+                <td>
+                  {{
+                    isset($statusCounts['resume'])
+                      ? $statusCounts['resume']
+                      : 0
+                  }} คน
+                </td>
+                <td>
+                  {{
+                    isset($statusCounts['waitting . . .'])
+                      ? $statusCounts['waitting . . .']
+                      : 0
+                  }} คน
+                </td>
+                <td>
+                  {{
+                    (isset($statusCounts['New Student'])
+                      ? $statusCounts['New Student']
+                      : 0) +
+                      (isset($statusCounts['studying . . .'])
+                        ? $statusCounts['studying . . .']
+                        : 0) +
+                      (isset($statusCounts['resume'])
+                        ? $statusCounts['resume']
+                        : 0)
+                  }} คน
+                </td>
+                <td>
+                  {{
+                    isset($statusCounts['None Receipt'])
+                      ? $statusCounts['None Receipt']
+                      : 0
+                  }} คน
                 </td>
 
                 <td>{{ now() }}</td>
               </tr>
               @php
-                $totalNewStudents += isset($statusCounts['New Student']) ? $statusCounts['New Student'] : 0;
-                $totalStudying += isset($statusCounts['studying . . .']) ? $statusCounts['studying . . .'] : 0;
-                $totalTermination += isset($statusCounts['Termination of study']) ? $statusCounts['Termination of study'] : 0;
+                $totalNewStudents += isset($statusCounts['New Student'])
+                  ? $statusCounts['New Student']
+                  : 0;
+                $totalStudying += isset($statusCounts['studying . . .'])
+                  ? $statusCounts['studying . . .']
+                  : 0;
+                $totalTermination += isset($statusCounts['Termination of study'])
+                  ? $statusCounts['Termination of study']
+                  : 0;
                 $totalDrop += isset($statusCounts['drop']) ? $statusCounts['drop'] : 0;
                 $totalResume += isset($statusCounts['resume']) ? $statusCounts['resume'] : 0;
-                $totalWait += isset($statusCounts['waitting . . .']) ? $statusCounts['waitting . . .'] : 0;
-                $totalNoneReceipt += isset($statusCounts['None Receipt']) ? $statusCounts['None Receipt'] : 0;
+                $totalWait += isset($statusCounts['waitting . . .'])
+                  ? $statusCounts['waitting . . .']
+                  : 0;
+                $totalNoneReceipt += isset($statusCounts['None Receipt'])
+                  ? $statusCounts['None Receipt']
+                  : 0;
               @endphp
             @endforeach
 
@@ -143,7 +181,11 @@
               <td>{{ $totalWait }} คน</td>
               <td>
                 <b>
-                  {{ $totalNewStudents + $totalStudying + $totalResume }} คน
+                  {{
+                    $totalNewStudents +
+                      $totalStudying +
+                      $totalResume
+                  }} คน
                 </b>
               </td>
               <td>{{ $totalNoneReceipt }} คน</td>
@@ -156,6 +198,6 @@
   </div>
 @endsection
 
-@section('script')
-  
+@section ('script')
+
 @endsection

@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -15,7 +15,7 @@
   />
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -67,7 +67,7 @@
           id="delete_all"
         >
           @csrf
-          @method('DELETE')
+          @method ('DELETE')
           <table
             style="width: 100%"
             id="Listview"
@@ -140,8 +140,8 @@
   </div>
 @endsection
 
-@section('script')
-  @include('forms_manage.script')
+@section ('script')
+  @include ('forms_manage.script')
   <script>
     $(document).ready(function () {
       // delete btn
@@ -149,7 +149,11 @@
         var id = $(this).data('id');
         if (confirm('Are you sure you want to delete this form?')) {
           $.ajax({
-            url: '{{ route('form-manage.destroy') }}',
+            url: '{{
+      route(
+        'form-manage.destroy',
+      )
+    }}',
             method: 'POST',
             data: {
               id: id,
@@ -189,7 +193,11 @@
           $btn.find('i').removeClass('fa-copy').addClass('fa-spinner fa-spin');
 
           $.ajax({
-            url: '{{ route('form-manage.duplicate') }}',
+            url: '{{
+      route(
+        'form-manage.duplicate',
+      )
+    }}',
             method: 'POST',
             data: {
               id: id,
@@ -224,10 +232,7 @@
                 timeOut: 2000
               });
               $btn.prop('disabled', false);
-              $btn
-                .find('i')
-                .removeClass('fa-spinner fa-spin')
-                .addClass('fa-copy');
+              $btn.find('i').removeClass('fa-spinner fa-spin').addClass('fa-copy');
             }
           });
         }

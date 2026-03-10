@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends ('layouts.app')
 
-@section('content')
+@section ('content')
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-8">
@@ -27,7 +27,7 @@
                     autofocus
                   />
 
-                  @error('name')
+                  @error ('name')
                     <span class="invalid-feedback" role="alert">
                       <strong>{{ $message }}</strong>
                     </span>
@@ -37,7 +37,11 @@
 
               <div class="row mb-3">
                 <label for="email" class="col-md-4 col-form-label text-md-end">
-                  {{ __('Email Address') }}
+                  {{
+                    __(
+                      'Email Address',
+                    )
+                  }}
                 </label>
 
                 <div class="col-md-6">
@@ -50,7 +54,7 @@
                     autocomplete="email"
                   />
 
-                  @error('email')
+                  @error ('email')
                     <span class="invalid-feedback" role="alert">
                       <strong>{{ $message }}</strong>
                     </span>
@@ -75,7 +79,7 @@
                     autocomplete="new-password"
                   />
 
-                  @error('password')
+                  @error ('password')
                     <span class="invalid-feedback" role="alert">
                       <strong>{{ $message }}</strong>
                     </span>
@@ -88,7 +92,11 @@
                   for="password-confirm"
                   class="col-md-4 col-form-label text-md-end"
                 >
-                  {{ __('Confirm Password') }}
+                  {{
+                    __(
+                      'Confirm Password',
+                    )
+                  }}
                 </label>
 
                 <div class="col-md-6">
