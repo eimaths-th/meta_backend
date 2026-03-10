@@ -95,7 +95,7 @@ class ReceiptFormController extends Controller
         $route = $request->input('route');
         $comments = $request->input('comments');
 
-        $url = route($route, ['referent_code' => $request->input('referent_code')]);
+        $url = route('form.show', ['slug' => $route, 'referent_code' => $request->input('referent_code')]);
 
         ReferentURL::create([
             'user_id' => Auth::user()->id,
@@ -130,7 +130,7 @@ class ReceiptFormController extends Controller
             'route' => 'required',
             'comments' => 'nullable',
         ]);
-        $url = route($request->route, ['referent_code' => $request->referent_code]);
+        $url = route('form.show', ['slug' => $request->route, 'referent_code' => $request->referent_code]);
         $referent_url = ReferentURL::find($request->id);
         $referent_url->referent_code = $request->referent_code;
         $referent_url->route = $request->route;
