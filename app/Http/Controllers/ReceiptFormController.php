@@ -75,8 +75,12 @@ class ReceiptFormController extends Controller
     public function generateUrl()
     {
         $referent_code = ReferentCode::all();
+        $formRoutes = FormManage::whereNotNull('slug')
+            ->orderBy('form_name')
+            ->get(['id', 'form_name', 'slug']);
         return view('receipt_form.generate_url')->with([
             'referent_code' => $referent_code,
+            'formRoutes' => $formRoutes,
         ]);
     }
 
