@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Helpers\LogActivity;
 
 class FormManageController extends Controller
 {
@@ -257,6 +258,9 @@ class FormManageController extends Controller
       ->toArray();
     $data->save();
 
+    // บันทึก activity log — สร้าง form manage ใหม่
+    LogActivity::modelEvent($data, 'form_manage created', null, $data->toArray());
+
     if ($request->wantsJson() || $request->ajax()) {
       return response()->json([
         'status' => 'success',
@@ -275,8 +279,13 @@ class FormManageController extends Controller
     $id = $request->id;
     $value = $request->value;
     $data = FormGrades::find($id);
+    $old_data = $data->toArray();
     $data->grade = $value;
     $data->save();
+
+    // บันทึก activity log — แก้ไข grade
+    LogActivity::modelEvent($data, 'form_grade updated', $old_data, $data->toArray());
+
     return response()->json([
       'status' => 'success',
       'data' => $data,
@@ -287,6 +296,11 @@ class FormManageController extends Controller
     $id = $request->id;
     $index = $request->index;
     $data = FormGrades::find($id);
+    $old_data = $data->toArray();
+
+    // บันทึก activity log — ลบ grade
+    LogActivity::modelEvent($data, 'form_grade deleted', $old_data, null);
+
     $data->delete();
     return response()->json([
       'status' => 'success',
@@ -300,6 +314,7 @@ class FormManageController extends Controller
     $id = $request->id;
     $value = $request->value;
     $data = FormPakages::find($id);
+    $old_data = $data->toArray();
     $data->package = $value;
     $data->price = $request->price;
     $data->has_exam_mode = $request->has_exam_mode ?? false;
@@ -307,6 +322,10 @@ class FormManageController extends Controller
     $data->onsite_limit = $request->onsite_limit ?: null;
     $data->update_by = Auth::user()->id;
     $data->save();
+
+    // บันทึก activity log — แก้ไข package
+    LogActivity::modelEvent($data, 'form_package updated', $old_data, $data->toArray());
+
     return response()->json([
       'status' => 'success',
       'data' => $data,
@@ -318,6 +337,11 @@ class FormManageController extends Controller
     $id = $request->id;
     $index = $request->index;
     $data = FormPakages::find($id);
+    $old_data = $data->toArray();
+
+    // บันทึก activity log — ลบ package
+    LogActivity::modelEvent($data, 'form_package deleted', $old_data, null);
+
     $data->delete();
     return response()->json([
       'status' => 'success',
@@ -1245,6 +1269,9 @@ class FormManageController extends Controller
       }
     }
 
+    // บันทึก activity log — update form manage settings
+    LogActivity::modelEvent($form_manage, 'form_manage updated', null, $form_manage->fresh()->toArray());
+
     return response()->json([
       'status' => 'success',
       'message' => 'Form updated successfully',
@@ -1327,6 +1354,9 @@ class FormManageController extends Controller
         409,
       );
     }
+
+    // บันทึก activity log — ลบ form manage
+    LogActivity::modelEvent($form, 'form_manage deleted', $form->toArray(), null);
 
     $package = FormPakages::where('form_id', $request->id)->delete();
     $grade = FormGrades::where('form_id', $request->id)->delete();
@@ -1424,6 +1454,9 @@ class FormManageController extends Controller
         $newGrade->update_by = Auth::user()->id;
         $newGrade->save();
       }
+
+      // บันทึก activity log — duplicate form manage
+      LogActivity::modelEvent($newForm, 'form_manage duplicated', $originalForm->toArray(), $newForm->toArray());
 
       return response()->json([
         'status' => 'success',

@@ -65,6 +65,15 @@ class ContactMail extends Mailable
      */
     public function build()
     {
+        // ตรวจสอบ data consistency — log ข้อมูล email ที่ใช้ render template
+        Log::info('ContactMail building email', [
+            'data_id' => $this->data->id ?? 'N/A',
+            'data_email' => $this->data->email ?? 'N/A',
+            'data_first_name' => $this->data->first_name ?? 'N/A',
+            'data_last_name' => $this->data->last_name ?? 'N/A',
+            'sfield' => $this->data->sfield ?? 'N/A',
+        ]);
+
         return $this->view('emails.contact');
     }
 }

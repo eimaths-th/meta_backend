@@ -18,6 +18,7 @@ use App\Models\FormManage;
 use App\Models\Receipt_RunningNumber;
 use App\Models\Receipt_Customer_RunningNumber;
 use App\Models\ReferentCode;
+use App\Helpers\LogActivity;
 
 //use Illuminate\Support\Facades\DB;
 
@@ -928,6 +929,10 @@ class ReceiptController extends Controller
 
         $course = new Receipt($request->all());
         $course->save();
+
+        // บันทึก activity log — สร้าง receipt
+        LogActivity::modelEvent($course, 'receipt created', null, $course->toArray());
+
         return response()->json(['success' => 'Receive Add successfully']);
     }
 
@@ -2102,7 +2107,10 @@ class ReceiptController extends Controller
         $runitp  = $request->get('runitp');
         $rdis  = $request->get('rdis');
 
-        Receipt::find($id)->update($request->all());
+        $receipt = Receipt::find($id);
+        $old_data = $receipt ? $receipt->toArray() : null;
+
+        $receipt->update($request->all());
 
         $rdata = array();
         ReceiptDetail::where('receipt_id', $id)->delete();
@@ -2114,10 +2122,12 @@ class ReceiptController extends Controller
                 'unit' => $runit[$xx],
                 'unitprice' => $runitp[$xx],
                 'discount' => $rdis[$xx],
-                //'amount' => $request->get('book_old_price'),
             ]);
             $rdata->save();
         }
+
+        // บันทึก activity log — แก้ไข receipt
+        LogActivity::modelEvent($receipt, 'receipt updated', $old_data, $receipt->fresh()->toArray());
 
         return response()->json(['success' => 'Receipt updated successfully']);
     }
@@ -2130,24 +2140,32 @@ class ReceiptController extends Controller
      */
     public function destroy($id)
     {
-        //
         $this->check_permission();
-        Receipt::find($id)->delete();
+
+        // บันทึก activity log ก่อนลบ receipt
+        $receipt = Receipt::find($id);
+        if ($receipt) {
+            LogActivity::modelEvent($receipt, 'receipt deleted', $receipt->toArray(), null);
+            $receipt->delete();
+        }
+
         return ['success' => true, 'message' => 'Deleted Successfully'];
     }
 
     public function destroy_all(Request $request)
     {
-
         $this->check_permission();
-        $arr_del  = $request->get('table_records'); //$arr_ans is Array MacAddress
+        $arr_del = $request->get('table_records');
 
-        for ($xx = 0; $xx < count($arr_del); $xx++) {
-            Receipt::find($arr_del[$xx])->delete();
+        // บันทึก activity log สำหรับการลบทั้งหมด
+        foreach ($arr_del as $del_id) {
+            $receipt = Receipt::find($del_id);
+            if ($receipt) {
+                LogActivity::modelEvent($receipt, 'receipt bulk_deleted', $receipt->toArray(), null);
+                $receipt->delete();
+            }
         }
-        //$ids = $request->get('table_records');
-        //User::whereIn('id',explode(",",$ids))->delete();
-        //return redirect('/receipt/?id=' . $request->get('id'))->with('success', 'Deleted Successfully');
+
         return redirect('/receipts')->with('success', 'Deleted Successfully');
     }
 

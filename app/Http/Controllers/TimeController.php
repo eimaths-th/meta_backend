@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\FormManage;
 use App\Models\OpeningClosingTime;
 use Illuminate\Http\Request;
+use App\Helpers\LogActivity;
 
 class TimeController extends Controller
 {
@@ -25,13 +26,16 @@ class TimeController extends Controller
         $user_id = $request->input('user_id');
         $comments = $request->input('comments');
 
-        OpeningClosingTime::create([
+        $control = OpeningClosingTime::create([
             'user_id' => $user_id,
             'comments' => $comments,
             'route' => $route,
             'opening_time' => $openingTime,
             'closing_time' => $closingTime,
         ]);
+
+        // บันทึก activity log — สร้าง form control
+        LogActivity::modelEvent($control, 'form_control created', null, $control->toArray());
 
         return redirect(route('formsControl'));
     }
@@ -90,6 +94,12 @@ class TimeController extends Controller
     public function deleteControl($id)
     {
         $control = OpeningClosingTime::find($id);
+
+        // บันทึก activity log — ลบ form control
+        if ($control) {
+            LogActivity::modelEvent($control, 'form_control deleted', $control->toArray(), null);
+        }
+
         $control->delete();
         return redirect()->back()->with('error', 'Control deleted successfully!');
     }

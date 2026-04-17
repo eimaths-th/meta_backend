@@ -28,8 +28,11 @@ use App\Models\FormPakages;
 use App\Models\OpeningClosingTime;
 use App\Models\ReferentCode;
 use App\Models\ReferentURL;
+use App\Models\EmailAuditLog;
+use App\Helpers\LogActivity;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 // use App\Exports\ExportUser;
 
 class ReceiptFormController extends Controller
@@ -97,13 +100,16 @@ class ReceiptFormController extends Controller
 
         $url = route('form.show', ['slug' => $route, 'referent_code' => $request->input('referent_code')]);
 
-        ReferentURL::create([
+        $referent_url = ReferentURL::create([
             'user_id' => Auth::user()->id,
             'comments' => $comments,
             'route' => $route,
             'referent_url' => $url,
             'referent_code' => $request->input('referent_code'),
         ]);
+
+        // บันทึก activity log — สร้าง referent URL
+        LogActivity::modelEvent($referent_url, 'referent_url created', null, $referent_url->toArray());
 
         return redirect(route('referent_url'));
     }
@@ -132,12 +138,16 @@ class ReceiptFormController extends Controller
         ]);
         $url = route('form.show', ['slug' => $request->route, 'referent_code' => $request->referent_code]);
         $referent_url = ReferentURL::find($request->id);
+        $old_data = $referent_url->toArray();
         $referent_url->referent_code = $request->referent_code;
         $referent_url->route = $request->route;
         $referent_url->comments = $request->comments;
         $referent_url->user_id = Auth::user()->id;
         $referent_url->referent_url = $url;
         $referent_url->save();
+
+        // บันทึก activity log — แก้ไข referent URL
+        LogActivity::modelEvent($referent_url, 'referent_url updated', $old_data, $referent_url->toArray());
 
         return response()->json([
             'success' => true,
@@ -148,6 +158,11 @@ class ReceiptFormController extends Controller
     public function referent_urlDelete(Request $request)
     {
         $referent_url = ReferentURL::find($request->id);
+        $old_data = $referent_url->toArray();
+
+        // บันทึก activity log — ลบ referent URL
+        LogActivity::modelEvent($referent_url, 'referent_url deleted', $old_data, null);
+
         $referent_url->delete();
         return response()->json([
             'success' => true,
@@ -198,12 +213,15 @@ class ReceiptFormController extends Controller
         } while (ReferentCode::where('referent_code', $referent_code)->exists());
 
         // บันทึกข้อมูล
-        ReferentCode::create([
+        $new_code = ReferentCode::create([
             'referent_code' => $referent_code,
             'user_id' => $user_id,
             'referent_name' => $request->referent_name,
             'comments' => $request->comments,
         ]);
+
+        // บันทึก activity log — สร้าง referent code
+        LogActivity::modelEvent($new_code, 'referent_code created', null, $new_code->toArray());
 
         return response()->json([
             'success' => true,
@@ -231,10 +249,14 @@ class ReceiptFormController extends Controller
         $user_id = Auth::id();
 
         $referent_code = ReferentCode::find($request->id);
+        $old_data = $referent_code->toArray();
         $referent_code->referent_name = $request->referent_name;
         $referent_code->comments = $request->comments;
         $referent_code->user_id = $user_id;
         $referent_code->save();
+
+        // บันทึก activity log — แก้ไข referent code
+        LogActivity::modelEvent($referent_code, 'referent_code updated', $old_data, $referent_code->toArray());
 
         return response()->json([
             'success' => true,
@@ -246,6 +268,8 @@ class ReceiptFormController extends Controller
     public function referent_codeDelete(Request $request)
     {
         $referent_code = ReferentCode::find($request->id);
+        $old_data = $referent_code->toArray();
+
         $referent_url = ReferentURL::where(
             'referent_code',
             $referent_code->referent_code,
@@ -270,6 +294,9 @@ class ReceiptFormController extends Controller
                 'referent_code' => null,
             ]);
         }
+
+        // บันทึก activity log — ลบ referent code
+        LogActivity::modelEvent($referent_code, 'referent_code deleted', $old_data, null);
 
         $referent_code->delete();
         return response()->json([
@@ -1201,9 +1228,29 @@ class ReceiptFormController extends Controller
         $id = $request->get('fid');
         $form = ReceiptForm::find($id);
 
+        // ส่ง email เฉพาะ sfield 17 — ใช้ email จาก DB record เพื่อรับประกัน consistency
         if ($request->get('sfield') === '17') {
-            $adminEmail = $request->get('email');
-            Mail::to($adminEmail)->send(new ContactMail($form));
+            $adminEmail = $form->email;
+            if ($adminEmail && filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
+                try {
+                    Mail::to($adminEmail)->send(new ContactMail($form));
+                    Log::info("Email sent to: {$adminEmail} (create, form_id: {$form->id})");
+
+                    // บันทึก audit log สำหรับการส่ง email
+                    EmailAuditLog::LogEmailAction(
+                        $form->id,
+                        null,
+                        $adminEmail,
+                        'send',
+                        $request,
+                        ['trigger' => 'create', 'sfield' => '17']
+                    );
+                } catch (\Exception $e) {
+                    Log::error("Failed to send email to {$adminEmail} (create): " . $e->getMessage());
+                }
+            } else {
+                Log::warning("Invalid email for create send: {$adminEmail} (form_id: {$form->id})");
+            }
         }
 
         if ($form->generate == 1) {
@@ -1431,6 +1478,10 @@ class ReceiptFormController extends Controller
         $form->generate = '1';
         $form->rec_id = $receipt->id;
         $form->save();
+
+        // บันทึก activity log — generate receipt จาก receipt form
+        LogActivity::modelEvent($receipt, 'receipt_form generated', null, $receipt->toArray());
+
         return response()->json(['success' => 'Receive Add successfully']);
     }
 
@@ -2159,15 +2210,37 @@ class ReceiptFormController extends Controller
             "ReceiptForm Saved. ID: {$receiptForm->id}, Route: {$route}",
         );
 
-        $adminEmail = $request->get('email');
+        // ใช้ email จาก record ที่ save สำเร็จแล้ว เพื่อรับประกัน data consistency
+        $adminEmail = $receiptForm->email;
+        $request_email = $request->get('email');
+
+        // ตรวจสอบ consistency ระหว่าง request email กับ saved email
+        if ($adminEmail !== $request_email) {
+            Log::error("Email Mismatch Detected!", [
+                'request_email' => $request_email,
+                'saved_email' => $adminEmail,
+                'receipt_form_id' => $receiptForm->id,
+                'route' => $route,
+            ]);
+        }
 
         if (!in_array($request->get('sfield'), [0, 17], true) && $adminEmail) {
             if (filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
                 try {
                     Mail::to($adminEmail)->send(new ContactMail($receiptForm));
-                    \Illuminate\Support\Facades\Log::info("Email sent to: {$adminEmail}");
+                    Log::info("Email sent to: {$adminEmail} (storeFormManage, form_id: {$receiptForm->id})");
+
+                    // บันทึก audit log สำหรับการส่ง email
+                    EmailAuditLog::LogEmailAction(
+                        $receiptForm->id,
+                        null,
+                        $adminEmail,
+                        'send',
+                        $request,
+                        ['trigger' => 'storeFormManage', 'route' => $route]
+                    );
                 } catch (\Exception $e) {
-                    \Illuminate\Support\Facades\Log::error(
+                    Log::error(
                         "Failed to send email to {$adminEmail}: " . $e->getMessage(),
                     );
                 }
@@ -2183,16 +2256,13 @@ class ReceiptFormController extends Controller
             }
         }
 
-        $adminEmail = $request->get('email');
-
-        if (!in_array($request->get('sfield'), [0, 17], true) && $adminEmail) {
-            if (filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
-                Mail::to($adminEmail)->send(new ContactMail($receiptForm));
-            }
-        }
+        
         // $receiptForm->save(); // Remove duplicate save
 
         if ($receiptForm) {
+            // บันทึก activity log — บันทึกข้อมูลจากฟอร์ม storeFormManage
+            LogActivity::modelEvent($receiptForm, 'receipt_form store', null, $receiptForm->toArray());
+
             return redirect('/form/completed/' . $route);
         } else {
             return back()->with(
@@ -2204,19 +2274,54 @@ class ReceiptFormController extends Controller
 
     public function reSendMail($id)
     {
-        //
         $receiptForm = ReceiptForm::find($id);
+
+        if (!$receiptForm) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Receipt form not found',
+            ], 404);
+        }
+
         $adminEmail = $receiptForm->email;
+
         if (!in_array($receiptForm->sfield, [0, 17], true) && $adminEmail) {
             if (filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
-                Mail::to($adminEmail)->send(new ContactMail($receiptForm));
+                try {
+                    Mail::to($adminEmail)->send(new ContactMail($receiptForm));
+                    Log::info("Email resent to: {$adminEmail} (reSendMail, form_id: {$receiptForm->id})");
+
+                    // บันทึก audit log สำหรับการส่งซ้ำ email
+                    EmailAuditLog::LogEmailAction(
+                        $receiptForm->id,
+                        $adminEmail,
+                        $adminEmail,
+                        'resend',
+                        request(),
+                        ['trigger' => 'reSendMail']
+                    );
+
+                    // บันทึก activity log — resend mail
+                    LogActivity::modelEvent($receiptForm, 'receipt_form resend_mail', null, ['email' => $adminEmail]);
+
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Mail sent successfully',
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error("Failed to resend email to {$adminEmail}: " . $e->getMessage());
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Failed to send email: ' . $e->getMessage(),
+                    ], 500);
+                }
             }
         }
-        $receiptForm->save();
+
         return response()->json([
-            'status' => 'success',
-            'message' => 'Mail sent successfully',
-        ]);
+            'status' => 'error',
+            'message' => 'Invalid email or sfield not allowed for sending',
+        ], 422);
     }
 
     /**
@@ -2441,10 +2546,19 @@ class ReceiptFormController extends Controller
             return response()->json(['errors' => $validator->errors()->all()]);
         }
 
-        // Prepare update data
-        $updateData = $request->all();
+        // ระบุ field ที่อนุญาตให้ update อย่างชัดเจน — ป้องกัน mass assignment
+        $allowed_fields = [
+            'first_name', 'middle_name', 'last_name', 'nick_name',
+            'gender', 'birth_date', 'ref_date', 'school_name',
+            'grade', 'package', 'package_id', 'contest',
+            'discount_code', 'name_parent', 'street_address',
+            'street_address2', 'postcode', 'mobile', 'email',
+            'news_form', 'description', 'description2',
+            'exam_mode', 'award', 'subject',
+        ];
+        $updateData = $request->only($allowed_fields);
 
-        // Handle award field if present
+        // แปลง award เป็น JSON ถ้าเป็น array
         if ($request->has('award')) {
             $awardInput = $request->get('award');
             if (is_array($awardInput)) {
@@ -2452,7 +2566,46 @@ class ReceiptFormController extends Controller
             }
         }
 
-        ReceiptForm::find($request->get('fid'))->update($updateData);
+        $receiptForm = ReceiptForm::find($request->get('fid'));
+
+        if (!$receiptForm) {
+            return response()->json(['error' => 'Receipt Form not found'], 404);
+        }
+
+        // เก็บข้อมูลเดิมก่อน update สำหรับ audit log
+        $old_data_before = $receiptForm->toArray();
+
+        // ตรวจสอบและบันทึก audit log ถ้า email เปลี่ยน
+        $old_email = $receiptForm->email;
+        $new_email = $request->get('email');
+
+        if ($old_email !== $new_email) {
+            Log::warning("Admin Email Change Detected", [
+                'receipt_form_id' => $receiptForm->id,
+                'old_email' => $old_email,
+                'new_email' => $new_email,
+                'changed_by' => Auth::user()->name ?? 'Unknown',
+            ]);
+
+            // บันทึกลง audit log table
+            EmailAuditLog::LogEmailAction(
+                $receiptForm->id,
+                $old_email,
+                $new_email,
+                'update',
+                $request,
+                [
+                    'trigger' => 'admin_update',
+                    'sfield' => $receiptForm->sfield,
+                ]
+            );
+        }
+
+        $receiptForm->update($updateData);
+
+        // บันทึก activity log — update receipt form (หลัง update เพื่อเก็บข้อมูลใหม่)
+        LogActivity::modelEvent($receiptForm, 'receipt_form updated', $old_data_before, $receiptForm->fresh()->toArray());
+
         return response()->json(['success' => 'Receipt Form updated successfully']);
     }
 
@@ -2615,9 +2768,14 @@ class ReceiptFormController extends Controller
 
     public function destroy($id)
     {
-        //
-        // dd($id);
         $this->check_permission();
+
+        // บันทึก activity log ก่อนลบ
+        $receipt_form = ReceiptForm::find($id);
+        if ($receipt_form) {
+            LogActivity::modelEvent($receipt_form, 'receipt_form deleted', $receipt_form->toArray(), null);
+        }
+
         $this->destroy_func($id);
         return ['success' => true, 'message' => 'Deleted Successfully'];
     }
@@ -2625,14 +2783,17 @@ class ReceiptFormController extends Controller
     public function destroy_all(Request $request)
     {
         $this->check_permission();
-        $arr_del = $request->get('table_records'); //$arr_ans is Array MacAddress
+        $arr_del = $request->get('table_records');
 
-        for ($xx = 0; $xx < count($arr_del); $xx++) {
-            $this->destroy_func($arr_del[$xx]);
+        // บันทึก activity log สำหรับการลบทั้งหมด
+        foreach ($arr_del as $del_id) {
+            $receipt_form = ReceiptForm::find($del_id);
+            if ($receipt_form) {
+                LogActivity::modelEvent($receipt_form, 'receipt_form bulk_deleted', $receipt_form->toArray(), null);
+            }
+            $this->destroy_func($del_id);
         }
-        //$ids = $request->get('table_records');
-        //User::whereIn('id',explode(",",$ids))->delete();
-        //return redirect('/receipt/?id=' . $request->get('id'))->with('success', 'Deleted Successfully');
+
         return redirect('/receipts_form/?sfield=' . $request->get('sfield'))->with(
             'success',
             'Deleted Successfully',

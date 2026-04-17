@@ -223,6 +223,11 @@ Route::group(['middleware' => ['auth']], function () {
     // Package-Grade linking routes
     Route::post('/link-package-grades', [FormManageController::class, 'linkPackageGrades'])->name('link-package-grades');
     Route::get('/get-package-linked-grades', [FormManageController::class, 'getPackageLinkedGrades'])->name('get-package-linked-grades');
+
+    // Activity Logs — หน้าดู audit log ทุกการกระทำของ user
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('logs.index');
+    Route::get('/activity-logs/filter', [ActivityLogController::class, 'filter'])->name('logs.filter');
+    Route::get('/activity-logs/full-filter', [ActivityLogController::class, 'fullFilter'])->name('logs.full.filter');
 });
 
 //form
