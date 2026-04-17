@@ -29,9 +29,7 @@
       } else {
         const state = fieldSettings[fieldKey];
         state.enabled =
-          state.enabled === true ||
-          state.enabled === '1' ||
-          state.enabled === 1;
+          state.enabled === true || state.enabled === '1' || state.enabled === 1;
         state.required =
           state.required === true ||
           state.required === '1' ||
@@ -537,11 +535,7 @@
         },
         error: function (xhr) {
           // Validation errors (Laravel 422)
-          if (
-            xhr.status === 422 &&
-            xhr.responseJSON &&
-            xhr.responseJSON.errors
-          ) {
+          if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
             const errors = xhr.responseJSON.errors;
             let firstErrEl = null;
             Object.keys(errors).forEach(function (name) {
@@ -650,7 +644,11 @@
                 toastr.success(resp.message || 'สร้างฟอร์มสำเร็จ');
                 setTimeout(function () {
                   window.location.href =
-                    resp.redirect || '{{ route('form-manage.index') }}';
+                    resp.redirect || '{{
+    route(
+      'form-manage.index',
+    )
+  }}';
                 }, 1200);
                 return;
               }

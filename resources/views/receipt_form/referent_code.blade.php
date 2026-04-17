@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
@@ -26,13 +26,12 @@
   />
 @endsection
 
-@section('content')
+@section ('content')
   @if ($message = Session::get('error'))
     <div class="alert alert-danger mb-5">
       <p>{{ $message }}</p>
     </div>
   @endif
-
   <div class="row">
     <div class="app-page-title">
       <div class="page-title-wrapper">
@@ -92,7 +91,12 @@
                   <td>{{ $value->referent_code }}</td>
                   <td>{{ $value->referent_name }}</td>
                   <td>{{ $value->comments }}</td>
-                  <td>{{ $value->user->name }}</td>
+                  <td>
+                    {{
+                      $value->user
+                        ->name
+                    }}
+                  </td>
                   <td>{{ $value->created_at }}</td>
                   <td>
                     {{-- modal edit --}}
@@ -120,7 +124,6 @@
       </div>
     </div>
   </div>
-
   <div class="body-block-example-2" style="display: none" id="loder_bar">
     <br />
     <div class="loader" id="loder_bar_div">
@@ -136,7 +139,6 @@
     </div>
     <br />
   </div>
-
   <div
     class="modal fade"
     id="editModal"
@@ -207,7 +209,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     var table = $('#Listview').DataTable({
       // serverSide: true,
@@ -223,11 +225,14 @@
       console.log(window.location);
     });
   </script>
-
   <script>
     function editReferentCode(id) {
       $.ajax({
-        url: '{{ route('referent_code.edit') }}',
+        url: '{{
+      route(
+        'referent_code.edit',
+      )
+    }}',
         type: 'GET',
         data: {
           id: id,
@@ -254,7 +259,11 @@
 
     function updateReferentCode() {
       $.ajax({
-        url: '{{ route('referent_code.edit.save') }}',
+        url: '{{
+      route(
+        'referent_code.edit.save',
+      )
+    }}',
         type: 'POST',
         data: {
           id: $('#Editid').val(),
@@ -284,7 +293,11 @@
 
     function deleteReferentCode(id) {
       $.ajax({
-        url: '{{ route('referent_code.delete') }}',
+        url: '{{
+      route(
+        'referent_code.delete',
+      )
+    }}',
         type: 'DELETE',
         data: {
           id: id,
@@ -315,7 +328,11 @@
       var referent_name = $('#Addreferent_name').val();
       var comments = $('#Addcomments').val();
       $.ajax({
-        url: '{{ route('referent_code.save') }}',
+        url: '{{
+      route(
+        'referent_code.save',
+      )
+    }}',
         type: 'POST',
         data: {
           referent_name: referent_name,

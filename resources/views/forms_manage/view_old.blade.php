@@ -1,7 +1,7 @@
-@extends('layouts.form')
+@extends ('layouts.form')
 
-@section('style')
-  @include('forms_manage.css')
+@section ('style')
+  @include ('forms_manage.css')
   <!-- Select2 CSS -->
   <link
     href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
@@ -25,7 +25,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div id="loader-container" style="display: none">
     <div id="loader" class="spinner"></div>
     <p id="loading-message">Please wait, your request is being processed...</p>
@@ -84,12 +84,18 @@
               <div class="col-md-10 div_center" data-layout="full">
                 @if (session('warning'))
                   <div class="alert alert-warning">
-                    {!! nl2br(e(session('warning'))) !!}
+                    {!!
+                      nl2br(
+                        e(session('warning')),
+                      )
+                    !!}
                   </div>
                 @endif
 
                 @php
-                  $fieldSettingsData = is_array($form->field_settings ?? null) ? $form->field_settings : [];
+                  $fieldSettingsData = is_array($form->field_settings ?? null)
+                    ? $form->field_settings
+                    : [];
                   $fieldConfig = config('form_fields', []);
                   $normalizeBoolean = function ($value, $default) {
                     if ($value === true || $value === false) {
@@ -105,14 +111,22 @@
                       return (bool) $default;
                     }
                     if (is_string($value)) {
-                      $filtered = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                      $filtered = filter_var(
+                        $value,
+                        FILTER_VALIDATE_BOOLEAN,
+                        FILTER_NULL_ON_FAILURE,
+                      );
                       if ($filtered !== null) {
                         return $filtered;
                       }
                     }
                     return (bool) ($value ?? $default);
                   };
-                  $resolveSetting = function ($key, $attribute, $fallback) use ($fieldSettingsData, $fieldConfig, $normalizeBoolean) {
+                  $resolveSetting = function ($key, $attribute, $fallback) use (
+                    $fieldSettingsData,
+                    $fieldConfig,
+                    $normalizeBoolean,
+                  ) {
                     $settings = $fieldSettingsData[$key] ?? null;
                     if (is_array($settings) && array_key_exists($attribute, $settings)) {
                       return $normalizeBoolean($settings[$attribute], $fallback);
@@ -120,19 +134,27 @@
                     if (is_object($settings) && isset($settings->{$attribute})) {
                       return $normalizeBoolean($settings->{$attribute}, $fallback);
                     }
-                    return $normalizeBoolean(data_get($fieldConfig, "$key.default_$attribute", $fallback), $fallback);
+                    return $normalizeBoolean(
+                      data_get($fieldConfig, "$key.default_$attribute", $fallback),
+                      $fallback,
+                    );
                   };
                   $isFieldEnabled = function ($key) use ($resolveSetting) {
                     return $resolveSetting($key, 'enabled', true);
                   };
                   $isFieldRequired = function ($key) use ($resolveSetting) {
-                    return $resolveSetting($key, 'required', false) && $resolveSetting($key, 'enabled', true);
+                    return $resolveSetting($key, 'required', false) &&
+                      $resolveSetting($key, 'enabled', true);
                   };
                 @endphp
 
                 @if (session('error'))
                   <div class="alert alert-danger">
-                    {!! nl2br(e(session('error'))) !!}
+                    {!!
+                      nl2br(
+                        e(session('error')),
+                      )
+                    !!}
                   </div>
                 @endif
 
@@ -204,14 +226,17 @@
                     <p>
                       <span style="color: #6351a2">
                         <b>
-                          {{ $form->admission_criteria_text_label }}
-                          {{ $form->form_name }}
+                          {{ $form->admission_criteria_text_label }} {{ $form->form_name }}
                         </b>
                         <br />
                         <br />
 
                         @if (isset($form->admission_criteria_text))
-                          {!! nl2br(e($form->admission_criteria_text ?? ' ')) !!}
+                          {!!
+                            nl2br(
+                              e($form->admission_criteria_text ?? ' '),
+                            )
+                          !!}
                         @else
                         @endif
                       </span>
@@ -299,7 +324,8 @@
                   value="{{ request()->referent_code }}"
                 />
 
-                @if ($isFieldEnabled('student_first_name') || $isFieldEnabled('student_last_name'))
+                @if ($isFieldEnabled('student_first_name') ||
+                  $isFieldEnabled('student_last_name'))
                   <div class="form-row form-focus">
                     @if ($isFieldEnabled('student_first_name'))
                       <div class="col-md-6">
@@ -489,7 +515,9 @@
                   </div>
                 @endif
 
-                @if ($isFieldEnabled('ref_date_label') && isset($form->ref_date_label) && ! empty($form->ref_date_label))
+                @if ($isFieldEnabled('ref_date_label') &&
+                  isset($form->ref_date_label) &&
+                  !empty($form->ref_date_label))
                   <div class="form-row form-focus">
                     <div class="col-md-6 col-sm-12">
                       <div class="position-relative form-group">
@@ -642,15 +670,17 @@
                           class="form-label form-label-top form-label-auto"
                           for="package"
                         >
-                          {{ $form->package ?? ' ' }}
+                          {{
+                            $form->package ??
+                              ' '
+                          }}
                           @if ($isFieldRequired('package'))
                             <span class="form-required">*</span>
                           @endif
 
                           @if ($form->package_multiselect && $form->package_max_selection)
                             <small class="text-muted">
-                              (Max: {{ $form->package_max_selection }}
-                              selections)
+                              (Max: {{ $form->package_max_selection }} selections)
                             </small>
                           @endif
                         </label>
@@ -724,7 +754,10 @@
                             class="form-label form-label-top form-label-auto"
                             for="address"
                           >
-                            {{ $form->student_address ?? ' ' }}
+                            {{
+                              $form->student_address ??
+                                ' '
+                            }}
                             @if ($isFieldRequired('student_address'))
                               <span class="form-required">*</span>
                             @endif
@@ -756,7 +789,10 @@
                             class="form-label form-label-top form-label-auto"
                             for="postcode"
                           >
-                            {{ $form->student_zip ?? ' ' }}
+                            {{
+                              $form->student_zip ??
+                                ' '
+                            }}
                             @if ($isFieldRequired('student_zip'))
                               <span class="form-required">*</span>
                             @endif
@@ -807,7 +843,10 @@
                             class="form-label form-label-top form-label-auto"
                             for="parent"
                           >
-                            {{ $form->parent_name ?? ' ' }}
+                            {{
+                              $form->parent_name ??
+                                ' '
+                            }}
                             @if ($isFieldRequired('parent_name'))
                               <span class="form-required">*</span>
                             @endif
@@ -854,7 +893,10 @@
                             class="form-label form-label-top form-label-auto"
                             for="phone"
                           >
-                            {{ $form->parent_phone ?? ' ' }}
+                            {{
+                              $form->parent_phone ??
+                                ' '
+                            }}
                             @if ($isFieldRequired('parent_phone'))
                               <span class="form-required">*</span>
                             @endif
@@ -906,8 +948,13 @@
                           class="form-label form-label-top form-label-auto"
                           for="grade"
                         >
-                          {{ $form->contact_email ?? ' ' }}
-                          {{ $form->contact_email_detail ?? ' ' }}
+                          {{
+                            $form->contact_email ??
+                              ' '
+                          }} {{
+                            $form->contact_email_detail ??
+                              ' '
+                          }}
                           @if ($isFieldRequired('contact_email'))
                             <span class="form-required">*</span>
                           @endif
@@ -955,7 +1002,10 @@
                           class="form-label form-label-top form-label-auto"
                           for="photo"
                         >
-                          {{ $form->student_photo ?? ' ' }}
+                          {{
+                            $form->student_photo ??
+                              ' '
+                          }}
                           @if ($isFieldRequired('student_photo'))
                             <span class="form-required">*</span>
                           @endif
@@ -1003,7 +1053,6 @@
                       </div>
                     </div>
                   </div>
-
                   <div
                     class="dropzonex dz-default dz-message"
                     id="dropzone_preview"
@@ -1036,7 +1085,10 @@
                           class="form-label form-label-top form-label-auto"
                           for="att"
                         >
-                          {{ $form->student_slip_photo ?? ' ' }}
+                          {{
+                            $form->student_slip_photo ??
+                              ' '
+                          }}
                           @if ($isFieldRequired('student_slip_photo'))
                             <span class="form-required">*</span>
                           @endif
@@ -1106,7 +1158,10 @@
                           class="form-label form-label-top form-label-auto"
                           for="newsf"
                         >
-                          {{ $form->news ?? ' ' }}
+                          {{
+                            $form->news ??
+                              ' '
+                          }}
                           @if ($isFieldRequired('news'))
                             <span class="form-required">*</span>
                           @endif
@@ -1148,12 +1203,18 @@
               <br />
               <div class="text-danger">
                 <h3>
-                  {!! nl2br($form->text_warning) ?? '' !!}
+                  {!!
+                    nl2br($form->text_warning) ??
+                      ''
+                  !!}
                 </h3>
               </div>
               <br />
               <div class="text-danger">
-                {!! nl2br($form->text_footer) ?? '' !!}
+                {!!
+                  nl2br($form->text_footer) ??
+                    ''
+                !!}
               </div>
               <br />
               <div class="form-group form-check">
@@ -1166,7 +1227,10 @@
                   style="float: none; margin-right: 3px"
                 />
                 <label class="form-check-label" for="agreeCheckbox">
-                  {!! nl2br($form->text_policy) ?? '' !!}
+                  {!!
+                    nl2br($form->text_policy) ??
+                      ''
+                  !!}
                 </label>
               </div>
 
@@ -1446,7 +1510,11 @@
     let imgFiles2 = document.getElementsByName('imgFiles2[]');
 
     Dropzone.options.myAwesomeDropzone = {
-      url: '{{ route('form.upload') }}',
+      url: '{{
+      route(
+        'form.upload',
+      )
+    }}',
       headers: {
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
       },
@@ -1499,7 +1567,11 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
               },
               type: 'POST',
-              url: '{{ route('form.delete') }}',
+              url: '{{
+      route(
+        'form.delete',
+      )
+    }}',
               data: {
                 name: name
               },
@@ -1538,9 +1610,7 @@
             let val1 = file.name;
             $('#dropzone_preview').css('display', 'block');
             $('#dropzone-photo').removeClass('form-focus-error');
-            $('#dropzone-photo')
-              .find('.form-error-message')
-              .css('display', 'none');
+            $('#dropzone-photo').find('.form-error-message').css('display', 'none');
             $('#dropzone-photo').css('border', 'solid 1px green');
             if (document.getElementsByName('imgFiles[]').length) {
               //$('#error_div').css('display', 'none');
@@ -1576,7 +1646,11 @@
     };
 
     Dropzone.options.myAwesomeDropzone2 = {
-      url: '{{ route('form.upload') }}',
+      url: '{{
+      route(
+        'form.upload',
+      )
+    }}',
       headers: {
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
       },
@@ -1628,7 +1702,11 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
               },
               type: 'POST',
-              url: '{{ route('form.delete') }}',
+              url: '{{
+      route(
+        'form.delete',
+      )
+    }}',
               data: {
                 name: name
               },
@@ -1669,9 +1747,7 @@
             let val1 = file.name;
             $('#dropzone_preview2').css('display', 'block');
             $('#dropzone-att').removeClass('form-focus-error');
-            $('#dropzone-att')
-              .find('.form-error-message')
-              .css('display', 'none');
+            $('#dropzone-att').find('.form-error-message').css('display', 'none');
             $('#dropzone-att').css('border', 'solid 1px green');
             if (document.getElementsByName('imgFiles2[]').length) {
               //$('#error_div').css('display', 'none');
@@ -1790,13 +1866,11 @@
         const photoActive =
           $photoWrapper.length &&
           $photoWrapper.is(':visible') &&
-          !$photoWrapper.find('input, textarea, select').filter(':enabled')
-            .length;
+          !$photoWrapper.find('input, textarea, select').filter(':enabled').length;
         const slipActive =
           $slipWrapper.length &&
           $slipWrapper.is(':visible') &&
-          !$slipWrapper.find('input, textarea, select').filter(':enabled')
-            .length;
+          !$slipWrapper.find('input, textarea, select').filter(':enabled').length;
 
         let missing = false;
 
@@ -1906,17 +1980,13 @@
       } else {
         if (!document.getElementsByName('imgFiles[]').length) {
           $('#dropzone-photo').addClass('form-focus-error');
-          $('#dropzone-photo')
-            .find('.form-error-message')
-            .css('display', 'block');
+          $('#dropzone-photo').find('.form-error-message').css('display', 'block');
           $('#dropzone-photo').css('border', 'solid 1px red');
           jumpTo('dphoto');
         }
         if (!document.getElementsByName('imgFiles2[]').length) {
           $('#dropzone-att').addClass('form-focus-error');
-          $('#dropzone-att')
-            .find('.form-error-message')
-            .css('display', 'block');
+          $('#dropzone-att').find('.form-error-message').css('display', 'block');
           $('#dropzone-att').css('border', 'solid 1px red');
           jumpTo('datt');
         }
@@ -1952,13 +2022,13 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     // Package-Grade linking data
-    const packageGradeLinks = @json($form->packages->mapWithKeys(function ($package) {
-      return [$package->id => $package->linked_grades];
-    }));
+    const packageGradeLinks = @json ($form->packages->mapWithKeys(function ($package) {
+        return [$package->id => $package->linked_grades];
+      }));
 
-    const gradeNameMap = @json($form->grades->mapWithKeys(function ($grade) {
-      return [$grade->id => $grade->grade];
-    }));
+    const gradeNameMap = @json ($form->grades->mapWithKeys(function ($grade) {
+        return [$grade->id => $grade->grade];
+      }));
 
     // Validate package selection against grade
     function validatePackageGradeCompatibility(

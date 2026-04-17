@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -10,7 +10,6 @@
     type="text/javascript"
   ></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <link
     rel="stylesheet"
@@ -26,7 +25,7 @@
   />
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -123,9 +122,7 @@
             <tr>
               <td colspan="2" align="center">Year</td>
               @for ($i = $year; $i <= $last_year; $i++)
-                <td align="center" colspan="{{ $year_span[$i] }}">
-                  {{ $i }}
-                </td>
+                <td align="center" colspan="{{ $year_span[$i] }}">{{ $i }}</td>
               @endfor
             </tr>
             <tr>
@@ -142,12 +139,16 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     function export_report() {
-      window.open(
-        '{{ route('course.show', ['type' => 'print', 'lang' => $lang, 'id' => $id]) }}'
-      );
+      window.open('{{
+      route('course.show', [
+        'type' => 'print',
+        'lang' => $lang,
+        'id' => $id,
+      ])
+    }}');
     }
   </script>
 @endsection

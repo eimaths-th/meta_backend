@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
@@ -47,7 +47,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -84,10 +84,7 @@
           <div class="card-body">
             <div class="tab-content">
               {{--  --}}
-              <canvas
-                id="barChart"
-                {{-- width="800" height="200" --}}
-              ></canvas>
+              <canvas id="barChart" {{-- width="800" height="200" --}}></canvas>
             </div>
           </div>
         </div>
@@ -183,8 +180,7 @@
           <div class="tab-pane fade" id="default-tab-1">
             <h3 class="mt-10px">
               <i class="fa fa-cog"></i>
-              ตารางค่าสมัครเรียนเดือน {{ thaidate('F', $month) }} {{ $year }}
-              (ยังไม่เสร้จ)
+              ตารางค่าสมัครเรียนเดือน {{ thaidate('F', $month) }} {{ $year }} (ยังไม่เสร้จ)
             </h3>
             <table
               style="width: 100%"
@@ -244,34 +240,52 @@
                         $class = 'text-blue';
                       }
                     @endphp
-
                     <tr>
                       <td class="text-center">{{ $key + 1 }}</td>
                       <td class="text-center">
-                        {{ $data->std->code ?? 'Null' }}
+                        {{
+                          $data->std->code ??
+                            'Null'
+                        }}
                       </td>
                       <td class="{{ $class }}">
-                        {{ $data->std->nick_name ?? 'Null' }}
+                        {{
+                          $data->std->nick_name ??
+                            'Null'
+                        }}
                       </td>
-                      <td>{{ $data->rec_school->submission_date }}</td>
+                      <td>
+                        {{
+                          $data->rec_school
+                            ->submission_date
+                        }}
+                      </td>
                       <td>{{ $data->period }}</td>
 
-                      <td>{{ $data->rec_school->receipt_number }}</td>
+                      <td>
+                        {{
+                          $data->rec_school
+                            ->receipt_number
+                        }}
+                      </td>
 
                       <td>{{ $data->group }}</td>
 
                       <td class="{{ $class }}">
                         {{-- @if ($data->std->status_log && $data->std->status_log->count() > 0 && $status->last()->group == $data->group) --}}
                         @if (
-
                           $data->std &&
                           $data->std->status_log &&
                           $data->std->status_log->count() > 0 &&
                           $status->last() &&
-                          $status->last()->group == $data->group                        )
-                          {{ $status->last()->status ?? 'Null' }}
+                          $status->last()->group == $data->group
+                        )
+                          {{
+                            $status->last()->status ??
+                              'Null'
+                          }}
                         @else
-                            null
+                          null
                         @endif
                       </td>
                       <td>{{ $data->course_type }}</td>
@@ -348,7 +362,12 @@
 
                   @for ($i = 1; $i <= 12; $i++)
                     <th data-orderable="false">
-                      {{ date('m', mktime(0, 0, 0, $i, 1, $currentYear)) }}-{{ $year }}
+                      {{
+                        date(
+                          'm',
+                          mktime(0, 0, 0, $i, 1, $currentYear),
+                        )
+                      }}-{{ $year }}
                     </th>
                   @endfor
 
@@ -364,19 +383,41 @@
                 @foreach ($reportYear_schoolPrice as $studentId => $groupedData)
                   <tr>
                     <td class="text-center">
-                      {{ $groupedData->first()->std->code ?? 'Null' }}
+                      {{
+                        $groupedData->first()->std->code ??
+                          'Null'
+                      }}
                     </td>
                     <td>
-                      {{ $groupedData->first()->std->nick_name ?? 'Null' }}
+                      {{
+                        $groupedData->first()->std->nick_name ??
+                          'Null'
+                      }}
                     </td>
                     <td>
-                      {{ $groupedData->first()->rec_school->submission_date }}
+                      {{
+                        $groupedData->first()->rec_school
+                          ->submission_date
+                      }}
                     </td>
                     <td>
-                      {{ $groupedData->last()->rec_school->submission_date }}
+                      {{
+                        $groupedData->last()->rec_school
+                          ->submission_date
+                      }}
                     </td>
-                    <td>{{ $groupedData->first()->period }}</td>
-                    <td>{{ $groupedData->last()->period }}</td>
+                    <td>
+                      {{
+                        $groupedData->first()
+                          ->period
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        $groupedData->last()
+                          ->period
+                      }}
+                    </td>
                     @for ($month = 1; $month <= 12; $month++)
                       <td>
                         @php
@@ -394,7 +435,10 @@
                               $periods = explode('-', $data1->period);
 
                               $startMonth = Carbon::parse("$periods[0]-$periods[1]")->format('Y-m');
-                              $endMonth = count($periods) > 2 ? Carbon::parse("$periods[2]-$periods[3]")->format('Y-m') : $startMonth;
+                              $endMonth =
+                                count($periods) > 2
+                                  ? Carbon::parse("$periods[2]-$periods[3]")->format('Y-m')
+                                  : $startMonth;
                             } else {
                               $startMonth = Carbon::parse($period[0])->format('Y-m');
                               $endMonth = Carbon::parse($period[1])->format('Y-m');
@@ -403,10 +447,15 @@
                             $isInMonthRange = $currentMY >= $startMonth && $currentMY <= $endMonth;
 
                             if ($isInMonthRange) {
-                              $groupMark = $data1->group === 'CHN' ? 'C' : ($data1->group === 'Sci' ? 'S' : $data1->group);
+                              $groupMark =
+                                $data1->group === 'CHN'
+                                  ? 'C'
+                                  : ($data1->group === 'Sci'
+                                    ? 'S'
+                                    : $data1->group);
                               $groupClass = 'text-success';
 
-                              if (! in_array($groupMark, $mark)) {
+                              if (!in_array($groupMark, $mark)) {
                                 $mark[] = $groupMark;
                               }
                             }
@@ -447,8 +496,7 @@
             <blockquote class="blockquote">
               <div class="d-flex justify-content-between align-items-center">
                 <p class="mb-0">
-                  ตารางแสดงผลบันทึกใบปะหน้าประจำเดือน
-                  {{ thaidate('F', date('F')) }} {{ date('Y') }}
+                  ตารางแสดงผลบันทึกใบปะหน้าประจำเดือน {{ thaidate('F', date('F')) }} {{ date('Y') }}
                 </p>
               </div>
             </blockquote>
@@ -477,13 +525,31 @@
                     <td class="text-center">{{ $key + 1 }}</td>
                     <td class="text-center">{{ $paper_rep->no }}</td>
                     <td>{{ $paper_rep->submission_date }}</td>
-                    <td>{{ $paper_rep->student->nick_name }}</td>
+                    <td>
+                      {{
+                        $paper_rep->student
+                          ->nick_name
+                      }}
+                    </td>
                     <td>{{ $paper_rep->receipt_number }}</td>
-                    <td>{{ $paper_rep->school_price->period ?? null }}</td>
-                    <td>{{ $paper_rep->school_price->group ?? null }}</td>
+                    <td>
+                      {{
+                        $paper_rep->school_price->period ??
+                          null
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        $paper_rep->school_price->group ??
+                          null
+                      }}
+                    </td>
                     <td class="text-end">
-                      {{ number_format($paper_rep->school_price->total) ?? null }}
-                      บาท
+                      {{
+                        number_format(
+                          $paper_rep->school_price->total,
+                        ) ?? null
+                      }} บาท
                     </td>
                   </tr>
                 @endforeach
@@ -496,7 +562,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   {{-- <script src="https://d3js.org/d3.v7.min.js"></script> --}}
   <script src="../assets/plugins/d3/d3.min.js"></script>
@@ -511,7 +577,6 @@
   <script src="../assets/plugins/flot/source/jquery.flot.drawSeries.js"></script>
   <script src="../assets/plugins/flot/source/jquery.flot.uiConstants.js"></script>
   <script src="/assets/plugins/switchery/dist/switchery.min.js"></script>
-
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -591,24 +656,32 @@
   </script>
   <script>
     var groupLabels = [
-        @foreach ($totalForAllMonths as $month => $total)
+      @foreach ($totalForAllMonths as $month => $total)
 
-            '{{ $month }} ',
-        @endforeach
+      '{{ $month }} '
+      @endforeach
     ];
 
     var groupLabels2 = [
-        @foreach ($totalForAllMonths as $month => $total)
-            @if (isset($percentageChangeForAllMonths[$month]))
-                @if ($percentageChangeForAllMonths[$month] > 0)
-                    '{{ $month }}\n+{{ $percentageChangeForAllMonths[$month] }}%',
-                @else
-                    '{{ $month }}\n{{ $percentageChangeForAllMonths[$month] }}%',
-                @endif
-            @else
-                '{{ $month }}  ',
-            @endif
-        @endforeach
+      @foreach ($totalForAllMonths as $month => $total)
+      @if (isset($percentageChangeForAllMonths[$month]))
+      @if ($percentageChangeForAllMonths[$month] > 0)
+      '{{ $month }}\n+{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}%',
+      @else
+      '{{ $month }}\n{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}%',
+      @endif
+      @else
+      '{{ $month }}  '
+      @endif
+      @endforeach
     ];
 
     // var data = {
@@ -630,118 +703,128 @@
     // };
     var ctx = document.getElementById('lineChart').getContext('2d');
     var lineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: groupLabels2,
-            // label: groupLabels,
-            datasets: [{
-                label: 'ยอดรวมแต่ละเดือน ',
-                data: [
-                    @foreach ($totalForAllMonths as $month => $total)
-                        {{ $total }},
-                    @endforeach
-                ],
-                pointBackgroundColor: 'rgba(52, 143, 226,.65)',
-                borderColor: 'rgba(52, 143, 226,.65)',
-                backgroundColor: 'rgba(52, 143, 226,.65)',
-                pointRadius: 4,
-                borderWidth: 2,
-            }, ]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                tooltip: {
-                    mode: 'index', // Display multiple tooltips at once
-                    intersect: false, // Don't intersect with other elements
-                },
-                // title: {
-                //     display: true,
-                //     text: 'Chart Title',
-                // },
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-            },
-            animation: {
-                duration: 2000, // Animation duration in milliseconds
-                easing: 'easeInOutQuad', // Easing function
-            },
-
-        }
-    });
-  </script>
-
-  <script>
-    var groupLabels = [
-        @foreach ($totalForAllMonths as $month => $total)
-            '{{ $month }}',
-        @endforeach
-    ];
-    var groupLabels2 = [
-        @foreach ($totalForAllMonths as $month => $total)
-            @if (isset($percentageChangeForAllMonths[$month]))
-                @if ($percentageChangeForAllMonths[$month] > 0)
-                    '{{ $month }}\n+{{ $percentageChangeForAllMonths[$month] }}%',
-                @else
-                    '{{ $month }}\n{{ $percentageChangeForAllMonths[$month] }}%',
-                @endif
-            @else
-                '{{ $month }}  ',
-            @endif
-        @endforeach
-    ];
-
-    var data = {
+      type: 'line',
+      data: {
         labels: groupLabels2,
-        datasets: [{
+        // label: groupLabels,
+        datasets: [
+          {
             label: 'ยอดรวมแต่ละเดือน ',
             data: [
-                @foreach ($totalForAllMonths as $month => $total)
-                    {{ $total }},
-                @endforeach
+              @foreach ($totalForAllMonths as $month => $total)
+              {{ $total }}
+              @endforeach
             ],
             pointBackgroundColor: 'rgba(52, 143, 226,.65)',
             borderColor: 'rgba(52, 143, 226,.65)',
             backgroundColor: 'rgba(52, 143, 226,.65)',
             pointRadius: 4,
-            borderWidth: 2,
-        }]
+            borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          tooltip: {
+            mode: 'index', // Display multiple tooltips at once
+            intersect: false // Don't intersect with other elements
+          },
+          // title: {
+          //     display: true,
+          //     text: 'Chart Title',
+          // },
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        },
+        animation: {
+          duration: 2000, // Animation duration in milliseconds
+          easing: 'easeInOutQuad' // Easing function
+        }
+      }
+    });
+  </script>
+  <script>
+    var groupLabels = [
+      @foreach ($totalForAllMonths as $month => $total)
+      '{{ $month }}'
+      @endforeach
+    ];
+    var groupLabels2 = [
+      @foreach ($totalForAllMonths as $month => $total)
+      @if (isset($percentageChangeForAllMonths[$month]))
+      @if ($percentageChangeForAllMonths[$month] > 0)
+      '{{ $month }}\n+{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}%',
+      @else
+      '{{ $month }}\n{{
+      $percentageChangeForAllMonths[
+        $month
+      ]
+    }}%',
+      @endif
+      @else
+      '{{ $month }}  '
+      @endif
+      @endforeach
+    ];
+
+    var data = {
+      labels: groupLabels2,
+      datasets: [
+        {
+          label: 'ยอดรวมแต่ละเดือน ',
+          data: [
+            @foreach ($totalForAllMonths as $month => $total)
+            {{ $total }}
+            @endforeach
+          ],
+          pointBackgroundColor: 'rgba(52, 143, 226,.65)',
+          borderColor: 'rgba(52, 143, 226,.65)',
+          backgroundColor: 'rgba(52, 143, 226,.65)',
+          pointRadius: 4,
+          borderWidth: 2
+        }
+      ]
     };
     var ctx = document.getElementById('barChart').getContext('2d');
     var barChart = new Chart(ctx, {
-        type: 'bar',
-        data: data,
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                tooltip: {
-                    mode: 'index', // Display multiple tooltips at once
-                    intersect: false, // Don't intersect with other elements
-                },
-                // title: {
-                //     display: true,
-                //     text: 'Chart Title',
-                // },
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-            },
-            animation: {
-                duration: 2000, // Animation duration in milliseconds
-                easing: 'easeInOutQuad', // Easing function
-            },
+      type: 'bar',
+      data: data,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          tooltip: {
+            mode: 'index', // Display multiple tooltips at once
+            intersect: false // Don't intersect with other elements
+          },
+          // title: {
+          //     display: true,
+          //     text: 'Chart Title',
+          // },
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        },
+        animation: {
+          duration: 2000, // Animation duration in milliseconds
+          easing: 'easeInOutQuad' // Easing function
         }
+      }
     });
   </script>
 @endsection

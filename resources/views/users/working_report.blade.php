@@ -1,8 +1,7 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <!-- Stylesheets -->
-
   <link
     rel="stylesheet"
     href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css"
@@ -21,7 +20,6 @@
   />
   <link href="../assets/plugins/nvd3/build/nv.d3.css" rel="stylesheet" />
   {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css"> --}}
-
   <link
     href="/assets/plugins/@fullcalendar/common/main.min.css"
     rel="stylesheet"
@@ -44,7 +42,6 @@
   />
   {{-- <link href="/assets/css/vendor.min.css" rel="stylesheet" /> --}}
   {{-- <link href="/assets/css/default/app.min.css" rel="stylesheet" /> --}}
-
   <style>
     @media screen and (max-width: 100px) {
       .screen-auto {
@@ -72,7 +69,7 @@
   --}}
 @endsection
 
-@section('content')
+@section ('content')
   <div class="app-page-title">
     <div class="page-title-wrapper">
       <div class="page-title-heading">
@@ -86,7 +83,6 @@
       </div>
     </div>
   </div>
-
   {{--
     <div class="main-card mb-3 card">
     <div class="card-header-tab card-header-tab-animation card-header">
@@ -169,7 +165,6 @@
     </div>
     </div>
   --}}
-
   {{--
     <div class="main-card mb-3 card">
     <div class="card-header-tab card-header-tab-animation card-header">
@@ -251,7 +246,6 @@
     </div>
     </div>
   --}}
-
   <div class="main-card card mb-3">
     <div class="card-header-tab card-header-tab-animation card-header">
       <div class="card-header-title">
@@ -275,7 +269,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-heading text-success">
-                        {{ $rec_times['ปกติ'] ?? 0 }}
+                        {{
+                          $rec_times['ปกติ'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -292,7 +289,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-heading text-warning">
-                        {{ $rec_times['สาย'] ?? 0 }}
+                        {{
+                          $rec_times['สาย'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -316,7 +316,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-primary">
-                        {{ $rec_times['OT'] ?? 0 }}
+                        {{
+                          $rec_times['OT'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -333,7 +336,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-primary">
-                        {{ $rec_times['ชดเชย'] ?? 0 }}
+                        {{
+                          $rec_times['ชดเชย'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -356,7 +362,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-warning">
-                        {{ $rec_times['ออกก่อน'] ?? 0 }}
+                        {{
+                          $rec_times['ออกก่อน'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -373,7 +382,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-warning">
-                        {{ $rec_times['ลาครึ่งวัน'] ?? 0 }}
+                        {{
+                          $rec_times['ลาครึ่งวัน'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -398,7 +410,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-warning">
-                        {{ $rec_times['ไม่แสกนออก'] ?? 0 }}
+                        {{
+                          $rec_times['ไม่แสกนออก'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -417,7 +432,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-warning">
-                        {{ $rec_times['ไม่แสกนเข้า'] ?? 0 }}
+                        {{
+                          $rec_times['ไม่แสกนเข้า'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -442,7 +460,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-danger">
-                        {{ $rec_times['ขาดงาน'] ?? 0 }}
+                        {{
+                          $rec_times['ขาดงาน'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -470,7 +491,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-danger">
-                        {{ $rec_times['ลาป่วย'] ?? 0 }}
+                        {{
+                          $rec_times['ลาป่วย'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -504,7 +528,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-danger">
-                        {{ $rec_times['ลาพักร้อน'] ?? 0 }}
+                        {{
+                          $rec_times['ลาพักร้อน'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -533,7 +560,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-danger">
-                        {{ $rec_times['ลากิจ'] ?? 0 }}
+                        {{
+                          $rec_times['ลากิจ'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -555,7 +585,10 @@
           </div>
           <div class="widget-content-right">
             <div class="widget-numbers text-warning">
-              <span>{{ $rec_times['วันหยุด'] ?? 0 }}</span>
+              <span>{{
+                $rec_times['วันหยุด'] ??
+                  0
+              }}</span>
             </div>
           </div>
         </div>
@@ -575,7 +608,6 @@
     </div>
     </div>
   --}}
-
   <div class="main-card card mb-3">
     <div class="card-header-tab card-header-tab-animation card-header">
       <div class="card-header-title">
@@ -599,7 +631,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-heading text-success">
-                        {{ $rec_times_year['ปกติ'] ?? 0 }}
+                        {{
+                          $rec_times_year['ปกติ'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -616,7 +651,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-heading text-warning">
-                        {{ $rec_times_year['สาย'] ?? 0 }}
+                        {{
+                          $rec_times_year['สาย'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -640,7 +678,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-primary">
-                        {{ $rec_times_year['OT'] ?? 0 }}
+                        {{
+                          $rec_times_year['OT'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -657,7 +698,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-primary">
-                        {{ $rec_times_year['ชดเชย'] ?? 0 }}
+                        {{
+                          $rec_times_year['ชดเชย'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -680,7 +724,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-warning">
-                        {{ $rec_times_year['ออกก่อน'] ?? 0 }}
+                        {{
+                          $rec_times_year['ออกก่อน'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -697,7 +744,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-warning">
-                        {{ $rec_times_year['ลาครึ่งวัน'] ?? 0 }}
+                        {{
+                          $rec_times_year['ลาครึ่งวัน'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -722,7 +772,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-warning">
-                        {{ $rec_times_year['ไม่แสกนออก'] ?? 0 }}
+                        {{
+                          $rec_times_year['ไม่แสกนออก'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -741,7 +794,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-warning">
-                        {{ $rec_times_year['ไม่แสกนเข้า'] ?? 0 }}
+                        {{
+                          $rec_times_year['ไม่แสกนเข้า'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -766,7 +822,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-danger">
-                        {{ $rec_times_year['ขาดงาน'] ?? 0 }}
+                        {{
+                          $rec_times_year['ขาดงาน'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -794,7 +853,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-danger">
-                        {{ $rec_times_year['ลาป่วย'] ?? 0 }}
+                        {{
+                          $rec_times_year['ลาป่วย'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -828,7 +890,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-danger">
-                        {{ $rec_times_year['ลาพักร้อน'] ?? 0 }}
+                        {{
+                          $rec_times_year['ลาพักร้อน'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -856,7 +921,10 @@
                     </div>
                     <div class="widget-content-right">
                       <div class="widget-numbers text-danger">
-                        {{ $rec_times_year['ลากิจ'] ?? 0 }}
+                        {{
+                          $rec_times_year['ลากิจ'] ??
+                            0
+                        }}
                       </div>
                     </div>
                   </div>
@@ -878,18 +946,18 @@
           </div>
           <div class="widget-content-right">
             <div class="widget-numbers text-warning">
-              <span>{{ $rec_times_year['วันหยุด'] ?? 0 }}</span>
+              <span>{{
+                $rec_times_year['วันหยุด'] ??
+                  0
+              }}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
   {{-- <button class="btn btn-warning mb-5" id="clearEventsButton">Clear</button> --}}
-
   <!-- breadcrumb -->
-
   {{--
     <div id="calendar1">
     <div class="app-page-title">
@@ -950,9 +1018,7 @@
     </div>
     </div>
   --}}
-
   <!-- END breadcrumb -->
-
   <div class="main-card card mb-3">
     <div id="calendar2">
       <div class="card-header-tab card-header-tab-animation card-header mb-3">
@@ -969,7 +1035,6 @@
       </div>
     </div>
   </div>
-
   {{--
     <div id="calendar2" class="mb-5">
     <ol class="breadcrumb float-xl-end">
@@ -1077,111 +1142,112 @@
   </script>
   @endsection
 --}}
-@section('script')
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/index.global.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.11/index.global.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.11/index.global.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.11/index.global.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/list@6.1.11/index.global.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/multimonth@6.1.11/index.global.min.js"></script>
-  {{-- <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap@6.1.11/index.global.min.js'></script> --}}
+@section ('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.11/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.11/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.11/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/list@6.1.11/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/multimonth@6.1.11/index.global.min.js"></script>
+{{-- <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap@6.1.11/index.global.min.js'></script> --}}
 
-  <!-- Include other plugins as needed -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('hello world !!');
+<!-- Include other plugins as needed -->
+<script>
+      document.addEventListener('DOMContentLoaded', function() {
+          console.log('hello world !!');
 
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            // initialDate: '2024-02-07',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth'
-            },
-            events: [
+          var calendarEl = document.getElementById('calendar');
+          var calendar = new FullCalendar.Calendar(calendarEl, {
+              initialView: 'dayGridMonth',
+              // initialDate: '2024-02-07',
+              headerToolbar: {
+                  left: 'prev,next today',
+                  center: 'title',
+                  right: 'dayGridMonth'
+              },
+              events: [
 
-                @php
-                    foreach ($rec_times_years as $rec_years) {
-                        $class = '';
-                        switch ($rec_years->status) {
-                            case 1:
-                                $color = 'rgba(58, 196, 125, 0.8)';
-                                break;
+                  @php
+                      foreach ($rec_times_years as $rec_years) {
+                          $class = '';
+                          switch ($rec_years->status) {
+                              case 1:
+                                  $color = 'rgba(58, 196, 125, 0.8)';
+                                  break;
 
-                            case 2:
-                            case 3:
-                            case 4:
-                            case 13:
-                                $color = 'rgba(247, 185, 36, 0.8)';
+                              case 2:
+                              case 3:
+                              case 4:
+                              case 13:
+                                  $color = 'rgba(247, 185, 36, 0.8)';
 
-                                break;
+                                  break;
 
-                            case 5:
-                            case 6:
-                            case 7:
-                            case 8:
-                            case 9:
-                                $color = 'rgba(255, 91, 87,0.8)';
+                              case 5:
+                              case 6:
+                              case 7:
+                              case 8:
+                              case 9:
+                                  $color = 'rgba(255, 91, 87,0.8)';
 
-                                break;
+                                  break;
 
-                            case 11:
-                            case 12:
-                                $color = 'rgba(63, 106, 216, 0.8)';
-                                break;
+                              case 11:
+                              case 12:
+                                  $color = 'rgba(63, 106, 216, 0.8)';
+                                  break;
 
-                            case 10:
-                                $color = 'rgba(52, 58, 64, 0.8)';
+                              case 10:
+                                  $color = 'rgba(52, 58, 64, 0.8)';
 
-                                break;
+                                  break;
 
-                            default:
-                                break;
-                        }
-                        $text_late = '';
-                        if ($rec_years->late_time) {
-                            $text_late = ' : ' . $rec_years->late_time . ' นาที';
-                        }
+                              default:
+                                  break;
+                          }
+                          $text_late = '';
+                          if ($rec_years->late_time) {
+                              $text_late = ' : ' . $rec_years->late_time . ' นาที';
+                          }
 
-                        echo '{';
-                        echo "title: '{$rec_years->status_name} {$text_late}',";
-                        echo "start: '{$rec_years->date}',";
-                        echo "color: '{$color}'";
-                        echo '},';
-                    }
-                @endphp
+                          echo '{';
+                          echo "title: '{$rec_years->status_name} {$text_late}',";
+                          echo "start: '{$rec_years->date}',";
+                          echo "color: '{$color}'";
+                          echo '},';
+                      }
+                  @endphp
 
-                // {
-                //     title: 'สาย : 5 นาที',
-                //     start: '2024-03-10',
-                //     color: 'rgba(255, 91, 87,0.8)',
-                // },
+                  // {
+                  //     title: 'สาย : 5 นาที',
+                  //     start: '2024-03-10',
+                  //     color: 'rgba(255, 91, 87,0.8)',
+                  // },
 
-            ]
-        });
-        calendar.render();
+              ]
+          });
+          calendar.render();
 
-        document.getElementById('clearEventsButton').addEventListener('click', function() {
-            console.log('Event listener triggered');
-            clearAllEvents();
-        });
+          document.getElementById('clearEventsButton').addEventListener('click', function() {
+              console.log('Event listener triggered');
+              clearAllEvents();
+          });
 
-        // Function to clear all events
-        function clearAllEvents() {
-            calendar.getEvents().forEach(function(event) {
-                event.remove();
-            });
+          // Function to clear all events
+          function clearAllEvents() {
+              calendar.getEvents().forEach(function(event) {
+                  event.remove();
+              });
 
-            // Clear the events array and re-render the calendar
-            calendar.setOption('events', []);
-            calendar.render();
-        }
+              // Clear the events array and re-render the calendar
+              calendar.setOption('events', []);
+              calendar.render();
+          }
 
-        // Render the calendar
-        // calendar.render();
-    });
-  </script>
-@endsection
+          // Render the calendar
+          // calendar.render();
+      });
+    </script>
+  @endsection
+

@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
@@ -13,7 +13,6 @@
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
   <script src="https://malsup.github.io/jquery.blockUI.js"></script>
   <script src="/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
-
   <link
     rel="stylesheet"
     href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css"
@@ -28,7 +27,7 @@
   />
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -161,14 +160,44 @@
             @foreach ($bonus as $key => $record)
               <tr>
                 <td align="center">{{ $key + 1 }}</td>
-                <td align="center">{{ $record->student->code }}</td>
-                <td>{{ $record->student->full_name }}</td>
-                <td>{{ $record->student->nick_name }}</td>
-                <td>{{ $record->school_p->period }}</td>
-                <td>{{ $record->school_p->school_sub->title }}</td>
+                <td align="center">
+                  {{
+                    $record->student
+                      ->code
+                  }}
+                </td>
+                <td>
+                  {{
+                    $record->student
+                      ->full_name
+                  }}
+                </td>
+                <td>
+                  {{
+                    $record->student
+                      ->nick_name
+                  }}
+                </td>
+                <td>
+                  {{
+                    $record->school_p
+                      ->period
+                  }}
+                </td>
+                <td>
+                  {{
+                    $record->school_p->school_sub
+                      ->title
+                  }}
+                </td>
                 <td>{{ $record->bonus }} ครั้ง</td>
                 <td>{{ $record->detail }}</td>
-                <td>{{ $record->user->name }}</td>
+                <td>
+                  {{
+                    $record->user
+                      ->name
+                  }}
+                </td>
                 <td>
                   <!-- delete btn $record->id -->
                   <form
@@ -181,7 +210,7 @@
                     "
                   >
                     @csrf
-                    @method('DELETE')
+                    @method ('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>
                   </form>
                 </td>
@@ -192,7 +221,6 @@
       </div>
     </div>
   </div>
-
   <div class="body-block-example-2" style="display: none" id="loder_bar">
     <br />
     <div class="loader" id="loder_bar_div">
@@ -210,7 +238,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     $(document).ready(function () {
       $('.select2_single').select2({

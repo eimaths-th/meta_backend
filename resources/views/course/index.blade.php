@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -11,7 +11,6 @@
   ></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/jquery.inputmask.min.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <link
     rel="stylesheet"
@@ -27,7 +26,7 @@
   />
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -85,7 +84,7 @@
           id="delete_all"
         >
           @csrf
-          @method('DELETE')
+          @method ('DELETE')
           <table
             style="width: 100%"
             id="Listview"
@@ -110,9 +109,7 @@
       </div>
     </div>
   </div>
-
   <!-- Simulate Modal -->
-
   <div
     class="fade modal bd-example-modal-lg"
     tabindex="-1"
@@ -195,7 +192,11 @@
                 @foreach ($data as $key)
                   <option
                     value="{{ $key->id }}"
-                    {{ request()->get('id') == $key->id ? 'selected' : '' }}
+                    {{
+                      request()->get('id') == $key->id
+                        ? 'selected'
+                        : ''
+                    }}
                   >
                     {{ $key->title }}
                   </option>
@@ -259,9 +260,7 @@
       </form>
     </div>
   </div>
-
   <!-- Create Modal -->
-
   <div
     class="fade modal bd-example-modal-lg"
     tabindex="-1"
@@ -325,8 +324,7 @@
                 <!--<option value="" selected>Select Student</option>-->
                 @foreach ($data2 as $key2)
                   <option value="{{ $key2->id }}">
-                    {{ $key2->code }} {{ $key2->first_name }}
-                    {{ $key2->last_name }}
+                    {{ $key2->code }} {{ $key2->first_name }} {{ $key2->last_name }}
                   </option>
                 @endforeach
               </select>
@@ -342,7 +340,11 @@
                 @foreach ($data as $key)
                   <option
                     value="{{ $key->id }}"
-                    {{ request()->get('id') == $key->id ? 'selected' : '' }}
+                    {{
+                      request()->get('id') == $key->id
+                        ? 'selected'
+                        : ''
+                    }}
                   >
                     {{ $key->title }}
                   </option>
@@ -390,7 +392,6 @@
       </form>
     </div>
   </div>
-
   <!-- Edit  Modal -->
   <div
     class="fade modal"
@@ -510,7 +511,7 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     $(document).ready(function () {
       $('.AddDate').datepicker({
@@ -723,7 +724,12 @@
         $('.alert-success').hide();
 
         $.ajax({
-          url: '{{ route('course.simulate', ['type' => 'view', 'lang' => 'en']) }}',
+          url: '{{
+      route('course.simulate', [
+        'type' => 'view',
+        'lang' => 'en',
+      ])
+    }}',
           method: 'get',
           data: {
             student: $('#SStudent').val(),
@@ -738,9 +744,7 @@
             $('.alert-danger').html('');
             $.each(result.errors, function (key, value) {
               $('.alert-danger').show();
-              $('.alert-danger').append(
-                '<strong><li>' + value + '</li></strong>'
-              );
+              $('.alert-danger').append('<strong><li>' + value + '</li></strong>');
             });
           }
         });
@@ -755,7 +759,11 @@
         $('.alert-success').hide();
 
         $.ajax({
-          url: '{{ route('course.store') }}',
+          url: '{{
+      route(
+        'course.store',
+      )
+    }}',
           method: 'post',
           data: {
             student: $('#AddStudent').val()[0],

@@ -1,6 +1,6 @@
-﻿@extends('layouts.form')
+﻿@extends ('layouts.form')
 
-@section('style')
+@section ('style')
   <style>
     :root {
       --color-default: grey;
@@ -587,7 +587,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div id="loader-container" style="display: none">
     <div id="loader" class="spinner"></div>
     <p id="loading-message">Please wait, your request is being processed...</p>
@@ -633,13 +633,21 @@
               <div class="col-md-10 div_center" data-layout="full">
                 @if (session('warning'))
                   <div class="alert alert-warning">
-                    {!! nl2br(e(session('warning'))) !!}
+                    {!!
+                      nl2br(
+                        e(session('warning')),
+                      )
+                    !!}
                   </div>
                 @endif
 
                 @if (session('error'))
                   <div class="alert alert-danger">
-                    {!! nl2br(e(session('error'))) !!}
+                    {!!
+                      nl2br(
+                        e(session('error')),
+                      )
+                    !!}
                   </div>
                 @endif
 
@@ -1754,7 +1762,11 @@
     let imgFiles2 = document.getElementsByName('imgFiles2[]');
 
     Dropzone.options.myAwesomeDropzone = {
-      url: '{{ route('form.upload') }}',
+      url: '{{
+      route(
+        'form.upload',
+      )
+    }}',
       headers: {
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
       },
@@ -1807,7 +1819,11 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
               },
               type: 'POST',
-              url: '{{ route('form.delete') }}',
+              url: '{{
+      route(
+        'form.delete',
+      )
+    }}',
               data: {
                 name: name
               },
@@ -1846,9 +1862,7 @@
             let val1 = file.name;
             $('#dropzone_preview').css('display', 'block');
             $('#dropzone-photo').removeClass('form-focus-error');
-            $('#dropzone-photo')
-              .find('.form-error-message')
-              .css('display', 'none');
+            $('#dropzone-photo').find('.form-error-message').css('display', 'none');
             $('#dropzone-photo').css('border', 'solid 1px green');
             if (document.getElementsByName('imgFiles[]').length) {
               //$('#error_div').css('display', 'none');
@@ -1884,7 +1898,11 @@
     };
 
     Dropzone.options.myAwesomeDropzone2 = {
-      url: '{{ route('form.upload') }}',
+      url: '{{
+      route(
+        'form.upload',
+      )
+    }}',
       headers: {
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
       },
@@ -1936,7 +1954,11 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
               },
               type: 'POST',
-              url: '{{ route('form.delete') }}',
+              url: '{{
+      route(
+        'form.delete',
+      )
+    }}',
               data: {
                 name: name
               },
@@ -1977,9 +1999,7 @@
             let val1 = file.name;
             $('#dropzone_preview2').css('display', 'block');
             $('#dropzone-att').removeClass('form-focus-error');
-            $('#dropzone-att')
-              .find('.form-error-message')
-              .css('display', 'none');
+            $('#dropzone-att').find('.form-error-message').css('display', 'none');
             $('#dropzone-att').css('border', 'solid 1px green');
             if (document.getElementsByName('imgFiles2[]').length) {
               //$('#error_div').css('display', 'none');
@@ -2098,17 +2118,13 @@
       } else {
         if (!document.getElementsByName('imgFiles[]').length) {
           $('#dropzone-photo').addClass('form-focus-error');
-          $('#dropzone-photo')
-            .find('.form-error-message')
-            .css('display', 'block');
+          $('#dropzone-photo').find('.form-error-message').css('display', 'block');
           $('#dropzone-photo').css('border', 'solid 1px red');
           jumpTo('dphoto');
         }
         if (!document.getElementsByName('imgFiles2[]').length) {
           $('#dropzone-att').addClass('form-focus-error');
-          $('#dropzone-att')
-            .find('.form-error-message')
-            .css('display', 'block');
+          $('#dropzone-att').find('.form-error-message').css('display', 'block');
           $('#dropzone-att').css('border', 'solid 1px red');
           jumpTo('datt');
         }

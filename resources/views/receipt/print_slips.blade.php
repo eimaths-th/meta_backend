@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -10,7 +10,6 @@
     type="text/javascript"
   ></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <link
     rel="stylesheet"
@@ -65,7 +64,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -169,8 +168,7 @@
             <td align="right" class="grey">ชื่อนักเรียน/Nickname</td>
             <td align="left" width="30%">
               <b>
-                {{ $data->first_name }} {{ $data->middle_name }}
-                {{ $data->last_name }}
+                {{ $data->first_name }} {{ $data->middle_name }} {{ $data->last_name }}
               </b>
             </td>
             <td align="right" class="grey">วันที่ / Date</td>
@@ -243,15 +241,53 @@
             @foreach ($receipt_detail_arr as $receipt_detail)
               <tr>
                 <td align="center" style="vertical-align: top">
-                  {{ $receipt_detail['no'] }}
+                  {{
+                    $receipt_detail[
+                      'no'
+                    ]
+                  }}
                 </td>
-                <td align="left">{!! $receipt_detail['description'] !!}</td>
-                <td align="center">{{ $receipt_detail['quantity'] }}</td>
-                <td align="center">{{ $receipt_detail['unit'] }}</td>
-                <td align="center">{{ $receipt_detail['unitprice'] }}</td>
-                <td align="center">{{ $receipt_detail['discount'] }}</td>
+                <td align="left">
+                  {!!
+                    $receipt_detail[
+                      'description'
+                    ]
+                  !!}
+                </td>
+                <td align="center">
+                  {{
+                    $receipt_detail[
+                      'quantity'
+                    ]
+                  }}
+                </td>
+                <td align="center">
+                  {{
+                    $receipt_detail[
+                      'unit'
+                    ]
+                  }}
+                </td>
+                <td align="center">
+                  {{
+                    $receipt_detail[
+                      'unitprice'
+                    ]
+                  }}
+                </td>
+                <td align="center">
+                  {{
+                    $receipt_detail[
+                      'discount'
+                    ]
+                  }}
+                </td>
                 <td align="center" style="vertical-align: top">
-                  {{ $receipt_detail['price'] }}
+                  {{
+                    $receipt_detail[
+                      'price'
+                    ]
+                  }}
                 </td>
               </tr>
             @endforeach
@@ -369,7 +405,10 @@
                       ภาษีมูลค่าเพิ่ม 7% / Vat 7%
                     </td>
                     <td width="20%" align="right" style="padding-right: 35px">
-                      <b>{{ $vat_val ?? 'null' }}</b>
+                      <b>{{
+                        $vat_val ??
+                          'null'
+                      }}</b>
                     </td>
                   </tr>
                 </table>
@@ -450,12 +489,15 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     function export_report() {
-      window.open(
-        '{{ route('receipts.show', ['type' => 'print', 'id' => $id]) }}'
-      );
+      window.open('{{
+      route('receipts.show', [
+        'type' => 'print',
+        'id' => $id,
+      ])
+    }}');
     }
   </script>
 @endsection

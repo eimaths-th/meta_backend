@@ -1,7 +1,7 @@
-﻿@extends('layouts.form')
+﻿@extends ('layouts.form')
 
-@section('style')
-<style>
+@section ('style')
+  <style>
     :root {
         --color-default: grey;
         --color-invalid: red;
@@ -528,45 +528,63 @@
         background: rgba(0, 0, 0, 0.75) url(images/loading2.gif) no-repeat center center;
         z-index: 10000;
     }
-</style>
+  </style>
 @endsection
 
-
-@section('content')
-<div id="loader"></div>
-<div class="error_div" id="error_div"><br>There are errors in this page. Please correct them before moving on.</div>
-<div class="container">
+@section ('content')
+  <div id="loader"></div>
+  <div class="error_div" id="error_div">
+    <br />There are errors in this page. Please correct them before moving on.
+  </div>
+  <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-9">
-            <div class="card bg-light2 mb-3 ">
-            <div align="center"><img src="{{ asset('images/') }}" alt="..." width="50%"></div>
-            <form id="infinite" method="POST" action="{{ route('form.store') }}" onsubmit="return check_input();">
-                @csrf
-                <div class="card-body">
-                    <br>
-                    <div class="text-center">
-                        <h4 class="card-title form_header">STEMCO Science {{ date('Y') }} Registration</h4>
-                        <p class="card-text form_sub_header"><b>Fill out the form carefully for registration</b></p>
-                    </div>
-                    <br>
-                    <hr />
+      <div class="col-md-9">
+        <div class="card bg-light2 mb-3">
+          <div align="center">
+            <img src="{{ asset('images/') }}" alt="..." width="50%" />
+          </div>
+          <form
+            id="infinite"
+            method="POST"
+            action="{{ route('form.store') }}"
+            onsubmit="return check_input();"
+          >
+            @csrf
+            <div class="card-body">
+              <br />
+              <div class="text-center">
+                <h4 class="card-title form_header">
+                  STEMCO Science {{ date('Y') }} Registration
+                </h4>
+                <p class="card-text form_sub_header"><b>Fill out the form carefully for registration</b></p>
+              </div>
+              <br />
+              <hr />
 
-                    <div class="col-md-10 div_center" data-layout="full">
-                        @if(session('warning'))
-                            <div class="alert alert-warning">
-                                {!! nl2br(e(session('warning'))) !!}
-                            </div>
-                        @endif
-                        @if(session('error'))
-                            <div class="alert alert-danger">
-                                {!! nl2br(e(session('error'))) !!}
-                            </div>
-                        @endif
+              <div class="col-md-10 div_center" data-layout="full">
+                @if (session('warning'))
+                  <div class="alert alert-warning">
+                    {!!
+                      nl2br(
+                        e(session('warning')),
+                      )
+                    !!}
+                  </div>
+                @endif
+                @if (session('error'))
+                  <div class="alert alert-danger">
+                    {!!
+                      nl2br(
+                        e(session('error')),
+                      )
+                    !!}
+                  </div>
+                @endif
 
-                    <div class="col-md-10 div_center" data-layout="full">
-                        <div class="form-html" data-component="text" tabindex="0">
-                            <p style="text-align: center;"><span style="color: #6351a2;"><strong><span style="text-decoration: underline;">STEMCO Science {{ date('Y') }} Registration Form</span></strong></span></p>
-                            <!-- <p><strong><span style="color: #6351a2;"> โค้ดส่วนลดค่ะ ใช้ได้ตั้งแต่วันที่ 1 ก.ค. - 31 ก.ค.</span></strong></p>
+                <div class="col-md-10 div_center" data-layout="full">
+                  <div class="form-html" data-component="text" tabindex="0">
+                    <p style="text-align: center"><span style="color: #6351a2"><strong><span style="text-decoration: underline">STEMCO Science {{ date('Y') }} Registration Form</span></strong></span></p>
+                    <!-- <p><strong><span style="color: #6351a2;"> โค้ดส่วนลดค่ะ ใช้ได้ตั้งแต่วันที่ 1 ก.ค. - 31 ก.ค.</span></strong></p>
                             <p style="text-align: left;"><span style="color: #6351a2;">CEM100 ลด 100 บาท</span></p>
                             <p style="text-align: left;"><span style="color: #6351a2;">META200 ลด 200 บาท</span></p>
                             <p><strong><span style="color: #6351a2;">Contact Information&nbsp;</span></strong></p>
@@ -575,22 +593,24 @@
                             <p style="text-align: left;"><span style="color: #6351a2;"> 💌Line: <a href="https://lin.ee/NUrW1nX" target="_blank">https://lin.ee/NUrW1nX</a></span></p>
                             <p style="text-align: left;"><span style="color: #6351a2;"> 📞<a href="tel:0933586333">Tel: 093 358 6333</a></span></p>
                             <br> -->
-                            <p style="text-align: left;">
-                                <span style="color: #6351a2;">
-                                    <strong>Registration Date:</strong>
-                                    @if ($date)
-                                    {{ $date }}
-                                    @else
-                                    Today - 20 September 2025 <br>
-                                    @endif
-                                </span>
-                            </p>
-                            <p>
-                                <span style="color: #6351a2;"><strong>Contest Date:</strong>&nbsp; 20 September 2025
-                                </span>
-                            </p>
-                            <p><strong><span style="color: #6351a2;">Registration Fee:</span></strong></p>
-                            <!-- <p>
+                    <p style="text-align: left">
+                      <span style="color: #6351a2">
+                        <strong>Registration Date:</strong>
+                        @if ($date)
+                          {{ $date }}
+                        @else
+                          Today - 20 September 2025
+                          <br />
+                        @endif
+                      </span>
+                    </p>
+                    <p>
+                      <span style="color: #6351a2"
+                        ><strong>Contest Date:</strong>&nbsp; 20 September 2025
+                      </span>
+                    </p>
+                    <p><strong><span style="color: #6351a2;">Registration Fee:</span></strong></p>
+                    <!-- <p>
                                 <span style="color: #6351a2;"><b>เกณฑ์การรับสมัคร IMOCSEA</b>
                                     <br>
                                     - หากเปิดเทอมไม่ครบ 3 เดือน (นับจากวันที่เปิดเทอม - วันสอบ)
@@ -617,1072 +637,1568 @@
 
                                 </span>
                             </p> -->
-                        </div>
-                    </div>
-                    <div class="col-md-11 div_center">
-                        <div class="row mb-3 ">
-                            <label for="success" class="col-md-4 col-form-label text-md-end"></label>
-                            <div class="col-md-6">
-                                @if ($message = Session::get('success'))
-                                <div class="alert alert-success">
-                                    <p>{{ $message }}</p>
-                                </div>
-                                @endif
-                                @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <p>{{ $errors->first() }}</p>
-                                </div>
-                                @endif
-                            </div>
-                        </div>
-                        <input type="hidden" name="routeName" id="routeName" value="{{ request()->route()->getName() }}">
-                        <input type="hidden" name="referent_code" id="referent_code" value="{{ request()->referent_code }}">
-
-                        <div class="form-row form-focus">
-                            <label style="padding-left: 20px"
-                                class="form-label form-label-top form-label-auto">Name-Surname (English) /
-                                ชื่อ - นามสกุล ภาษาอังกฤษ <span class="form-required">*</span></label>
-                            <div class="col-md-6">
-                                <div class="position-relative form-group">
-                                    <label class="form-label form-label-top form-label-auto" for="firstname">
-                                        <div style="width: 270px"></div>
-                                    </label>
-                                    <input type="text" class="form-control" name="firstname" id="firstname"
-                                        value="" maxlength="50" minlength="2" required>
-                                    <label class="form-sub-label" style="min-height:13px" aria-hidden="false">First
-                                        Name</label>
-                                    <div class="form-error-message" role="alert"><img
-                                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                            height="10"> <span class="error-navigation-message">This field is
-                                            required.</span>
-                                        <div class="form-error-arrow">
-                                            <div class="form-error-arrow-inner"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="position-relative form-group">
-                                    <label class="form-label form-label-top form-label-auto" for="lastname">
-                                        <div style="width: 270px"></div>
-                                    </label>
-                                    <input type="text" class="form-control" name="lastname" id="lastname"
-                                        value="" maxlength="50" minlength="2" required>
-                                    <label class="form-sub-label" style="min-height:13px" aria-hidden="false">Last
-                                        Name</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row form-focus">
-                            <div class="col-md-6 col-sm-12">
-                                <div class="position-relative form-group">
-                                    <label class="form-label form-label-top form-label-auto"
-                                        for="nickname">Nickname
-                                        (English)/ ชื่อเล่น (ภาษาอังกฤษ) <span class="form-required">*</span>
-                                        <div style="width: 270px"></div>
-                                    </label>
-                                    <input type="text" class="form-control" name="nickname" id="nickname"
-                                        value="" maxlength="50" minlength="1" required>
-                                    <label class="form-sub-label" style="min-height:13px"
-                                        aria-hidden="false">Nick
-                                        Name</label>
-                                    <div class="form-error-message" role="alert"><img
-                                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                            height="10"> <span class="error-navigation-message">This field is
-                                            required.</span>
-                                        <div class="form-error-arrow">
-                                            <div class="form-error-arrow-inner"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-12">
-                                <div class="position-relative form-group">
-                                    <label class="form-label form-label-top form-label-auto" for="birthdate">Date
-                                        of Birth / วัน/เดือน/ปีเกิด <span class="form-required">*</span>
-                                        <div style="width: 270px"></div>
-                                    </label>
-                                    <input type="date" class="AddDate form-control" name="birthdate"
-                                        id="birthdate" value="" required>
-                                    <label class="form-sub-label" style="min-height:13px"
-                                        aria-hidden="false">Date</label>
-                                    <div class="form-error-message" role="alert"><img
-                                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                            height="10"> <span class="error-navigation-message">This field is
-                                            required.</span>
-                                        <div class="form-error-arrow">
-                                            <div class="form-error-arrow-inner"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row form-focus">
-                            <div class="col-md-6">
-                                <div class="position-relative form-group">
-                                    <label class="form-label form-label-top form-label-auto"
-                                        for="schoolname">School name (English) / ชื่อโรงเรียน (ภาษาอังกฤษ)<span
-                                            class="form-required">*</span></label>
-                                    <input type="text" class="form-control" name="schoolname" id="schoolname"
-                                        value="" maxlength="100" required>
-                                    <label class="form-sub-label text-danger" style="min-height:13px"
-                                        aria-hidden="false">ห้ามใช้อักษรย่อ / Do not fill in abbreviations"
-                                    </label>
-                                    <div class="form-error-message" role="alert"><img
-                                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                            height="10"> <span class="error-navigation-message">This field is
-                                            required.</span>
-                                        <div class="form-error-arrow">
-                                            <div class="form-error-arrow-inner"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="position-relative form-group">
-                                    <label class="form-label form-label-top form-label-auto" for="grade">Grade
-                                        / ระดับชั้น <span class="form-required">*</span>
-                                        <div style="width: 270px"></div>
-                                    </label>
-                                    <select style="width: 100%" class="form-control" id="grade"
-                                        name="grade" data-component="dropdown" aria-label="Grade / ระดับชั้น"
-                                        required>
-                                        <option value="">Please Select</option>
-                                        <option value="Kindergarten">Kindergarten</option>
-                                        <option value="Grade 1">Grade 1</option>
-                                        <option value="Grade 2">Grade 2</option>
-                                        <option value="Grade 3">Grade 3</option>
-                                        <option value="Grade 4">Grade 4</option>
-                                        <option value="Grade 5">Grade 5</option>
-                                        <option value="Grade 6">Grade 6</option>
-                                        <option value="Grade 7">Grade 7</option>
-                                        <option value="Grade 8">Grade 8</option>
-                                        <option value="Grade 9">Grade 9</option>
-                                        <option value="Grade 10">Grade 10</option>
-                                        <option value="Grade 11">Grade 11</option>
-                                        <option value="Grade 12">Grade 12</option>
-                                    </select>
-                                    <label class="form-sub-label" style="min-height:13px"
-                                        aria-hidden="false">ระดับชั้นปีการศึกษาปัจจุบัน</label>
-                                    <div class="form-error-message" role="alert"><img
-                                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                            height="10"> <span class="error-navigation-message">This field is
-                                            required.</span>
-                                        <div class="form-error-arrow">
-                                            <div class="form-error-arrow-inner"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row form-focus" id="subject_selection_row" style="display: none;">
-                            <div class="col-md-12">
-                                <div class="position-relative form-group">
-                                    <label class="form-label form-label-top form-label-auto" for="subjects">
-                                        วิชาที่สอบ / Subjects <span class="form-required">*</span>
-                                    </label>
-                                    <div id="grade_1_8_subjects" style="display: none;">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="subjects[]" id="subject_science" value="Science">
-                                            <label class="form-check-label" for="subject_science">
-                                                Science - ราคา <b>790 บาท</b>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div id="grade_9_12_subjects" style="display: none;">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="subjects[]" id="subject_chemistry" value="Chemistry">
-                                            <label class="form-check-label" for="subject_chemistry">
-                                                Chemistry - ราคา <b>790 บาท</b>
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="subjects[]" id="subject_biology" value="Biology">
-                                            <label class="form-check-label" for="subject_biology">
-                                                Biology - ราคา <b>790 บาท</b>
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="subjects[]" id="subject_physics" value="Physics">
-                                            <label class="form-check-label" for="subject_physics">
-                                                Physics - ราคา <b>790 บาท</b>
-                                            </label>
-                                        </div>
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input" type="checkbox" id="select_all_subjects">
-                                            <label class="form-check-label" for="select_all_subjects">
-                                                เลือก 3 วิชาพร้อมกัน (Chemistry, Biology, Physics) - ราคาจากปกติ <b><s>2,370 บาท</s></b> ลดราคาเหลือ <b>1,800 บาท</b>
-                                            </label>
-                                        </div>
-                                        <input type="hidden" name="package" id="package" value="">
-                                    </div>
-                                    <div class="form-error-message" role="alert">
-                                        <img src="https://cdn.jotfor.ms/images/exclamation-octagon.png" height="10">
-                                        <span class="error-navigation-message">กรุณาเลือกวิชาที่ต้องการสอบ</span>
-                                        <div class="form-error-arrow">
-                                            <div class="form-error-arrow-inner"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <input type="hidden" name="calculated_price" id="calculated_price" value="">
-                        <input type="hidden" name="selected_subjects" id="selected_subjects_input" value="">
-                        <div class="form-row form-focus">
-                            <div class="col-md-12 col-sm-12">
-                                <div class="form-group">
-                                    <label class="form-label form-label-top form-label-auto"
-                                        for="address">Address : / ที่อยู่ภาษาไทย :<span
-                                            class="form-required">*</span></label>
-                                    <input type="text" class="form-control" name="address" id="address"
-                                        maxlength="150" minlength="2" required>
-                                    <label class="form-sub-label text-danger" style="min-height:13px"
-                                        aria-hidden="false">**ที่อยู่ภาษาไทย</label>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-sm-12">
-                                <div class="form-group">
-                                    <label class="form-label form-label-top form-label-auto" for="postcode">
-                                        <div style="width: 270px"></div>
-                                    </label>
-                                    <input type="text" class="form-control" name="postcode" id="postcode"
-                                        maxlength="50" minlength="2" required>
-                                    <label class="form-sub-label" style="min-height:13px"
-                                        aria-hidden="false">Postal / Zip Code / รหัสไปรษณีย์ </label>
-                                    <div class="form-error-message" role="alert"><img
-                                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                            height="10">
-                                        <span class="error-navigation-message">This field is
-                                            required.</span>
-                                        <div class="form-error-arrow">
-                                            <div class="form-error-arrow-inner"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row form-focus">
-                            <div class="col-md-6">
-                                <div class="position-relative form-group" style="padding-top:24px;">
-                                    <label class="form-label form-label-top form-label-auto"
-                                        for="parent">Parent's name / ชื่อและนามสกุลผู้ปกครอง<span
-                                            class="form-required">*</span></label>
-                                    <input type="text" class="form-control" name="parent" id="parent"
-                                        value="" maxlength="100" required>
-                                    <label class="form-sub-label" style="min-height:13px"
-                                        aria-hidden="false">Parent's name</label>
-                                    <div class="form-error-message" role="alert"><img
-                                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                            height="10"> <span class="error-navigation-message">This field is
-                                            required.</span>
-                                        <div class="form-error-arrow">
-                                            <div class="form-error-arrow-inner"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-12">
-                                <div class="position-relative form-group" style="padding-top:24px;">
-                                    <label class="form-label form-label-top form-label-auto" for="phone">Phone
-                                        Number / เบอร์โทรศัพท์ <span class="form-required">*</span>
-                                        <div style="width: 270px"></div>
-                                    </label>
-                                    <input type="text" class="AddPhone form-control" name="phone"
-                                        id="phone" value="" maxlength="20" required>
-                                    <label class="form-sub-label" style="min-height:13px"
-                                        aria-hidden="false">Phone Number</label>
-                                    <div class="form-error-message" role="alert"><img
-                                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                            height="10"> <span class="error-navigation-message">This field is
-                                            required.</span>
-                                        <div class="form-error-arrow">
-                                            <div class="form-error-arrow-inner"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row form-focus">
-                            <div class="col-md-6 col-sm-12">
-                                <div class="position-relative form-group" style="padding-top:0px;">
-                                    <label class="form-label form-label-top form-label-auto" for="grade">E-mail
-                                        <br>
-                                        (กรุณาใช้ @gmail.com เท่านั้น เพื่อที่จะสามารถส่งข้อมูลสำหรับเข้าสอบได้)
-                                        <br>
-                                        <span class="form-required">**</span>
-                                        สำหรับผู้ที่สมัครมากกว่า 1 คน รบกวนไม่ใช้อีเมลเดิมในการสมัครสอบ <span
-                                            class="form-required">**</span></label>
-                                    <input type="email" class="form-control" name="email" id="email"
-                                        value="" maxlength="70" required>
-                                    <small id="email-msg" style="color: red;"></small>
-                                    <label class="form-sub-label" style="min-height:13px"
-                                        aria-hidden="false">example@example.com</label>
-                                    <div class="form-error-message" role="alert"><img
-                                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                            height="10"> <span class="error-navigation-message">Please input
-                                            correct email.</span>
-                                        <div class="form-error-arrow">
-                                            <div class="form-error-arrow-inner"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row form-focus" id="dropzone-photo">
-                            <div class="col-md-12 col-sm-12">
-                                <a id="dphoto"></a>
-                                <div class="position-relative form-group">
-                                    <label class="form-label form-label-top form-label-auto"
-                                        for="photo">อัพโหลดรูปภาพผู้สมัคร <span class="form-required">*</span>
-                                        <div style="width: 280px"></div>
-                                    </label>
-                                    <input type="text" id="drop1" name="drop1"
-                                        class="form-control form_none" value="" required>
-                                    <div class="dropzone" id="my-awesome-dropzone" style="font-size: 1.5em;">
-                                        <div class="fallback">
-
-                                        </div>
-                                    </div>
-                                    <label class="form-sub-label" style="min-height:13px"
-                                        aria-hidden="false">Photo ขนาดไม่เกิน 5mb</label>
-                                    <div id="dropzone-photo-error" class="form-error-message" role="alert"><img
-                                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                            height="10">
-                                        <span class="error-navigation-message">This field is
-                                            required.</span>
-                                        <div class="form-error-arrow">
-                                            <div class="form-error-arrow-inner"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="dropzonex dz-default dz-message" id="dropzone_preview" style="font-size: 1.5em;">
-                            <h3 class="dropzone-previews ui"></h3>
-                        </div>
-                        <br>
-                        <div align="center"><img class="col-12" src="{{ asset('images/scb_meta.png') }}" alt="..."></div>
-                        <br>
-                        <div class="form-row form-focus" id="dropzone-att">
-                            <div class="col-md-12 col-sm-12">
-                                <a id="datt"></a>
-                                <div class="position-relative form-group">
-                                    <label class="form-label form-label-top form-label-auto"
-                                        for="att">อัพโหลดหลักฐานการชำระเงิน<span
-                                            class="form-required">*</span>
-                                        <div style="width: 280px"></div>
-                                    </label>
-                                    <input type="text" id="drop2" name="drop2"
-                                        class="form-control form_none" value="" required>
-                                    <div class="dropzone" id="my-awesome-dropzone2" style="font-size: 1.5em;">
-                                        <div class="fallback"></div>
-                                    </div>
-                                    <label class="form-sub-label" style="min-height:13px"
-                                        aria-hidden="false">Receipt Photo ขนาดไม่เกิน 5mb</label>
-                                    <div id="dropzone-att-error" class="form-error-message" role="alert"><img
-                                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                            height="10">
-                                        <span class="error-navigation-message">This field is
-                                            required.</span>
-                                        <div class="form-error-arrow">
-                                            <div class="form-error-arrow-inner"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="dropzonex dz-default dz-message" id="dropzone_preview2" style="font-size: 1.5em;">
-                            <h3 class="dropzone-previews ui"></h3>
-                        </div>
-                        <div class="form-row form-focus">
-                            <div class="col-md-6 ">
-                                <div class="position-relative form-group">
-                                    <label class="form-label form-label-top form-label-auto"
-                                        for="newsf">ท่านทราบข่าวสารการจัดสอบ STEMCO Science จากช่องทางใด <span
-                                            class="form-required">*</span></label>
-                                    <input type="text" class="form-control" name="newsf" id="newsf"
-                                        value="" maxlength="50" required>
-                                    <input type="hidden" name="sfield" id="sfield" value="29">
-                                    <label class="form-sub-label" style="min-height:13px"
-                                        aria-hidden="false"></label>
-                                    <div class="form-error-message" role="alert"><img
-                                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                                            height="10"> <span class="error-navigation-message">This field is
-                                            required.</span>
-                                        <div class="form-error-arrow">
-                                            <div class="form-error-arrow-inner"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                  </div>
                 </div>
-                <div class="card-footer text-center">
-                    <br>
-                    <div class="text-danger">** กรุณาตรวจสอบข้อมูลให้ถูกต้อง ก่อนทำการชำระเงินค่าสมัครสอบ** ทางบริษัทขอสงวนสิทธิ์ในการคืนเงินทุกกรณี **</div>
-                    <br>
-                    <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input" id="agreeCheckbox" required style="float: none; margin-right: 3px;">
-                        <label class="form-check-label" for="agreeCheckbox">ตกลงและยอมรับข้อกำหนดและเงื่อนไข รวมถึงตรวจสอบข้อมูลและเนื้อหาต่างๆเรียบร้อยแล้ว</label>
+                <div class="col-md-11 div_center">
+                  <div class="row mb-3">
+                    <label
+                      for="success"
+                      class="col-md-4 col-form-label text-md-end"
+                    ></label>
+                    <div class="col-md-6">
+                      @if ($message = Session::get('success'))
+                        <div class="alert alert-success">
+                          <p>{{ $message }}</p>
+                        </div>
+                      @endif
+                      @if ($errors->any())
+                        <div class="alert alert-danger">
+                          <p>{{ $errors->first() }}</p>
+                        </div>
+                      @endif
                     </div>
-                    <input type="submit" id="send_data" class="btn btn-lg btn-primary"
-                        value="Submit Application">
-                    <button type="reset" class="btn btn-lg btn-primary">Clear Form</button><br><br><br>
+                  </div>
+                  <input
+                    type="hidden"
+                    name="routeName"
+                    id="routeName"
+                    value="{{ request()->route()->getName() }}"
+                  />
+                  <input
+                    type="hidden"
+                    name="referent_code"
+                    id="referent_code"
+                    value="{{ request()->referent_code }}"
+                  />
+
+                  <div class="form-row form-focus">
+                    <label
+                      style="padding-left: 20px"
+                      class="form-label form-label-top form-label-auto"
+                      >Name-Surname (English) / ชื่อ - นามสกุล ภาษาอังกฤษ
+                      <span class="form-required">*</span></label
+                    >
+                    <div class="col-md-6">
+                      <div class="position-relative form-group">
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="firstname"
+                        >
+                          <div style="width: 270px"></div>
+                        </label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="firstname"
+                          id="firstname"
+                          value=""
+                          maxlength="50"
+                          minlength="2"
+                          required
+                        />
+                        <label
+                          class="form-sub-label"
+                          style="min-height: 13px"
+                          aria-hidden="false"
+                          >First Name</label
+                        >
+                        <div class="form-error-message" role="alert">
+                          <img
+                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                            height="10"
+                          />
+                          <span class="error-navigation-message"
+                            >This field is required.</span
+                          >
+                          <div class="form-error-arrow">
+                            <div class="form-error-arrow-inner"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="position-relative form-group">
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="lastname"
+                        >
+                          <div style="width: 270px"></div>
+                        </label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="lastname"
+                          id="lastname"
+                          value=""
+                          maxlength="50"
+                          minlength="2"
+                          required
+                        />
+                        <label
+                          class="form-sub-label"
+                          style="min-height: 13px"
+                          aria-hidden="false"
+                          >Last Name</label
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row form-focus">
+                    <div class="col-md-6 col-sm-12">
+                      <div class="position-relative form-group">
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="nickname"
+                          >Nickname (English)/ ชื่อเล่น (ภาษาอังกฤษ)
+                          <span class="form-required">*</span>
+                          <div style="width: 270px"></div>
+                        </label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="nickname"
+                          id="nickname"
+                          value=""
+                          maxlength="50"
+                          minlength="1"
+                          required
+                        />
+                        <label
+                          class="form-sub-label"
+                          style="min-height: 13px"
+                          aria-hidden="false"
+                          >Nick Name</label
+                        >
+                        <div class="form-error-message" role="alert">
+                          <img
+                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                            height="10"
+                          />
+                          <span class="error-navigation-message"
+                            >This field is required.</span
+                          >
+                          <div class="form-error-arrow">
+                            <div class="form-error-arrow-inner"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                      <div class="position-relative form-group">
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="birthdate"
+                          >Date of Birth / วัน/เดือน/ปีเกิด
+                          <span class="form-required">*</span>
+                          <div style="width: 270px"></div>
+                        </label>
+                        <input
+                          type="date"
+                          class="AddDate form-control"
+                          name="birthdate"
+                          id="birthdate"
+                          value=""
+                          required
+                        />
+                        <label
+                          class="form-sub-label"
+                          style="min-height: 13px"
+                          aria-hidden="false"
+                          >Date</label
+                        >
+                        <div class="form-error-message" role="alert">
+                          <img
+                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                            height="10"
+                          />
+                          <span class="error-navigation-message"
+                            >This field is required.</span
+                          >
+                          <div class="form-error-arrow">
+                            <div class="form-error-arrow-inner"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row form-focus">
+                    <div class="col-md-6">
+                      <div class="position-relative form-group">
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="schoolname"
+                          >School name (English) / ชื่อโรงเรียน
+                          (ภาษาอังกฤษ)<span class="form-required"
+                            >*</span
+                          ></label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="schoolname"
+                          id="schoolname"
+                          value=""
+                          maxlength="100"
+                          required
+                        />
+                        <label
+                          class="form-sub-label text-danger"
+                          style="min-height: 13px"
+                          aria-hidden="false"
+                          >ห้ามใช้อักษรย่อ / Do not fill in abbreviations"
+                        </label>
+                        <div class="form-error-message" role="alert">
+                          <img
+                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                            height="10"
+                          />
+                          <span class="error-navigation-message"
+                            >This field is required.</span
+                          >
+                          <div class="form-error-arrow">
+                            <div class="form-error-arrow-inner"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="position-relative form-group">
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="grade"
+                          >Grade / ระดับชั้น
+                          <span class="form-required">*</span>
+                          <div style="width: 270px"></div>
+                        </label>
+                        <select
+                          style="width: 100%"
+                          class="form-control"
+                          id="grade"
+                          name="grade"
+                          data-component="dropdown"
+                          aria-label="Grade / ระดับชั้น"
+                          required
+                        >
+                          <option value="">Please Select</option>
+                          <option value="Kindergarten">Kindergarten</option>
+                          <option value="Grade 1">Grade 1</option>
+                          <option value="Grade 2">Grade 2</option>
+                          <option value="Grade 3">Grade 3</option>
+                          <option value="Grade 4">Grade 4</option>
+                          <option value="Grade 5">Grade 5</option>
+                          <option value="Grade 6">Grade 6</option>
+                          <option value="Grade 7">Grade 7</option>
+                          <option value="Grade 8">Grade 8</option>
+                          <option value="Grade 9">Grade 9</option>
+                          <option value="Grade 10">Grade 10</option>
+                          <option value="Grade 11">Grade 11</option>
+                          <option value="Grade 12">Grade 12</option>
+                        </select>
+                        <label
+                          class="form-sub-label"
+                          style="min-height: 13px"
+                          aria-hidden="false"
+                          >ระดับชั้นปีการศึกษาปัจจุบัน</label
+                        >
+                        <div class="form-error-message" role="alert">
+                          <img
+                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                            height="10"
+                          />
+                          <span class="error-navigation-message"
+                            >This field is required.</span
+                          >
+                          <div class="form-error-arrow">
+                            <div class="form-error-arrow-inner"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="form-row form-focus"
+                    id="subject_selection_row"
+                    style="display: none"
+                  >
+                    <div class="col-md-12">
+                      <div class="position-relative form-group">
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="subjects"
+                        >
+                          วิชาที่สอบ / Subjects
+                          <span class="form-required">*</span>
+                        </label>
+                        <div id="grade_1_8_subjects" style="display: none">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              name="subjects[]"
+                              id="subject_science"
+                              value="Science"
+                            />
+                            <label
+                              class="form-check-label"
+                              for="subject_science"
+                            >
+                              Science - ราคา <b>790 บาท</b>
+                            </label>
+                          </div>
+                        </div>
+                        <div id="grade_9_12_subjects" style="display: none">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              name="subjects[]"
+                              id="subject_chemistry"
+                              value="Chemistry"
+                            />
+                            <label
+                              class="form-check-label"
+                              for="subject_chemistry"
+                            >
+                              Chemistry - ราคา <b>790 บาท</b>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              name="subjects[]"
+                              id="subject_biology"
+                              value="Biology"
+                            />
+                            <label
+                              class="form-check-label"
+                              for="subject_biology"
+                            >
+                              Biology - ราคา <b>790 บาท</b>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              name="subjects[]"
+                              id="subject_physics"
+                              value="Physics"
+                            />
+                            <label
+                              class="form-check-label"
+                              for="subject_physics"
+                            >
+                              Physics - ราคา <b>790 บาท</b>
+                            </label>
+                          </div>
+                          <div class="form-check mt-2">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="select_all_subjects"
+                            />
+                            <label
+                              class="form-check-label"
+                              for="select_all_subjects"
+                            >
+                              เลือก 3 วิชาพร้อมกัน (Chemistry, Biology, Physics)
+                              - ราคาจากปกติ <b><s>2,370 บาท</s></b> ลดราคาเหลือ
+                              <b>1,800 บาท</b>
+                            </label>
+                          </div>
+                          <input
+                            type="hidden"
+                            name="package"
+                            id="package"
+                            value=""
+                          />
+                        </div>
+                        <div class="form-error-message" role="alert">
+                          <img
+                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                            height="10"
+                          />
+                          <span class="error-navigation-message"
+                            >กรุณาเลือกวิชาที่ต้องการสอบ</span
+                          >
+                          <div class="form-error-arrow">
+                            <div class="form-error-arrow-inner"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <input
+                    type="hidden"
+                    name="calculated_price"
+                    id="calculated_price"
+                    value=""
+                  />
+                  <input
+                    type="hidden"
+                    name="selected_subjects"
+                    id="selected_subjects_input"
+                    value=""
+                  />
+                  <div class="form-row form-focus">
+                    <div class="col-md-12 col-sm-12">
+                      <div class="form-group">
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="address"
+                          >Address : / ที่อยู่ภาษาไทย :<span
+                            class="form-required"
+                            >*</span
+                          ></label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="address"
+                          id="address"
+                          maxlength="150"
+                          minlength="2"
+                          required
+                        />
+                        <label
+                          class="form-sub-label text-danger"
+                          style="min-height: 13px"
+                          aria-hidden="false"
+                          >**ที่อยู่ภาษาไทย</label
+                        >
+                      </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12">
+                      <div class="form-group">
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="postcode"
+                        >
+                          <div style="width: 270px"></div>
+                        </label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="postcode"
+                          id="postcode"
+                          maxlength="50"
+                          minlength="2"
+                          required
+                        />
+                        <label
+                          class="form-sub-label"
+                          style="min-height: 13px"
+                          aria-hidden="false"
+                          >Postal / Zip Code / รหัสไปรษณีย์
+                        </label>
+                        <div class="form-error-message" role="alert">
+                          <img
+                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                            height="10"
+                          />
+                          <span class="error-navigation-message"
+                            >This field is required.</span
+                          >
+                          <div class="form-error-arrow">
+                            <div class="form-error-arrow-inner"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row form-focus">
+                    <div class="col-md-6">
+                      <div
+                        class="position-relative form-group"
+                        style="padding-top: 24px"
+                      >
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="parent"
+                          >Parent's name / ชื่อและนามสกุลผู้ปกครอง<span
+                            class="form-required"
+                            >*</span
+                          ></label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="parent"
+                          id="parent"
+                          value=""
+                          maxlength="100"
+                          required
+                        />
+                        <label
+                          class="form-sub-label"
+                          style="min-height: 13px"
+                          aria-hidden="false"
+                          >Parent's name</label
+                        >
+                        <div class="form-error-message" role="alert">
+                          <img
+                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                            height="10"
+                          />
+                          <span class="error-navigation-message"
+                            >This field is required.</span
+                          >
+                          <div class="form-error-arrow">
+                            <div class="form-error-arrow-inner"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                      <div
+                        class="position-relative form-group"
+                        style="padding-top: 24px"
+                      >
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="phone"
+                          >Phone Number / เบอร์โทรศัพท์
+                          <span class="form-required">*</span>
+                          <div style="width: 270px"></div>
+                        </label>
+                        <input
+                          type="text"
+                          class="AddPhone form-control"
+                          name="phone"
+                          id="phone"
+                          value=""
+                          maxlength="20"
+                          required
+                        />
+                        <label
+                          class="form-sub-label"
+                          style="min-height: 13px"
+                          aria-hidden="false"
+                          >Phone Number</label
+                        >
+                        <div class="form-error-message" role="alert">
+                          <img
+                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                            height="10"
+                          />
+                          <span class="error-navigation-message"
+                            >This field is required.</span
+                          >
+                          <div class="form-error-arrow">
+                            <div class="form-error-arrow-inner"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row form-focus">
+                    <div class="col-md-6 col-sm-12">
+                      <div
+                        class="position-relative form-group"
+                        style="padding-top: 0px"
+                      >
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="grade"
+                          >E-mail
+                          <br />
+                          (กรุณาใช้
+                          @gmail
+                          .com เท่านั้น
+                          เพื่อที่จะสามารถส่งข้อมูลสำหรับเข้าสอบได้)
+                          <br />
+                          <span class="form-required">**</span>
+                          สำหรับผู้ที่สมัครมากกว่า 1 คน
+                          รบกวนไม่ใช้อีเมลเดิมในการสมัครสอบ
+                          <span class="form-required">**</span></label
+                        >
+                        <input
+                          type="email"
+                          class="form-control"
+                          name="email"
+                          id="email"
+                          value=""
+                          maxlength="70"
+                          required
+                        />
+                        <small id="email-msg" style="color: red"></small>
+                        <label
+                          class="form-sub-label"
+                          style="min-height: 13px"
+                          aria-hidden="false"
+                          >example@example.com</label
+                        >
+                        <div class="form-error-message" role="alert">
+                          <img
+                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                            height="10"
+                          />
+                          <span class="error-navigation-message"
+                            >Please input correct email.</span
+                          >
+                          <div class="form-error-arrow">
+                            <div class="form-error-arrow-inner"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row form-focus" id="dropzone-photo">
+                    <div class="col-md-12 col-sm-12">
+                      <a id="dphoto"></a>
+                      <div class="position-relative form-group">
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="photo"
+                          >อัพโหลดรูปภาพผู้สมัคร
+                          <span class="form-required">*</span>
+                          <div style="width: 280px"></div>
+                        </label>
+                        <input
+                          type="text"
+                          id="drop1"
+                          name="drop1"
+                          class="form-control form_none"
+                          value=""
+                          required
+                        />
+                        <div
+                          class="dropzone"
+                          id="my-awesome-dropzone"
+                          style="font-size: 1.5em"
+                        >
+                          <div class="fallback"></div>
+                        </div>
+                        <label
+                          class="form-sub-label"
+                          style="min-height: 13px"
+                          aria-hidden="false"
+                          >Photo ขนาดไม่เกิน 5mb</label
+                        >
+                        <div
+                          id="dropzone-photo-error"
+                          class="form-error-message"
+                          role="alert"
+                        >
+                          <img
+                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                            height="10"
+                          />
+                          <span class="error-navigation-message"
+                            >This field is required.</span
+                          >
+                          <div class="form-error-arrow">
+                            <div class="form-error-arrow-inner"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="dropzonex dz-default dz-message"
+                    id="dropzone_preview"
+                    style="font-size: 1.5em"
+                  >
+                    <h3 class="dropzone-previews ui"></h3>
+                  </div>
+                  <br />
+                  <div align="center">
+                    <img
+                      class="col-12"
+                      src="{{ asset('images/scb_meta.png') }}"
+                      alt="..."
+                    />
+                  </div>
+                  <br />
+                  <div class="form-row form-focus" id="dropzone-att">
+                    <div class="col-md-12 col-sm-12">
+                      <a id="datt"></a>
+                      <div class="position-relative form-group">
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="att"
+                          >อัพโหลดหลักฐานการชำระเงิน<span class="form-required"
+                            >*</span
+                          >
+                          <div style="width: 280px"></div>
+                        </label>
+                        <input
+                          type="text"
+                          id="drop2"
+                          name="drop2"
+                          class="form-control form_none"
+                          value=""
+                          required
+                        />
+                        <div
+                          class="dropzone"
+                          id="my-awesome-dropzone2"
+                          style="font-size: 1.5em"
+                        >
+                          <div class="fallback"></div>
+                        </div>
+                        <label
+                          class="form-sub-label"
+                          style="min-height: 13px"
+                          aria-hidden="false"
+                          >Receipt Photo ขนาดไม่เกิน 5mb</label
+                        >
+                        <div
+                          id="dropzone-att-error"
+                          class="form-error-message"
+                          role="alert"
+                        >
+                          <img
+                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                            height="10"
+                          />
+                          <span class="error-navigation-message"
+                            >This field is required.</span
+                          >
+                          <div class="form-error-arrow">
+                            <div class="form-error-arrow-inner"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="dropzonex dz-default dz-message"
+                    id="dropzone_preview2"
+                    style="font-size: 1.5em"
+                  >
+                    <h3 class="dropzone-previews ui"></h3>
+                  </div>
+                  <div class="form-row form-focus">
+                    <div class="col-md-6">
+                      <div class="position-relative form-group">
+                        <label
+                          class="form-label form-label-top form-label-auto"
+                          for="newsf"
+                          >ท่านทราบข่าวสารการจัดสอบ STEMCO Science จากช่องทางใด
+                          <span class="form-required">*</span></label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="newsf"
+                          id="newsf"
+                          value=""
+                          maxlength="50"
+                          required
+                        />
+                        <input
+                          type="hidden"
+                          name="sfield"
+                          id="sfield"
+                          value="29"
+                        />
+                        <label
+                          class="form-sub-label"
+                          style="min-height: 13px"
+                          aria-hidden="false"
+                        ></label>
+                        <div class="form-error-message" role="alert">
+                          <img
+                            src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
+                            height="10"
+                          />
+                          <span class="error-navigation-message"
+                            >This field is required.</span
+                          >
+                          <div class="form-error-arrow">
+                            <div class="form-error-arrow-inner"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              </div>
+              <div class="card-footer text-center">
+                <br />
+                <div class="text-danger">
+                  ** กรุณาตรวจสอบข้อมูลให้ถูกต้อง ก่อนทำการชำระเงินค่าสมัครสอบ**
+                  ทางบริษัทขอสงวนสิทธิ์ในการคืนเงินทุกกรณี **
+                </div>
+                <br />
+                <div class="form-group form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="agreeCheckbox"
+                    required
+                    style="float: none; margin-right: 3px"
+                  />
+                  <label class="form-check-label" for="agreeCheckbox"
+                    >ตกลงและยอมรับข้อกำหนดและเงื่อนไข
+                    รวมถึงตรวจสอบข้อมูลและเนื้อหาต่างๆเรียบร้อยแล้ว</label
+                  >
+                </div>
+                <input
+                  type="submit"
+                  id="send_data"
+                  class="btn btn-lg btn-primary"
+                  value="Submit Application"
+                />
+                <button type="reset" class="btn btn-lg btn-primary">
+                  Clear Form</button
+                ><br /><br /><br />
+              </div>
             </div>
         </div>
-    </form>
-</div>
+        </form>
+      </div>
 
-<script>
-    const allowedSuffixes = ['.com', '.net', '.co.th', '.ac.th', '.or.th', '.go.th', '.edu', '.org'];
-    const emailInput = document.getElementById('email');
-    const msg = document.getElementById('email-msg');
+      <script>
+        const allowedSuffixes = [
+          '.com',
+          '.net',
+          '.co.th',
+          '.ac.th',
+          '.or.th',
+          '.go.th',
+          '.edu',
+          '.org'
+        ];
+        const emailInput = document.getElementById('email');
+        const msg = document.getElementById('email-msg');
 
-    let timeout;
+        let timeout;
 
-    emailInput.addEventListener('input', function() {
-        clearTimeout(timeout);
+        emailInput.addEventListener('input', function () {
+          clearTimeout(timeout);
 
-        // รอ 500ms หลังจากผู้ใช้หยุดพิมพ์
-        timeout = setTimeout(() => {
+          // รอ 500ms หลังจากผู้ใช้หยุดพิมพ์
+          timeout = setTimeout(() => {
             const email = emailInput.value.trim();
 
             if (!email.includes('@')) {
-                msg.textContent = 'รูปแบบอีเมลไม่ถูกต้อง (ขาด @)';
-                msg.style.color = 'red';
-                return;
+              msg.textContent = 'รูปแบบอีเมลไม่ถูกต้อง (ขาด @)';
+              msg.style.color = 'red';
+              return;
             }
 
             const domain = email.split('@')[1];
 
             if (!domain) {
-                msg.textContent = 'กรุณาระบุอีเมล';
-                msg.style.color = 'red';
-                return;
+              msg.textContent = 'กรุณาระบุอีเมล';
+              msg.style.color = 'red';
+              return;
             }
 
-            const isValid = allowedSuffixes.some(suffix => domain.endsWith(suffix));
+            const isValid = allowedSuffixes.some(suffix =>
+              domain.endsWith(suffix)
+            );
 
             if (isValid) {
-                msg.textContent = '✅ อีเมลนี้รูปแบบถูกต้อง';
-                msg.style.color = 'green';
+              msg.textContent = '✅ อีเมลนี้รูปแบบถูกต้อง';
+              msg.style.color = 'green';
             } else {
-                msg.textContent = '❌ รูปแบบอีเมลนี้ไม่ถูกต้อง' +
-                    ' (โปรดใช้รูปแบบเฉพาะ: ' + allowedSuffixes.join(', ') + ')';
-                msg.style.color = 'red';
+              msg.textContent =
+                '❌ รูปแบบอีเมลนี้ไม่ถูกต้อง' +
+                ' (โปรดใช้รูปแบบเฉพาะ: ' +
+                allowedSuffixes.join(', ') +
+                ')';
+              msg.style.color = 'red';
 
-                alert('รูปแบบอีเมลไม่ถูกต้อง (โปรดใช้รูปแบบเฉพาะ: ' + allowedSuffixes.join(', ') + ')');
+              alert(
+                'รูปแบบอีเมลไม่ถูกต้อง (โปรดใช้รูปแบบเฉพาะ: ' +
+                  allowedSuffixes.join(', ') +
+                  ')'
+              );
             }
-        }, 500);
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $('#dcode').on('keyup', function(event) {
+          }, 500);
+        });
+      </script>
+      <script>
+        $(document).ready(function () {
+          $('#dcode').on('keyup', function (event) {
             var otherFieldValue = $('#package').val();
 
             if (otherFieldValue.trim() === '') {
-                // Other field is empty when the entered key is present
-                // Perform your desired action or validation here
-                $('#dcode').val('');
-                $('#dcodel').html('กรุณาระบุ Package');
-                $('#package').focus();
-                //console.log('Other field must not be empty.');
+              // Other field is empty when the entered key is present
+              // Perform your desired action or validation here
+              $('#dcode').val('');
+              $('#dcodel').html('กรุณาระบุ Package');
+              $('#package').focus();
+              //console.log('Other field must not be empty.');
             } else {
-                $('#dcodel').html('');
+              $('#dcodel').html('');
             }
-        });
+          });
 
-
-        var inputlist = ["firstname", "lastname", "address", "postcode"];
-        $(".form-control").focusout(function() {
+          var inputlist = ['firstname', 'lastname', 'address', 'postcode'];
+          $('.form-control').focusout(function () {
             //$(".form-control").focus();
             let inputxx;
-            let nameinput = $(this).attr("name");
+            let nameinput = $(this).attr('name');
 
-            if (inputlist.indexOf($(this).attr("name")) >= 0) {
-                inputxx = ".form-focus";
+            if (inputlist.indexOf($(this).attr('name')) >= 0) {
+              inputxx = '.form-focus';
             } else {
-                inputxx = ".form-group";
+              inputxx = '.form-group';
             }
 
             if (nameinput == 'firstname') {
-                if ($(this).val() == '' || $("#lastname").val() == '') {
-                    //alert();
-                    $(this).closest(inputxx).addClass('form-focus-error');
-                    $(this).closest(inputxx).find('.form-error-message').css("display", "block");
-                    if ($(this).val() == '') {
-                        $(this).css('border', 'solid 1px red');
-                    } else {
-                        $(this).css('border', 'solid 1px green');
-                    }
-
-                    if ($("#lastname").val() == '') {
-                        $("#lastname").css('border', 'solid 1px red');
-                    } else {
-                        $("#lastname").css('border', 'solid 1px green');
-                    }
-
-                    //$(this).parents().css( "background-color", "red" );
+              if ($(this).val() == '' || $('#lastname').val() == '') {
+                //alert();
+                $(this).closest(inputxx).addClass('form-focus-error');
+                $(this)
+                  .closest(inputxx)
+                  .find('.form-error-message')
+                  .css('display', 'block');
+                if ($(this).val() == '') {
+                  $(this).css('border', 'solid 1px red');
                 } else {
-                    // If it is not blank.
-                    $(this).css('border', 'solid 1px green');
-                    $("#lastname").css('border', 'solid 1px green');
-                    $(this).closest(inputxx).removeClass('form-focus-error');
-                    $(this).closest(inputxx).find('.form-error-message').css("display", "none");
+                  $(this).css('border', 'solid 1px green');
                 }
 
+                if ($('#lastname').val() == '') {
+                  $('#lastname').css('border', 'solid 1px red');
+                } else {
+                  $('#lastname').css('border', 'solid 1px green');
+                }
+
+                //$(this).parents().css( "background-color", "red" );
+              } else {
+                // If it is not blank.
+                $(this).css('border', 'solid 1px green');
+                $('#lastname').css('border', 'solid 1px green');
+                $(this).closest(inputxx).removeClass('form-focus-error');
+                $(this)
+                  .closest(inputxx)
+                  .find('.form-error-message')
+                  .css('display', 'none');
+              }
             } else if (nameinput == 'lastname') {
-                if ($(this).val() == '' || $('#firstname').val() == '') {
-                    //alert();
-                    $(this).closest(inputxx).addClass('form-focus-error');
-                    $(this).closest(inputxx).find('.form-error-message').css("display", "block");
-                    if ($(this).val() == '') {
-                        $(this).css('border', 'solid 1px red');
-                    } else {
-                        $(this).css('border', 'solid 1px green');
-                    }
-
-                    if ($("#firstname").val() == '') {
-                        $("#firstname").css('border', 'solid 1px red');
-                    } else {
-                        $("#firstname").css('border', 'solid 1px green');
-                    }
-                    //$(this).parents().css( "background-color", "red" );
+              if ($(this).val() == '' || $('#firstname').val() == '') {
+                //alert();
+                $(this).closest(inputxx).addClass('form-focus-error');
+                $(this)
+                  .closest(inputxx)
+                  .find('.form-error-message')
+                  .css('display', 'block');
+                if ($(this).val() == '') {
+                  $(this).css('border', 'solid 1px red');
                 } else {
-                    // If it is not blank.
-                    $(this).css('border', 'solid 1px green');
-                    $("#firstname").css('border', 'solid 1px green');
-                    $(this).closest(inputxx).removeClass('form-focus-error');
-                    $(this).closest(inputxx).find('.form-error-message').css("display", "none");
+                  $(this).css('border', 'solid 1px green');
                 }
 
+                if ($('#firstname').val() == '') {
+                  $('#firstname').css('border', 'solid 1px red');
+                } else {
+                  $('#firstname').css('border', 'solid 1px green');
+                }
+                //$(this).parents().css( "background-color", "red" );
+              } else {
+                // If it is not blank.
+                $(this).css('border', 'solid 1px green');
+                $('#firstname').css('border', 'solid 1px green');
+                $(this).closest(inputxx).removeClass('form-focus-error');
+                $(this)
+                  .closest(inputxx)
+                  .find('.form-error-message')
+                  .css('display', 'none');
+              }
             } else if (nameinput == 'address') {
-                if ($(this).val() == '' || $('#postcode').val() == '') {
-                    //alert();
-                    $(this).closest(inputxx).addClass('form-focus-error');
-                    $(this).closest(inputxx).find('.form-error-message').css("display", "block");
-                    if ($(this).val() == '') {
-                        $(this).css('border', 'solid 1px red');
-                    } else {
-                        $(this).css('border', 'solid 1px green');
-                    }
-
-                    if ($("#postcode").val() == '') {
-                        $("#postcode").css('border', 'solid 1px red');
-                    } else {
-                        $("#postcode").css('border', 'solid 1px green');
-                    }
-                    //$(this).parents().css( "background-color", "red" );
+              if ($(this).val() == '' || $('#postcode').val() == '') {
+                //alert();
+                $(this).closest(inputxx).addClass('form-focus-error');
+                $(this)
+                  .closest(inputxx)
+                  .find('.form-error-message')
+                  .css('display', 'block');
+                if ($(this).val() == '') {
+                  $(this).css('border', 'solid 1px red');
                 } else {
-                    // If it is not blank.
-                    $(this).css('border', 'solid 1px green');
-                    $("#postcode").css('border', 'solid 1px green');
-                    $(this).closest(inputxx).removeClass('form-focus-error');
-                    $(this).closest(inputxx).find('.form-error-message').css("display", "none");
+                  $(this).css('border', 'solid 1px green');
                 }
 
+                if ($('#postcode').val() == '') {
+                  $('#postcode').css('border', 'solid 1px red');
+                } else {
+                  $('#postcode').css('border', 'solid 1px green');
+                }
+                //$(this).parents().css( "background-color", "red" );
+              } else {
+                // If it is not blank.
+                $(this).css('border', 'solid 1px green');
+                $('#postcode').css('border', 'solid 1px green');
+                $(this).closest(inputxx).removeClass('form-focus-error');
+                $(this)
+                  .closest(inputxx)
+                  .find('.form-error-message')
+                  .css('display', 'none');
+              }
             } else if (nameinput == 'postcode') {
-                if ($(this).val() == '' || $('#address').val() == '') {
-                    //alert();
-                    $(this).closest(inputxx).addClass('form-focus-error');
-                    $(this).closest(inputxx).find('.form-error-message').css("display", "block");
-                    if ($(this).val() == '') {
-                        $(this).css('border', 'solid 1px red');
-                    } else {
-                        $(this).css('border', 'solid 1px green');
-                    }
-
-                    if ($("#address").val() == '') {
-                        $("#address").css('border', 'solid 1px red');
-                    } else {
-                        $("#address").css('border', 'solid 1px green');
-                    }
-                    //$(this).parents().css( "background-color", "red" );
+              if ($(this).val() == '' || $('#address').val() == '') {
+                //alert();
+                $(this).closest(inputxx).addClass('form-focus-error');
+                $(this)
+                  .closest(inputxx)
+                  .find('.form-error-message')
+                  .css('display', 'block');
+                if ($(this).val() == '') {
+                  $(this).css('border', 'solid 1px red');
                 } else {
-                    // If it is not blank.
-                    $(this).css('border', 'solid 1px green');
-                    $("#address").css('border', 'solid 1px green');
-                    $(this).closest(inputxx).removeClass('form-focus-error');
-                    $(this).closest(inputxx).find('.form-error-message').css("display", "none");
+                  $(this).css('border', 'solid 1px green');
                 }
 
-            }
-            if (nameinput == 'dcode') {} else {
-                if ($(this).attr('type') == 'email') {
-                    var validRegex =
-                        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-                    if ($(this).val() == '' || !$(this).val().match(validRegex)) {
-                        $(this).closest(inputxx).addClass('form-focus-error');
-                        $(this).closest(inputxx)
-                            .find('.form-error-message').css("display", "block");
-                        $(this).css('border', 'solid 1px red');
-                        //$(this).parents().css( "background-color", "red" );
-                    } else {
-                        // If it is not blank.
-                        $(this).css('border', 'solid 1px green');
-                        $(this).closest(inputxx).removeClass('form-focus-error');
-                        $(this).closest(inputxx).find('.form-error-message').css("display", "none");
-                    }
-
+                if ($('#address').val() == '') {
+                  $('#address').css('border', 'solid 1px red');
                 } else {
-                    if ($(this).val() == '') {
-                        $(this).closest(inputxx).addClass('form-focus-error');
-                        $(this).closest(inputxx)
-                            .find('.form-error-message').css("display", "block");
-                        $(this).css('border', 'solid 1px red');
-                        //$(this).parents().css( "background-color", "red" );
-                    } else {
-                        // If it is not blank.
-                        $(this).css('border', 'solid 1px green');
-                        $(this).closest(inputxx).removeClass('form-focus-error');
-                        $(this).closest(inputxx).find('.form-error-message').css("display", "none");
-                    }
+                  $('#address').css('border', 'solid 1px green');
                 }
-
+                //$(this).parents().css( "background-color", "red" );
+              } else {
+                // If it is not blank.
+                $(this).css('border', 'solid 1px green');
+                $('#address').css('border', 'solid 1px green');
+                $(this).closest(inputxx).removeClass('form-focus-error');
+                $(this)
+                  .closest(inputxx)
+                  .find('.form-error-message')
+                  .css('display', 'none');
+              }
             }
-        });
-        //.trigger("focusout");
+            if (nameinput == 'dcode') {
+            } else {
+              if ($(this).attr('type') == 'email') {
+                var validRegex =
+                  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+                if ($(this).val() == '' || !$(this).val().match(validRegex)) {
+                  $(this).closest(inputxx).addClass('form-focus-error');
+                  $(this)
+                    .closest(inputxx)
+                    .find('.form-error-message')
+                    .css('display', 'block');
+                  $(this).css('border', 'solid 1px red');
+                  //$(this).parents().css( "background-color", "red" );
+                } else {
+                  // If it is not blank.
+                  $(this).css('border', 'solid 1px green');
+                  $(this).closest(inputxx).removeClass('form-focus-error');
+                  $(this)
+                    .closest(inputxx)
+                    .find('.form-error-message')
+                    .css('display', 'none');
+                }
+              } else {
+                if ($(this).val() == '') {
+                  $(this).closest(inputxx).addClass('form-focus-error');
+                  $(this)
+                    .closest(inputxx)
+                    .find('.form-error-message')
+                    .css('display', 'block');
+                  $(this).css('border', 'solid 1px red');
+                  //$(this).parents().css( "background-color", "red" );
+                } else {
+                  // If it is not blank.
+                  $(this).css('border', 'solid 1px green');
+                  $(this).closest(inputxx).removeClass('form-focus-error');
+                  $(this)
+                    .closest(inputxx)
+                    .find('.form-error-message')
+                    .css('display', 'none');
+                }
+              }
+            }
+          });
+          //.trigger("focusout");
 
-        /* $("#infinite").validate({
+          /* $("#infinite").validate({
         onfocusout: function(element) {
         //this.element(element);
         element.parent().css( "background-color", "red" );
         },
         });*/
-
-    });
-</script>
-<script type="text/javascript">
-    var myDropzone = {};
-    Dropzone.options.myAwesomeDropzone = {
-        url: '{{ route('form.upload') }}',
-        headers: {
-            'X-CSRF-TOKEN': "{{ csrf_token() }}"
-        },
-        paramName: "file", // ชื่อไฟล์ปลายทางเมื่อ upload แบบ mutiple จะเป็น array
-        autoProcessQueue: true, // ใส่เพื่อไม่ให้อัพโหลดทันที หลังจากเลือกไฟล์
-        uploadMultiple: true, // อัพโหลดไฟล์หลายไฟล์
-        parallelUploads: 2, // ให้ทำงานพร้อมกัน 10 ไฟล์
-        maxFiles: 2, // ไฟล์สูงสุด 5 ไฟล์
-        maxfilesexceeded: function(file) {
+        });
+      </script>
+      <script type="text/javascript">
+        var myDropzone = {};
+        Dropzone.options.myAwesomeDropzone = {
+          url: '{{
+          route(
+            'form.upload',
+          )
+        }}',
+          headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          },
+          paramName: 'file', // ชื่อไฟล์ปลายทางเมื่อ upload แบบ mutiple จะเป็น array
+          autoProcessQueue: true, // ใส่เพื่อไม่ให้อัพโหลดทันที หลังจากเลือกไฟล์
+          uploadMultiple: true, // อัพโหลดไฟล์หลายไฟล์
+          parallelUploads: 2, // ให้ทำงานพร้อมกัน 10 ไฟล์
+          maxFiles: 2, // ไฟล์สูงสุด 5 ไฟล์
+          maxfilesexceeded: function (file) {
             this.removeAllFiles();
             this.addFile(file);
-        },
-        //test
-        addRemoveLinks: true, // อนุญาตให้ลบไฟล์ก่อนการอัพโหลด
-        maxFilesize: 10, // MB
-        previewsContainer: "#dropzone_preview", // ระบุ element เป้าหลาย
-        //previewTemplate: $('#template-preview').html(),
-        dictRemoveFile: "Remove", // ชื่อ ปุ่ม remove
-        renameFile: function(file) {
+          },
+          //test
+          addRemoveLinks: true, // อนุญาตให้ลบไฟล์ก่อนการอัพโหลด
+          maxFilesize: 10, // MB
+          previewsContainer: '#dropzone_preview', // ระบุ element เป้าหลาย
+          //previewTemplate: $('#template-preview').html(),
+          dictRemoveFile: 'Remove', // ชื่อ ปุ่ม remove
+          renameFile: function (file) {
             let newName = new Date().getTime() + '_' + file.name;
             file.newName = newName;
             return newName;
-        },
-        dictCancelUpload: "Cancel", // ชื่อ ปุ่ม ยกเลิก
-        dictDefaultMessage: "<img height='60' src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNsug8XTE5KVJEMECVvm8p43BZTdvZExoQ9Q&usqp=CAU'><br><font size='3'>Browse File</font>", // ข้อความบนพื้นที่แสดงรูปจะแสดงหลังจากโหลดเพจเสร็จ
-        dictFileTooBig: "ไม่อนุญาตให้อัพโหลดไฟล์เกิน 2 MB", //ข้อความแสดงเมื่อเลือกไฟล์ขนาดเกินที่กำหนด
-        acceptedFiles: "image/*", // อนุญาตให้เลือกไฟล์ประเภทรูปภาพได้
+          },
+          dictCancelUpload: 'Cancel', // ชื่อ ปุ่ม ยกเลิก
+          dictDefaultMessage:
+            "<img height='60' src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNsug8XTE5KVJEMECVvm8p43BZTdvZExoQ9Q&usqp=CAU'><br><font size='3'>Browse File</font>", // ข้อความบนพื้นที่แสดงรูปจะแสดงหลังจากโหลดเพจเสร็จ
+          dictFileTooBig: 'ไม่อนุญาตให้อัพโหลดไฟล์เกิน 2 MB', //ข้อความแสดงเมื่อเลือกไฟล์ขนาดเกินที่กำหนด
+          acceptedFiles: 'image/*', // อนุญาตให้เลือกไฟล์ประเภทรูปภาพได้
 
-        // The setting up of the dropzone
-        init: function() {
+          // The setting up of the dropzone
+          init: function () {
             myDropzone = this;
-            this.on("addedfile", function(file) {
-                //$('#infinite').append("<input type='text' class='form_none' name='imgFiles[]' value='" + file.newName + "'/>");
-                $('#infinite').append("<input type='text' id='" + file.newName +
-                    "' class='form_none' name='imgFiles[]' value='" + file.newName + "'/>");
-                file.previewElement.id = file.newName;
-            }).on("removedfile", function(file) {
+            this.on('addedfile', function (file) {
+              //$('#infinite').append("<input type='text' class='form_none' name='imgFiles[]' value='" + file.newName + "'/>");
+              $('#infinite').append(
+                "<input type='text' id='" +
+                  file.newName +
+                  "' class='form_none' name='imgFiles[]' value='" +
+                  file.newName +
+                  "'/>"
+              );
+              file.previewElement.id = file.newName;
+            })
+              .on('removedfile', function (file) {
                 //alert(file.id);
                 //var name = file.name;
                 var name = file.previewElement.id;
 
                 $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    },
-                    type: 'POST',
-                    url: '{{ route('form.delete') }}',
-                    data: {
-                        name: name,
-                    },
-                    success: function(data) {
-                        console.log('success: ' + data);
-                        var element = document.getElementById("infinite");
-                        var child = document.getElementById(name);
-                        element.removeChild(child);
-                        if (!document.getElementsByName('imgFiles[]').length) {
-                            $('#dropzone_preview').css("display", "none");
-                            $('#dropzone-photo').addClass('form-focus-error');
-                            $('#dropzone-photo')
-                                .find('.form-error-message').css("display", "block");
-                            $('#dropzone-photo').css('border', 'solid 1px red');
-                        }
+                  headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                  },
+                  type: 'POST',
+                  url: '{{
+          route(
+            'form.delete',
+          )
+        }}',
+                  data: {
+                    name: name
+                  },
+                  success: function (data) {
+                    console.log('success: ' + data);
+                    var element = document.getElementById('infinite');
+                    var child = document.getElementById(name);
+                    element.removeChild(child);
+                    if (!document.getElementsByName('imgFiles[]').length) {
+                      $('#dropzone_preview').css('display', 'none');
+                      $('#dropzone-photo').addClass('form-focus-error');
+                      $('#dropzone-photo')
+                        .find('.form-error-message')
+                        .css('display', 'block');
+                      $('#dropzone-photo').css('border', 'solid 1px red');
                     }
+                  }
                 });
 
                 //var _ref;
                 //return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
-
-            }).on("maxfilesexceeded", function(file, response) {
+              })
+              .on('maxfilesexceeded', function (file, response) {
                 alert('allow maximum 2 file');
                 this.removeFile(file);
-            }).on('complete', function(file) {
+              })
+              .on('complete', function (file) {
                 let val = file.accepted;
                 if (file.accepted == true) {
-                    obj = JSON.parse(file.xhr.response);
-                    //file.previewElement.id = obj.success;
-                    console.log(obj.success);
-                    //$('#infinite').append("<input type='text' id='" + obj.success +
-                    //    "' class='form_none' name='imgFiles[]' value='" + obj.success + "'/>");
+                  obj = JSON.parse(file.xhr.response);
+                  //file.previewElement.id = obj.success;
+                  console.log(obj.success);
+                  //$('#infinite').append("<input type='text' id='" + obj.success +
+                  //    "' class='form_none' name='imgFiles[]' value='" + obj.success + "'/>");
                 }
                 let val1 = file.name;
-                $('#dropzone_preview').css("display", "block");
+                $('#dropzone_preview').css('display', 'block');
                 $('#dropzone-photo').removeClass('form-focus-error');
-                $('#dropzone-photo')
-                    .find('.form-error-message').css("display", "none");
+                $('#dropzone-photo').find('.form-error-message').css('display', 'none');
                 $('#dropzone-photo').css('border', 'solid 1px green');
                 if (document.getElementsByName('imgFiles[]').length) {
-                    //$('#error_div').css('display', 'none');
+                  //$('#error_div').css('display', 'none');
                 }
-            }).on("success", function(file) {
+              })
+              .on('success', function (file) {
                 //var responseText = file.id // or however you would point to your assigned file ID here;
                 //console.log(response); // console should show the ID you pointed to
                 // do stuff with file.id ...
-            }).on("error", function(file) {
+              })
+              .on('error', function (file) {
                 this.removeFile(file);
-                alert("ไม่อนุญาตให้อัพโหลดไฟล์เกิน 5 MB");
-            });
+                alert('ไม่อนุญาตให้อัพโหลดไฟล์เกิน 5 MB');
+              });
             /*this.on("addedfile", function(file) {
 
-            }).on("removedfile", function(file) {
+                }).on("removedfile", function(file) {
 
-            }).on("thumbnail", function(file) {
+                }).on("thumbnail", function(file) {
 
-            }).on("error", function(file) {
+                }).on("error", function(file) {
 
-            }).on("processing", function(file) {
+                }).on("processing", function(file) {
 
-            }).on("uploadprogress", function(file) {
+                }).on("uploadprogress", function(file) {
 
-            });*/
+                });*/
+          }
+        };
 
-        }
-    }
-
-    Dropzone.options.myAwesomeDropzone2 = {
-        url: '{{ route('form.upload') }}',
-        headers: {
-            'X-CSRF-TOKEN': "{{ csrf_token() }}"
-        },
-        paramName: "file", // ชื่อไฟล์ปลายทางเมื่อ upload แบบ mutiple จะเป็น array
-        autoProcessQueue: true, // ใส่เพื่อไม่ให้อัพโหลดทันที หลังจากเลือกไฟล์
-        uploadMultiple: true, // อัพโหลดไฟล์หลายไฟล์
-        parallelUploads: 2, // ให้ทำงานพร้อมกัน 10 ไฟล์
-        maxFiles: 2, // ไฟล์สูงสุด 5 ไฟล์
-        maxfilesexceeded: function(file) {
+        Dropzone.options.myAwesomeDropzone2 = {
+          url: '{{
+          route(
+            'form.upload',
+          )
+        }}',
+          headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          },
+          paramName: 'file', // ชื่อไฟล์ปลายทางเมื่อ upload แบบ mutiple จะเป็น array
+          autoProcessQueue: true, // ใส่เพื่อไม่ให้อัพโหลดทันที หลังจากเลือกไฟล์
+          uploadMultiple: true, // อัพโหลดไฟล์หลายไฟล์
+          parallelUploads: 2, // ให้ทำงานพร้อมกัน 10 ไฟล์
+          maxFiles: 2, // ไฟล์สูงสุด 5 ไฟล์
+          maxfilesexceeded: function (file) {
             this.removeAllFiles();
             this.addFile(file);
-        },
-        addRemoveLinks: true, // อนุญาตให้ลบไฟล์ก่อนการอัพโหลด
-        maxFilesize: 10, // MB
-        renameFile: function(file) {
+          },
+          addRemoveLinks: true, // อนุญาตให้ลบไฟล์ก่อนการอัพโหลด
+          maxFilesize: 10, // MB
+          renameFile: function (file) {
             let newName = new Date().getTime() + '_' + file.name;
             file.newName = newName;
             return newName;
-        },
-        previewsContainer: "#dropzone_preview2", // ระบุ element เป้าหลาย
-        //previewTemplate: $('#template-preview').html(),
-        dictRemoveFile: "Remove", // ชื่อ ปุ่ม remove
-        dictCancelUpload: "Cancel", // ชื่อ ปุ่ม ยกเลิก
-        dictDefaultMessage: "<img height='60' src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNsug8XTE5KVJEMECVvm8p43BZTdvZExoQ9Q&usqp=CAU'><br><font size='3'>Browse File</font>", // ข้อความบนพื้นที่แสดงรูปจะแสดงหลังจากโหลดเพจเสร็จ
-        dictFileTooBig: "ไม่อนุญาตให้อัพโหลดไฟล์เกิน 2 MB", //ข้อความแสดงเมื่อเลือกไฟล์ขนาดเกินที่กำหนด
-        acceptedFiles: "image/*", // อนุญาตให้เลือกไฟล์ประเภทรูปภาพได้
-        // The setting up of the dropzone
-        init: function() {
+          },
+          previewsContainer: '#dropzone_preview2', // ระบุ element เป้าหลาย
+          //previewTemplate: $('#template-preview').html(),
+          dictRemoveFile: 'Remove', // ชื่อ ปุ่ม remove
+          dictCancelUpload: 'Cancel', // ชื่อ ปุ่ม ยกเลิก
+          dictDefaultMessage:
+            "<img height='60' src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNsug8XTE5KVJEMECVvm8p43BZTdvZExoQ9Q&usqp=CAU'><br><font size='3'>Browse File</font>", // ข้อความบนพื้นที่แสดงรูปจะแสดงหลังจากโหลดเพจเสร็จ
+          dictFileTooBig: 'ไม่อนุญาตให้อัพโหลดไฟล์เกิน 2 MB', //ข้อความแสดงเมื่อเลือกไฟล์ขนาดเกินที่กำหนด
+          acceptedFiles: 'image/*', // อนุญาตให้เลือกไฟล์ประเภทรูปภาพได้
+          // The setting up of the dropzone
+          init: function () {
             myDropzone = this;
-            this.on("addedfile", function(file) {
-                //$('#infinite').append("<input type='text' class='form_none' name='imgFiles[]' value='" + file.name + "'/>");
-                $('#infinite').append("<input type='text' id='" + file.newName +
-                    "' class='form_none' name='imgFiles2[]' value='" + file.newName + "'/>");
-                file.previewElement.id = file.newName;
-            }).on("removedfile", function(file) {
+            this.on('addedfile', function (file) {
+              //$('#infinite').append("<input type='text' class='form_none' name='imgFiles[]' value='" + file.name + "'/>");
+              $('#infinite').append(
+                "<input type='text' id='" +
+                  file.newName +
+                  "' class='form_none' name='imgFiles2[]' value='" +
+                  file.newName +
+                  "'/>"
+              );
+              file.previewElement.id = file.newName;
+            })
+              .on('removedfile', function (file) {
                 //alert(file.id);
                 //var name = file.name;
                 var name = file.previewElement.id;
 
                 $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    },
-                    type: 'POST',
-                    url: '{{ route('form.delete') }}',
-                    data: {
-                        name: name,
-                    },
-                    success: function(data) {
-                        console.log('success: ' + data);
-                        var element = document.getElementById("infinite");
-                        var child = document.getElementById(name);
-                        element.removeChild(child);
-                        if (!document.getElementsByName('imgFiles2[]').length) {
-                            //alert();
-                            $('#dropzone_preview2').css("display", "none");
-                            $('#dropzone-att').addClass('form-focus-error');
-                            $('#dropzone-att')
-                                .find('.form-error-message').css("display", "block");
-                            $('#dropzone-att').css('border', 'solid 1px red');
-                        }
+                  headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                  },
+                  type: 'POST',
+                  url: '{{
+          route(
+            'form.delete',
+          )
+        }}',
+                  data: {
+                    name: name
+                  },
+                  success: function (data) {
+                    console.log('success: ' + data);
+                    var element = document.getElementById('infinite');
+                    var child = document.getElementById(name);
+                    element.removeChild(child);
+                    if (!document.getElementsByName('imgFiles2[]').length) {
+                      //alert();
+                      $('#dropzone_preview2').css('display', 'none');
+                      $('#dropzone-att').addClass('form-focus-error');
+                      $('#dropzone-att')
+                        .find('.form-error-message')
+                        .css('display', 'block');
+                      $('#dropzone-att').css('border', 'solid 1px red');
                     }
+                  }
                 });
 
                 //var _ref;
                 //return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
-
-            }).on("maxfilesexceeded", function(file) {
+              })
+              .on('maxfilesexceeded', function (file) {
                 alert('allow maximum 2 file');
                 this.removeFile(file);
-            }).on('complete', function(file) {
+              })
+              .on('complete', function (file) {
                 let val = file.accepted;
                 if (file.accepted == true) {
-                    obj = JSON.parse(file.xhr.response);
-                    //file.previewElement.id = obj.success;
-                    console.log(obj.success);
-                    //alert(obj.success);
-                    //$('#infinite').append("<input type='text' id='" + obj.success +
-                    //   "' class='form_none' name='imgFiles2[]' value='" + obj.success + "'/>");
+                  obj = JSON.parse(file.xhr.response);
+                  //file.previewElement.id = obj.success;
+                  console.log(obj.success);
+                  //alert(obj.success);
+                  //$('#infinite').append("<input type='text' id='" + obj.success +
+                  //   "' class='form_none' name='imgFiles2[]' value='" + obj.success + "'/>");
                 }
                 let val1 = file.name;
-                $('#dropzone_preview2').css("display", "block");
+                $('#dropzone_preview2').css('display', 'block');
                 $('#dropzone-att').removeClass('form-focus-error');
-                $('#dropzone-att')
-                    .find('.form-error-message').css("display", "none");
+                $('#dropzone-att').find('.form-error-message').css('display', 'none');
                 $('#dropzone-att').css('border', 'solid 1px green');
                 if (document.getElementsByName('imgFiles2[]').length) {
-                    //$('#error_div').css('display', 'none');
+                  //$('#error_div').css('display', 'none');
                 }
-            }).on("success", function(file) {
+              })
+              .on('success', function (file) {
                 //var responseText = file.id // or however you would point to your assigned file ID here;
                 //console.log(response); // console should show the ID you pointed to
                 // do stuff with file.id ...
-            }).on("error", function(file) {
+              })
+              .on('error', function (file) {
                 this.removeFile(file);
-                alert("ไม่อนุญาตให้อัพโหลดไฟล์เกิน 5 MB");
-            });
+                alert('ไม่อนุญาตให้อัพโหลดไฟล์เกิน 5 MB');
+              });
             /*this.on("addedfile", function(file) {
 
-            }).on("removedfile", function(file) {
+                }).on("removedfile", function(file) {
 
-            }).on("thumbnail", function(file) {
+                }).on("thumbnail", function(file) {
 
-            }).on("error", function(file) {
+                }).on("error", function(file) {
 
-            }).on("processing", function(file) {
+                }).on("processing", function(file) {
 
-            }).on("uploadprogress", function(file) {
+                }).on("uploadprogress", function(file) {
 
-            });*/
+                });*/
+          }
+        };
 
-        }
-    }
-
-    const valid_option = {
-            ignore: ":hidden:not([required]), :disabled",
-            onkeyup: false,
-        showErrors: function(errorMap, errorList) {
+        const valid_option = {
+          ignore: ':hidden:not([required]), :disabled',
+          onkeyup: false,
+          showErrors: function (errorMap, errorList) {
             var errors = this.numberOfInvalids();
             /* if (!document.getElementsByName('imgFiles[]').length) {
-            errors = errors + 1;
-            }
-            if (!document.getElementsByName('imgFiles2[]').length) {
-            errors = errors + 1;
-            } */
+                errors = errors + 1;
+                }
+                if (!document.getElementsByName('imgFiles2[]').length) {
+                errors = errors + 1;
+                } */
             if (errors) {
-                var message = errors == 1 ?
-                    '<br>You missed <span class="error-rounded-bg">1</span> field. It has been highlighted' :
-                    '<br>You have missed <span class="error-rounded-bg">' + errors +
+              var message =
+                errors == 1
+                  ? '<br>You missed <span class="error-rounded-bg">1</span> field. It has been highlighted'
+                  : '<br>You have missed <span class="error-rounded-bg">' +
+                    errors +
                     '</span> fields. Please fill before submitted.';
-                $("#error_div").html(message);
-                $(".error_div").show();
+              $('#error_div').html(message);
+              $('.error_div').show();
             } else {
-                $(".error_div").hide();
-
+              $('.error_div').hide();
             }
             this.defaultShowErrors();
-        },
-        submitHandler: function() {
+          },
+          submitHandler: function () {
             //var spinner = $('#loader');
             //spinner.show();
-            if (document.getElementsByName('imgFiles[]').length && document.getElementsByName('imgFiles2[]')
-                .length) {
-                $('#send_data').attr('disabled', true);
-                $(form).submit();
-                return true;
+            if (
+              document.getElementsByName('imgFiles[]').length &&
+              document.getElementsByName('imgFiles2[]').length
+            ) {
+              $('#send_data').attr('disabled', true);
+              $(form).submit();
+              return true;
             }
+          }
+        };
 
-        }
-    }
+        $(document).ready(function () {
+          $('.AddDate').inputmask('99-99-9999');
+          $('.AddPhone').inputmask('(999) 999-9999');
 
-    $(document).ready(function() {
+          $('#infinite').validate(valid_option);
 
-        $(".AddDate").inputmask("99-99-9999");
-        $(".AddPhone").inputmask("(999) 999-9999");
-
-        $("#infinite").validate(valid_option);
-
-        $('#btnUpload').on('click', function() {
+          $('#btnUpload').on('click', function () {
             myDropzone.processQueue();
+          });
         });
-    });
 
-    function check_input() {
-        $('.form-control').focus();
-        //$('.form-control').focus({ preventScroll: false });
-        //$('input').focus();
-        //$('input').focus({ preventScroll: false });
+        function check_input() {
+          $('.form-control').focus();
+          //$('.form-control').focus({ preventScroll: false });
+          //$('input').focus();
+          //$('input').focus({ preventScroll: false });
 
-        if (!document.getElementById('agreeCheckbox').checked) {
-            alert('กรุณาติ๊ก "ตกลงและยอมรับข้อกำหนดและเงื่อนไข รวมถึงตรวจสอบข้อมูลและเนื้อหาต่างๆเรียบร้อยแล้ว" ก่อนส่งฟอร์ม');
+          if (!document.getElementById('agreeCheckbox').checked) {
+            alert(
+              'กรุณาติ๊ก "ตกลงและยอมรับข้อกำหนดและเงื่อนไข รวมถึงตรวจสอบข้อมูลและเนื้อหาต่างๆเรียบร้อยแล้ว" ก่อนส่งฟอร์ม'
+            );
             return false;
-        }
+          }
 
-        if (document.getElementsByName('imgFiles[]').length && document.getElementsByName('imgFiles2[]')
-            .length) {
+          if (
+            document.getElementsByName('imgFiles[]').length &&
+            document.getElementsByName('imgFiles2[]').length
+          ) {
             //$('#error_div').css('display', 'none');
 
-
             return true;
-        } else {
+          } else {
             if (!document.getElementsByName('imgFiles[]').length) {
-                $('#dropzone-photo').addClass('form-focus-error');
-                $('#dropzone-photo')
-                    .find('.form-error-message').css("display", "block");
-                $('#dropzone-photo').css('border', 'solid 1px red');
-                jumpTo('dphoto');
+              $('#dropzone-photo').addClass('form-focus-error');
+              $('#dropzone-photo').find('.form-error-message').css('display', 'block');
+              $('#dropzone-photo').css('border', 'solid 1px red');
+              jumpTo('dphoto');
             }
             if (!document.getElementsByName('imgFiles2[]').length) {
-                $('#dropzone-att').addClass('form-focus-error');
-                $('#dropzone-att')
-                    .find('.form-error-message').css("display", "block");
-                $('#dropzone-att').css('border', 'solid 1px red');
-                jumpTo('datt');
+              $('#dropzone-att').addClass('form-focus-error');
+              $('#dropzone-att').find('.form-error-message').css('display', 'block');
+              $('#dropzone-att').css('border', 'solid 1px red');
+              jumpTo('datt');
             }
 
             //$('#error_div').css('display', 'block');
             return false;
+          }
         }
 
-    }
-
-
-
-    function jumpTo(id) {
-        var get = location.href;
-        location.href = "#" + id;
-    }
-
-    var fixmeTop = $('.error_div').offset().top;
-    $(window).scroll(function() {
-        var currentScroll = $(window).scrollTop();
-        if (currentScroll >= fixmeTop) {
-            $('.error_div').css({
-                position: 'fixed',
-                top: '0',
-                left: '0'
-            });
-        } else {
-            $('.error_div').css({
-                position: 'absolute'
-            });
+        function jumpTo(id) {
+          var get = location.href;
+          location.href = '#' + id;
         }
-    });
-</script>
-<script type="text/javascript">
-    const warningTitleCSS = 'color:red; font-size:60px; font-weight: bold; -webkit-text-stroke: 1px black;';
-    const warningDescCSS = 'font-size: 18px;';
 
-    console.log('%cหยุด!', warningTitleCSS);
-    console.log(
-        "%cนี่เป็นคุณสมบัติการทำงานของเบราว์เซอร์ที่มีจุดมุ่งหมายให้ใช้สำหรับผู้พัฒนา หากผู้ใดบอกให้คุณคัดลอกแล้ววางข้อความบางอย่างที่นี่เพื่อเปิดใช้งานคุณสมบัติการทำงานของ ระบบ หรือเพื่อเข้าถึงบัญชีของบุคคลใดบุคคลหนึ่ง โดยมิชอบ คำบอกกล่าวเช่นนี้เป็นกลลวงและจะทำให้ผู้นั้นมีสิทธิ์เข้าถึงบัญชี ของคุณ",
-        warningDescCSS);
-    //console.log('%cSee https://www.facebook.com/selfxss for more information.', warningDescCSS);
-</script>
+        var fixmeTop = $('.error_div').offset().top;
+        $(window).scroll(function () {
+          var currentScroll = $(window).scrollTop();
+          if (currentScroll >= fixmeTop) {
+            $('.error_div').css({
+              position: 'fixed',
+              top: '0',
+              left: '0'
+            });
+          } else {
+            $('.error_div').css({
+              position: 'absolute'
+            });
+          }
+        });
+      </script>
+      <script type="text/javascript">
+        const warningTitleCSS =
+          'color:red; font-size:60px; font-weight: bold; -webkit-text-stroke: 1px black;';
+        const warningDescCSS = 'font-size: 18px;';
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2EMF2S1GBP"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
+        console.log('%cหยุด!', warningTitleCSS);
+        console.log(
+          '%cนี่เป็นคุณสมบัติการทำงานของเบราว์เซอร์ที่มีจุดมุ่งหมายให้ใช้สำหรับผู้พัฒนา หากผู้ใดบอกให้คุณคัดลอกแล้ววางข้อความบางอย่างที่นี่เพื่อเปิดใช้งานคุณสมบัติการทำงานของ ระบบ หรือเพื่อเข้าถึงบัญชีของบุคคลใดบุคคลหนึ่ง โดยมิชอบ คำบอกกล่าวเช่นนี้เป็นกลลวงและจะทำให้ผู้นั้นมีสิทธิ์เข้าถึงบัญชี ของคุณ',
+          warningDescCSS
+        );
+        //console.log('%cSee https://www.facebook.com/selfxss for more information.', warningDescCSS);
+      </script>
 
-    function gtag() {
-        dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
+      <!-- Google tag (gtag.js) -->
+      <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-2EMF2S1GBP"
+      ></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
 
-    gtag('config', 'G-2EMF2S1GBP');
-</script>
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
 
-<script>
-    $(document).ready(function() {
-        const grade_select = $('#grade');
-        const subject_selection_row = $('#subject_selection_row');
-        const grade_1_8_subjects = $('#grade_1_8_subjects');
-        const grade_9_12_subjects = $('#grade_9_12_subjects');
-        const select_all_subjects_checkbox = $('#select_all_subjects');
-        const subject_chemistry_checkbox = $('#subject_chemistry');
-        const subject_biology_checkbox = $('#subject_biology');
-        const subject_physics_checkbox = $('#subject_physics');
-        const subject_science_checkbox = $('#subject_science');
-        const subject_checkboxes_9_12 = $('#grade_9_12_subjects input[type="checkbox"]').not('#select_all_subjects');
-        const package_input = $('#package');
+        gtag('config', 'G-2EMF2S1GBP');
+      </script>
 
-        let calculated_price_input = $('#calculated_price');
-        let selected_subjects_input = $('#selected_subjects_input');
+      <script>
+        $(document).ready(function () {
+          const grade_select = $('#grade');
+          const subject_selection_row = $('#subject_selection_row');
+          const grade_1_8_subjects = $('#grade_1_8_subjects');
+          const grade_9_12_subjects = $('#grade_9_12_subjects');
+          const select_all_subjects_checkbox = $('#select_all_subjects');
+          const subject_chemistry_checkbox = $('#subject_chemistry');
+          const subject_biology_checkbox = $('#subject_biology');
+          const subject_physics_checkbox = $('#subject_physics');
+          const subject_science_checkbox = $('#subject_science');
+          const subject_checkboxes_9_12 = $(
+            '#grade_9_12_subjects input[type="checkbox"]'
+          ).not('#select_all_subjects');
+          const package_input = $('#package');
 
-        const SCIENCE_PRICE = 790;
-        const SINGLE_SUBJECT_PRICE = 790;
-        const THREE_SUBJECTS_DISCOUNT_PRICE = 1800;
+          let calculated_price_input = $('#calculated_price');
+          let selected_subjects_input = $('#selected_subjects_input');
 
-        function calculateAndUpdatePrice() {
+          const SCIENCE_PRICE = 790;
+          const SINGLE_SUBJECT_PRICE = 790;
+          const THREE_SUBJECTS_DISCOUNT_PRICE = 1800;
+
+          function calculateAndUpdatePrice() {
             let current_price = 0;
             let selected_subjects_array = [];
             let package_display_string = '';
 
-            if (grade_1_8_subjects.is(':visible') && subject_science_checkbox.is(':checked')) {
-                current_price = SCIENCE_PRICE;
-                selected_subjects_array.push(subject_science_checkbox.val());
-                package_display_string = "Science - ราคา " + SCIENCE_PRICE + " บาท";
+            if (
+              grade_1_8_subjects.is(':visible') &&
+              subject_science_checkbox.is(':checked')
+            ) {
+              current_price = SCIENCE_PRICE;
+              selected_subjects_array.push(subject_science_checkbox.val());
+              package_display_string =
+                'Science - ราคา ' + SCIENCE_PRICE + ' บาท';
             } else if (grade_9_12_subjects.is(':visible')) {
-                const selected_count = subject_checkboxes_9_12.filter(':checked').length;
-                const checked_subjects_names = [];
+              const selected_count =
+                subject_checkboxes_9_12.filter(':checked').length;
+              const checked_subjects_names = [];
 
-                subject_checkboxes_9_12.filter(':checked').each(function() {
-                    selected_subjects_array.push($(this).val());
-                    checked_subjects_names.push($(this).val());
-                });
+              subject_checkboxes_9_12.filter(':checked').each(function () {
+                selected_subjects_array.push($(this).val());
+                checked_subjects_names.push($(this).val());
+              });
 
-                if (selected_count === 3) {
-                    current_price = THREE_SUBJECTS_DISCOUNT_PRICE;
-                    package_display_string = checked_subjects_names.join('+') + " - ราคา " + THREE_SUBJECTS_DISCOUNT_PRICE + " บาท";
-                } else if (selected_count > 0) {
-                    current_price = selected_count * SINGLE_SUBJECT_PRICE;
-                    package_display_string = checked_subjects_names.join('+') + " - ราคา " + current_price + " บาท";
-                } else {
-                    current_price = 0;
-                    package_display_string = '';
-                }
+              if (selected_count === 3) {
+                current_price = THREE_SUBJECTS_DISCOUNT_PRICE;
+                package_display_string =
+                  checked_subjects_names.join('+') +
+                  ' - ราคา ' +
+                  THREE_SUBJECTS_DISCOUNT_PRICE +
+                  ' บาท';
+              } else if (selected_count > 0) {
+                current_price = selected_count * SINGLE_SUBJECT_PRICE;
+                package_display_string =
+                  checked_subjects_names.join('+') +
+                  ' - ราคา ' +
+                  current_price +
+                  ' บาท';
+              } else {
+                current_price = 0;
+                package_display_string = '';
+              }
             }
             calculated_price_input.val(current_price);
-            selected_subjects_input.val(JSON.stringify(selected_subjects_array));
+            selected_subjects_input.val(
+              JSON.stringify(selected_subjects_array)
+            );
             package_input.val(package_display_string);
             console.log('Calculated Price:', current_price);
             console.log('Selected Subjects:', selected_subjects_array);
             console.log('Package Details:', package_input.val());
-        }
+          }
 
-        function resetSubjectSelection() {
+          function resetSubjectSelection() {
             subject_checkboxes_9_12.prop('checked', false);
             subject_science_checkbox.prop('checked', false);
             select_all_subjects_checkbox.prop('checked', false);
@@ -1692,83 +2208,103 @@
             calculated_price_input.val('');
             selected_subjects_input.val('');
             package_input.val('');
-        }
+          }
 
-        grade_select.on('change', function() {
+          grade_select.on('change', function () {
             const selected_grade = $(this).val();
             resetSubjectSelection();
             if (selected_grade === 'Kindergarten') {
-                alert('Kindergarten ไม่สามารถสมัครได้');
-                $(this).val('');
-                return;
+              alert('Kindergarten ไม่สามารถสมัครได้');
+              $(this).val('');
+              return;
             }
             subject_selection_row.show();
             if (selected_grade.startsWith('Grade')) {
-                const grade_number = parseInt(selected_grade.replace('Grade ', ''));
-                if (grade_number >= 1 && grade_number <= 8) {
-                    grade_1_8_subjects.show();
-                    subject_science_checkbox.prop('checked', true).prop('disabled', false);
-                    subject_checkboxes_9_12.prop('disabled', true);
-                } else if (grade_number >= 9 && grade_number <= 12) {
-                    grade_9_12_subjects.show();
-                    subject_science_checkbox.prop('disabled', true);
-                    subject_checkboxes_9_12.prop('disabled', false);
-                } else {
-                    resetSubjectSelection();
-                }
-            } else {
+              const grade_number = parseInt(
+                selected_grade.replace('Grade ', '')
+              );
+              if (grade_number >= 1 && grade_number <= 8) {
+                grade_1_8_subjects.show();
+                subject_science_checkbox
+                  .prop('checked', true)
+                  .prop('disabled', false);
+                subject_checkboxes_9_12.prop('disabled', true);
+              } else if (grade_number >= 9 && grade_number <= 12) {
+                grade_9_12_subjects.show();
+                subject_science_checkbox.prop('disabled', true);
+                subject_checkboxes_9_12.prop('disabled', false);
+              } else {
                 resetSubjectSelection();
+              }
+            } else {
+              resetSubjectSelection();
             }
             calculateAndUpdatePrice();
-        });
+          });
 
-        select_all_subjects_checkbox.on('change', function() {
+          select_all_subjects_checkbox.on('change', function () {
             const is_checked = $(this).is(':checked');
             subject_checkboxes_9_12.prop('checked', is_checked);
             calculateAndUpdatePrice();
-        });
+          });
 
-        subject_checkboxes_9_12.on('change', function() {
-            const all_checked = subject_checkboxes_9_12.filter(':checked').length === subject_checkboxes_9_12.length;
+          subject_checkboxes_9_12.on('change', function () {
+            const all_checked =
+              subject_checkboxes_9_12.filter(':checked').length ===
+              subject_checkboxes_9_12.length;
             select_all_subjects_checkbox.prop('checked', all_checked);
             calculateAndUpdatePrice();
-        });
+          });
 
-        const original_check_input = window.check_input;
-        window.check_input = function() {
+          const original_check_input = window.check_input;
+          window.check_input = function () {
             let is_valid = original_check_input();
             if (!is_valid) {
-                return false;
+              return false;
             }
             let is_subject_selected = false;
             const selected_grade = $('#grade').val();
             if (selected_grade.startsWith('Grade')) {
-                const grade_number = parseInt(selected_grade.replace('Grade ', ''));
-                if (grade_number >= 1 && grade_number <= 8) {
-                    if (subject_science_checkbox.is(':checked')) {
-                        is_subject_selected = true;
-                    }
-                } else if (grade_number >= 9 && grade_number <= 12) {
-                    if (subject_chemistry_checkbox.is(':checked') || subject_biology_checkbox.is(':checked') || subject_physics_checkbox.is(':checked')) {
-                        is_subject_selected = true;
-                    }
+              const grade_number = parseInt(
+                selected_grade.replace('Grade ', '')
+              );
+              if (grade_number >= 1 && grade_number <= 8) {
+                if (subject_science_checkbox.is(':checked')) {
+                  is_subject_selected = true;
                 }
+              } else if (grade_number >= 9 && grade_number <= 12) {
+                if (
+                  subject_chemistry_checkbox.is(':checked') ||
+                  subject_biology_checkbox.is(':checked') ||
+                  subject_physics_checkbox.is(':checked')
+                ) {
+                  is_subject_selected = true;
+                }
+              }
             }
 
             if (!is_subject_selected && subject_selection_row.is(':visible')) {
-                $('#subject_selection_row').addClass('form-focus-error');
-                $('#subject_selection_row').find('.form-error-message').css("display", "block");
-                $('#subject_selection_row').css('border', 'solid 1px red');
-                jumpTo('subject_selection_row');
-                return false;
-            } else if (is_subject_selected && subject_selection_row.is(':visible')) {
-                $('#subject_selection_row').removeClass('form-focus-error');
-                $('#subject_selection_row').find('.form-error-message').css("display", "none");
-                $('#subject_selection_row').css('border', 'solid 1px green');
+              $('#subject_selection_row').addClass('form-focus-error');
+              $('#subject_selection_row')
+                .find('.form-error-message')
+                .css('display', 'block');
+              $('#subject_selection_row').css('border', 'solid 1px red');
+              jumpTo('subject_selection_row');
+              return false;
+            } else if (
+              is_subject_selected &&
+              subject_selection_row.is(':visible')
+            ) {
+              $('#subject_selection_row').removeClass('form-focus-error');
+              $('#subject_selection_row')
+                .find('.form-error-message')
+                .css('display', 'none');
+              $('#subject_selection_row').css('border', 'solid 1px green');
             }
 
             return true;
-        };
-    });
-</script>
+          };
+        });
+      </script>
+
 @endsection

@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -10,7 +10,6 @@
     type="text/javascript"
   ></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <link
     rel="stylesheet"
@@ -82,7 +81,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -189,16 +188,22 @@
               <tr class="activeda" height="30">
                 <td align="center" width="15%" class="actived">
                   <font size="{{ $fontsize }}">
-                    <b>{{ $histories['datetime'] }}</b>
+                    <b>{{
+                      $histories[
+                        'datetime'
+                      ]
+                    }}</b>
                   </font>
                 </td>
                 <td align="left" width="40%" class="actived">
                   &nbsp;
                   <font size="{{ $fontsize }}">
                     <b>
-                      {{ $histories['firstname'] }}
-                      {{ $histories['lastname'] }}
-                      ({{ $histories['nickname'] }})
+                      {{
+                        $histories[
+                          'firstname'
+                        ]
+                      }} {{ $histories['lastname'] }} ({{ $histories['nickname'] }})
                     </b>
                   </font>
                 </td>
@@ -211,7 +216,11 @@
                 </td>
                 <td align="center" width="15%" class="actived">
                   <font size="{{ $fontsize }}">
-                    <b>{{ $histories['subject'] }}</b>
+                    <b>{{
+                      $histories[
+                        'subject'
+                      ]
+                    }}</b>
                   </font>
                 </td>
                 <td align="center" width="15%" class="actived grey">
@@ -264,11 +273,10 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     function export_report() {
-      url =
-        '{{ route('histories.print_day', ['type' => 'print', 'fontsize' => $fontsize, 'print_date' => $print_date]) }}';
+      url = '{{ route('histories.print_day', ['type' => 'print', 'fontsize' => $fontsize, 'print_date' => $print_date]) }}';
       window.open(url.replace(/&amp;/g, '&'));
     }
   </script>

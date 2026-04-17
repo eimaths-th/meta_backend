@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -10,7 +10,6 @@
     type="text/javascript"
   ></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <link
     rel="stylesheet"
@@ -80,7 +79,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -187,9 +186,17 @@
             <tr>
               <td colspan="4" align="center">
                 <b>
-                  {{ $receipt_val['mes'] }}
+                  {{
+                    $receipt_val[
+                      'mes'
+                    ]
+                  }}
                   <br />
-                  {{ $receipt_val['text'] }}
+                  {{
+                    $receipt_val[
+                      'text'
+                    ]
+                  }}
                 </b>
               </td>
 
@@ -206,25 +213,57 @@
             <tr>
               <td class="grey">นามลูกค้า,ที่อยู่/Client,Address</td>
               <td align="right" class="grey">รหัสลูกค้า/Customer's Code</td>
-              <td><b>{{ $receipt_val['customer_number'] }}</b></td>
+              <td>
+                <b>{{
+                  $receipt_val[
+                    'customer_number'
+                  ]
+                }}</b>
+              </td>
               <td align="right" class="grey">เลขที่ / Document No.</td>
-              <td><b>{{ $receipt_val['number'] }}</b></td>
+              <td>
+                <b>{{
+                  $receipt_val[
+                    'number'
+                  ]
+                }}</b>
+              </td>
             </tr>
             <tr>
               <td>
                 <font class="grey">K.</font>
-                <b>{{ $receipt_val['name_parent'] }}</b>
+                <b>{{
+                  $receipt_val[
+                    'name_parent'
+                  ]
+                }}</b>
               </td>
               <td align="right" class="grey">ชื่อนักเรียน/Nickname</td>
               <td align="left" width="30%">
                 <b>
-                  {{ $receipt_val['first_name'] }}
-                  {{ $receipt_val['middle_name'] }}
-                  {{ $receipt_val['last_name'] }}
+                  {{
+                    $receipt_val[
+                      'first_name'
+                    ]
+                  }} {{
+                    $receipt_val[
+                      'middle_name'
+                    ]
+                  }} {{
+                    $receipt_val[
+                      'last_name'
+                    ]
+                  }}
                 </b>
               </td>
               <td align="right" class="grey">วันที่ / Date</td>
-              <td><b>{{ $receipt_val['submission_date'] }}</b></td>
+              <td>
+                <b>{{
+                  $receipt_val[
+                    'submission_date'
+                  ]
+                }}</b>
+              </td>
             </tr>
             <tr>
               <!-- <td colspan="3"><font class="grey">ที่อยู่</font> <b> </b></td> -->
@@ -292,15 +331,53 @@
               @foreach ($receipt_val['detail'] as $receipt_detail)
                 <tr>
                   <td align="center" style="vertical-align: top">
-                    {{ $receipt_detail['no'] }}
+                    {{
+                      $receipt_detail[
+                        'no'
+                      ]
+                    }}
                   </td>
-                  <td align="left">{!! $receipt_detail['description'] !!}</td>
-                  <td align="center">{{ $receipt_detail['quantity'] }}</td>
-                  <td align="center">{{ $receipt_detail['unit'] }}</td>
-                  <td align="center">{{ $receipt_detail['unitprice'] }}</td>
-                  <td align="center">{{ $receipt_detail['discount'] }}</td>
+                  <td align="left">
+                    {!!
+                      $receipt_detail[
+                        'description'
+                      ]
+                    !!}
+                  </td>
+                  <td align="center">
+                    {{
+                      $receipt_detail[
+                        'quantity'
+                      ]
+                    }}
+                  </td>
+                  <td align="center">
+                    {{
+                      $receipt_detail[
+                        'unit'
+                      ]
+                    }}
+                  </td>
+                  <td align="center">
+                    {{
+                      $receipt_detail[
+                        'unitprice'
+                      ]
+                    }}
+                  </td>
+                  <td align="center">
+                    {{
+                      $receipt_detail[
+                        'discount'
+                      ]
+                    }}
+                  </td>
                   <td align="center" style="vertical-align: top">
-                    {{ $receipt_detail['price'] }}
+                    {{
+                      $receipt_detail[
+                        'price'
+                      ]
+                    }}
                   </td>
                 </tr>
               @endforeach
@@ -406,7 +483,11 @@
                       </td>
                       <!-- <td width="10%"></td> -->
                       <td width="20%" align="right" style="padding-right: 35px">
-                        <b>{{ $receipt_val['vat_price_val'] }}</b>
+                        <b>{{
+                          $receipt_val[
+                            'vat_price_val'
+                          ]
+                        }}</b>
                       </td>
                       <!-- <td width="10%"></td> -->
                     </tr>
@@ -425,7 +506,11 @@
                         ภาษีมูลค่าเพิ่ม 7% / Vat 7%
                       </td>
                       <td width="20%" align="right" style="padding-right: 35px">
-                        <b>{{ $receipt_val['vat_val'] }}</b>
+                        <b>{{
+                          $receipt_val[
+                            'vat_val'
+                          ]
+                        }}</b>
                       </td>
                     </tr>
                   </table>
@@ -438,11 +523,25 @@
                   Grand Total
                 </td>
                 <td align="center">
-                  <b>{{ $receipt_val['price_text'] }}</b>
+                  <b>{{
+                    $receipt_val[
+                      'price_text'
+                    ]
+                  }}</b>
                   <br />
-                  <b>{{ $receipt_val['price_texten'] }}</b>
+                  <b>{{
+                    $receipt_val[
+                      'price_texten'
+                    ]
+                  }}</b>
                 </td>
-                <td align="center"><b>{{ $receipt_val['price_val'] }}</b></td>
+                <td align="center">
+                  <b>{{
+                    $receipt_val[
+                      'price_val'
+                    ]
+                  }}</b>
+                </td>
 
                 <td align="right" class="grey">
                   บาท
@@ -499,7 +598,13 @@
                 <td align="center">Manager</td>
               </tr>
             </table>
-            <center>{!! $receipt_val['file_att'] !!}</center>
+            <center>
+              {!!
+                $receipt_val[
+                  'file_att'
+                ]
+              !!}
+            </center>
             <br />
             <br />
           </div>
@@ -509,11 +614,10 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     function export_report() {
-      url =
-        '{{ route('receipts.show_day', ['type' => 'print', 'pdsfield' => $pdsfield, 'print_rdate' => $print_date, 'template' => $template]) }}';
+      url = '{{ route('receipts.show_day', ['type' => 'print', 'pdsfield' => $pdsfield, 'print_rdate' => $print_date, 'template' => $template]) }}';
       window.open(url.replace(/&amp;/g, '&'));
     }
   </script>

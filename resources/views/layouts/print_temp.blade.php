@@ -73,7 +73,7 @@
       integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
       crossorigin="anonymous"
     ></script>
-    @yield('style')
+    @yield ('style')
     <script
       defer
       src="{{ asset('architectui/assets/scripts/demo.js') }}"
@@ -158,16 +158,16 @@
       }
 
       /* @media screen and (max-width: 400px) {
-            .screen-auto {
-                max-width: 100%;
-                height: auto;
-            }
-        }
+                        .screen-auto {
+                            max-width: 100%;
+                            height: auto;
+                        }
+                    }
 
-        .screen-auto {
-            max-width: 800;
-            height: 200;
-        } */
+                    .screen-auto {
+                        max-width: 800;
+                        height: 200;
+                    } */
     </style>
     <style>
       .screen-auto {
@@ -279,8 +279,8 @@
         </tr>
       </thead>
     </table>
-    @yield('content')
-    @yield('script')
+    @yield ('content')
+    @yield ('script')
     <table align="center" width="98%" cellpadding="0" cellspacing="0">
       <tr>
         <td></td>

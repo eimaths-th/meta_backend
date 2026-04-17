@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -10,7 +10,6 @@
     type="text/javascript"
   ></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <link
     rel="stylesheet"
@@ -24,7 +23,6 @@
     href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
     rel="stylesheet"
   />
-
   @if ($template === 'meta' || $template === 'meta2')
     <style>
       /* ------------------- */
@@ -145,7 +143,7 @@
   @endif
 @endsection
 
-@section('content')
+@section ('content')
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -273,14 +271,22 @@
                 <b>{{ $thaimonth }} {{ $thaiyear }}</b>
               </td>
               <td align="center" width="15%">
-                <b>{{ $sfielda[$sfield] }}</b>
+                <b>{{
+                  $sfielda[
+                    $sfield
+                  ]
+                }}</b>
               </td>
               <td align="center" width="15%">
                 <font class="grey">รหัสเอกสาร</font>
               </td>
               <td align="center" width="15%" class="active_right">
                 <b>
-                  {{ $sfieldas[$sfield] }}{{ $ymcode }}/{{ $fprint_number }}
+                  {{
+                    $sfieldas[
+                      $sfield
+                    ]
+                  }}{{ $ymcode }}/{{ $fprint_number }}
                 </b>
               </td>
             </tr>
@@ -306,32 +312,58 @@
               <tr class="activeda" height="30">
                 <td align="center" width="15%" class="actived">
                   <font size="{{ $fontsize }}">
-                    <b>{{ $receipt['receipt_submission_date'] }}</b>
+                    <b>{{
+                      $receipt[
+                        'receipt_submission_date'
+                      ]
+                    }}</b>
                   </font>
                 </td>
                 <td align="left" width="40%" class="actived">
                   &nbsp;
                   <font size="{{ $fontsize }}">
                     <b>
-                      {{ $receipt['receipt_firstname'] }}
-                      {{ $receipt['receipt_lastname'] }}
-                      {!! $receipt['receipt_des'] !!}
+                      {{
+                        $receipt[
+                          'receipt_firstname'
+                        ]
+                      }} {{
+                        $receipt[
+                          'receipt_lastname'
+                        ]
+                      }} {!!
+                        $receipt[
+                          'receipt_des'
+                        ]
+                      !!}
                     </b>
                   </font>
                 </td>
                 <td align="center" width="15%" class="actived">
                   <font size="{{ $fontsize }}">
-                    <b>{{ $receipt['receipt_number'] }}</b>
+                    <b>{{
+                      $receipt[
+                        'receipt_number'
+                      ]
+                    }}</b>
                   </font>
                 </td>
                 <td align="center" width="15%" class="actived">
                   <font size="{{ $fontsize }}">
-                    <b>{{ $receipt['receipt_price'] }}</b>
+                    <b>{{
+                      $receipt[
+                        'receipt_price'
+                      ]
+                    }}</b>
                   </font>
                 </td>
                 <td align="center" width="15%" class="actived grey">
                   <font size="{{ $fontsize }}">
-                    <b>{{ $receipt['receipt_price_label'] }}</b>
+                    <b>{{
+                      $receipt[
+                        'receipt_price_label'
+                      ]
+                    }}</b>
                   </font>
                 </td>
               </tr>
@@ -377,11 +409,10 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     function export_report() {
-      url =
-        '{{ route('receipts.print_day', ['type' => 'print', 'pdsfield' => $pdsfield, 'fontsize' => $fontsize, 'print_date' => $print_date, 'print_number' => $print_number, 'printDaysTemplate' => $template]) }}';
+      url = '{{ route('receipts.print_day', ['type' => 'print', 'pdsfield' => $pdsfield, 'fontsize' => $fontsize, 'print_date' => $print_date, 'print_number' => $print_number, 'printDaysTemplate' => $template]) }}';
       window.open(url.replace(/&amp;/g, '&'));
     }
   </script>

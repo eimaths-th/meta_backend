@@ -1,6 +1,6 @@
-@extends('layouts.main_template')
+@extends ('layouts.main_template')
 
-@section('style')
+@section ('style')
   <script
     src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
     type="text/javascript"
@@ -10,7 +10,6 @@
     type="text/javascript"
   ></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <link
     rel="stylesheet"
@@ -80,7 +79,7 @@
   </style>
 @endsection
 
-@section('content')
+@section ('content')
   {!! $app_html !!}
   <div class="row">
     @if ($message = Session::get('success'))
@@ -197,8 +196,7 @@
               <td align="right" class="grey">ชื่อนักเรียน/Nickname</td>
               <td align="left" width="30%">
                 <b>
-                  {{ $data->first_name }} {{ $data->middle_name }}
-                  {{ $data->last_name }}
+                  {{ $data->first_name }} {{ $data->middle_name }} {{ $data->last_name }}
                 </b>
               </td>
             @endif
@@ -209,9 +207,7 @@
             @if ($data->sfield == 17)
               <td align="left">
                 <font class="grey">โทร.</font>
-                <b>
-                  {{ $data->mobile }}
-                </b>
+                <b> {{ $data->mobile }} </b>
               </td>
               <td align="left" width="30%"><b></b></td>
             @else
@@ -282,21 +278,57 @@
             @foreach ($receipt_detail_arr as $receipt_detail)
               <tr>
                 <td align="center" style="vertical-align: top">
-                  {{ $receipt_detail['no'] }}
+                  {{
+                    $receipt_detail[
+                      'no'
+                    ]
+                  }}
                 </td>
                 <td align="left">
                   @if ($data->sfield == 17 && $receipt_detail['no'])
                     ข้อสอบ
                   @else
                   @endif
-                  {!! $receipt_detail['description'] !!}
+                  {!!
+                    $receipt_detail[
+                      'description'
+                    ]
+                  !!}
                 </td>
-                <td align="center">{{ $receipt_detail['quantity'] }}</td>
-                <td align="center">{{ $receipt_detail['unit'] }}</td>
-                <td align="center">{{ $receipt_detail['unitprice'] }}</td>
-                <td align="center">{{ $receipt_detail['discount'] }}</td>
+                <td align="center">
+                  {{
+                    $receipt_detail[
+                      'quantity'
+                    ]
+                  }}
+                </td>
+                <td align="center">
+                  {{
+                    $receipt_detail[
+                      'unit'
+                    ]
+                  }}
+                </td>
+                <td align="center">
+                  {{
+                    $receipt_detail[
+                      'unitprice'
+                    ]
+                  }}
+                </td>
+                <td align="center">
+                  {{
+                    $receipt_detail[
+                      'discount'
+                    ]
+                  }}
+                </td>
                 <td align="center" style="vertical-align: top">
-                  {{ $receipt_detail['price'] }}
+                  {{
+                    $receipt_detail[
+                      'price'
+                    ]
+                  }}
                 </td>
               </tr>
             @endforeach
@@ -495,12 +527,15 @@
   </div>
 @endsection
 
-@section('script')
+@section ('script')
   <script>
     function export_report() {
-      window.open(
-        '{{ route('receipts.show', ['type' => 'print', 'id' => $id]) }}'
-      );
+      window.open('{{
+      route('receipts.show', [
+        'type' => 'print',
+        'id' => $id,
+      ])
+    }}');
     }
   </script>
 @endsection

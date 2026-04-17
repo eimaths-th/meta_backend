@@ -1,7 +1,7 @@
-@extends('auth.layouts.app')
-@section('title', 'Login')
+@extends ('auth.layouts.app')
+@section ('title', 'Login')
 
-@section('content')
+@section ('content')
   <div class="container" id="container">
     <div class="form-container sign-in">
       <form method="POST" action="{{ route('login.custom') }}">
@@ -21,7 +21,7 @@
           autocomplete="email"
           autofocus
         />
-        @error('email')
+        @error ('email')
           <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong>
           </span>
@@ -37,7 +37,7 @@
           autocomplete="current-password"
         />
 
-        @error('password')
+        @error ('password')
           <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong>
           </span>
@@ -49,7 +49,11 @@
             type="checkbox"
             name="remember"
             id="remember"
-            {{ old('remember') ? 'checked' : '' }}
+            {{
+              old('remember')
+                ? 'checked'
+                : ''
+            }}
           />
 
           <label class="form-check-label" for="remember">RememberMe</label>
