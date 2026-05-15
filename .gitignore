@@ -2,6 +2,13 @@
 node_modules/
 /vendor/
 
+# Main AI memory
+docs/ai-memory/
+
+# AI instruction files
+AI-INSTRUCTIONS.md
+.ai-rules.md
+
 # lock_files
 *.lock
 *.lockb
