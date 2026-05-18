@@ -1622,6 +1622,20 @@
                                   </div>
                                  </div> --}}
 
+                  <div class="form-row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="EditCompanyProfile"><i class="fa fa-building"></i> Company Profile (ใบเสร็จ):</label>
+                        <select class="form-select" name="company_profile" id="EditCompanyProfile">
+                          @foreach(config('receipt.profiles', []) as $key => $profile)
+                            <option value="{{ $key }}">{{ $profile['name_en'] ?? $key }}</option>
+                          @endforeach
+                        </select>
+                        <small class="form-text text-muted">เลือกบริษัทที่จะแสดงบนใบเสร็จ</small>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="form-group">
                     <label for="Name">Street Address:</label>
                     <textarea
@@ -2523,6 +2537,7 @@
             $('#EditContest').val(res.data.contest);
             $('#EditParent').val(res.data.name_parent);
             $('#EditMobile').val(res.data.mobile);
+            $('#EditCompanyProfile').val(res.data.company_profile || '{{ config('receipt.default_profile') }}');
             $('#myTbl tbody').html(res.data_html);
             //append
             //$('#EditFile').val(res.data.file_att);
@@ -2698,6 +2713,7 @@
             mobile: $('#EditMobile').val(),
             package: $('#EditPackage').val(),
             file_att: $('#EditFile').val(),
+            company_profile: $('#EditCompanyProfile').val(),
             rdid: rid,
             rdes: rdes,
             rqty: rqty,

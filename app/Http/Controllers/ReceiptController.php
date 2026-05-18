@@ -1158,8 +1158,11 @@ class ReceiptController extends Controller
 
 
         // dd($receipt_detail_arr);
+        $company = $data->getCompanyInfo();
+
         return view($viewr)->with(['id' => $id])
             ->with(['data' => $data])
+            ->with(['company' => $company])
             ->with(['receipt_detail_arr' => $receipt_detail_arr])
             ->with(['price_val' => $price_val])
             ->with(['mes' => $mes])
