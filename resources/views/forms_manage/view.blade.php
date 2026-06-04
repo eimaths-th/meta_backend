@@ -89,13 +89,14 @@
       display: inline-flex;
       align-items: center;
       background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
-      color: white;
+      color: #ffffff;
       padding: 0.75rem 1.5rem;
       border-radius: 50px;
       margin: 0.5rem;
       font-weight: 500;
       box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
       transition: transform 0.3s ease;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
     }
 
     .info-badge:hover {
@@ -106,6 +107,12 @@
     .info-badge i {
       margin-right: 0.5rem;
       font-size: 1.2rem;
+      color: #ffffff;
+    }
+
+    .info-badge span,
+    .info-badge strong {
+      color: #ffffff !important;
     }
 
     /* Form Fields */
@@ -926,6 +933,9 @@
                   </div>
 
                   <div style="text-align: center; margin-bottom: 2rem">
+                    @php
+                      $hideRegistrationDateFallback = (int) ($form->id ?? 0) === 60;
+                    @endphp
                     @if (isset($form->registration_date_label))
                       <div class="info-badge">
                         <i class="fas fa-calendar-check"></i>
@@ -935,7 +945,7 @@
                           </strong>
                           @if (isset($date))
                             {{ $date }}
-                          @else
+                          @elseif (! $hideRegistrationDateFallback)
                             Today - 25 October 2024
                           @endif
                         </span>
@@ -990,7 +1000,7 @@
                     </div>
                   @endif
 
-                  @if (isset($form->admission_criteria_text_label))
+                  @if (!empty(trim($form->admission_criteria_text ?? '')))
                     <div
                       style="
                         margin: 2rem 0;
@@ -1029,7 +1039,7 @@
                     </div>
                   @endif
 
-                  @if (isset($form->admission_criteria_image_label))
+                  @if (!empty($form->admission_criteria_image))
                     <div style="margin: 2rem 0">
                       <h4
                         style="
@@ -1160,6 +1170,10 @@
                             minlength="2"
                             @if ($isFieldRequired('student_first_name')) required @endif
                           />
+                          <small
+                            id="name-duplicate-msg"
+                            style="color: red"
+                          ></small>
                           <label
                             class="form-sub-label"
                             style="min-height: 13px"
@@ -1252,6 +1266,10 @@
                           minlength="2"
                           @if ($isFieldRequired('student_last_name')) required @endif
                         />
+                        <small
+                          id="lastname-duplicate-msg"
+                          style="color: red"
+                        ></small>
                         <label
                           class="form-sub-label"
                           style="min-height: 13px"
@@ -1880,6 +1898,10 @@
                           @if ($isFieldRequired('contact_email')) required @endif
                         />
                         <small id="email-msg" style="color: red"></small>
+                        <small
+                          id="email-duplicate-msg"
+                          style="color: red; display: block"
+                        ></small>
                         <label
                           class="form-sub-label"
                           style="min-height: 13px"
@@ -2227,7 +2249,11 @@
                 </label>
               </div>
 
-              <button type="submit" class="submit-btn btn btn-lg btn-primary">
+              <button
+                type="submit"
+                id="send_data"
+                class="submit-btn btn btn-lg btn-primary"
+              >
                 <i class="fas fa-paper-plane"></i>
                 Submit Application
               </button>
@@ -2455,6 +2481,135 @@
           msg.style.color = 'red';
         }
       }, 500);
+    });
+
+    const duplicateCheckUrl = '{{ route('form.checkDuplicateRegistration') }}';
+    const duplicateToken = '{{ csrf_token() }}';
+    const duplicateState = {
+      name: false,
+      email: false,
+      namePending: false,
+      emailPending: false
+    };
+    let duplicateNameTimeout;
+    let duplicateEmailTimeout;
+
+    function setDuplicateSubmitState() {
+      const shouldDisable =
+        duplicateState.name ||
+        duplicateState.email ||
+        duplicateState.namePending ||
+        duplicateState.emailPending;
+
+      $('#send_data, .submit-btn').prop('disabled', shouldDisable);
+    }
+
+    function setFieldDuplicate($field, message) {
+      $field.css('border', message ? 'solid 1px red' : '');
+      if (message) {
+        $field.closest('.form-focus, .form-group').addClass('form-focus-error');
+      } else {
+        $field.closest('.form-focus, .form-group').removeClass('form-focus-error');
+      }
+    }
+
+    function setNameDuplicateMessage(message) {
+      duplicateState.name = !!message;
+      $('#name-duplicate-msg').text(message || '');
+      $('#lastname-duplicate-msg').text(message || '');
+      setFieldDuplicate($('#firstname'), message);
+      setFieldDuplicate($('#lastname'), message);
+      setDuplicateSubmitState();
+    }
+
+    function setEmailDuplicateMessage(message) {
+      duplicateState.email = !!message;
+      $('#email-duplicate-msg').text(message || '');
+      setFieldDuplicate($('#email'), message);
+      setDuplicateSubmitState();
+    }
+
+    function duplicatePayload(checkType) {
+      return {
+        _token: duplicateToken,
+        routeName: $('#routeName').val(),
+        sfield: $('#sfield').val(),
+        firstname: $('#firstname').val(),
+        lastname: $('#lastname').val(),
+        email: $('#email').val(),
+        check_type: checkType
+      };
+    }
+
+    function checkNameDuplicate() {
+      const firstname = $('#firstname').val().trim();
+      const lastname = $('#lastname').val().trim();
+
+      clearTimeout(duplicateNameTimeout);
+
+      if (!firstname || !lastname) {
+        duplicateState.namePending = false;
+        setNameDuplicateMessage('');
+        return;
+      }
+
+      duplicateState.namePending = true;
+      setDuplicateSubmitState();
+
+      duplicateNameTimeout = setTimeout(function () {
+        $.post(duplicateCheckUrl, duplicatePayload('name'))
+          .done(function (response) {
+            if (response.duplicate && response.field === 'name') {
+              setNameDuplicateMessage(response.message);
+              return;
+            }
+
+            setNameDuplicateMessage('');
+            checkEmailDuplicate();
+          })
+          .always(function () {
+            duplicateState.namePending = false;
+            setDuplicateSubmitState();
+          });
+      }, 350);
+    }
+
+    function checkEmailDuplicate() {
+      const email = $('#email').val().trim();
+
+      clearTimeout(duplicateEmailTimeout);
+
+      if (duplicateState.name || !email || !email.includes('@')) {
+        duplicateState.emailPending = false;
+        setEmailDuplicateMessage('');
+        return;
+      }
+
+      duplicateState.emailPending = true;
+      setDuplicateSubmitState();
+
+      duplicateEmailTimeout = setTimeout(function () {
+        $.post(duplicateCheckUrl, duplicatePayload('email'))
+          .done(function (response) {
+            if (response.duplicate && response.field === 'email') {
+              setEmailDuplicateMessage(response.message);
+              return;
+            }
+
+            setEmailDuplicateMessage('');
+          })
+          .always(function () {
+            duplicateState.emailPending = false;
+            setDuplicateSubmitState();
+          });
+      }, 350);
+    }
+
+    $('#firstname, #lastname').on('input blur', checkNameDuplicate);
+    $('#email').on('input blur', function () {
+      if (!duplicateState.name) {
+        checkEmailDuplicate();
+      }
     });
   </script>
   <script>
@@ -3170,6 +3325,34 @@
               // Validation errors
               var response = xhr.responseJSON;
               var errorMsg = '';
+
+              if (response && response.duplicate_field === 'name') {
+                setNameDuplicateMessage(
+                  response.message ||
+                    'พบชื่อและนามสกุลนี้ลงทะเบียนแล้วในรอบเปิดรับสมัครปัจจุบัน'
+                );
+                $('html, body').animate(
+                  {
+                    scrollTop: $('#firstname').offset().top - 100
+                  },
+                  500
+                );
+                return;
+              }
+
+              if (response && response.duplicate_field === 'email') {
+                setEmailDuplicateMessage(
+                  response.message ||
+                    'พบอีเมลนี้ลงทะเบียนแล้วในรอบเปิดรับสมัครปัจจุบัน'
+                );
+                $('html, body').animate(
+                  {
+                    scrollTop: $('#email').offset().top - 100
+                  },
+                  500
+                );
+                return;
+              }
 
               if (response && response.errors) {
                 if (Array.isArray(response.errors)) {

@@ -1030,16 +1030,177 @@ class ReceiptFormController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    protected function normalizeDuplicateName($value): string
+    {
+        $value = trim((string) $value);
+        $value = preg_replace('/\s+/', ' ', $value);
+
+        return strtolower($value);
+    }
+
+    protected function normalizeDuplicateDate($value): ?string
+    {
+        $value = trim((string) $value);
+
+        if ($value === '') {
+            return null;
+        }
+
+        try {
+            return (new \DateTime($value))->format('Y-m-d');
+        } catch (\Exception $e) {
+            return $value;
+        }
+    }
+
+    protected function normalizeDuplicatePhone($value): ?string
+    {
+        $value = preg_replace('/\D+/', '', (string) $value);
+
+        return $value !== '' ? $value : null;
+    }
+
+    protected function getCurrentOpeningPeriod($route): ?array
+    {
+        $getTime = OpeningClosingTime::where('route', $route)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if (!$getTime || !$getTime->opening_time || !$getTime->closing_time) {
+            return null;
+        }
+
+        return [
+            'opening_time' => (new \DateTime($getTime->opening_time))->format('Y-m-d H:i:s'),
+            'closing_time' => (new \DateTime($getTime->closing_time))->format('Y-m-d H:i:s'),
+        ];
+    }
+
+    protected function getCurrentPeriodRegistrations($route, $sfield)
+    {
+        $period = $this->getCurrentOpeningPeriod($route);
+
+        if (!$period) {
+            return collect();
+        }
+
+        return ReceiptForm::where('sfield', $sfield)
+            ->whereBetween('created_at', [
+                $period['opening_time'],
+                $period['closing_time'],
+            ])
+            ->get();
+    }
+
+    protected function findCurrentPeriodNameDuplicate($route, $sfield, $firstname, $lastname)
+    {
+        $normalizedFirstname = $this->normalizeDuplicateName($firstname);
+        $normalizedLastname = $this->normalizeDuplicateName($lastname);
+
+        if ($normalizedFirstname === '' || $normalizedLastname === '') {
+            return null;
+        }
+
+        return $this->getCurrentPeriodRegistrations($route, $sfield)
+            ->first(function ($receiptForm) use ($normalizedFirstname, $normalizedLastname) {
+                return $this->normalizeDuplicateName($receiptForm->first_name) === $normalizedFirstname &&
+                    $this->normalizeDuplicateName($receiptForm->last_name) === $normalizedLastname;
+            });
+    }
+
+    protected function findCurrentPeriodEmailDuplicate($route, $sfield, $email)
+    {
+        $normalizedEmail = strtolower(trim((string) $email));
+
+        if ($normalizedEmail === '') {
+            return null;
+        }
+
+        return $this->getCurrentPeriodRegistrations($route, $sfield)
+            ->first(function ($receiptForm) use ($normalizedEmail) {
+                return strtolower(trim((string) $receiptForm->email)) === $normalizedEmail;
+            });
+    }
+
+    protected function checkCurrentPeriodDuplicate($route, $sfield, $firstname, $lastname, $email = null, $checkType = 'all'): array
+    {
+        if (in_array($checkType, ['all', 'name'], true)) {
+            $nameDuplicate = $this->findCurrentPeriodNameDuplicate(
+                $route,
+                $sfield,
+                $firstname,
+                $lastname,
+            );
+
+            if ($nameDuplicate) {
+                return [
+                    'duplicate' => true,
+                    'field' => 'name',
+                    'receipt' => $nameDuplicate,
+                    'message' => 'พบชื่อและนามสกุลนี้ลงทะเบียนแล้วในรอบเปิดรับสมัครปัจจุบัน',
+                ];
+            }
+        }
+
+        if (in_array($checkType, ['all', 'email'], true)) {
+            $emailDuplicate = $this->findCurrentPeriodEmailDuplicate(
+                $route,
+                $sfield,
+                $email,
+            );
+
+            if ($emailDuplicate) {
+                return [
+                    'duplicate' => true,
+                    'field' => 'email',
+                    'receipt' => $emailDuplicate,
+                    'message' => 'พบอีเมลนี้ลงทะเบียนแล้วในรอบเปิดรับสมัครปัจจุบัน',
+                ];
+            }
+        }
+
+        return [
+            'duplicate' => false,
+            'field' => null,
+            'receipt' => null,
+            'message' => null,
+        ];
+    }
+
+    public function checkDuplicateRegistration(Request $request)
+    {
+        $request->validate([
+            'routeName' => 'required|string',
+            'sfield' => 'required',
+            'check_type' => 'required|in:name,email,all',
+        ]);
+
+        $result = $this->checkCurrentPeriodDuplicate(
+            $request->get('routeName'),
+            $request->get('sfield'),
+            $request->get('firstname'),
+            $request->get('lastname'),
+            $request->get('email'),
+            $request->get('check_type', 'all'),
+        );
+
+        return response()->json([
+            'duplicate' => $result['duplicate'],
+            'field' => $result['field'],
+            'message' => $result['message'],
+        ]);
+    }
+
     /**
-     * Check if user is already registered with similar name (threshold) and extra factors
+     * Check if user is already registered in the same form opening period.
      *
      * @param string $route
      * @param string $sfield
      * @param string $firstname
      * @param string $lastname
-     * @param string|null $birthdate  // raw input format as submitted
-     * @param string|null $phone      // raw input phone
-     * @param string|null $email      // raw input email
+     * @param string|null $birthdate
+     * @param string|null $phone
+     * @param string|null $email
      * @return array
      */
     public function checkRegisted(
@@ -1059,21 +1220,45 @@ class ReceiptFormController extends Controller
         $getTimeOpen = $getTimeOpen_dt->format('Y-m-d');
         $getTimeClose = $getTimeClose_dt->format('Y-m-d');
 
-        // Check exact match for First Name, Last Name AND Email
-        $exactMatch = ReceiptForm::where([
-            ['first_name', '=', $firstname],
-            ['last_name', '=', $lastname],
-            ['email', '=', $email],
-            ['sfield', '=', $sfield],
-        ])
+        $normalizedFirstname = $this->normalizeDuplicateName($firstname);
+        $normalizedLastname = $this->normalizeDuplicateName($lastname);
+        $normalizedBirthdate = $this->normalizeDuplicateDate($birthdate);
+        $normalizedPhone = $this->normalizeDuplicatePhone($phone);
+
+        $periodRegistrations = ReceiptForm::where('sfield', $sfield)
             ->whereBetween('submission_date', [$getTimeOpen, $getTimeClose])
-            ->first();
+            ->get();
+
+        $exactMatch = $periodRegistrations->first(function ($receiptForm) use (
+            $normalizedFirstname,
+            $normalizedLastname,
+            $normalizedBirthdate,
+            $normalizedPhone
+        ) {
+            $sameName =
+                $this->normalizeDuplicateName($receiptForm->first_name) === $normalizedFirstname &&
+                $this->normalizeDuplicateName($receiptForm->last_name) === $normalizedLastname;
+
+            if (!$sameName) {
+                return false;
+            }
+
+            if ($normalizedBirthdate !== null) {
+                return $this->normalizeDuplicateDate($receiptForm->birth_date) === $normalizedBirthdate;
+            }
+
+            if ($normalizedPhone !== null) {
+                return $this->normalizeDuplicatePhone($receiptForm->mobile) === $normalizedPhone;
+            }
+
+            return false;
+        });
 
         if ($exactMatch) {
             return [
                 'receipt' => $exactMatch,
                 'checkRegisted' => true,
-                'matchType' => 'exact',
+                'matchType' => $normalizedBirthdate !== null ? 'identity_birthdate' : 'identity_phone',
             ];
         }
 
@@ -1819,39 +2004,44 @@ class ReceiptFormController extends Controller
         ];
         $route = $request->get('routeName');
 
-        $result = $this->checkRegisted(
+        $result = $this->checkCurrentPeriodDuplicate(
             $route,
             $request->get('sfield'),
             $request->get('firstname'),
             $request->get('lastname'),
-            $request->get('birthdate'),
-            $request->get('phone'),
             $request->get('email'),
+            'all',
         );
         // dd($request->all(), '0');
 
-        if ($result['checkRegisted']) {
+        if ($result['duplicate']) {
             \Illuminate\Support\Facades\Log::info('Duplicate registration detected', [
                 'result' => $result,
             ]);
 
-            // 1) บล็อกกรณีข้อมูลซ้ำแบบตรงตัว
-            if ($result['matchType'] === 'exact') {
-                \Illuminate\Support\Facades\Log::info('Duplicate exact match blocked', [
-                    'receipt' => $result['receipt'],
-                ]);
-                $message = "พบข้อมูลการลงทะเบียนซ้ำกับชื่อ-นามสกุล: {$result['receipt']->first_name} {$result['receipt']->last_name}\n";
-                $message .= "อีเมล: {$result['receipt']->email}\n";
-                $message .= 'กรุณาตรวจสอบข้อมูลของคุณ';
+            $message = $result['message'] ?: 'พบข้อมูลการลงทะเบียนซ้ำในรอบเปิดรับสมัครปัจจุบัน';
+            $errors = [];
 
-                if ($request->ajax()) {
-                    return response()->json(['message' => $message], 422);
-                }
-
-                return back()->withInput()->with('error', $message);
+            if ($result['field'] === 'name') {
+                $errors = [
+                    'firstname' => [$message],
+                    'lastname' => [$message],
+                ];
+            } elseif ($result['field'] === 'email') {
+                $errors = [
+                    'email' => [$message],
+                ];
             }
 
+            if ($request->ajax()) {
+                return response()->json([
+                    'message' => $message,
+                    'errors' => $errors,
+                    'duplicate_field' => $result['field'],
+                ], 422);
+            }
 
+            return back()->withInput()->with('error', $message);
         }
 
         // Build dynamic validation rules based on field_settings

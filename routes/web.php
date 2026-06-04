@@ -238,6 +238,7 @@ Route::post('/form/upload', [ReceiptFormController::class, 'fileStore'])->name('
 Route::post('/form/upload/api', [ReceiptFormController::class, 'fileStoreAPI'])->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->name('form.upload.api');
 Route::post('/form/upload/delete', [ReceiptFormController::class, 'fileDestroy'])->name('form.delete');
 Route::post('/form/store', [ReceiptFormController::class, 'store'])->name('form.store');
+Route::post('/form/check-duplicate-registration', [ReceiptFormController::class, 'checkDuplicateRegistration'])->name('form.checkDuplicateRegistration');
 Route::post('/form/storeFormManage', [ReceiptFormController::class, 'storeFormManage'])->name('form.storeFormManage');
 Route::get('/form/complete/{sfield}', [ReceiptFormController::class, 'show'])->name('form.complete');
 Route::get('/form/completed/{sfield}', [ReceiptFormController::class, 'showFormManage'])->name('form.completed');
