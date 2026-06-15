@@ -3536,6 +3536,10 @@
         return [$package->id => $package->linked_grades];
       }));
 
+    const packageGradeNames = @json ($form->packages->mapWithKeys(function ($package) {
+        return [$package->id => $package->linked_grade_names];
+      }));
+
     const gradeNameMap = @json ($form->grades->mapWithKeys(function ($grade) {
         return [$grade->id => $grade->grade];
       }));
@@ -3560,6 +3564,7 @@
         // Convert packageId to integer for consistent comparison
         packageId = parseInt(packageId);
         let linkedGrades = packageGradeLinks[packageId];
+        const linkedGradeNames = packageGradeNames[packageId] || [];
 
         // Convert linked grades to integers if they are strings
         if (linkedGrades && linkedGrades.length > 0) {
@@ -3578,8 +3583,13 @@
 
         // If linkedGrades is null or empty, package is available for all grades
         if (linkedGrades && linkedGrades.length > 0) {
-          // Check if selected grade is in the linked grades
-          if (!linkedGrades.includes(selectedGradeId)) {
+          const selectedGradeName = gradeNameMap[selectedGradeId];
+          const matchesCurrentId = linkedGrades.includes(selectedGradeId);
+          // Duplicated forms created before the ID remap fix can point to source grades.
+          const matchesLegacyGradeName =
+            selectedGradeName && linkedGradeNames.includes(selectedGradeName);
+
+          if (!matchesCurrentId && !matchesLegacyGradeName) {
             // Find package name
             const packageOption = $(`#package option[value="${packageId}"]`);
             const packageName = packageOption.text();

@@ -55,6 +55,19 @@ class FormPakages extends Model
         'onsite_registered' => 'integer',
     ];
 
+    public function getLinkedGradeNamesAttribute(): array
+    {
+        if (empty($this->linked_grades)) {
+            return [];
+        }
+
+        return FormGrades::whereIn('id', $this->linked_grades)
+            ->pluck('grade')
+            ->filter()
+            ->values()
+            ->all();
+    }
+
     /**
      * Check if online slots are available for this package
      */

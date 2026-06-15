@@ -1424,25 +1424,8 @@ class FormManageController extends Controller
       $newForm->updated_at = now();
       $newForm->save();
 
-      // Duplicate packages
-      $originalPackages = FormPakages::where(
-        'form_id',
-        $originalForm->id,
-      )->get();
-      foreach ($originalPackages as $package) {
-        $newPackage = $package->replicate();
-        $newPackage->form_id = $newForm->id;
-        $newPackage->sfield = $newSfield;
-        $newPackage->form_name = $newFormName;
-        $newPackage->form_route = $newFormRoute;
-        $newPackage->online_registered = 0;
-        $newPackage->onsite_registered = 0;
-        $newPackage->create_by = Auth::user()->id;
-        $newPackage->update_by = Auth::user()->id;
-        $newPackage->save();
-      }
-
-      // Duplicate grades
+      // Duplicate grades first so package links can point to the new grade IDs.
+      $gradeIdMap = [];
       $originalGrades = FormGrades::where('form_id', $originalForm->id)->get();
       foreach ($originalGrades as $grade) {
         $newGrade = $grade->replicate();
@@ -1453,6 +1436,36 @@ class FormManageController extends Controller
         $newGrade->create_by = Auth::user()->id;
         $newGrade->update_by = Auth::user()->id;
         $newGrade->save();
+
+        $gradeIdMap[$grade->id] = $newGrade->id;
+      }
+
+      // Duplicate packages and remap their linked grades to the duplicated form.
+      $originalPackages = FormPakages::where(
+        'form_id',
+        $originalForm->id,
+      )->get();
+      foreach ($originalPackages as $package) {
+        $linkedGrades = $package->linked_grades;
+        if (!empty($linkedGrades)) {
+          $linkedGrades = collect($linkedGrades)
+            ->map(fn ($gradeId) => $gradeIdMap[$gradeId] ?? $gradeId)
+            ->unique()
+            ->values()
+            ->all();
+        }
+
+        $newPackage = $package->replicate();
+        $newPackage->form_id = $newForm->id;
+        $newPackage->sfield = $newSfield;
+        $newPackage->form_name = $newFormName;
+        $newPackage->form_route = $newFormRoute;
+        $newPackage->linked_grades = $linkedGrades;
+        $newPackage->online_registered = 0;
+        $newPackage->onsite_registered = 0;
+        $newPackage->create_by = Auth::user()->id;
+        $newPackage->update_by = Auth::user()->id;
+        $newPackage->save();
       }
 
       // บันทึก activity log — duplicate form manage
