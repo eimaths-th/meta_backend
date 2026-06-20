@@ -8,8 +8,11 @@ use App\Models\FormPakages;
 use App\Models\OpeningClosingTime;
 use App\Models\Receipt;
 use App\Models\ReceiptForm;
+use App\Services\FormGradeLinkMapper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Helpers\LogActivity;
@@ -1372,115 +1375,146 @@ class FormManageController extends Controller
    */
   public function duplicate(Request $request)
   {
-    try {
-      $originalForm = FormManage::find($request->id);
+    $validator = Validator::make($request->all(), [
+      'id' => 'required|integer|exists:forms_manage,id',
+    ]);
 
-      if (!$originalForm) {
-        return response()->json(
-          [
-            'status' => 'error',
-            'message' => 'ไม่พบฟอร์มต้นแบบ',
-          ],
-          404,
-        );
-      }
-
-      $lastSfield = FormManage::orderBy('id', 'desc')->first();
-      // Generate new unique sfield
-      $newSfield = $lastSfield ? $lastSfield->sfield + 1 : 1;
-      // dd($lastSfield,$newSfield);
-
-      // Generate new form_name, form_route, slug with "- [ Duplicate ]" suffix
-      $newFormName = $originalForm->form_name . ' - [ Duplicate ]';
-      $newFormRoute = $originalForm->form_route . '-duplicate';
-      $newSlug =
-        ($originalForm->slug ?? $originalForm->form_route) . '-duplicate';
-
-      // Check if route/slug already exists and add number if needed
-      $counter = 1;
-      $baseRoute = $newFormRoute;
-      $baseSlug = $newSlug;
-      while (
-        FormManage::where('form_route', $newFormRoute)
-          ->orWhere('slug', $newSlug)
-          ->exists()
-      ) {
-        $counter++;
-        $newFormRoute = $baseRoute . '-' . $counter;
-        $newSlug = $baseSlug . '-' . $counter;
-      }
-      // dd($newSfield);
-      // Clone the form
-      $newForm = $originalForm->replicate();
-      $newForm->sfield = $newSfield;
-      $newForm->form_name = $newFormName;
-      $newForm->form_route = $newFormRoute;
-      $newForm->slug = $newSlug;
-      $newForm->online_registered = 0; // Reset registration counts
-      $newForm->onsite_registered = 0;
-      $newForm->create_by = Auth::user()->id;
-      $newForm->update_by = Auth::user()->id;
-      $newForm->created_at = now();
-      $newForm->updated_at = now();
-      $newForm->save();
-
-      // Duplicate grades first so package links can point to the new grade IDs.
-      $gradeIdMap = [];
-      $originalGrades = FormGrades::where('form_id', $originalForm->id)->get();
-      foreach ($originalGrades as $grade) {
-        $newGrade = $grade->replicate();
-        $newGrade->form_id = $newForm->id;
-        $newGrade->sfield = $newSfield;
-        $newGrade->form_name = $newFormName;
-        $newGrade->form_route = $newFormRoute;
-        $newGrade->create_by = Auth::user()->id;
-        $newGrade->update_by = Auth::user()->id;
-        $newGrade->save();
-
-        $gradeIdMap[$grade->id] = $newGrade->id;
-      }
-
-      // Duplicate packages and remap their linked grades to the duplicated form.
-      $originalPackages = FormPakages::where(
-        'form_id',
-        $originalForm->id,
-      )->get();
-      foreach ($originalPackages as $package) {
-        $linkedGrades = $package->linked_grades;
-        if (!empty($linkedGrades)) {
-          $linkedGrades = collect($linkedGrades)
-            ->map(fn ($gradeId) => $gradeIdMap[$gradeId] ?? $gradeId)
-            ->unique()
-            ->values()
-            ->all();
-        }
-
-        $newPackage = $package->replicate();
-        $newPackage->form_id = $newForm->id;
-        $newPackage->sfield = $newSfield;
-        $newPackage->form_name = $newFormName;
-        $newPackage->form_route = $newFormRoute;
-        $newPackage->linked_grades = $linkedGrades;
-        $newPackage->online_registered = 0;
-        $newPackage->onsite_registered = 0;
-        $newPackage->create_by = Auth::user()->id;
-        $newPackage->update_by = Auth::user()->id;
-        $newPackage->save();
-      }
-
-      // บันทึก activity log — duplicate form manage
-      LogActivity::modelEvent($newForm, 'form_manage duplicated', $originalForm->toArray(), $newForm->toArray());
-
-      return response()->json([
-        'status' => 'success',
-        'message' => 'Duplicate ฟอร์มสำเร็จ: ' . $newFormName,
-        'new_id' => $newForm->id,
-      ]);
-    } catch (\Exception $e) {
+    if ($validator->fails()) {
       return response()->json(
         [
           'status' => 'error',
-          'message' => 'เกิดข้อผิดพลาด: ' . $e->getMessage(),
+          'message' => 'ไม่พบฟอร์มต้นแบบ',
+          'errors' => $validator->errors(),
+        ],
+        422,
+      );
+    }
+
+    try {
+      $newForm = DB::transaction(function () use ($request) {
+        // Serialize duplicate requests so route/slug generation cannot race.
+        FormManage::orderBy('id', 'desc')->lockForUpdate()->first();
+
+        $originalForm = FormManage::whereKey($request->id)
+          ->lockForUpdate()
+          ->firstOrFail();
+
+        $newFormName = $originalForm->form_name . ' - [ Duplicate ]';
+        $baseRoute = $originalForm->form_route . '-duplicate';
+        $baseSlug =
+          ($originalForm->slug ?? $originalForm->form_route) . '-duplicate';
+        $newFormRoute = $baseRoute;
+        $newSlug = $baseSlug;
+        $counter = 1;
+
+        while (
+          FormManage::where('form_route', $newFormRoute)
+            ->orWhere('slug', $newSlug)
+            ->exists()
+        ) {
+          $counter++;
+          $newFormRoute = $baseRoute . '-' . $counter;
+          $newSlug = $baseSlug . '-' . $counter;
+        }
+
+        $userId = Auth::id();
+        $newForm = $originalForm->replicate();
+        $newForm->sfield = null;
+        $newForm->form_name = $newFormName;
+        $newForm->form_route = $newFormRoute;
+        $newForm->slug = $newSlug;
+        $newForm->online_registered = 0;
+        $newForm->onsite_registered = 0;
+        $newForm->create_by = $userId;
+        $newForm->update_by = $userId;
+        $newForm->save();
+
+        // The primary key is concurrency-safe and becomes the canonical sfield.
+        $newSfield = (string) $newForm->id;
+        if (
+          FormManage::where('sfield', $newSfield)
+            ->where('id', '!=', $newForm->id)
+            ->exists()
+        ) {
+          throw new \RuntimeException("sfield {$newSfield} already exists.");
+        }
+        $newForm->sfield = $newSfield;
+        $newForm->save();
+
+        $originalGrades = FormGrades::where('form_id', $originalForm->id)
+          ->orderBy('id')
+          ->get();
+        $gradeIdMap = [];
+
+        foreach ($originalGrades as $grade) {
+          $newGrade = $grade->replicate();
+          $newGrade->form_id = $newForm->id;
+          $newGrade->sfield = $newSfield;
+          $newGrade->form_name = $newFormName;
+          $newGrade->form_route = $newFormRoute;
+          $newGrade->create_by = $userId;
+          $newGrade->update_by = $userId;
+          $newGrade->save();
+
+          $gradeIdMap[$grade->id] = $newGrade->id;
+        }
+
+        $originalPackages = FormPakages::where('form_id', $originalForm->id)
+          ->orderBy('id')
+          ->get();
+        $gradeLinkMapper = new FormGradeLinkMapper();
+
+        foreach ($originalPackages as $package) {
+          $newPackage = $package->replicate();
+          $newPackage->form_id = $newForm->id;
+          $newPackage->sfield = $newSfield;
+          $newPackage->form_name = $newFormName;
+          $newPackage->form_route = $newFormRoute;
+          $newPackage->linked_grades = $gradeLinkMapper->remap(
+            $package->linked_grades,
+            $gradeIdMap,
+          );
+          $newPackage->online_registered = 0;
+          $newPackage->onsite_registered = 0;
+          $newPackage->create_by = $userId;
+          $newPackage->update_by = $userId;
+          $newPackage->save();
+        }
+
+        $newGradeCount = FormGrades::where('form_id', $newForm->id)->count();
+        $newPackageCount = FormPakages::where('form_id', $newForm->id)->count();
+        if (
+          $newGradeCount !== $originalGrades->count() ||
+          $newPackageCount !== $originalPackages->count()
+        ) {
+          throw new \RuntimeException('Duplicated form data is incomplete.');
+        }
+
+        LogActivity::modelEvent(
+          $newForm,
+          'form_manage duplicated',
+          $originalForm->toArray(),
+          $newForm->toArray(),
+        );
+
+        return $newForm;
+      }, 3);
+
+      return response()->json([
+        'status' => 'success',
+        'message' => 'Duplicate ฟอร์มสำเร็จ: ' . $newForm->form_name,
+        'new_id' => $newForm->id,
+      ]);
+    } catch (\Throwable $e) {
+      Log::error('Form duplication failed and was rolled back.', [
+        'source_form_id' => $request->id,
+        'message' => $e->getMessage(),
+      ]);
+
+      return response()->json(
+        [
+          'status' => 'error',
+          'message' => 'Duplicate ฟอร์มไม่สำเร็จ ระบบไม่ได้บันทึกข้อมูลบางส่วน',
         ],
         500,
       );
