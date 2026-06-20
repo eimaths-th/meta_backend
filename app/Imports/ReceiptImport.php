@@ -3,90 +3,82 @@
 namespace App\Imports;
 
 use App\Models\Receipt;
-use App\Models\Receipt_RunningNumber;
 use App\Models\Receipt_Customer_RunningNumber;
-use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
-
+use App\Models\Receipt_RunningNumber;
+use App\Models\ReceiptDetail;
+use App\Models\ReceiptForm;
+use App\Services\ReceiptLineItemResolver;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use RuntimeException;
 
-class ReceiptImport implements ToModel
+class ReceiptImport implements ToCollection
 {
+    private $sfield_check = 0;
 
-    var $sfield_check = 0;
-
-    public function  __construct($sfield)
+    public function __construct($sfield)
     {
         $this->sfield_check = $sfield;
     }
 
-    /**
-     * @param array $row
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
-     */
-    public function model(array $row)
+    public function collection(Collection $rows)
     {
+        DB::transaction(function () use ($rows) {
+            foreach ($rows as $rowNumber => $row) {
+                if (!isset($row[0]) || trim((string) $row[0]) === '') {
+                    continue;
+                }
 
-        //echo $this->sfield_check;
-        ///exit();
-        $rsdate = strtotime($row[0]);
-        $rnumber = Receipt_RunningNumber::generate($this->sfield_check);
-        $rcnumber = Receipt_Customer_RunningNumber::generate($this->sfield_check);
+                $timestamp = strtotime((string) $row[0]);
+                if ($timestamp === false) {
+                    throw new RuntimeException('Invalid receipt date on import row '.($rowNumber + 1).'.');
+                }
 
-        $description = explode("(",$row[4]);
-        //exit();
-        return new Receipt([
-            // 
-            /*'sfield' => $this->sfield_check,
-            'receipt_number' => $rnumber,
-            'receipt_customer_number' => $rcnumber,
-            'submission_date' => date('Y-m-d', $rsdate),
-            'first_name' => $row[1],
-            'last_name' => $row[2],
-            'street_address' => $row[3],
-            'street_address2' => $row[4],
-            'city' => $row[5],
-            'province' => $row[6],
-            'postcode' => $row[7],
-            'name_parent' => $row[8],
-            'mobile' => $row[9],
-            'package' => $row[10],
-            'file_att' => $row[11],*/
-            'sfield' => $this->sfield_check,
-            'receipt_number' => $rnumber,
-            'receipt_customer_number' => $rcnumber,
-            'submission_date' => date('Y-m-d', $rsdate),
-            'first_name' => $row[1],
-            'last_name' => $row[2],
-            'street_address' => $row[6],
-            'name_parent' => $row[5],
-            'postcode' => $row[7],
-            'mobile' => $row[8],
-            'package' => $row[4],
-            'grade' => $row[3],
-            'file_att' => $row[9],
-            'description' => $description[0],
-            'description2' => $row[11],
-        ]);
+                $submissionDate = date('Y-m-d', $timestamp);
+                $package = (string) ($row[4] ?? '');
+                $description = trim(explode('(', $package)[0]);
+                $importForm = new ReceiptForm([
+                    'sfield' => $this->sfield_check,
+                    'package' => $package,
+                ]);
+                $importForm->id = 'import row '.($rowNumber + 1);
+                $receiptLine = (new ReceiptLineItemResolver())->resolve(
+                    $importForm,
+                    $description,
+                )[0];
 
-        /*
-        $bin = Receipt::orderBy("id", "asc")->get();
+                $receipt = Receipt::create([
+                    'sfield' => $this->sfield_check,
+                    'receipt_number' => Receipt_RunningNumber::generate(
+                        $this->sfield_check,
+                        $submissionDate,
+                    ),
+                    'receipt_customer_number' => Receipt_Customer_RunningNumber::generate(
+                        $this->sfield_check,
+                    ),
+                    'submission_date' => $submissionDate,
+                    'first_name' => $row[1] ?? null,
+                    'last_name' => $row[2] ?? null,
+                    'street_address' => $row[6] ?? null,
+                    'name_parent' => $row[5] ?? null,
+                    'postcode' => $row[7] ?? null,
+                    'mobile' => $row[8] ?? null,
+                    'package' => $package,
+                    'grade' => $row[3] ?? null,
+                    'file_att' => $row[9] ?? null,
+                    'description' => $description,
+                    'description2' => $row[11] ?? null,
+                ]);
 
-        // Get all bin number from the $bin collection
-        $bin_number = $bin->pluck('bin_number');
-
-        // Checking if the bin number is already in the database
-        if ($bin_number->contains($row[0]) == false) {
-            return new Receipt([
-                'bin_number' => $row[0],
-                'type' => $row[1],
-                'product' => $row[2],
-                'category' => $row[3],
-                'bank' => $row[4],
-            ]);
-        } else null; // if the bin number is already in the database, return null
-        */
+                ReceiptDetail::create([
+                    'receipt_id' => $receipt->id,
+                    'description' => $receiptLine['description'],
+                    'quantity' => $receiptLine['quantity'],
+                    'unitprice' => $receiptLine['unitprice'],
+                    'discount' => 0,
+                ]);
+            }
+        });
     }
 }

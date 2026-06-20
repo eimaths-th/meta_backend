@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Receipt;
 use App\Models\ReceiptDetail;
+use App\Models\ReceiptForm;
+use App\Services\ReceiptLineItemResolver;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -19,6 +21,7 @@ use App\Models\Receipt_RunningNumber;
 use App\Models\Receipt_Customer_RunningNumber;
 use App\Models\ReferentCode;
 use App\Helpers\LogActivity;
+use Illuminate\Support\Facades\DB;
 
 //use Illuminate\Support\Facades\DB;
 
@@ -923,12 +926,47 @@ class ReceiptController extends Controller
             return response()->json(['errors' => $validator->errors()->all()]);
         }
 
-        $rnumber = Receipt_RunningNumber::generate($request->get('sfield'), $request->get('submission_date'));
-        $rcnumber = Receipt_Customer_RunningNumber::generate($request->get('sfield'));
-        $request->request->add(['receipt_number' => $rnumber, 'receipt_customer_number' => $rcnumber]);
+        $manualForm = new ReceiptForm([
+            'sfield' => $request->get('sfield'),
+            'package' => $request->get('package'),
+        ]);
+        $manualForm->id = 'manual';
 
-        $course = new Receipt($request->all());
-        $course->save();
+        try {
+            $receiptLine = (new ReceiptLineItemResolver())->resolve(
+                $manualForm,
+                $request->get('description'),
+            )[0];
+        } catch (\RuntimeException $e) {
+            return response()->json([
+                'errors' => ['Please specify a valid package price before creating the receipt.'],
+            ]);
+        }
+
+        $course = DB::transaction(function () use ($request, $receiptLine) {
+            $rnumber = Receipt_RunningNumber::generate(
+                $request->get('sfield'),
+                $request->get('submission_date'),
+            );
+            $rcnumber = Receipt_Customer_RunningNumber::generate($request->get('sfield'));
+            $request->request->add([
+                'receipt_number' => $rnumber,
+                'receipt_customer_number' => $rcnumber,
+            ]);
+
+            $receipt = new Receipt($request->all());
+            $receipt->save();
+
+            ReceiptDetail::create([
+                'receipt_id' => $receipt->id,
+                'description' => $receiptLine['description'],
+                'quantity' => $receiptLine['quantity'],
+                'unitprice' => $receiptLine['unitprice'],
+                'discount' => 0,
+            ]);
+
+            return $receipt;
+        });
 
         // บันทึก activity log — สร้าง receipt
         LogActivity::modelEvent($course, 'receipt created', null, $course->toArray());
@@ -2180,8 +2218,14 @@ class ReceiptController extends Controller
             $path = $request->file('import_file');
 
             //$request->file('file')->store('files')
-            Excel::import(new ReceiptImport($request->get('sfield')), $path);
-            return redirect()->back()->with('success', 'Import Data Complete');
+            try {
+                Excel::import(new ReceiptImport($request->get('sfield')), $path);
+                return redirect()->back()->with('success', 'Import Data Complete');
+            } catch (\Throwable $e) {
+                return back()->with([
+                    'error' => 'Import cancelled: every row must contain a valid receipt date and package price.',
+                ]);
+            }
         } else {
             return back()->with(['error' => 'Please Check your file, Something is wrong there.']);
         }

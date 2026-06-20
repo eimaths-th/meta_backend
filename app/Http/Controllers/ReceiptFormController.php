@@ -2,48 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ExportForm;
 use App\Exports\ExportExcel;
-use App\Models\ReceiptForm;
-use App\Models\ReceiptDetail;
-use App\Models\FileUpload;
-use App\Http\Controllers\Controller;
-//use App\Http\Controllers\ReceiptController;
-use App\Models\Receipt;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Validator;
-// use File;
-use Illuminate\Support\Facades\File;
-
-use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Receipt_RunningNumber;
-use App\Models\Receipt_Customer_RunningNumber;
-// use Mail;
+use App\Exports\ExportForm;
+use App\Helpers\LogActivity;
 use App\Mail\ContactMail;
+use App\Models\EmailAuditLog;
+// use App\Http\Controllers\ReceiptController;
+use App\Models\FileUpload;
 use App\Models\FormGrades;
 use App\Models\FormManage;
 use App\Models\FormPakages;
+// use File;
 use App\Models\OpeningClosingTime;
+use App\Models\Receipt;
+use App\Models\Receipt_Customer_RunningNumber;
+use App\Models\Receipt_RunningNumber;
+use App\Models\ReceiptDetail;
+// use Mail;
+use App\Models\ReceiptForm;
 use App\Models\ReferentCode;
 use App\Models\ReferentURL;
-use App\Models\EmailAuditLog;
-use App\Helpers\LogActivity;
-use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Mail;
+use App\Services\ReceiptLineItemResolver;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
+use Maatwebsite\Excel\Facades\Excel;
+
 // use App\Exports\ExportUser;
 
 class ReceiptFormController extends Controller
 {
     //
     const sfielda = [
-        //sfild => route
+        // sfild => route
         '0' => 'reward',
         // '1' => null, //* null */
         '2' => 'GMEC',
-        '3' => null, //* null */
+        '3' => null, // * null */
         '4' => 'IMOCSEA',
         '5' => 'INFINITE Spelling Bee',
         '6' => 'GELOSEA',
@@ -52,16 +54,16 @@ class ReceiptFormController extends Controller
         '9' => 'OLPCS',
         '10' => 'ASIAROPE',
         '11' => 'Cambridge',
-        '12' => null, //* null */
+        '12' => null, // * null */
         '13' => 'ISOCSEA',
         '14' => 'IMOCSEA+ISOCSEA',
         '15' => 'Huaxiacup',
         '16' => 'Mathleague',
-        '17' => 'test_field', //* test field */
+        '17' => 'test_field', // * test field */
         '18' => 'mathleague-II',
         '19' => 'Huaxiacup-II',
         '20' => 'neos',
-        '21' => 'neos-2', //* sup form */
+        '21' => 'neos-2', // * sup form */
         '22' => 'huaxiacup-final-round',
         '23' => 'ihcmi',
         '24' => 'isc',
@@ -81,6 +83,7 @@ class ReceiptFormController extends Controller
         $formRoutes = FormManage::whereNotNull('slug')
             ->orderBy('form_name')
             ->get(['id', 'form_name', 'slug']);
+
         return view('receipt_form.generate_url')->with([
             'referent_code' => $referent_code,
             'formRoutes' => $formRoutes,
@@ -121,6 +124,7 @@ class ReceiptFormController extends Controller
         ]);
         $referent_code = ReferentCode::all();
         $referent_url = ReferentURL::find($request->id);
+
         return response()->json([
             'success' => true,
             'referent_code' => $referent_code,
@@ -164,6 +168,7 @@ class ReceiptFormController extends Controller
         LogActivity::modelEvent($referent_url, 'referent_url deleted', $old_data, null);
 
         $referent_url->delete();
+
         return response()->json([
             'success' => true,
             'message' => 'Referent url deleted successfully',
@@ -178,21 +183,22 @@ class ReceiptFormController extends Controller
             ->orderBy('form_name')
             ->get(['id', 'form_name', 'slug']);
 
-
         return view('receipt_form.referent_url')->with([
             'referent_code' => $referent_code,
             'referent_url' => $referent_url,
-            'formRoutes' => $formRoutes
+            'formRoutes' => $formRoutes,
         ]);
     }
 
     public function referent_code()
     {
         $referent_code = ReferentCode::all();
+
         return view('receipt_form.referent_code')->with([
             'referent_code' => $referent_code,
         ]);
     }
+
     public function generate_code()
     {
         return view('receipt_form.generate_code');
@@ -233,6 +239,7 @@ class ReceiptFormController extends Controller
     public function referent_codeEdit(Request $request)
     {
         $referent_code = ReferentCode::find($request->id);
+
         return response()->json([
             'success' => true,
             'referent_code' => $referent_code,
@@ -299,6 +306,7 @@ class ReceiptFormController extends Controller
         LogActivity::modelEvent($referent_code, 'referent_code deleted', $old_data, null);
 
         $referent_code->delete();
+
         return response()->json([
             'success' => true,
             'message' => 'Referent code deleted successfully',
@@ -315,12 +323,13 @@ class ReceiptFormController extends Controller
             $dt_closs = new \DateTime($set_time->closing_time);
             $start = $dt_start->format('d F Y');
             $closs = $dt_closs->format('d F Y');
-            $date = $start . ' - ' . $closs;
+            $date = $start.' - '.$closs;
         } else {
             $start = 'null date';
             $closs = 'null date';
-            $date = $start . ' to ' . $closs;
+            $date = $start.' to '.$closs;
         }
+
         return $date;
     }
 
@@ -329,6 +338,7 @@ class ReceiptFormController extends Controller
         $route = request()->route()->getName();
         $date = $this->getDatetime($route);
         $form = FormManage::where('form_route', $route)->first();
+
         return view('forms_manage.view', compact('form', 'date'));
     }
 
@@ -336,6 +346,7 @@ class ReceiptFormController extends Controller
     {
         return $this->getForm();
     }
+
     public function admin_test_field()
     {
         return $this->getForm();
@@ -345,10 +356,12 @@ class ReceiptFormController extends Controller
     {
         return $this->getForm();
     }
+
     public function gmec()
     {
         return $this->getForm();
     }
+
     public function ihcmi()
     {
         return $this->getForm();
@@ -363,6 +376,7 @@ class ReceiptFormController extends Controller
     {
         return $this->getForm();
     }
+
     public function mathleague()
     {
         return $this->getForm();
@@ -377,10 +391,12 @@ class ReceiptFormController extends Controller
     {
         return $this->getForm();
     }
+
     public function huaxiacupFinalRound()
     {
         return $this->getForm();
     }
+
     public function neos()
     {
         return $this->getForm();
@@ -423,6 +439,7 @@ class ReceiptFormController extends Controller
         // $date = $this->getDatetime($route);
         // return view("receipt_form.advance_english_grammar")->with(['date' => $date]);
     }
+
     public function imocsea_national_round()
     {
         return $this->getForm();
@@ -435,18 +452,22 @@ class ReceiptFormController extends Controller
     {
         return $this->getForm();
     }
+
     public function seacso()
     {
         return $this->getForm();
     }
+
     public function copernicus()
     {
         return $this->getForm();
     }
+
     public function codingOlympics()
     {
         return $this->getForm();
     }
+
     public function imocsea_special()
     {
         return $this->getForm();
@@ -457,13 +478,13 @@ class ReceiptFormController extends Controller
         return $this->getForm();
     }
 
-    //แสดง form แบบใหม่
+    // แสดง form แบบใหม่
     public function showFormBySlug($slug)
     {
         // dd($slug);
         $form = FormManage::where('slug', $slug)->first();
 
-        if (!$form) {
+        if (! $form) {
             abort(404, 'Form not found');
         }
 
@@ -473,11 +494,12 @@ class ReceiptFormController extends Controller
         return view('forms_manage.view', compact('form', 'date'));
     }
 
-    //สร้าง form แบบเดิม
+    // สร้าง form แบบเดิม
     public function generalForm()
     {
         $route = request()->route()->getName();
         $date = $this->getDatetime($route);
+
         return view('receipt_form.generalForm')->with(['date' => $date]);
     }
 
@@ -485,6 +507,7 @@ class ReceiptFormController extends Controller
     {
         $route = request()->route()->getName();
         $date = $this->getDatetime($route);
+
         return view('receipt_form.gelosea')->with(['date' => $date]);
     }
 
@@ -492,12 +515,15 @@ class ReceiptFormController extends Controller
     {
         $route = request()->route()->getName();
         $date = $this->getDatetime($route);
+
         return view('receipt_form.stemco_science')->with(['date' => $date]);
     }
+
     public function advance_english_grammar()
     {
         $route = request()->route()->getName();
         $date = $this->getDatetime($route);
+
         return view('receipt_form.advance_english_grammar')->with([
             'date' => $date,
         ]);
@@ -507,6 +533,7 @@ class ReceiptFormController extends Controller
     {
         $route = request()->route()->getName();
         $date = $this->getDatetime($route);
+
         return view('receipt_form.isocsea_imocsea_national_round')->with([
             'date' => $date,
         ]);
@@ -516,6 +543,7 @@ class ReceiptFormController extends Controller
     {
         $route = request()->route()->getName();
         $date = $this->getDatetime($route);
+
         return view('receipt_form.isocsea_imocsea_national_round_2025')->with([
             'date' => $date,
         ]);
@@ -540,28 +568,29 @@ class ReceiptFormController extends Controller
             $image = $request->file('file')[$i];
             $imageName = $image->getClientOriginalName();
             $oldfile = FileUpload::where('oldname', $imageName)->get();
-            if (!is_array($oldfile)) {
-                $newname = Str::random(40) . '_' . $imageName;
+            if (! is_array($oldfile)) {
+                $newname = Str::random(40).'_'.$imageName;
                 $image->move(public_path('form_images'), $newname);
 
-                $imageUpload = new FileUpload();
+                $imageUpload = new FileUpload;
                 $imageUpload->filename = $newname;
                 $imageUpload->oldname = $imageName;
                 $imageUpload->save();
             }
         }
+
         return response()->json(['success' => $newname]);
     }
 
     public function fileStoreAPI(Request $request)
     {
-        //$image = $request->file('file');
-        //$imageName = $image->getClientOriginalName();
+        // $image = $request->file('file');
+        // $imageName = $image->getClientOriginalName();
 
-        //$newname = Str::random(40) . "_" . $imageName;
-        //$image->move(public_path('form_images'), $newname);
+        // $newname = Str::random(40) . "_" . $imageName;
+        // $image->move(public_path('form_images'), $newname);
 
-        //return response()->json(['success' => $newname]);
+        // return response()->json(['success' => $newname]);
     }
 
     public function fileDestroy(Request $request)
@@ -573,13 +602,14 @@ class ReceiptFormController extends Controller
             return $filename;
         }
 
-        $path = public_path() . '/form_images/' . $oldfile[0]->filename;
+        $path = public_path().'/form_images/'.$oldfile[0]->filename;
         if (file_exists($path)) {
             unlink($path);
             FileUpload::where('oldname', $filename)->delete();
         } else {
             FileUpload::where('oldname', $filename)->delete();
         }
+
         return $filename;
     }
 
@@ -606,10 +636,10 @@ class ReceiptFormController extends Controller
 
     public function textWatermark($image, $text)
     {
-        $path = public_path('receipt_form_images/' . $image);
+        $path = public_path('receipt_form_images/'.$image);
 
         if (file_exists($path)) {
-            $img = Image::make(public_path('receipt_form_images/' . $image));
+            $img = Image::make(public_path('receipt_form_images/'.$image));
 
             $img->text($text, 610, 670, function ($font) {
                 $font->file(public_path('font/amandasignature.ttf'));
@@ -620,13 +650,13 @@ class ReceiptFormController extends Controller
                 $font->angle(80);
             });
 
-            $img->save(public_path('receipt_form_watermark_images/' . $image));
+            $img->save(public_path('receipt_form_watermark_images/'.$image));
 
             $img->encode('png');
             $type = 'png';
-            $new_image = 'data:image/' . $type . ';base64,' . base64_encode($img);
+            $new_image = 'data:image/'.$type.';base64,'.base64_encode($img);
 
-            //return view('show_watermark', compact('new_image'));
+            // return view('show_watermark', compact('new_image'));
             return $new_image;
         }
     }
@@ -645,15 +675,15 @@ class ReceiptFormController extends Controller
             }
         } else {
             abort(403, 'Unauthorized action.');
-            //return Redirect("login")->withSuccess('Please Login');
-            //exit();
+            // return Redirect("login")->withSuccess('Please Login');
+            // exit();
         }
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     // public function searchMonthYear($month, $year, $sfield)
     // {
@@ -686,7 +716,7 @@ class ReceiptFormController extends Controller
         }
 
         if ($request->ajax()) {
-            //sleep(2);
+            // sleep(2);
             $receipt = ReceiptForm::select(
                 'receipt_forms.id as receipt_id',
                 'receipt_forms.exam_mode as exam_mode',
@@ -705,7 +735,7 @@ class ReceiptFormController extends Controller
                 ->where('receipt_forms.sfield', $request->sfield)
                 ->orderBy('receipt_forms.id', 'desc');
             if ($request->start_date && $request->end_date) {
-                # code...
+                // code...
                 $receipt->whereBetween('receipt_forms.submission_date', [
                     $request->start_date,
                     $request->end_date,
@@ -714,8 +744,8 @@ class ReceiptFormController extends Controller
             if ($request->referent_code) {
                 $receipt->where('receipt_forms.referent_code', $request->referent_code);
             }
-            //print_r($levels);
-            //exit();
+            // print_r($levels);
+            // exit();
             $receipt = $receipt->get();
 
             return datatables()
@@ -724,10 +754,10 @@ class ReceiptFormController extends Controller
                     return $receipt->student_name . ' ' . $receipt->student_lastname;
                 })*/
                 ->editColumn('checkbox', function ($row) {
-                    return '<input type="checkbox" id="' .
-                        $row->receipt_id .
-                        '" class="flat" name="table_records[]" value="' .
-                        $row->receipt_id .
+                    return '<input type="checkbox" id="'.
+                        $row->receipt_id.
+                        '" class="flat" name="table_records[]" value="'.
+                        $row->receipt_id.
                         '" >';
                 })
 
@@ -738,6 +768,7 @@ class ReceiptFormController extends Controller
                     } else {
                         $html = '<i class="text-success fa fa-edit"></i> ออกใบเสร็จแล้ว ';
                     }
+
                     return $html;
                 })
                 ->addColumn('referent_code', function ($row) {
@@ -756,6 +787,7 @@ class ReceiptFormController extends Controller
                     if ($referent_code) {
                         $name = $referent_code->referent_name;
                     }
+
                     return $name;
                 })
                 ->addColumn('action', function ($row) {
@@ -765,18 +797,18 @@ class ReceiptFormController extends Controller
                         $files = explode('|', $row->file);
 
                         foreach ($files as $file) {
-                            if (!empty($file)) {
-                                $filePath = public_path('receipt_form_images/' . $file);
+                            if (! empty($file)) {
+                                $filePath = public_path('receipt_form_images/'.$file);
 
                                 if (file_exists($filePath)) {
                                     $html .=
-                                        '<a href="' .
-                                        asset('receipt_form_images/' . $file) .
+                                        '<a href="'.
+                                        asset('receipt_form_images/'.$file).
                                         '" class="btn btn-xs btn-info btn-edit"><i class="fa fa-download"></i> Download file</a> ';
                                 } else {
                                     $html .=
-                                        '<p class="text-danger">File ' .
-                                        htmlspecialchars($file) .
+                                        '<p class="text-danger">File '.
+                                        htmlspecialchars($file).
                                         ' does not exist.</p>';
                                 }
                             }
@@ -785,42 +817,42 @@ class ReceiptFormController extends Controller
 
                     if ($row->receipt_generate == 0) {
                         if ($row->receipt_sfield == '23') {
-                            # code...
+                            // code...
                         } else {
-                            # code...
+                            // code...
                             $html .=
-                                '<a href="#" class="btn btn-xs btn-warning btn-edit" id="getEditData" data-id="' .
-                                $row->receipt_id .
+                                '<a href="#" class="btn btn-xs btn-warning btn-edit" id="getEditData" data-id="'.
+                                $row->receipt_id.
                                 '"><i class="fa fa-edit"></i> Generate Receipt</a> ';
                         }
 
                         $html .=
-                            '<a href="#" data-rowid="' .
-                            $row->receipt_id .
+                            '<a href="#" data-rowid="'.
+                            $row->receipt_id.
                             '" class="btn btn-xs btn-danger btn-delete"><i class="fa fa-trash"></i> Delete</a>';
                     } else {
                         if ($row->receipt_sfield == '23') {
-                            # code...
+                            // code...
                         } else {
-                            # code...
+                            // code...
                             $html .=
-                                '<a href="#" class="btn btn-xs btn-warning btn-edit" id="getEditData" data-id="' .
-                                $row->receipt_id .
+                                '<a href="#" class="btn btn-xs btn-warning btn-edit" id="getEditData" data-id="'.
+                                $row->receipt_id.
                                 '"><i class="fa fa-edit"></i> Edit</a> ';
                         }
                         $html .=
                             '<a href="#" onclick="toastr.success(\'ออก Receive แล้วไม่สามารถลบได้\', {
                             timeOut: 5000
-                        });" data-rowid="' .
-                            $row->receipt_id .
+                        });" data-rowid="'.
+                            $row->receipt_id.
                             '" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</a>';
                     }
 
                     // Add Resend Mail button
-                    if (!in_array($row->receipt_sfield, [0, 17], true) && $row->email) {
+                    if (! in_array($row->receipt_sfield, [0, 17], true) && $row->email) {
                         $html .=
-                            ' <a href="#" class="btn btn-xs btn-info btn-resend-mail" data-id="' .
-                            $row->receipt_id .
+                            ' <a href="#" class="btn btn-xs btn-info btn-resend-mail" data-id="'.
+                            $row->receipt_id.
                             '"><i class="fa fa-envelope"></i> Resend Mail</a>';
                     }
 
@@ -830,11 +862,11 @@ class ReceiptFormController extends Controller
                 ->toJson();
         }
 
-        //get subject
-        //$subject = Subject::orderBy("id", "asc")->get();
+        // get subject
+        // $subject = Subject::orderBy("id", "asc")->get();
 
-        //get student
-        //$student = Student::orderBy("name", "asc")->get();
+        // get student
+        // $student = Student::orderBy("name", "asc")->get();
         $form = FormManage::where('sfield', $request->sfield)->first();
         $sfielda = self::sfielda;
 
@@ -851,13 +883,14 @@ class ReceiptFormController extends Controller
             ->with(['form' => $form])
             ->with(['referent_codes' => $referent_codes]);
     }
+
     public function index_all(Request $request)
     {
         //
         $this->check_permission();
 
         if ($request->ajax()) {
-            //sleep(2);
+            // sleep(2);
             $receipt = ReceiptForm::select(
                 'receipt_forms.id as receipt_id',
                 'receipt_forms.sfield as receipt_sfield',
@@ -875,7 +908,7 @@ class ReceiptFormController extends Controller
                 ->where('receipt_forms.sfield', $request->sfield)
                 ->orderBy('receipt_forms.id', 'desc');
             if ($request->start_date && $request->end_date) {
-                # code...
+                // code...
                 $receipt->whereBetween('receipt_forms.submission_date', [
                     $request->start_date,
                     $request->end_date,
@@ -884,8 +917,8 @@ class ReceiptFormController extends Controller
             if ($request->referent_code) {
                 $receipt->where('receipt_forms.referent_code', $request->referent_code);
             }
-            //print_r($levels);
-            //exit();
+            // print_r($levels);
+            // exit();
             $receipt = $receipt->get();
 
             return datatables()
@@ -894,10 +927,10 @@ class ReceiptFormController extends Controller
                     return $receipt->student_name . ' ' . $receipt->student_lastname;
                 })*/
                 ->editColumn('checkbox', function ($row) {
-                    return '<input type="checkbox" id="' .
-                        $row->receipt_id .
-                        '" class="flat" name="table_records[]" value="' .
-                        $row->receipt_id .
+                    return '<input type="checkbox" id="'.
+                        $row->receipt_id.
+                        '" class="flat" name="table_records[]" value="'.
+                        $row->receipt_id.
                         '" >';
                 })
 
@@ -908,6 +941,7 @@ class ReceiptFormController extends Controller
                     } else {
                         $html = '<i class="text-success fa fa-edit"></i> ออกใบเสร็จแล้ว ';
                     }
+
                     return $html;
                 })
                 ->addColumn('referent_code', function ($row) {
@@ -923,6 +957,7 @@ class ReceiptFormController extends Controller
                     if ($referent_code) {
                         $name = $referent_code->referent_name;
                     }
+
                     return $name;
                 })
                 ->addColumn('action', function ($row) {
@@ -932,18 +967,18 @@ class ReceiptFormController extends Controller
                         $files = explode('|', $row->file);
 
                         foreach ($files as $file) {
-                            if (!empty($file)) {
-                                $filePath = public_path('receipt_form_images/' . $file);
+                            if (! empty($file)) {
+                                $filePath = public_path('receipt_form_images/'.$file);
 
                                 if (file_exists($filePath)) {
                                     $html .=
-                                        '<a href="' .
-                                        asset('receipt_form_images/' . $file) .
+                                        '<a href="'.
+                                        asset('receipt_form_images/'.$file).
                                         '" class="btn btn-xs btn-info btn-edit"><i class="fa fa-download"></i> Download file</a> ';
                                 } else {
                                     $html .=
-                                        '<p class="text-danger">File ' .
-                                        htmlspecialchars($file) .
+                                        '<p class="text-danger">File '.
+                                        htmlspecialchars($file).
                                         ' does not exist.</p>';
                                 }
                             }
@@ -952,42 +987,42 @@ class ReceiptFormController extends Controller
 
                     if ($row->receipt_generate == 0) {
                         if ($row->receipt_sfield == '23') {
-                            # code...
+                            // code...
                         } else {
-                            # code...
+                            // code...
                             $html .=
-                                '<a href="#" class="btn btn-xs btn-warning btn-edit" id="getEditData" data-id="' .
-                                $row->receipt_id .
+                                '<a href="#" class="btn btn-xs btn-warning btn-edit" id="getEditData" data-id="'.
+                                $row->receipt_id.
                                 '"><i class="fa fa-edit"></i> Generate Receipt</a> ';
                         }
 
                         $html .=
-                            '<a href="#" data-rowid="' .
-                            $row->receipt_id .
+                            '<a href="#" data-rowid="'.
+                            $row->receipt_id.
                             '" class="btn btn-xs btn-danger btn-delete"><i class="fa fa-trash"></i> Delete</a>';
                     } else {
                         if ($row->receipt_sfield == '23') {
-                            # code...
+                            // code...
                         } else {
-                            # code...
+                            // code...
                             $html .=
-                                '<a href="#" class="btn btn-xs btn-warning btn-edit" id="getEditData" data-id="' .
-                                $row->receipt_id .
+                                '<a href="#" class="btn btn-xs btn-warning btn-edit" id="getEditData" data-id="'.
+                                $row->receipt_id.
                                 '"><i class="fa fa-edit"></i> Edit</a> ';
                         }
                         $html .=
                             '<a href="#" onclick="toastr.success(\'ออก Receive แล้วไม่สามารถลบได้\', {
                             timeOut: 5000
-                        });" data-rowid="' .
-                            $row->receipt_id .
+                        });" data-rowid="'.
+                            $row->receipt_id.
                             '" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</a>';
                     }
 
                     // Add Resend Mail button
-                    if (!in_array($row->receipt_sfield, [0, 17], true) && $row->email) {
+                    if (! in_array($row->receipt_sfield, [0, 17], true) && $row->email) {
                         $html .=
-                            ' <a href="#" class="btn btn-xs btn-info btn-resend-mail" data-id="' .
-                            $row->receipt_id .
+                            ' <a href="#" class="btn btn-xs btn-info btn-resend-mail" data-id="'.
+                            $row->receipt_id.
                             '"><i class="fa fa-envelope"></i> Resend Mail</a>';
                     }
 
@@ -1003,7 +1038,7 @@ class ReceiptFormController extends Controller
         $mergeArray = self::sfielda;
 
         foreach ($formManage as $form) {
-            if (!array_key_exists($form->sfield, $mergeArray)) {
+            if (! array_key_exists($form->sfield, $mergeArray)) {
                 $mergeArray[$form->sfield] = $form->form_name;
             }
         }
@@ -1020,16 +1055,15 @@ class ReceiptFormController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
-
     protected function normalizeDuplicateName($value): string
     {
         $value = trim((string) $value);
@@ -1066,7 +1100,7 @@ class ReceiptFormController extends Controller
             ->orderBy('id', 'desc')
             ->first();
 
-        if (!$getTime || !$getTime->opening_time || !$getTime->closing_time) {
+        if (! $getTime || ! $getTime->opening_time || ! $getTime->closing_time) {
             return null;
         }
 
@@ -1080,7 +1114,7 @@ class ReceiptFormController extends Controller
     {
         $period = $this->getCurrentOpeningPeriod($route);
 
-        if (!$period) {
+        if (! $period) {
             return collect();
         }
 
@@ -1194,13 +1228,13 @@ class ReceiptFormController extends Controller
     /**
      * Check if user is already registered in the same form opening period.
      *
-     * @param string $route
-     * @param string $sfield
-     * @param string $firstname
-     * @param string $lastname
-     * @param string|null $birthdate
-     * @param string|null $phone
-     * @param string|null $email
+     * @param  string  $route
+     * @param  string  $sfield
+     * @param  string  $firstname
+     * @param  string  $lastname
+     * @param  string|null  $birthdate
+     * @param  string|null  $phone
+     * @param  string|null  $email
      * @return array
      */
     public function checkRegisted(
@@ -1239,7 +1273,7 @@ class ReceiptFormController extends Controller
                 $this->normalizeDuplicateName($receiptForm->first_name) === $normalizedFirstname &&
                 $this->normalizeDuplicateName($receiptForm->last_name) === $normalizedLastname;
 
-            if (!$sameName) {
+            if (! $sameName) {
                 return false;
             }
 
@@ -1287,30 +1321,30 @@ class ReceiptFormController extends Controller
                 'first_name' => 'required|string',
                 'last_name' => 'required|string',
                 // 'street_address' => 'required|string',
-                //'city' => 'required|string',
-                //'province' => 'required|string',
+                // 'city' => 'required|string',
+                // 'province' => 'required|string',
                 // 'postcode' => 'required|string',
                 // 'name_parent' => 'required|string',
                 'mobile' => 'required|string',
                 'package' => 'required|string',
-                //'file_att' => 'required|string',
+                // 'file_att' => 'required|string',
                 'description' => 'required|string',
                 'grade' => 'required|string',
             ]);
         } else {
-            # code...
+            // code...
             $validator = Validator::make($request->all(), [
                 'submission_date' => 'required|string',
                 'first_name' => 'required|string',
                 'last_name' => 'required|string',
                 'street_address' => 'required|string',
-                //'city' => 'required|string',
-                //'province' => 'required|string',
+                // 'city' => 'required|string',
+                // 'province' => 'required|string',
                 'postcode' => 'required|string',
                 'name_parent' => 'required|string',
                 'mobile' => 'required|string',
                 'package' => 'required|string',
-                //'file_att' => 'required|string',
+                // 'file_att' => 'required|string',
                 'description' => 'required|string',
                 'grade' => 'required|string',
             ]);
@@ -1322,6 +1356,12 @@ class ReceiptFormController extends Controller
 
         $id = $request->get('fid');
         $form = ReceiptForm::find($id);
+
+        if (! $form || (string) $form->sfield !== (string) $request->get('sfield')) {
+            return response()->json([
+                'errors' => ['Registration form or competition field is invalid.'],
+            ]);
+        }
 
         // ส่ง email เฉพาะ sfield 17 — ใช้ email จาก DB record เพื่อรับประกัน consistency
         if ($request->get('sfield') === '17') {
@@ -1341,7 +1381,7 @@ class ReceiptFormController extends Controller
                         ['trigger' => 'create', 'sfield' => '17']
                     );
                 } catch (\Exception $e) {
-                    Log::error("Failed to send email to {$adminEmail} (create): " . $e->getMessage());
+                    Log::error("Failed to send email to {$adminEmail} (create): ".$e->getMessage());
                 }
             } else {
                 Log::warning("Invalid email for create send: {$adminEmail} (form_id: {$form->id})");
@@ -1352,230 +1392,224 @@ class ReceiptFormController extends Controller
             return response()->json(['error' => 'Receive is already generate']);
         }
 
-        $rnumber = Receipt_RunningNumber::generate(
-            $request->get('sfield'),
-            $request->get('submission_date'),
-        );
+        try {
+            $receiptLines = (new ReceiptLineItemResolver)->resolve(
+                $form,
+                $request->get('description'),
+            );
+        } catch (\RuntimeException $e) {
+            Log::warning('Receipt generation blocked because the price could not be resolved.', [
+                'receipt_form_id' => $form->id,
+                'sfield' => $form->sfield,
+                'package_id' => $form->package_id,
+                'message' => $e->getMessage(),
+            ]);
 
-        $rcnumber = Receipt_Customer_RunningNumber::generate(
-            $request->get('sfield'),
-        );
-        // dd($request);
+            return response()->json([
+                'errors' => [
+                    'ไม่สามารถออกใบเสร็จได้ เนื่องจากไม่พบราคาของแพ็กเกจ กรุณาตรวจสอบ Package/Price ก่อนสร้างใบเสร็จ',
+                ],
+            ]);
+        }
 
-        $request->request->add([
-            'receipt_number' => $rnumber,
-            'receipt_customer_number' => $rcnumber,
-        ]);
+        DB::beginTransaction();
 
-        $receipt = new Receipt($request->all());
-        $receipt->recform_id = $form->id;
-        $receipt->referent_code = $request->get('referent_code');
-        $receipt->save();
-        // dd(
-        //     $request,
-        //     $adminEmail
-        // );
-
-        //$form = ReceiptForm::find($id);
-
-        //add more inages
-        $img = $request->get('img');
-        $stu = '';
-        $urlbr = '';
-        if ($img != null || $img != '') {
-            foreach ($img as $fileb) {
-                //echo $filea;
-                // $stu .= $sss . "|";
-                $oldfile = FileUpload::where('oldname', $fileb)->get();
-                $stu .= $oldfile[0]->filename . '|';
-                File::move(
-                    public_path() . '/form_images/' . $oldfile[0]->filename,
-                    public_path() . '/receipt_form_images/' . $oldfile[0]->filename,
-                );
-
-                //watermark
-                $urlb = url('/') . '/receipt_form_images/' . $oldfile[0]->filename;
-
-                //watermark
-                $fileex = explode('/', $urlb);
-                $this->textWatermark(
-                    end($fileex),
-                    'Date Register : ' . $request->get('submission_date'),
-                );
-                $urlbr .=
-                    str_replace(
-                        'receipt_form_images',
-                        'receipt_form_watermark_images',
-                        $urlb,
-                    ) . '|';
-                //watermark
-
-                FileUpload::where('filename', $oldfile[0]->filename)->delete();
+        try {
+            // Prevent two simultaneous clicks from issuing duplicate receipts.
+            $form = ReceiptForm::whereKey($form->id)->lockForUpdate()->firstOrFail();
+            if ((int) $form->generate === 1) {
+                throw new \LogicException('Receipt has already been generated.');
             }
-        }
 
-        $dataimg = ReceiptForm::find($request->get('fid'));
-        if ($dataimg->file_att != null && $dataimg->file_att != '') {
-            $stu = $dataimg->file_att . '|' . $stu;
-        }
+            $rnumber = Receipt_RunningNumber::generate(
+                $request->get('sfield'),
+                $request->get('submission_date'),
+            );
 
-        $datare = Receipt::find($receipt->id);
-        if ($datare->file_att != null && $datare->file_att != '') {
-            $urlbr = $datare->file_att . '|' . $urlbr;
-        }
+            $rcnumber = Receipt_Customer_RunningNumber::generate(
+                $request->get('sfield'),
+            );
+            // dd($request);
 
-        $stu = rtrim($stu, '|');
-        $urlbr = rtrim($urlbr, '|');
+            $request->request->add([
+                'receipt_number' => $rnumber,
+                'receipt_customer_number' => $rcnumber,
+            ]);
 
-        ReceiptForm::find($request->get('fid'))->update(['file_att' => $stu]);
-        Receipt::find($receipt->id)->update(['file_att' => $urlbr]);
-        //add more images
-        $rid = $receipt->id;
+            $receipt = new Receipt($request->all());
+            $receipt->recform_id = $form->id;
+            $receipt->referent_code = $request->get('referent_code');
+            $receipt->save();
+            // dd(
+            //     $request,
+            //     $adminEmail
+            // );
 
-        if (strtolower($request->get('dcode')) == 'meta200') {
-            $discount = 200;
-        } elseif (strtolower($request->get('dcode')) == 'cem100') {
-            $discount = 100;
-        } elseif (strtolower($request->get('dcode')) == 'cbp100') {
-            $discount = 100;
-        } elseif (strtolower($request->get('dcode')) == 'cbl150') {
-            $discount = 150;
-        } else {
-            $discount = 0;
-        }
+            // $form = ReceiptForm::find($id);
 
-        if ($request->get('sfield') === '17') {
-            # code...
-            $price = 500;
-            $out_price = FormPakages::find($request->get('package_id'));
-            if ($out_price) {
-                $price = $out_price->price;
-            } else {
-                $out_price = $this->delete_all_between(
-                    '(',
-                    ')',
-                    $request->get('package'),
-                );
-                $price = preg_replace('/[^0-9.]/', '', $out_price);
-            }
-        } else {
-            $package_ids = json_decode($form->package_id);
-
-            if ($form->package_id && is_array($package_ids)) {
-                # code...
-                foreach ($package_ids as $key => $id) {
-                    $out_price = FormPakages::find($id);
-                    $price = $out_price->price;
-                    $desc = $out_price->package;
-                    $rdata = new ReceiptDetail([
-                        'receipt_id' => $rid,
-                        'description' => $desc,
-                        'quantity' => 1,
-                        //'unit' => '',
-                        'unitprice' => (int) $price,
-                        'discount' => $discount,
-                        //'amount' => $request->get('book_old_price'),
-                    ]);
-                    $rdata->save();
-                }
-            } else {
-                # code...
-
-                $out_price = FormPakages::find($request->get('package_id'));
-                if ($out_price) {
-                    $price = $out_price->price;
-                } else {
-                    $out_price = $this->delete_all_between(
-                        '(',
-                        ')',
-                        $request->get('package'),
+            // add more inages
+            $img = $request->get('img');
+            $stu = '';
+            $urlbr = '';
+            if ($img != null || $img != '') {
+                foreach ($img as $fileb) {
+                    // echo $filea;
+                    // $stu .= $sss . "|";
+                    $oldfile = FileUpload::where('oldname', $fileb)->get();
+                    $stu .= $oldfile[0]->filename.'|';
+                    File::move(
+                        public_path().'/form_images/'.$oldfile[0]->filename,
+                        public_path().'/receipt_form_images/'.$oldfile[0]->filename,
                     );
-                    $price = preg_replace('/[^0-9.]/', '', $out_price);
+
+                    // watermark
+                    $urlb = url('/').'/receipt_form_images/'.$oldfile[0]->filename;
+
+                    // watermark
+                    $fileex = explode('/', $urlb);
+                    $this->textWatermark(
+                        end($fileex),
+                        'Date Register : '.$request->get('submission_date'),
+                    );
+                    $urlbr .=
+                        str_replace(
+                            'receipt_form_images',
+                            'receipt_form_watermark_images',
+                            $urlb,
+                        ).'|';
+                    // watermark
+
+                    FileUpload::where('filename', $oldfile[0]->filename)->delete();
                 }
+            }
+
+            $dataimg = ReceiptForm::find($request->get('fid'));
+            if ($dataimg->file_att != null && $dataimg->file_att != '') {
+                $stu = $dataimg->file_att.'|'.$stu;
+            }
+
+            $datare = Receipt::find($receipt->id);
+            if ($datare->file_att != null && $datare->file_att != '') {
+                $urlbr = $datare->file_att.'|'.$urlbr;
+            }
+
+            $stu = rtrim($stu, '|');
+            $urlbr = rtrim($urlbr, '|');
+
+            ReceiptForm::find($request->get('fid'))->update(['file_att' => $stu]);
+            Receipt::find($receipt->id)->update(['file_att' => $urlbr]);
+            // add more images
+            $rid = $receipt->id;
+
+            if (strtolower($request->get('dcode')) == 'meta200') {
+                $discount = 200;
+            } elseif (strtolower($request->get('dcode')) == 'cem100') {
+                $discount = 100;
+            } elseif (strtolower($request->get('dcode')) == 'cbp100') {
+                $discount = 100;
+            } elseif (strtolower($request->get('dcode')) == 'cbl150') {
+                $discount = 150;
+            } else {
+                $discount = 0;
+            }
+
+            foreach ($receiptLines as $index => $receiptLine) {
                 $rdata = new ReceiptDetail([
                     'receipt_id' => $rid,
-                    'description' => $request->get('description'),
-                    'quantity' => 1,
-                    //'unit' => '',
-                    'unitprice' => (int) $price,
-                    'discount' => $discount,
-                    //'amount' => $request->get('book_old_price'),
+                    'description' => $receiptLine['description'],
+                    'quantity' => $receiptLine['quantity'],
+                    'unitprice' => $receiptLine['unitprice'],
+                    // A discount code applies once to the receipt, not once per
+                    // selected package in a multi-package registration.
+                    'discount' => $index === 0 ? $discount : 0,
                 ]);
                 $rdata->save();
             }
 
-            # code...
-        }
-
-        if ($request->get('sfield') == 11) {
-            if (str_contains($request->get('description'), 'Primary')) {
-                $sdes = 'ค่าลงทะเบียนระดับประถม';
-            } else {
-                $sdes = 'ค่าลงทะเบียนระดับมัธยม';
-            }
-        } else {
-            if (
-                $request->get('sfield') == 16 ||
-                $request->get('sfield') == 17 ||
-                $request->get('sfield') == 24 ||
-                $request->get('sfield') == 25
-            ) {
-                $sdes = '';
-            } elseif (
-                $request->get('sfield') == 18 ||
-                $request->get('sfield') == 19
-            ) {
-                if (str_contains($request->get('description'), 'Private')) {
-                    $sdes = 'สมัครติวแบบส่วนตัว';
+            if ($request->get('sfield') == 11) {
+                if (str_contains($request->get('description'), 'Primary')) {
+                    $sdes = 'ค่าลงทะเบียนระดับประถม';
                 } else {
-                    $sdes = 'สมัครติว';
+                    $sdes = 'ค่าลงทะเบียนระดับมัธยม';
                 }
-            } elseif (
-                $request->get('sfield') == 20 ||
-                $request->get('sfield') == 21
-            ) {
-                # code...
-                $sdes = 'สมัครสอบปกติ';
             } else {
-                if (str_contains($request->get('description'), 'tutoring')) {
-                    $sdes = 'สมัครสอบรวมติว';
-                } elseif (
-                    $request->get('sfield') == 10 ||
-                    $request->get('sfield') == 27
+                if (
+                    $request->get('sfield') == 16 ||
+                    $request->get('sfield') == 17 ||
+                    $request->get('sfield') == 24 ||
+                    $request->get('sfield') == 25
                 ) {
-                    # code...
                     $sdes = '';
+                } elseif (
+                    $request->get('sfield') == 18 ||
+                    $request->get('sfield') == 19
+                ) {
+                    if (str_contains($request->get('description'), 'Private')) {
+                        $sdes = 'สมัครติวแบบส่วนตัว';
+                    } else {
+                        $sdes = 'สมัครติว';
+                    }
+                } elseif (
+                    $request->get('sfield') == 20 ||
+                    $request->get('sfield') == 21
+                ) {
+                    // code...
+                    $sdes = 'สมัครสอบปกติ';
                 } else {
-                    $sdes = 'สมัครสอบไม่รวมติว';
+                    if (str_contains($request->get('description'), 'tutoring')) {
+                        $sdes = 'สมัครสอบรวมติว';
+                    } elseif (
+                        $request->get('sfield') == 10 ||
+                        $request->get('sfield') == 27
+                    ) {
+                        // code...
+                        $sdes = '';
+                    } else {
+                        $sdes = 'สมัครสอบไม่รวมติว';
+                    }
                 }
             }
+
+            $formSfield = FormManage::where('sfield', $request->get('sfield'))->first();
+            if ($formSfield) {
+                $sdes = '';
+            } else {
+                $sdes = $sdes;
+            }
+
+            if (trim((string) $sdes) !== '') {
+                $rtdata = new ReceiptDetail([
+                    'receipt_id' => $rid,
+                    'description' => $sdes,
+                ]);
+                $rtdata->save();
+            }
+            // dd($rdata);
+
+            $form->generate = '1';
+            $form->rec_id = $receipt->id;
+            $form->save();
+
+            // บันทึก activity log — generate receipt จาก receipt form
+            LogActivity::modelEvent($receipt, 'receipt_form generated', null, $receipt->toArray());
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('Receipt generation failed and was rolled back.', [
+                'receipt_form_id' => $form->id ?? $id,
+                'sfield' => $request->get('sfield'),
+                'message' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'errors' => [
+                    $e instanceof \LogicException
+                        ? 'Receive is already generate'
+                        : 'Receipt generation failed. No receipt was created.',
+                ],
+            ]);
         }
-
-        $formSfield = FormManage::where('sfield', $request->get('sfield'))->first();
-        if ($formSfield) {
-            $sdes = '';
-        } else {
-            $sdes = $sdes;
-        }
-
-        $rtdata = new ReceiptDetail([
-            'receipt_id' => $rid,
-            'description' => $sdes,
-            //'quantity' => 1,
-            //'unit' => '',
-            //'unitprice' => (int)$price,
-            //'discount' => '',
-            //'amount' => $request->get('book_old_price'),
-        ]);
-        $rtdata->save();
-        // dd($rdata);
-
-        $form->generate = '1';
-        $form->rec_id = $receipt->id;
-        $form->save();
-
-        // บันทึก activity log — generate receipt จาก receipt form
-        LogActivity::modelEvent($receipt, 'receipt_form generated', null, $receipt->toArray());
 
         return response()->json(['success' => 'Receive Add successfully']);
     }
@@ -1584,7 +1618,7 @@ class ReceiptFormController extends Controller
     {
         $formManage = FormManage::where('form_route', $route)->first();
 
-        if (!$formManage || !$formManage->field_settings) {
+        if (! $formManage || ! $formManage->field_settings) {
             return $this->getDefaultValidationRules($allowedTLDs);
         }
 
@@ -1612,7 +1646,7 @@ class ReceiptFormController extends Controller
         foreach ($fieldMapping as $configKey => $inputName) {
             $settings = $fieldSettings[$configKey] ?? null;
 
-            if (!is_array($settings)) {
+            if (! is_array($settings)) {
                 continue;
             }
 
@@ -1623,7 +1657,7 @@ class ReceiptFormController extends Controller
                 $settings['required'] ??
                 ($fieldConfig[$configKey]['default_required'] ?? false);
 
-            if (!$enabled) {
+            if (! $enabled) {
                 continue;
             }
 
@@ -1643,7 +1677,7 @@ class ReceiptFormController extends Controller
                     $rules[$inputName] = $required
                         ? ['required', 'array']
                         : ['nullable', 'array'];
-                    $rules[$inputName . '.*'] = ['integer', 'exists:forms_pakages,id'];
+                    $rules[$inputName.'.*'] = ['integer', 'exists:forms_pakages,id'];
                     $messages["{$inputName}.required"] = 'กรุณาเลือกแพคเกจ';
                     $messages["{$inputName}.array"] = 'แพคเกจต้องเป็นรายการ';
                     $messages["{$inputName}.*.integer"] = 'แพคเกจไม่ถูกต้อง';
@@ -1651,10 +1685,10 @@ class ReceiptFormController extends Controller
 
                     // Add max selection validation if set
                     if ($formManage->package_max_selection) {
-                        $rules[$inputName][] = 'max:' . $formManage->package_max_selection;
+                        $rules[$inputName][] = 'max:'.$formManage->package_max_selection;
                         $messages["{$inputName}.max"] =
-                            'คุณสามารถเลือกได้สูงสุด ' .
-                            $formManage->package_max_selection .
+                            'คุณสามารถเลือกได้สูงสุด '.
+                            $formManage->package_max_selection.
                             ' แพคเกจเท่านั้น';
                     }
                 } else {
@@ -1666,7 +1700,7 @@ class ReceiptFormController extends Controller
                 $ruleArray[] = 'string';
                 $ruleArray[] = 'regex:/^[A-Za-z ]+$/';
                 $messages["{$inputName}.regex"] =
-                    ucfirst($inputName) . ' ต้องเป็นตัวอักษรภาษาอังกฤษเท่านั้น';
+                    ucfirst($inputName).' ต้องเป็นตัวอักษรภาษาอังกฤษเท่านั้น';
                 $rules[$inputName] = $ruleArray;
             } elseif ($inputName === 'email') {
                 $rules[$inputName] = array_merge(
@@ -1674,13 +1708,13 @@ class ReceiptFormController extends Controller
                     [
                         'email',
                         function ($attribute, $value, $fail) use ($allowedTLDs) {
-                            if (!$value) {
+                            if (! $value) {
                                 return;
                             }
                             $domain = substr(strrchr($value, '@'), 1);
                             if (
-                                !collect($allowedTLDs)->contains(
-                                    fn($suffix) => str_ends_with($domain, $suffix),
+                                ! collect($allowedTLDs)->contains(
+                                    fn ($suffix) => str_ends_with($domain, $suffix),
                                 )
                             ) {
                                 $fail(
@@ -1720,8 +1754,8 @@ class ReceiptFormController extends Controller
                     function ($attribute, $value, $fail) use ($allowedTLDs) {
                         $domain = substr(strrchr($value, '@'), 1);
                         if (
-                            !collect($allowedTLDs)->contains(
-                                fn($suffix) => str_ends_with($domain, $suffix),
+                            ! collect($allowedTLDs)->contains(
+                                fn ($suffix) => str_ends_with($domain, $suffix),
                             )
                         ) {
                             $fail(
@@ -1983,7 +2017,7 @@ class ReceiptFormController extends Controller
 
     public function storeFormManage(Request $request)
     {
-        \Illuminate\Support\Facades\Log::info('storeFormManage started', [
+        Log::info('storeFormManage started', [
             'request' => $request->except([
                 'imgFiles',
                 'imgFiles2',
@@ -2015,7 +2049,7 @@ class ReceiptFormController extends Controller
         // dd($request->all(), '0');
 
         if ($result['duplicate']) {
-            \Illuminate\Support\Facades\Log::info('Duplicate registration detected', [
+            Log::info('Duplicate registration detected', [
                 'result' => $result,
             ]);
 
@@ -2053,7 +2087,7 @@ class ReceiptFormController extends Controller
         );
 
         if ($validator->fails()) {
-            \Illuminate\Support\Facades\Log::warning('Form Validation Failed', [
+            Log::warning('Form Validation Failed', [
                 'errors' => $validator->errors()->all(),
                 'request' => $request->all(),
             ]);
@@ -2066,12 +2100,12 @@ class ReceiptFormController extends Controller
         }
         // dd($request);
 
-        if (!file_exists(public_path() . '/receipt_form_images/')) {
-            mkdir(public_path() . '/receipt_form_images/', 0777, true);
+        if (! file_exists(public_path().'/receipt_form_images/')) {
+            mkdir(public_path().'/receipt_form_images/', 0777, true);
         }
 
-        if (!file_exists(public_path() . '/receipt_form_watermark_images/')) {
-            mkdir(public_path() . '/receipt_form_watermark_images/', 0777, true);
+        if (! file_exists(public_path().'/receipt_form_watermark_images/')) {
+            mkdir(public_path().'/receipt_form_watermark_images/', 0777, true);
         }
 
         if ($request->get('sfield') == '17') {
@@ -2087,10 +2121,10 @@ class ReceiptFormController extends Controller
                     continue;
                 }
 
-                $filebs .= $oldfile[0]->filename . '|';
+                $filebs .= $oldfile[0]->filename.'|';
                 File::move(
-                    public_path() . '/form_images/' . $oldfile[0]->filename,
-                    public_path() . '/receipt_form_images/' . $oldfile[0]->filename,
+                    public_path().'/form_images/'.$oldfile[0]->filename,
+                    public_path().'/receipt_form_images/'.$oldfile[0]->filename,
                 );
                 FileUpload::where('filename', $oldfile[0]->filename)->delete();
             }
@@ -2101,10 +2135,10 @@ class ReceiptFormController extends Controller
                     continue;
                 }
 
-                $fileas .= $oldfile[0]->filename . '|';
+                $fileas .= $oldfile[0]->filename.'|';
                 File::move(
-                    public_path() . '/form_images/' . $oldfile[0]->filename,
-                    public_path() . '/receipt_form_images/' . $oldfile[0]->filename,
+                    public_path().'/form_images/'.$oldfile[0]->filename,
+                    public_path().'/receipt_form_images/'.$oldfile[0]->filename,
                 );
                 FileUpload::where('filename', $oldfile[0]->filename)->delete();
             }
@@ -2112,7 +2146,7 @@ class ReceiptFormController extends Controller
             $filebs = rtrim($filebs, '|');
             $fileas = rtrim($fileas, '|');
         } else {
-            # code...
+            // code...
             $fileas = null;
             if ($request->has('imgFiles')) {
                 $filesa = (array) $request->get('imgFiles', []);
@@ -2123,10 +2157,10 @@ class ReceiptFormController extends Controller
                         continue;
                     }
 
-                    $fileas .= $oldfile[0]->filename . '|';
+                    $fileas .= $oldfile[0]->filename.'|';
                     File::move(
-                        public_path() . '/form_images/' . $oldfile[0]->filename,
-                        public_path() . '/receipt_form_images/' . $oldfile[0]->filename,
+                        public_path().'/form_images/'.$oldfile[0]->filename,
+                        public_path().'/receipt_form_images/'.$oldfile[0]->filename,
                     );
 
                     FileUpload::where('filename', $oldfile[0]->filename)->delete();
@@ -2134,7 +2168,7 @@ class ReceiptFormController extends Controller
                 $fileas = rtrim($fileas, '|');
             }
             if ($request->get('sfield') == '23') {
-                # code...
+                // code...
                 $filebs = null;
             } else {
                 $filebs = null;
@@ -2147,10 +2181,10 @@ class ReceiptFormController extends Controller
                             continue;
                         }
 
-                        $filebs .= $oldfile[0]->filename . '|';
+                        $filebs .= $oldfile[0]->filename.'|';
                         File::move(
-                            public_path() . '/form_images/' . $oldfile[0]->filename,
-                            public_path() . '/receipt_form_images/' . $oldfile[0]->filename,
+                            public_path().'/form_images/'.$oldfile[0]->filename,
+                            public_path().'/receipt_form_images/'.$oldfile[0]->filename,
                         );
                         FileUpload::where('filename', $oldfile[0]->filename)->delete();
                     }
@@ -2164,7 +2198,7 @@ class ReceiptFormController extends Controller
             $request->get('sfield') == 31 ||
             $request->get('sfield') == 32
         ) {
-            # code...
+            // code...
             // Handle award as array and convert to JSON
             $awardInput = $request->get('award');
             if (is_array($awardInput)) {
@@ -2174,7 +2208,7 @@ class ReceiptFormController extends Controller
             }
             $street_address2 = $request->get('street_address2');
         } else {
-            # code...
+            // code...
             $award = '';
             $street_address2 = '';
         }
@@ -2194,19 +2228,19 @@ class ReceiptFormController extends Controller
                 }
             }
 
-            $package_id = !empty($packageIds) ? json_encode($packageIds) : null;
-            $package = !empty($packageNames) ? implode(', ', $packageNames) : null;
+            $package_id = ! empty($packageIds) ? json_encode($packageIds) : null;
+            $package = ! empty($packageNames) ? implode(', ', $packageNames) : null;
         } else {
             // Handle single package selection
             $package_id = $packageInput;
             $formPackage = FormPakages::find($package_id);
 
             if ($formPackage) {
-                # code...
+                // code...
                 $package_id = $formPackage->id;
                 $package = $formPackage->package;
             } else {
-                # code...
+                // code...
                 $package = $packageInput;
             }
         }
@@ -2216,11 +2250,12 @@ class ReceiptFormController extends Controller
         $formManage = FormManage::find($request->get('sfield'));
         if ($formManage && $formManage->enable_exam_mode) {
             $examMode = $request->get('exam_mode');
-            if (!$examMode) {
+            if (! $examMode) {
                 $message = 'กรุณาเลือกรูปแบบการสอบ / Please select Exam Mode';
                 if ($request->ajax()) {
                     return response()->json(['message' => $message], 422);
                 }
+
                 return back()->withInput()->with('error', $message);
             }
 
@@ -2235,7 +2270,7 @@ class ReceiptFormController extends Controller
 
             // If limit is set (not null) and greater than 0, check against count
             // Assumption: If limit is null, it's unlimited. If 0, no seats.
-            if (!is_null($limit) && $currentCount >= $limit) {
+            if (! is_null($limit) && $currentCount >= $limit) {
                 $modeLabel = $examMode == 'online' ? 'Online' : 'Onsite';
                 $message = "ขออภัย ที่นั่งสอบรูปแบบ {$modeLabel} เต็มแล้ว / Sorry, {$modeLabel} exam seats are full.";
 
@@ -2284,7 +2319,7 @@ class ReceiptFormController extends Controller
 
         $receiptForm->save();
 
-        \Illuminate\Support\Facades\Log::info(
+        Log::info(
             "ReceiptForm Saved. ID: {$receiptForm->id}, Route: {$route}",
         );
 
@@ -2294,7 +2329,7 @@ class ReceiptFormController extends Controller
 
         // ตรวจสอบ consistency ระหว่าง request email กับ saved email
         if ($adminEmail !== $request_email) {
-            Log::error("Email Mismatch Detected!", [
+            Log::error('Email Mismatch Detected!', [
                 'request_email' => $request_email,
                 'saved_email' => $adminEmail,
                 'receipt_form_id' => $receiptForm->id,
@@ -2302,7 +2337,7 @@ class ReceiptFormController extends Controller
             ]);
         }
 
-        if (!in_array($request->get('sfield'), [0, 17], true) && $adminEmail) {
+        if (! in_array($request->get('sfield'), [0, 17], true) && $adminEmail) {
             if (filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
                 try {
                     Mail::to($adminEmail)->send(new ContactMail($receiptForm));
@@ -2319,7 +2354,7 @@ class ReceiptFormController extends Controller
                     );
                 } catch (\Exception $e) {
                     Log::error(
-                        "Failed to send email to {$adminEmail}: " . $e->getMessage(),
+                        "Failed to send email to {$adminEmail}: ".$e->getMessage(),
                     );
                 }
             }
@@ -2334,14 +2369,13 @@ class ReceiptFormController extends Controller
             }
         }
 
-        
         // $receiptForm->save(); // Remove duplicate save
 
         if ($receiptForm) {
             // บันทึก activity log — บันทึกข้อมูลจากฟอร์ม storeFormManage
             LogActivity::modelEvent($receiptForm, 'receipt_form store', null, $receiptForm->toArray());
 
-            return redirect('/form/completed/' . $route);
+            return redirect('/form/completed/'.$route);
         } else {
             return back()->with(
                 'error',
@@ -2354,7 +2388,7 @@ class ReceiptFormController extends Controller
     {
         $receiptForm = ReceiptForm::find($id);
 
-        if (!$receiptForm) {
+        if (! $receiptForm) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Receipt form not found',
@@ -2363,7 +2397,7 @@ class ReceiptFormController extends Controller
 
         $adminEmail = $receiptForm->email;
 
-        if (!in_array($receiptForm->sfield, [0, 17], true) && $adminEmail) {
+        if (! in_array($receiptForm->sfield, [0, 17], true) && $adminEmail) {
             if (filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
                 try {
                     Mail::to($adminEmail)->send(new ContactMail($receiptForm));
@@ -2387,10 +2421,11 @@ class ReceiptFormController extends Controller
                         'message' => 'Mail sent successfully',
                     ]);
                 } catch (\Exception $e) {
-                    Log::error("Failed to resend email to {$adminEmail}: " . $e->getMessage());
+                    Log::error("Failed to resend email to {$adminEmail}: ".$e->getMessage());
+
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Failed to send email: ' . $e->getMessage(),
+                        'message' => 'Failed to send email: '.$e->getMessage(),
                     ], 500);
                 }
             }
@@ -2405,14 +2440,15 @@ class ReceiptFormController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ReceiptForm  $receiptForm
-     * @return \Illuminate\Http\Response
+     * @param  ReceiptForm  $receiptForm
+     * @return Response
      */
     public function show(Request $request)
     {
         //
         return view('receipt_form.complete')->with(['sfield' => $request->sfield]);
     }
+
     public function showFormManage(Request $request)
     {
         //
@@ -2420,16 +2456,18 @@ class ReceiptFormController extends Controller
             'sfield' => $request->sfield,
         ]);
     }
+
     public function show1(ReceiptForm $receiptForm)
     {
         //
         return view('receipt_form.complete1');
     }
+
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\ReceiptForm  $receiptForm
-     * @return \Illuminate\Http\Response
+     * @param  ReceiptForm  $receiptForm
+     * @return Response
      */
     public function edit($id)
     {
@@ -2443,18 +2481,18 @@ class ReceiptFormController extends Controller
         if ($data->photo_att) {
             $arrl = explode('|', $data->photo_att);
             for ($i = 0; $i <= count($arrl) - 1; $i++) {
-                //$urla = "https://" . $arrl[$i];
-                $urla = url('/') . '/receipt_form_images/' . $arrl[$i];
-                //$retu = $this->get_img_url($urla);
-                //if ($this->URL_exists($retu)) {
+                // $urla = "https://" . $arrl[$i];
+                $urla = url('/').'/receipt_form_images/'.$arrl[$i];
+                // $retu = $this->get_img_url($urla);
+                // if ($this->URL_exists($retu)) {
                 $photo_att .=
-                    "<div><img src=\"" .
-                    $urla .
+                    '<div><img src="'.
+                    $urla.
                     "\" height=\"80\"></div>&nbsp;&nbsp;
-                <a class='btn btn-xs btn-info btn-view' href=\"" .
-                    urldecode($urla) .
+                <a class='btn btn-xs btn-info btn-view' href=\"".
+                    urldecode($urla).
                     "\" target=\"blank\"><i class='fa fa-search'></i></a>";
-                //}
+                // }
             }
         }
         // dd($urla);
@@ -2465,14 +2503,14 @@ class ReceiptFormController extends Controller
         if ($data->file_att) {
             $arrf = explode('|', $data->file_att);
             for ($j = 0; $j <= count($arrf) - 1; $j++) {
-                //$urla = "https://" . $arrl[$i];
-                $urlb = url('/') . '/receipt_form_images/' . $arrf[$j];
+                // $urla = "https://" . $arrl[$i];
+                $urlb = url('/').'/receipt_form_images/'.$arrf[$j];
 
-                //watermark
+                // watermark
                 $fileex = explode('/', $urlb);
                 $this->textWatermark(
                     end($fileex),
-                    'Date Register : ' . $data->submission_date,
+                    'Date Register : '.$data->submission_date,
                 );
                 $urlb = str_replace(
                     'receipt_form_images',
@@ -2480,20 +2518,20 @@ class ReceiptFormController extends Controller
                     $urlb,
                 );
 
-                //$retu = $this->get_img_url($urla);
-                //if ($this->URL_exists($retu)) {
+                // $retu = $this->get_img_url($urla);
+                // if ($this->URL_exists($retu)) {
                 $file_att .=
-                    "<div><img src=\"" .
-                    $urlb .
+                    '<div><img src="'.
+                    $urlb.
                     "\" height=\"80\"></div>&nbsp;&nbsp;
-                <a class='btn btn-xs btn-info btn-view' href=\"" .
-                    urldecode($urlb) .
-                    "\" target=\"blank\"><i class='fa fa-search'></i></a><a href='#' class='btn btn-xs btn-danger btn-edit' id='getDeleteData' data-id2='" .
-                    $data->id .
-                    "' data-id='" .
-                    $arrf[$j] .
+                <a class='btn btn-xs btn-info btn-view' href=\"".
+                    urldecode($urlb).
+                    "\" target=\"blank\"><i class='fa fa-search'></i></a><a href='#' class='btn btn-xs btn-danger btn-edit' id='getDeleteData' data-id2='".
+                    $data->id.
+                    "' data-id='".
+                    $arrf[$j].
                     "'><i class='fa fa-trash'></i></a><br><br>";
-                //}
+                // }
                 $furl .= $urlb;
             }
         }
@@ -2512,7 +2550,10 @@ class ReceiptFormController extends Controller
             $data->rnumber = '';
         }
 
-        $packages = FormPakages::find($data->package);
+        // `package` stores the display name; `package_id` stores the package key.
+        // Looking up by the display name left AddPackageId empty in the generate
+        // receipt modal and caused the receipt detail price to fall back to zero.
+        $packages = FormPakages::find($data->package_id ?: $data->package);
 
         if ($packages) {
             $data->package = $packages->package;
@@ -2530,8 +2571,9 @@ class ReceiptFormController extends Controller
         }
 
         $data->ref_date_label = optional($data->formManage)->ref_date_label
-            ? optional($data->formManage)->ref_date_label . ' : '
+            ? optional($data->formManage)->ref_date_label.' : '
             : 'Reference Date :';
+
         // dd($data);
         return response()->json([
             'data' => $data,
@@ -2541,9 +2583,8 @@ class ReceiptFormController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ReceiptForm  $receiptForm
-     * @return \Illuminate\Http\Response
+     * @param  ReceiptForm  $receiptForm
+     * @return Response
      */
     public function update(Request $request)
     {
@@ -2558,29 +2599,29 @@ class ReceiptFormController extends Controller
 
         if ($img != null || $img != '') {
             foreach ($img as $fileb) {
-                //echo $filea;
+                // echo $filea;
                 // $stu .= $sss . "|";
                 $oldfile = FileUpload::where('oldname', $fileb)->get();
-                $stu .= $oldfile[0]->filename . '|';
+                $stu .= $oldfile[0]->filename.'|';
                 File::move(
-                    public_path() . '/form_images/' . $oldfile[0]->filename,
-                    public_path() . '/receipt_form_images/' . $oldfile[0]->filename,
+                    public_path().'/form_images/'.$oldfile[0]->filename,
+                    public_path().'/receipt_form_images/'.$oldfile[0]->filename,
                 );
 
-                $urlb = url('/') . '/receipt_form_images/' . $oldfile[0]->filename;
+                $urlb = url('/').'/receipt_form_images/'.$oldfile[0]->filename;
 
-                //watermark
+                // watermark
                 $fileex = explode('/', $urlb);
                 $this->textWatermark(
                     end($fileex),
-                    'Date Register : ' . $request->get('submission_date'),
+                    'Date Register : '.$request->get('submission_date'),
                 );
                 $urlbr .=
                     str_replace(
                         'receipt_form_images',
                         'receipt_form_watermark_images',
                         $urlb,
-                    ) . '|';
+                    ).'|';
 
                 FileUpload::where('filename', $oldfile[0]->filename)->delete();
             }
@@ -2588,13 +2629,13 @@ class ReceiptFormController extends Controller
 
         $dataimg = ReceiptForm::find($request->get('fid'));
         if ($dataimg->file_att != null && $dataimg->file_att != '') {
-            $stu = $dataimg->file_att . '|' . $stu;
+            $stu = $dataimg->file_att.'|'.$stu;
         }
         $stu = rtrim($stu, '|');
 
         $datare = Receipt::where('recform_id', $request->get('fid'))->first();
         if ($datare && $datare->file_att != null && $datare->file_att != '') {
-            $urlbr = $datare->file_att . $urlbr;
+            $urlbr = $datare->file_att.$urlbr;
         }
         $urlbr = rtrim($urlbr, '|');
 
@@ -2646,7 +2687,7 @@ class ReceiptFormController extends Controller
 
         $receiptForm = ReceiptForm::find($request->get('fid'));
 
-        if (!$receiptForm) {
+        if (! $receiptForm) {
             return response()->json(['error' => 'Receipt Form not found'], 404);
         }
 
@@ -2658,7 +2699,7 @@ class ReceiptFormController extends Controller
         $new_email = $request->get('email');
 
         if ($old_email !== $new_email) {
-            Log::warning("Admin Email Change Detected", [
+            Log::warning('Admin Email Change Detected', [
                 'receipt_form_id' => $receiptForm->id,
                 'old_email' => $old_email,
                 'new_email' => $new_email,
@@ -2692,7 +2733,7 @@ class ReceiptFormController extends Controller
         // dd($request);
 
         if ($request->excel === '1') {
-            # code...
+            // code...
             return Excel::download(
                 new ExportExcel(
                     $request->get('sfield'),
@@ -2701,7 +2742,7 @@ class ReceiptFormController extends Controller
                 'ReceiptForm.xlsx',
             );
         } else {
-            # code...
+            // code...
             return Excel::download(
                 new ExportForm($request->get('sfield'), $request->get('table_records')),
                 'Registerform.xlsx',
@@ -2719,7 +2760,7 @@ class ReceiptFormController extends Controller
 
         $baseUrl = url('/');
         $receiptimg = preg_split(
-            '/(?=' . preg_quote($baseUrl, '/') . ')/',
+            '/(?='.preg_quote($baseUrl, '/').')/',
             $receiptimg,
             -1,
             PREG_SPLIT_NO_EMPTY,
@@ -2747,7 +2788,7 @@ class ReceiptFormController extends Controller
         $dataimg->update(['file_att' => $dataNew]);
         $receipt->update(['file_att' => $receiptNew]);
 
-        $link = url('/') . '/receipts_form/' . $id;
+        $link = url('/').'/receipts_form/'.$id;
 
         $html = '';
         $pic = explode('|', $dataNew);
@@ -2761,35 +2802,36 @@ class ReceiptFormController extends Controller
                 '; */
                 $this->textWatermark(
                     $pics,
-                    'Date Register : ' . $dataimg->submission_date,
+                    'Date Register : '.$dataimg->submission_date,
                 );
-                //$urlb = str_replace('receipt_form_images', 'receipt_form_watermark_images', $urlb);
+                // $urlb = str_replace('receipt_form_images', 'receipt_form_watermark_images', $urlb);
 
                 $html .=
-                    "<div><img src=\"" .
-                    url('/') .
-                    '/receipt_form_watermark_images/' .
-                    $pics .
+                    '<div><img src="'.
+                    url('/').
+                    '/receipt_form_watermark_images/'.
+                    $pics.
                     "\" height=\"80\"></div>&nbsp;&nbsp;
-                <a class='btn btn-xs btn-info btn-view' href=\"" .
-                    urldecode(url('/') . '/receipt_form_watermark_images/' . $pics) .
-                    "\" target=\"blank\"><i class='fa fa-search'></i></a><a href='#' class='btn btn-xs btn-danger btn-edit' id='getDeleteData' data-id2='" .
-                    $id2 .
-                    "' data-id='" .
-                    $pics .
+                <a class='btn btn-xs btn-info btn-view' href=\"".
+                    urldecode(url('/').'/receipt_form_watermark_images/'.$pics).
+                    "\" target=\"blank\"><i class='fa fa-search'></i></a><a href='#' class='btn btn-xs btn-danger btn-edit' id='getDeleteData' data-id2='".
+                    $id2.
+                    "' data-id='".
+                    $pics.
                     "'><i class='fa fa-trash'></i></a><br><br>";
             } else {
                 $html = '';
             }
         }
+
         return response()->json(['imgs' => $html]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ReceiptForm  $receiptForm
-     * @return \Illuminate\Http\Response
+     * @param  ReceiptForm  $receiptForm
+     * @return Response
      */
     public function destroy_func($id)
     {
@@ -2802,14 +2844,14 @@ class ReceiptFormController extends Controller
         if ($oldfile->generate == 0) {
             $arrl = explode('|', $oldfile->photo_att);
             if ($oldfile->photo_att) {
-                # code...
+                // code...
 
                 for ($i = 0; $i < count($arrl); $i++) {
-                    $path = public_path() . '/receipt_form_images/' . $arrl[$i];
+                    $path = public_path().'/receipt_form_images/'.$arrl[$i];
                     // echo "Attempting to delete: $path\n"; // Debug output
 
                     if (file_exists($path)) {
-                        if (!is_dir($path)) {
+                        if (! is_dir($path)) {
                             unlink($path);
                             // echo "Deleted: $path\n"; // Debug output
                         } else {
@@ -2822,15 +2864,15 @@ class ReceiptFormController extends Controller
             }
 
             if ($oldfile->sfield === '23') {
-                # code...
+                // code...
             } else {
-                # code...
+                // code...
 
                 if ($oldfile->file_att) {
-                    # code...
+                    // code...
                     $arrb = explode('|', $oldfile->file_att);
                     for ($j = 0; $j <= count($arrb) - 1; $j++) {
-                        $path = public_path() . '/receipt_form_images/' . $arrb[$j];
+                        $path = public_path().'/receipt_form_images/'.$arrb[$j];
                         if (file_exists($path)) {
                             unlink($path);
                         }
@@ -2838,7 +2880,7 @@ class ReceiptFormController extends Controller
                 }
             }
 
-            //print_r($oldfile);
+            // print_r($oldfile);
 
             ReceiptForm::where('id', $id)->delete();
         }
@@ -2855,6 +2897,7 @@ class ReceiptFormController extends Controller
         }
 
         $this->destroy_func($id);
+
         return ['success' => true, 'message' => 'Deleted Successfully'];
     }
 
@@ -2872,7 +2915,7 @@ class ReceiptFormController extends Controller
             $this->destroy_func($del_id);
         }
 
-        return redirect('/receipts_form/?sfield=' . $request->get('sfield'))->with(
+        return redirect('/receipts_form/?sfield='.$request->get('sfield'))->with(
             'success',
             'Deleted Successfully',
         );
