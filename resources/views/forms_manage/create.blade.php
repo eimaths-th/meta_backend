@@ -8,6 +8,12 @@
   />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link
+    rel="stylesheet"
+    href="{{ asset('plugins/daterangepicker/daterangepicker.css') }}"
+  />
+  <script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
+  <script src="{{ asset('plugins/daterangepicker/daterangepicker.js') }}"></script>
 @endsection
 
 @section ('content')
@@ -477,11 +483,13 @@
                         </div>
                         <div class="col-md-3">
                           <input
-                            type="date"
+                            type="text"
                             name="contest_date"
+                            id="contest_date"
                             class="form-control"
-                            placeholder="dd/mm/yyyy"
+                            placeholder="MM/DD/YYYY - MM/DD/YYYY"
                             value="{{ $data->contest_date }}"
+                            autocomplete="off"
                           />
                         </div>
                       </div>
@@ -2428,6 +2436,62 @@
   @include ('forms_manage.script')
   <script></script>
   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const contestDateInput = $('#contest_date');
+
+      if (!contestDateInput.length || typeof contestDateInput.daterangepicker !== 'function') {
+        return;
+      }
+
+      const dateFormat = 'MM/DD/YYYY';
+      const parseDate = function (value) {
+        const trimmedValue = (value || '').trim();
+        const supportedFormats = ['MM/DD/YYYY', 'YYYY-MM-DD', 'DD/MM/YYYY'];
+        const parsedDate = moment(trimmedValue, supportedFormats, true);
+
+        return parsedDate.isValid() ? parsedDate : null;
+      };
+      const parseRange = function (value) {
+        const dateParts = (value || '').split(/\s+-\s+/);
+        const startDate = parseDate(dateParts[0]);
+        const endDate = parseDate(dateParts[1] || dateParts[0]);
+
+        if (!startDate) {
+          return null;
+        }
+
+        return {
+          startDate: startDate,
+          endDate: endDate || startDate.clone()
+        };
+      };
+      const selectedRange = parseRange(contestDateInput.val());
+      const startDate = selectedRange ? selectedRange.startDate : moment();
+      const endDate = selectedRange ? selectedRange.endDate : startDate.clone();
+
+      contestDateInput.daterangepicker({
+        autoUpdateInput: false,
+        startDate: startDate,
+        endDate: endDate,
+        locale: {
+          format: dateFormat,
+          separator: ' - ',
+          applyLabel: 'Apply',
+          cancelLabel: 'Cancel'
+        }
+      });
+
+      if (selectedRange && contestDateInput.val()) {
+        contestDateInput.val(startDate.format(dateFormat) + ' - ' + endDate.format(dateFormat));
+      }
+
+      contestDateInput.on('apply.daterangepicker', function (event, picker) {
+        $(this).val(
+          picker.startDate.format(dateFormat) + ' - ' + picker.endDate.format(dateFormat)
+        );
+      });
+    });
+
     let indexoptionPackage = 0;
 
     document
