@@ -10,7 +10,6 @@
     type="text/javascript"
   ></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-  <script src="http://malsup.github.io/jquery.blockUI.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/jquery.inputmask.min.js"></script>
   <script
     src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"
@@ -1377,7 +1376,7 @@
 
         id = $(this).data('id');
         $.ajax({
-          url: 'receipts_form/edit/' + id,
+          url: '/receipts_form/edit/' + encodeURIComponent(id),
           method: 'GET',
           success: function (res) {
             console.log(res);
@@ -1460,6 +1459,13 @@
               editModal.appendTo(document.body);
             }
             editModal.modal('show');
+          },
+          error: function (xhr) {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            var response = xhr.responseJSON || {};
+            toastr.error(response.error || 'ไม่สามารถเปิดข้อมูลได้ กรุณาลองใหม่อีกครั้ง', {
+              timeOut: 5000
+            });
           }
         });
       });

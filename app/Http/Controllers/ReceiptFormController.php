@@ -2933,7 +2933,7 @@ class ReceiptFormController extends Controller
     private function renderAdminImageLists(ReceiptForm $form): array
     {
         $fileUrls = array_map(function ($filename) {
-            return url('/').'/receipt_form_watermark_images/'.$filename;
+            return $this->adminImageUrl('file_att', $filename);
         }, $this->parseImageList($form->file_att));
 
         return [
@@ -2953,15 +2953,7 @@ class ReceiptFormController extends Controller
 
         $html = '';
         foreach ($files as $filename) {
-            if ($field === 'file_att') {
-                $this->textWatermark(
-                    $filename,
-                    'Date Register : '.$form->submission_date,
-                );
-                $imageUrl = url('/').'/receipt_form_watermark_images/'.$filename;
-            } else {
-                $imageUrl = url('/').'/receipt_form_images/'.$filename;
-            }
+            $imageUrl = $this->adminImageUrl($field, $filename);
 
             $html .= '<div class="d-inline-block text-center mr-2 mb-3">'
                 .'<div><img src="'.e($imageUrl).'" height="80" alt=""></div>'
@@ -2975,6 +2967,18 @@ class ReceiptFormController extends Controller
         }
 
         return $html;
+    }
+
+    private function adminImageUrl(string $field, string $filename): string
+    {
+        if ($field === 'file_att') {
+            $watermarkedPath = public_path('receipt_form_watermark_images/'.$filename);
+            if (is_file($watermarkedPath)) {
+                return asset('receipt_form_watermark_images/'.$filename);
+            }
+        }
+
+        return asset('receipt_form_images/'.$filename);
     }
 
     private function imageManagerResponse(ReceiptForm $form, string $message)
