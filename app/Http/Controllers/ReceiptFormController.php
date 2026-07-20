@@ -1448,22 +1448,26 @@ class ReceiptFormController extends Controller
             // $form = ReceiptForm::find($id);
 
             // add more inages
-            $img = $request->get('img');
+            $img = $request->get('img', []);
+            $img = is_array($img) ? array_values(array_filter($img)) : [];
             $stu = '';
             $urlbr = '';
-            if ($img != null || $img != '') {
+            if (! empty($img)) {
                 foreach ($img as $fileb) {
                     // echo $filea;
                     // $stu .= $sss . "|";
-                    $oldfile = FileUpload::where('oldname', $fileb)->get();
-                    $stu .= $oldfile[0]->filename.'|';
+                    $oldfile = FileUpload::where('oldname', $fileb)->first();
+                    if (! $oldfile) {
+                        throw new \RuntimeException('Uploaded file reference is invalid.');
+                    }
+                    $stu .= $oldfile->filename.'|';
                     File::move(
-                        public_path().'/form_images/'.$oldfile[0]->filename,
-                        public_path().'/receipt_form_images/'.$oldfile[0]->filename,
+                        public_path().'/form_images/'.$oldfile->filename,
+                        public_path().'/receipt_form_images/'.$oldfile->filename,
                     );
 
                     // watermark
-                    $urlb = url('/').'/receipt_form_images/'.$oldfile[0]->filename;
+                    $urlb = url('/').'/receipt_form_images/'.$oldfile->filename;
 
                     // watermark
                     $fileex = explode('/', $urlb);
@@ -1479,7 +1483,7 @@ class ReceiptFormController extends Controller
                         ).'|';
                     // watermark
 
-                    FileUpload::where('filename', $oldfile[0]->filename)->delete();
+                    FileUpload::where('filename', $oldfile->filename)->delete();
                 }
             }
 
@@ -2476,70 +2480,14 @@ class ReceiptFormController extends Controller
         $this->check_permission();
         $data = ReceiptForm::find($id);
 
-        $photo_att = '';
-
-        if ($data->photo_att) {
-            $arrl = explode('|', $data->photo_att);
-            for ($i = 0; $i <= count($arrl) - 1; $i++) {
-                // $urla = "https://" . $arrl[$i];
-                $urla = url('/').'/receipt_form_images/'.$arrl[$i];
-                // $retu = $this->get_img_url($urla);
-                // if ($this->URL_exists($retu)) {
-                $photo_att .=
-                    '<div><img src="'.
-                    $urla.
-                    "\" height=\"80\"></div>&nbsp;&nbsp;
-                <a class='btn btn-xs btn-info btn-view' href=\"".
-                    urldecode($urla).
-                    "\" target=\"blank\"><i class='fa fa-search'></i></a>";
-                // }
-            }
-        }
-        // dd($urla);
-        // dd($data);
-
-        $file_att = '';
-        $furl = '';
-        if ($data->file_att) {
-            $arrf = explode('|', $data->file_att);
-            for ($j = 0; $j <= count($arrf) - 1; $j++) {
-                // $urla = "https://" . $arrl[$i];
-                $urlb = url('/').'/receipt_form_images/'.$arrf[$j];
-
-                // watermark
-                $fileex = explode('/', $urlb);
-                $this->textWatermark(
-                    end($fileex),
-                    'Date Register : '.$data->submission_date,
-                );
-                $urlb = str_replace(
-                    'receipt_form_images',
-                    'receipt_form_watermark_images',
-                    $urlb,
-                );
-
-                // $retu = $this->get_img_url($urla);
-                // if ($this->URL_exists($retu)) {
-                $file_att .=
-                    '<div><img src="'.
-                    $urlb.
-                    "\" height=\"80\"></div>&nbsp;&nbsp;
-                <a class='btn btn-xs btn-info btn-view' href=\"".
-                    urldecode($urlb).
-                    "\" target=\"blank\"><i class='fa fa-search'></i></a><a href='#' class='btn btn-xs btn-danger btn-edit' id='getDeleteData' data-id2='".
-                    $data->id.
-                    "' data-id='".
-                    $arrf[$j].
-                    "'><i class='fa fa-trash'></i></a><br><br>";
-                // }
-                $furl .= $urlb;
-            }
+        if (! $data) {
+            return response()->json(['error' => 'Receipt Form not found'], 404);
         }
 
-        $data->photo = $photo_att;
-        $data->file = $file_att;
-
-        $data->file_re = $furl;
+        $imageHtml = $this->renderAdminImageLists($data);
+        $data->photo = $imageHtml['photo'];
+        $data->file = $imageHtml['file'];
+        $data->file_re = $imageHtml['file_urls'];
 
         if ($data->generate == 0) {
             $data->rnumber = Receipt_RunningNumber::pre_generate(
@@ -2593,22 +2541,31 @@ class ReceiptFormController extends Controller
 
         $this->check_permission();
 
-        $img = $request->get('img');
+        $dataimg = ReceiptForm::find($request->get('fid'));
+        if (! $dataimg) {
+            return response()->json(['error' => 'Receipt Form not found'], 404);
+        }
+
+        $img = $request->get('img', []);
+        $img = is_array($img) ? array_values(array_filter($img)) : [];
         $stu = '';
         $urlbr = '';
 
-        if ($img != null || $img != '') {
+        if (! empty($img)) {
             foreach ($img as $fileb) {
                 // echo $filea;
                 // $stu .= $sss . "|";
-                $oldfile = FileUpload::where('oldname', $fileb)->get();
-                $stu .= $oldfile[0]->filename.'|';
+                $oldfile = FileUpload::where('oldname', $fileb)->first();
+                if (! $oldfile) {
+                    return response()->json(['errors' => ['Uploaded file reference is invalid.']], 422);
+                }
+                $stu .= $oldfile->filename.'|';
                 File::move(
-                    public_path().'/form_images/'.$oldfile[0]->filename,
-                    public_path().'/receipt_form_images/'.$oldfile[0]->filename,
+                    public_path().'/form_images/'.$oldfile->filename,
+                    public_path().'/receipt_form_images/'.$oldfile->filename,
                 );
 
-                $urlb = url('/').'/receipt_form_images/'.$oldfile[0]->filename;
+                $urlb = url('/').'/receipt_form_images/'.$oldfile->filename;
 
                 // watermark
                 $fileex = explode('/', $urlb);
@@ -2623,11 +2580,10 @@ class ReceiptFormController extends Controller
                         $urlb,
                     ).'|';
 
-                FileUpload::where('filename', $oldfile[0]->filename)->delete();
+                FileUpload::where('filename', $oldfile->filename)->delete();
             }
         }
 
-        $dataimg = ReceiptForm::find($request->get('fid'));
         if ($dataimg->file_att != null && $dataimg->file_att != '') {
             $stu = $dataimg->file_att.'|'.$stu;
         }
@@ -2750,9 +2706,298 @@ class ReceiptFormController extends Controller
         }
     }
 
+    public function uploadImages(Request $request, $id)
+    {
+        $this->check_permission();
+
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|in:photo_att,file_att',
+            'images' => 'required|array|min:1|max:5',
+            'images.*' => 'required|image|mimes:jpg,jpeg,png,webp|max:10240',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+
+        $field = $request->get('type');
+        $form = ReceiptForm::find($id);
+
+        if (! $form) {
+            return response()->json(['errors' => ['Receipt Form not found.']], 404);
+        }
+
+        $existingFiles = $this->parseImageList($form->{$field});
+        $uploadedFiles = $request->file('images', []);
+
+        if (count($existingFiles) + count($uploadedFiles) > 5) {
+            return response()->json([
+                'errors' => ['Each image section can contain a maximum of 5 files.'],
+            ], 422);
+        }
+
+        $targetDirectory = public_path('receipt_form_images');
+        if (! file_exists($targetDirectory)) {
+            mkdir($targetDirectory, 0777, true);
+        }
+
+        if ($field === 'file_att') {
+            $watermarkDirectory = public_path('receipt_form_watermark_images');
+            if (! file_exists($watermarkDirectory)) {
+                mkdir($watermarkDirectory, 0777, true);
+            }
+        }
+
+        $storedFiles = [];
+        DB::beginTransaction();
+
+        try {
+            $form = ReceiptForm::whereKey($id)->lockForUpdate()->firstOrFail();
+            $oldData = $form->toArray();
+            $existingFiles = $this->parseImageList($form->{$field});
+
+            if (count($existingFiles) + count($uploadedFiles) > 5) {
+                DB::rollBack();
+
+                return response()->json([
+                    'errors' => ['Each image section can contain a maximum of 5 files.'],
+                ], 422);
+            }
+
+            foreach ($uploadedFiles as $image) {
+                $extension = strtolower($image->getClientOriginalExtension());
+                $storedName = Str::uuid()->toString().'.'.$extension;
+                $image->move($targetDirectory, $storedName);
+                $storedFiles[] = $storedName;
+
+                if ($field === 'file_att') {
+                    $this->textWatermark(
+                        $storedName,
+                        'Date Register : '.$form->submission_date,
+                    );
+                }
+            }
+
+            $form->update([
+                $field => implode('|', array_merge($existingFiles, $storedFiles)),
+            ]);
+
+            if ($field === 'file_att') {
+                $this->syncReceiptPaymentImages($form->fresh());
+            }
+
+            LogActivity::modelEvent(
+                $form,
+                'receipt_form images updated',
+                $oldData,
+                $form->fresh()->toArray(),
+            );
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            foreach ($storedFiles as $storedFile) {
+                File::delete([
+                    public_path('receipt_form_images/'.$storedFile),
+                    public_path('receipt_form_watermark_images/'.$storedFile),
+                ]);
+            }
+
+            Log::error('Unable to upload receipt form images.', [
+                'receipt_form_id' => $id,
+                'type' => $field,
+                'message' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'errors' => ['Unable to upload images. Please try again.'],
+            ], 500);
+        }
+
+        return $this->imageManagerResponse(
+            ReceiptForm::findOrFail($id),
+            'Images uploaded successfully.',
+        );
+    }
+
+    public function deleteImage(Request $request, $id)
+    {
+        $this->check_permission();
+
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|in:photo_att,file_att',
+            'filename' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+
+        $field = $request->get('type');
+        $filename = $request->get('filename');
+
+        if ($filename !== basename($filename)) {
+            return response()->json(['errors' => ['Invalid filename.']], 422);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $form = ReceiptForm::whereKey($id)->lockForUpdate()->first();
+
+            if (! $form) {
+                DB::rollBack();
+
+                return response()->json(['errors' => ['Receipt Form not found.']], 404);
+            }
+
+            $oldData = $form->toArray();
+            $files = $this->parseImageList($form->{$field});
+            $fileIndex = array_search($filename, $files, true);
+
+            if ($fileIndex === false) {
+                DB::rollBack();
+
+                return response()->json(['errors' => ['Image not found.']], 404);
+            }
+
+            unset($files[$fileIndex]);
+            $form->update([$field => implode('|', array_values($files))]);
+
+            if ($field === 'file_att') {
+                $this->syncReceiptPaymentImages($form->fresh());
+            }
+
+            LogActivity::modelEvent(
+                $form,
+                'receipt_form image deleted',
+                $oldData,
+                $form->fresh()->toArray(),
+            );
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('Unable to delete receipt form image.', [
+                'receipt_form_id' => $id,
+                'type' => $field,
+                'filename' => $filename,
+                'message' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'errors' => ['Unable to delete image. Please try again.'],
+            ], 500);
+        }
+
+        File::delete(public_path('receipt_form_images/'.$filename));
+        if ($field === 'file_att') {
+            File::delete(public_path('receipt_form_watermark_images/'.$filename));
+        }
+
+        return $this->imageManagerResponse(
+            ReceiptForm::findOrFail($id),
+            'Image deleted successfully.',
+        );
+    }
+
+    private function parseImageList(?string $value): array
+    {
+        if (! $value) {
+            return [];
+        }
+
+        $files = array_map(static function ($file) {
+            return basename(trim($file));
+        }, explode('|', $value));
+
+        return array_values(array_unique(array_filter($files)));
+    }
+
+    private function syncReceiptPaymentImages(ReceiptForm $form): void
+    {
+        $receipt = Receipt::where('recform_id', $form->id)->first();
+
+        if (! $receipt) {
+            return;
+        }
+
+        $urls = array_map(function ($filename) {
+            return url('/').'/receipt_form_watermark_images/'.$filename;
+        }, $this->parseImageList($form->file_att));
+
+        $receipt->update(['file_att' => implode('|', $urls)]);
+    }
+
+    private function renderAdminImageLists(ReceiptForm $form): array
+    {
+        $fileUrls = array_map(function ($filename) {
+            return url('/').'/receipt_form_watermark_images/'.$filename;
+        }, $this->parseImageList($form->file_att));
+
+        return [
+            'photo' => $this->renderAdminImageList($form, 'photo_att'),
+            'file' => $this->renderAdminImageList($form, 'file_att'),
+            'file_urls' => implode('|', $fileUrls),
+        ];
+    }
+
+    private function renderAdminImageList(ReceiptForm $form, string $field): string
+    {
+        $files = $this->parseImageList($form->{$field});
+
+        if (empty($files)) {
+            return '<span class="text-muted">No image</span>';
+        }
+
+        $html = '';
+        foreach ($files as $filename) {
+            if ($field === 'file_att') {
+                $this->textWatermark(
+                    $filename,
+                    'Date Register : '.$form->submission_date,
+                );
+                $imageUrl = url('/').'/receipt_form_watermark_images/'.$filename;
+            } else {
+                $imageUrl = url('/').'/receipt_form_images/'.$filename;
+            }
+
+            $html .= '<div class="d-inline-block text-center mr-2 mb-3">'
+                .'<div><img src="'.e($imageUrl).'" height="80" alt=""></div>'
+                .'<div class="mt-1">'
+                .'<a class="btn btn-xs btn-info btn-view" href="'.e($imageUrl).'" target="_blank" rel="noopener" title="เปิดดูรูป" aria-label="เปิดดูรูป">'
+                .'<i class="fa fa-search"></i></a> '
+                .'<button type="button" class="btn btn-xs btn-danger btn-delete-image" '
+                .'data-image-type="'.e($field).'" data-filename="'.e($filename).'" title="ลบรูปนี้" aria-label="ลบรูปนี้">'
+                .'<i class="fa fa-trash"></i></button>'
+                .'</div></div>';
+        }
+
+        return $html;
+    }
+
+    private function imageManagerResponse(ReceiptForm $form, string $message)
+    {
+        $images = $this->renderAdminImageLists($form);
+
+        return response()->json([
+            'success' => $message,
+            'photo' => $images['photo'],
+            'file' => $images['file'],
+            'file_re' => $images['file_urls'],
+        ]);
+    }
+
     public function deleteImg($id, $id2)
     {
+        $this->check_permission();
         $dataimg = ReceiptForm::find($id2);
+
+        if (! $dataimg) {
+            return response()->json(['errors' => ['Receipt Form not found.']], 404);
+        }
+
         $receipt = Receipt::where('recform_id', $id2)->first();
 
         $img = $dataimg->file_att ? explode('|', $dataimg->file_att) : [];
@@ -2770,7 +3015,7 @@ class ReceiptFormController extends Controller
         $idFile = basename($id); // ชื่อไฟล์ เช่น abc.png
 
         foreach ($img as $key => $value) {
-            if (str_contains($value, $idFile)) {
+            if (basename($value) === $idFile) {
                 unset($img[$key]);
             }
         }
@@ -2786,7 +3031,9 @@ class ReceiptFormController extends Controller
         $receiptNew = implode('|', $receiptimg);
 
         $dataimg->update(['file_att' => $dataNew]);
-        $receipt->update(['file_att' => $receiptNew]);
+        if ($receipt) {
+            $receipt->update(['file_att' => $receiptNew]);
+        }
 
         $link = url('/').'/receipts_form/'.$id;
 

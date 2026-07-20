@@ -15158,6 +15158,9 @@ __webpack_require__.r(__webpack_exports__);
 
 document.addEventListener('DOMContentLoaded', function () {
   var calendarEl = document.getElementById('calendar');
+  if (!calendarEl) {
+    return;
+  }
   var calendar = new _fullcalendar_core__WEBPACK_IMPORTED_MODULE_0__.Calendar(calendarEl, {
     plugins: [_fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_1__["default"], _fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_2__["default"], _fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_3__["default"], _fullcalendar_list__WEBPACK_IMPORTED_MODULE_4__["default"]],
     headerToolbar: {

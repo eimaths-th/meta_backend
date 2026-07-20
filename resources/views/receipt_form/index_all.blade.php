@@ -935,74 +935,50 @@
 
               <div class="form-row text-center">
                 <div class="col-md-6">
-                  <label for="รูปภาพผู้สมัคร">รูปภาพผู้สมัคร</label>
+                  <label for="student-photo-files">รูปภาพผู้สมัคร</label>
                   <div class="form-group" id="sphoto"></div>
-                </div>
-                <div class="col-md-6">
-                  <label for="หลักฐานการชำระเงิน">หลักฐานการชำระเงิน:</label>
-                  <div class="form-group" id="satt"></div>
-                  <input type="hidden" id="AddFile" name="file" />
-                </div>
-              </div>
-
-              <div class="form-row form-focus" id="dropzone-photo">
-                <div class="col-md-12 col-sm-12">
-                  <a id="dphoto"></a>
-                  <div class="position-relative form-group">
-                    <label
-                      class="form-label form-label-top form-label-auto"
-                      for="att"
-                    >
-                      อัพโหลดหลักฐานการชำระเงิน
-                      <span class="form-required">*</span>
-                      <div style="width: 280px"></div>
-                    </label>
+                  <div class="form-group text-left">
                     <input
-                      type="text"
-                      id="drop1"
-                      name="drop1"
-                      class="form-control form_none"
-                      value=""
+                      type="file"
+                      class="form-control-file"
+                      id="student-photo-files"
+                      accept="image/jpeg,image/png,image/webp"
+                      multiple
                     />
-                    <div
-                      class="dropzone"
-                      id="my-awesome-dropzone"
-                      style="font-size: 1.5em"
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-primary mt-2 btn-upload-images"
+                      data-image-type="photo_att"
+                      data-input-id="student-photo-files"
                     >
-                      <div class="fallback"></div>
-                    </div>
-                    <label
-                      class="form-sub-label"
-                      style="min-height: 13px"
-                      aria-hidden="false"
-                    >
-                      Receipt Photo
-                    </label>
-                    <div
-                      id="dropzone-att-error"
-                      class="form-error-message"
-                      role="alert"
-                    >
-                      <img
-                        src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                        height="10"
-                      />
-                      <span class="error-navigation-message">
-                        This field is required.
-                      </span>
-                      <div class="form-error-arrow">
-                        <div class="form-error-arrow-inner"></div>
-                      </div>
-                    </div>
+                      <i class="fa fa-upload"></i> เพิ่ม/เปลี่ยนรูปผู้สมัคร
+                    </button>
+                    <small class="form-text text-muted">JPG, PNG หรือ WebP ไม่เกิน 10 MB ต่อไฟล์ (สูงสุด 5 รูป)</small>
                   </div>
                 </div>
-              </div>
-              <div
-                class="dropzonex dz-default dz-message"
-                id="dropzone_preview"
-                style="font-size: 1.5em"
-              >
-                <h3 class="dropzone-previews ui"></h3>
+                <div class="col-md-6">
+                  <label for="payment-proof-files">หลักฐานการชำระเงิน</label>
+                  <div class="form-group" id="satt"></div>
+                  <input type="hidden" id="AddFile" name="file" />
+                  <div class="form-group text-left">
+                    <input
+                      type="file"
+                      class="form-control-file"
+                      id="payment-proof-files"
+                      accept="image/jpeg,image/png,image/webp"
+                      multiple
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-primary mt-2 btn-upload-images"
+                      data-image-type="file_att"
+                      data-input-id="payment-proof-files"
+                    >
+                      <i class="fa fa-upload"></i> เพิ่ม/เปลี่ยนหลักฐาน
+                    </button>
+                    <small class="form-text text-muted">JPG, PNG หรือ WebP ไม่เกิน 10 MB ต่อไฟล์ (สูงสุด 5 รูป)</small>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1310,6 +1286,7 @@
             $('#fid').val(res.data.id);
             $('#sphoto').html(res.data.photo);
             $('#satt').html(res.data.file);
+            $('#student-photo-files, #payment-proof-files').val('');
             $('#rnumber').html(res.data.rnumber);
             if (res.data.generate == 1) {
               $('#SubmitEditForm').css('display', 'none');
@@ -1435,26 +1412,82 @@
         });
       });
 
-      let rid;
-      let rid2;
-      $(document).on('click', '#getDeleteData', function (e) {
+      function updateImageManager(response) {
+        $('#sphoto').html(response.photo);
+        $('#satt').html(response.file);
+        $('#AddFile').val(response.file_re || '');
+        $('#student-photo-files, #payment-proof-files').val('');
+      }
+
+      function showImageManagerError(xhr) {
+        var response = xhr.responseJSON || {};
+        var errors = response.errors || ['เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง'];
+        toastr.error(errors.join('<br>'), { timeOut: 5000 });
+      }
+
+      $(document).on('click', '.btn-upload-images', function (e) {
         e.preventDefault();
-        $('.alert-danger').html('');
-        $('.alert-danger').hide();
-        $('.alert-success').html('');
-        $('.alert-success').hide();
-        rid = $(this).data('id');
-        rid2 = $(this).data('id2');
-        if (confirm('Click OK to Delete?')) {
-          $.ajax({
-            url: 'receipt_form/delete_img/' + rid + '/' + rid2,
-            method: 'PUT',
-            // async : false,
-            success: function (res) {
-              $('#satt').html(res.imgs);
-            }
-          });
+        var button = $(this);
+        var input = document.getElementById(button.data('input-id'));
+        var formId = $('#fid').val();
+
+        if (!formId || !input || !input.files.length) {
+          toastr.warning('กรุณาเลือกรูปที่ต้องการอัปโหลด', { timeOut: 3000 });
+          return;
         }
+
+        var formData = new FormData();
+        Array.from(input.files).forEach(function (file) {
+          formData.append('images[]', file);
+        });
+        formData.append('type', button.data('image-type'));
+        formData.append('_token', token);
+
+        button.prop('disabled', true);
+        $.ajax({
+          url: '{{ url('/receipts_form') }}/' + formId + '/images',
+          method: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (response) {
+            updateImageManager(response);
+            toastr.success('อัปโหลดรูปเรียบร้อยแล้ว', { timeOut: 3000 });
+          },
+          error: showImageManagerError,
+          complete: function () {
+            button.prop('disabled', false);
+          }
+        });
+      });
+
+      $(document).on('click', '.btn-delete-image', function (e) {
+        e.preventDefault();
+        var button = $(this);
+        var formId = $('#fid').val();
+
+        if (!formId || !confirm('ยืนยันการลบรูปนี้?')) {
+          return;
+        }
+
+        button.prop('disabled', true);
+        $.ajax({
+          url: '{{ url('/receipts_form') }}/' + formId + '/images',
+          method: 'DELETE',
+          data: {
+            type: button.data('image-type'),
+            filename: button.data('filename'),
+            _token: token
+          },
+          success: function (response) {
+            updateImageManager(response);
+            toastr.success('ลบรูปเรียบร้อยแล้ว', { timeOut: 3000 });
+          },
+          error: function (xhr) {
+            button.prop('disabled', false);
+            showImageManagerError(xhr);
+          }
+        });
       });
 
       // $('#SubmitEditForm').click(function(e) {

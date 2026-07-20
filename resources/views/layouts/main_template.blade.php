@@ -67,7 +67,7 @@
   ></script>
   <script
     defer
-    src="{{ asset('architectui/assets/scripts/fullcalendar.js') }}"
+    src="{{ asset('architectui/assets/scripts/fullcalendar.js') }}?v=20260720-1"
   ></script>
   <script
     defer

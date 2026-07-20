@@ -25,6 +25,62 @@
     href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
   />
   <style>
+    .receipt-form-page {
+      width: 100%;
+      max-width: none;
+    }
+
+    .receipt-form-page > .app-page-title,
+    .receipt-form-page > #x_content {
+      width: 100%;
+      max-width: none;
+    }
+
+    .receipt-form-page #Listview_wrapper,
+    .receipt-form-page .dataTables_wrapper {
+      width: 100%;
+    }
+
+    .image-upload-panel {
+      display: none;
+      padding: 10px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 6px;
+      background: #f8fafc;
+    }
+
+    .image-section.is-editing .image-upload-panel {
+      display: block;
+    }
+
+    .image-section .btn-delete-image {
+      display: none;
+    }
+
+    .image-section.is-editing .btn-delete-image {
+      display: inline-block;
+    }
+
+    .image-upload-status {
+      display: inline-block;
+      margin-left: 6px;
+      font-size: 0.85rem;
+      vertical-align: middle;
+    }
+
+    .image-upload-status.is-uploading {
+      color: #b7791f;
+    }
+
+    .image-upload-status.is-success {
+      color: #198754;
+      font-weight: 600;
+    }
+
+    .image-upload-status.is-error {
+      color: #dc3545;
+    }
+
     input:required:focus:invalid ~ .form-error-message {
       display: block;
     }
@@ -389,7 +445,7 @@
       z-index: 1000;
     }
   </style>
-  <div class="row">
+  <div class="row receipt-form-page">
     @if ($message = Session::get('success'))
       <!--<div class="alert alert-success">
                                                             <p>{{ $message }}</p>
@@ -1000,74 +1056,72 @@
 
               <div class="form-row text-center">
                 <div class="col-md-6">
-                  <label for="รูปภาพผู้สมัคร">รูปภาพผู้สมัคร</label>
+                  <div class="image-section" data-image-section="photo_att">
+                    <div class="d-flex justify-content-center align-items-center mb-2">
+                      <span class="mb-0 mr-2">รูปภาพผู้สมัคร</span>
+                      <button type="button" class="btn btn-sm btn-outline-secondary btn-edit-images" data-image-section="photo_att">
+                        <i class="fa fa-pencil-alt"></i> แก้ไขรูปผู้สมัคร
+                      </button>
+                      <button type="button" class="btn btn-sm btn-outline-secondary ml-2 btn-finish-image-edit" data-image-section="photo_att" style="display: none;">
+                        <i class="fa fa-check"></i> เสร็จสิ้น
+                      </button>
+                    </div>
                   <div class="form-group" id="sphoto"></div>
+                  <div class="form-group text-left image-upload-panel">
+                    <input
+                      type="file"
+                      class="d-none image-file-input"
+                      id="student-photo-files"
+                      accept="image/jpeg,image/png,image/webp"
+                      multiple
+                      data-image-type="photo_att"
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-primary btn-choose-image"
+                      data-input-id="student-photo-files"
+                    >
+                      <i class="fa fa-image"></i> เลือกรูปผู้สมัคร
+                    </button>
+                    <span id="student-photo-files-status" class="image-upload-status text-muted">ยังไม่ได้เลือกรูป</span>
+                    <small class="form-text text-muted">เลือกรูปแล้วระบบจะอัปโหลดให้อัตโนมัติ · JPG, PNG หรือ WebP ไม่เกิน 10 MB ต่อไฟล์ (สูงสุด 5 รูป)</small>
+                  </div>
+                </div>
                 </div>
                 <div class="col-md-6">
-                  <label for="หลักฐานการชำระเงิน">หลักฐานการชำระเงิน:</label>
+                  <div class="image-section" data-image-section="file_att">
+                    <div class="d-flex justify-content-center align-items-center mb-2">
+                      <span class="mb-0 mr-2">หลักฐานการชำระเงิน</span>
+                      <button type="button" class="btn btn-sm btn-outline-secondary btn-edit-images" data-image-section="file_att">
+                        <i class="fa fa-pencil-alt"></i> แก้ไขหลักฐานการชำระเงิน
+                      </button>
+                      <button type="button" class="btn btn-sm btn-outline-secondary ml-2 btn-finish-image-edit" data-image-section="file_att" style="display: none;">
+                        <i class="fa fa-check"></i> เสร็จสิ้น
+                      </button>
+                    </div>
                   <div class="form-group" id="satt"></div>
                   <input type="hidden" id="AddFile" name="file" />
-                </div>
-              </div>
-
-              <div class="form-row form-focus" id="dropzone-photo">
-                <div class="col-md-12 col-sm-12">
-                  <a id="dphoto"></a>
-                  <div class="position-relative form-group">
-                    <label
-                      class="form-label form-label-top form-label-auto"
-                      for="att"
-                    >
-                      อัพโหลดหลักฐานการชำระเงิน
-                      <span class="form-required">*</span>
-                      <div style="width: 280px"></div>
-                    </label>
+                  <div class="form-group text-left image-upload-panel">
                     <input
-                      type="text"
-                      id="drop1"
-                      name="drop1"
-                      class="form-control form_none"
-                      value=""
+                      type="file"
+                      class="d-none image-file-input"
+                      id="payment-proof-files"
+                      accept="image/jpeg,image/png,image/webp"
+                      multiple
+                      data-image-type="file_att"
                     />
-                    <div
-                      class="dropzone"
-                      id="my-awesome-dropzone"
-                      style="font-size: 1.5em"
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-primary btn-choose-image"
+                      data-input-id="payment-proof-files"
                     >
-                      <div class="fallback"></div>
-                    </div>
-                    <label
-                      class="form-sub-label"
-                      style="min-height: 13px"
-                      aria-hidden="false"
-                    >
-                      Receipt Photo
-                    </label>
-                    <div
-                      id="dropzone-att-error"
-                      class="form-error-message"
-                      role="alert"
-                    >
-                      <img
-                        src="https://cdn.jotfor.ms/images/exclamation-octagon.png"
-                        height="10"
-                      />
-                      <span class="error-navigation-message">
-                        This field is required.
-                      </span>
-                      <div class="form-error-arrow">
-                        <div class="form-error-arrow-inner"></div>
-                      </div>
+                      <i class="fa fa-image"></i> เลือกหลักฐานการชำระเงิน
+                    </button>
+                    <span id="payment-proof-files-status" class="image-upload-status text-muted">ยังไม่ได้เลือกหลักฐาน</span>
+                    <small class="form-text text-muted">เลือกรูปแล้วระบบจะอัปโหลดให้อัตโนมัติ · JPG, PNG หรือ WebP ไม่เกิน 10 MB ต่อไฟล์ (สูงสุด 5 รูป)</small>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="dropzonex dz-default dz-message"
-                id="dropzone_preview"
-                style="font-size: 1.5em"
-              >
-                <h3 class="dropzone-previews ui"></h3>
               </div>
             </div>
           </div>
@@ -1359,6 +1413,11 @@
             $('#fid').val(res.data.id);
             $('#sphoto').html(res.data.photo);
             $('#satt').html(res.data.file);
+            $('#student-photo-files, #payment-proof-files').val('');
+            $('#student-photo-files-status').text('ยังไม่ได้เลือกรูป').removeClass('is-uploading is-success is-error');
+            $('#payment-proof-files-status').text('ยังไม่ได้เลือกหลักฐาน').removeClass('is-uploading is-success is-error');
+            setImageEditMode('photo_att', false);
+            setImageEditMode('file_att', false);
             $('#rnumber').html(res.data.rnumber);
             if (res.data.generate == 1) {
               $('#SubmitEditForm').css('display', 'none');
@@ -1394,7 +1453,13 @@
             }
 
             //console.log(res.data.photo);
-            $('#EditModal').modal('show');
+            // Keep the modal outside .app-main's stacking context so that the
+            // Bootstrap backdrop cannot render above the dialog.
+            var editModal = $('#EditModal');
+            if (!editModal.parent().is('body')) {
+              editModal.appendTo(document.body);
+            }
+            editModal.modal('show');
           }
         });
       });
@@ -1515,26 +1580,123 @@
         });
       });
 
-      let rid;
-      let rid2;
-      $(document).on('click', '#getDeleteData', function (e) {
-        e.preventDefault();
-        $('.alert-danger').html('');
-        $('.alert-danger').hide();
-        $('.alert-success').html('');
-        $('.alert-success').hide();
-        rid = $(this).data('id');
-        rid2 = $(this).data('id2');
-        if (confirm('Click OK to Delete?')) {
-          $.ajax({
-            url: 'receipt_form/delete_img/' + rid + '/' + rid2,
-            method: 'PUT',
-            // async : false,
-            success: function (res) {
-              $('#satt').html(res.imgs);
-            }
-          });
+      function updateImageManager(response, input) {
+        $('#sphoto').html(response.photo);
+        $('#satt').html(response.file);
+        $('#AddFile').val(response.file_re || '');
+        if (input) {
+          $(input).val('');
         }
+      }
+
+      function showImageManagerError(xhr) {
+        var response = xhr.responseJSON || {};
+        var errors = response.errors || ['เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง'];
+        toastr.error(errors.join('<br>'), { timeOut: 5000 });
+      }
+
+      function setImageUploadStatus(input, message, state) {
+        $('#' + input.id + '-status')
+          .text(message)
+          .removeClass('is-uploading is-success is-error')
+          .addClass(state ? 'is-' + state : '');
+      }
+
+      function uploadSelectedImages(input) {
+        var $input = $(input);
+        var chooseButton = $('.btn-choose-image[data-input-id="' + input.id + '"]');
+        var formId = $('#fid').val();
+
+        if (!formId || !input.files.length) {
+          setImageUploadStatus(input, 'กรุณาเลือกไฟล์ก่อน', 'error');
+          return;
+        }
+
+        var formData = new FormData();
+        Array.from(input.files).forEach(function (file) {
+          formData.append('images[]', file);
+        });
+        formData.append('type', $input.data('image-type'));
+        formData.append('_token', token);
+
+        chooseButton.prop('disabled', true);
+        setImageUploadStatus(input, 'กำลังอัปโหลด...', 'uploading');
+
+        $.ajax({
+          url: '{{ url('/receipts_form') }}/' + formId + '/images',
+          method: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (response) {
+            updateImageManager(response, input);
+            setImageUploadStatus(input, 'อัปโหลดเรียบร้อยแล้ว', 'success');
+            toastr.success('อัปโหลดรูปเรียบร้อยแล้ว', { timeOut: 3000 });
+          },
+          error: function (xhr) {
+            showImageManagerError(xhr);
+            setImageUploadStatus(input, 'อัปโหลดไม่สำเร็จ กรุณาลองใหม่', 'error');
+          },
+          complete: function () {
+            chooseButton.prop('disabled', false);
+          }
+        });
+      }
+
+      $(document).on('click', '.btn-choose-image', function (e) {
+        e.preventDefault();
+        var input = document.getElementById($(this).data('input-id'));
+        if (input) {
+          input.click();
+        }
+      });
+
+      $(document).on('change', '.image-file-input', function () {
+        uploadSelectedImages(this);
+      });
+
+      function setImageEditMode(imageType, editing) {
+        var section = $('.image-section[data-image-section="' + imageType + '"]');
+        section.toggleClass('is-editing', editing);
+        section.find('.btn-edit-images').toggle(!editing);
+        section.find('.btn-finish-image-edit').toggle(editing);
+      }
+
+      $(document).on('click', '.btn-edit-images', function () {
+        setImageEditMode($(this).data('image-section'), true);
+      });
+
+      $(document).on('click', '.btn-finish-image-edit', function () {
+        setImageEditMode($(this).data('image-section'), false);
+      });
+
+      $(document).on('click', '.btn-delete-image', function (e) {
+        e.preventDefault();
+        var button = $(this);
+        var formId = $('#fid').val();
+
+        if (!formId || !confirm('ยืนยันการลบรูปนี้?')) {
+          return;
+        }
+
+        button.prop('disabled', true);
+        $.ajax({
+          url: '{{ url('/receipts_form') }}/' + formId + '/images',
+          method: 'DELETE',
+          data: {
+            type: button.data('image-type'),
+            filename: button.data('filename'),
+            _token: token
+          },
+          success: function (response) {
+            updateImageManager(response);
+            toastr.success('ลบรูปเรียบร้อยแล้ว', { timeOut: 3000 });
+          },
+          error: function (xhr) {
+            button.prop('disabled', false);
+            showImageManagerError(xhr);
+          }
+        });
       });
 
       // $('#SubmitEditForm').click(function(e) {
