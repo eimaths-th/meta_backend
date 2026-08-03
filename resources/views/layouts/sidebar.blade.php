@@ -709,6 +709,12 @@
             </ul>
           @endif
         </li>
+        <li>
+          <a href="{{ route('email-audit-logs.index') }}">
+            <i class="metismenu-icon pe-7s-mail"></i>
+            Email Audit Logs
+          </a>
+        </li>
       @endif
       </ul>
     </div>

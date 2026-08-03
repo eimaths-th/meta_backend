@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\ExportExcel;
 use App\Exports\ExportForm;
 use App\Helpers\LogActivity;
@@ -30,6 +31,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
@@ -2379,7 +2381,9 @@ class ReceiptFormController extends Controller
             // บันทึก activity log — บันทึกข้อมูลจากฟอร์ม storeFormManage
             LogActivity::modelEvent($receiptForm, 'receipt_form store', null, $receiptForm->toArray());
 
-            return redirect('/form/completed/'.$route);
+            session()->put('completed_receipt_form_id', $receiptForm->id);
+
+            return redirect()->route('form.completed', ['sfield' => $route]);
         } else {
             return back()->with(
                 'error',
@@ -2455,10 +2459,177 @@ class ReceiptFormController extends Controller
 
     public function showFormManage(Request $request)
     {
-        //
-        return view('receipt_form.complete_formManage')->with([
-            'sfield' => $request->sfield,
-        ]);
+        $registrationId = (int) session('completed_receipt_form_id');
+        $registration = ReceiptForm::with('formManage')->find($registrationId);
+
+        if (! $registration || ! $this->registrationMatchesRoute($registration, $request->sfield)) {
+            abort(404);
+        }
+
+        $pdfUrl = URL::temporarySignedRoute(
+            'form.completed.pdf',
+            now()->addMinutes(30),
+            [
+                'sfield' => $request->sfield,
+                'receiptForm' => $registration->id,
+            ],
+        );
+
+        return view('receipt_form.complete_formManage', array_merge(
+            [
+                'sfield' => $request->sfield,
+                'pdfUrl' => $pdfUrl,
+            ],
+            $this->registrationViewData($registration),
+        ));
+    }
+
+    public function downloadCompletedPdf(Request $request, $sfield, ReceiptForm $receiptForm)
+    {
+        if (
+            (int) session('completed_receipt_form_id') !== (int) $receiptForm->id ||
+            ! $this->registrationMatchesRoute($receiptForm, $sfield)
+        ) {
+            abort(403);
+        }
+
+        $receiptForm->load('formManage');
+
+        $pdf = Pdf::loadView('receipt_form.completed_pdf', array_merge(
+            $this->registrationViewData($receiptForm, true),
+            ['sfield' => $sfield],
+        ))
+            ->setPaper('a4', 'portrait')
+            ->setOption([
+                'isRemoteEnabled' => false,
+                'defaultFont' => 'DejaVu Sans',
+            ]);
+
+        return $pdf->download('registration-'.$receiptForm->id.'.pdf');
+    }
+
+    private function registrationViewData(ReceiptForm $registration, bool $forPdf = false): array
+    {
+        return [
+            'registration' => $registration,
+            'awardValues' => $this->registrationAwardValues($registration->award),
+            'photoImages' => $this->registrationImageSources($registration->photo_att, $forPdf),
+            'fileImages' => $this->registrationImageSources($registration->file_att, $forPdf),
+            'logoImage' => $forPdf ? $this->localImageDataUri(public_path('images/logo_meta.png')) : null,
+        ];
+    }
+
+    private function registrationMatchesRoute(ReceiptForm $registration, $route): bool
+    {
+        $formManage = $registration->relationLoaded('formManage')
+            ? $registration->formManage
+            : $registration->formManage()->first();
+
+        if (! $formManage) {
+            return (string) $registration->sfield === (string) $route;
+        }
+
+        return in_array((string) $route, [
+            (string) $formManage->form_route,
+            (string) $formManage->slug,
+            (string) $formManage->sfield,
+        ], true);
+    }
+
+    private function registrationAwardValues($award): array
+    {
+        if (is_array($award)) {
+            return array_values(array_filter($award));
+        }
+
+        if (is_string($award) && $award !== '') {
+            $decoded = json_decode($award, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return array_values(array_filter($decoded));
+            }
+
+            return [$award];
+        }
+
+        return [];
+    }
+
+    private function registrationImageSources($value, bool $forPdf = false): array
+    {
+        if (is_array($value)) {
+            $files = $value;
+        } else {
+            $rawValue = trim((string) $value);
+            $decoded = json_decode($rawValue, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $files = $decoded;
+            } else {
+                $files = preg_split('/\s*\|\s*/', $rawValue, -1, PREG_SPLIT_NO_EMPTY);
+            }
+        }
+
+        return collect($files)
+            ->map(function ($file) use ($forPdf) {
+                $file = trim((string) $file);
+
+                if ($file === '') {
+                    return null;
+                }
+
+                $urlPath = parse_url($file, PHP_URL_PATH);
+                $relativePath = ltrim(str_replace('\\', '/', (string) ($urlPath ?: $file)), '/');
+                $filename = basename($relativePath);
+                $directories = [
+                    'receipt_form_images',
+                    'receipt_form_watermark_images',
+                    'form_images',
+                ];
+                $path = null;
+                $publicDirectory = null;
+
+                foreach ($directories as $directory) {
+                    $candidate = public_path($directory.'/'.$filename);
+                    if (file_exists($candidate)) {
+                        $path = $candidate;
+                        $publicDirectory = $directory;
+                        break;
+                    }
+                }
+
+                if (! $path && preg_match('#^(receipt_form_images|receipt_form_watermark_images|form_images)/(.+)$#', $relativePath, $matches)) {
+                    $candidate = public_path($matches[1].'/'.$matches[2]);
+                    if (file_exists($candidate)) {
+                        $path = $candidate;
+                        $publicDirectory = $matches[1];
+                    }
+                }
+
+                if (! $path) {
+                    return null;
+                }
+
+                if (! $forPdf) {
+                    return asset($publicDirectory.'/'.$filename);
+                }
+
+                return $this->localImageDataUri($path);
+            })
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    private function localImageDataUri(string $path): ?string
+    {
+        if (! file_exists($path)) {
+            return null;
+        }
+
+        $mime = mime_content_type($path) ?: 'application/octet-stream';
+
+        return 'data:'.$mime.';base64,'.base64_encode(file_get_contents($path));
     }
 
     public function show1(ReceiptForm $receiptForm)

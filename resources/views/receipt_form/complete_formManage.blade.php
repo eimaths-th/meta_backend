@@ -167,6 +167,77 @@
          padding: 40px 30px;
        }
 
+       .registration-details {
+         margin-top: 30px;
+         overflow: hidden;
+         border: 1px solid #e1e5ea;
+         border-radius: 14px;
+         background: #fff;
+         text-align: left;
+       }
+
+       .details-heading {
+         padding: 16px 20px;
+         color: #e65100;
+         font-size: 1.15rem;
+         font-weight: 700;
+         background: #fff3e0;
+         border-bottom: 1px solid #ffcc80;
+       }
+
+       .details-row {
+         display: flex;
+         border-bottom: 1px solid #edf0f2;
+       }
+
+       .details-label,
+       .details-value {
+         padding: 12px 16px;
+         line-height: 1.5;
+         overflow-wrap: anywhere;
+       }
+
+       .details-label {
+         flex: 0 0 36%;
+         color: #455a64;
+         font-weight: 600;
+         background: #f7f9fb;
+       }
+
+       .details-value {
+         flex: 1;
+         color: #263238;
+       }
+
+       .attachment-block {
+         padding: 16px;
+         border-top: 1px solid #edf0f2;
+       }
+
+       .attachment-list {
+         display: flex;
+         flex-wrap: wrap;
+         gap: 12px;
+         margin-top: 10px;
+       }
+
+       .attachment-image {
+         display: block;
+         max-width: 100%;
+         border: 1px solid #dee2e6;
+         border-radius: 8px;
+         object-fit: contain;
+         background: #f8f9fa;
+       }
+
+       .applicant-image {
+         max-height: 220px;
+       }
+
+       .document-image {
+         max-height: 320px;
+       }
+
        .info-box {
          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
          border-radius: 15px;
@@ -337,6 +408,20 @@
            padding: 30px 20px;
          }
 
+         .details-row {
+           display: block;
+         }
+
+         .details-label,
+         .details-value {
+           display: block;
+           padding: 9px 12px;
+         }
+
+         .details-label {
+           background: #f7f9fb;
+         }
+
          .btn-back {
            padding: 12px 30px;
            font-size: 1rem;
@@ -427,6 +512,8 @@
               </div>
             @endif
 
+            @include('receipt_form._registration_details')
+
             <div class="mt-4 text-center">
               <div
                 style="
@@ -451,6 +538,10 @@
 
           <!-- Footer -->
           <div class="success-footer text-center">
+            <a class="btn btn-back me-2" href="{{ $pdfUrl }}">
+              <i class="fas fa-file-pdf"></i>
+              Download PDF
+            </a>
             <a class="btn btn-back" href="{{ route('form.show', $sfield) }}">
               <i class="fas fa-arrow-left"></i>
               กลับไปที่ฟอร์ม

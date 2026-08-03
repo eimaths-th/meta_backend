@@ -3,6 +3,7 @@
 // namespace App\Http\Controllers;
 
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\EmailAuditLogController;
 use App\Http\Controllers\AppDownloadController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -228,6 +229,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('logs.index');
     Route::get('/activity-logs/filter', [ActivityLogController::class, 'filter'])->name('logs.filter');
     Route::get('/activity-logs/full-filter', [ActivityLogController::class, 'fullFilter'])->name('logs.full.filter');
+    Route::get('/email-audit-logs', [EmailAuditLogController::class, 'index'])->name('email-audit-logs.index');
 });
 
 //form
@@ -242,6 +244,9 @@ Route::post('/form/check-duplicate-registration', [ReceiptFormController::class,
 Route::post('/form/storeFormManage', [ReceiptFormController::class, 'storeFormManage'])->name('form.storeFormManage');
 Route::get('/form/complete/{sfield}', [ReceiptFormController::class, 'show'])->name('form.complete');
 Route::get('/form/completed/{sfield}', [ReceiptFormController::class, 'showFormManage'])->name('form.completed');
+Route::get('/form/completed/{sfield}/pdf/{receiptForm}', [ReceiptFormController::class, 'downloadCompletedPdf'])
+    ->middleware('signed')
+    ->name('form.completed.pdf');
 Route::get('/form/complete1', [ReceiptFormController::class, 'show1'])->name('form.complete1');
 
 Route::post('/form/store1', [ReceiptFormController::class, 'store1'])->name('form.store1');

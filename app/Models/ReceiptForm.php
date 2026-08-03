@@ -55,6 +55,11 @@ class ReceiptForm extends Model
         return $this->hasOne(Receipt::class, 'id', 'rec_id');
     }
 
+    public function emailAudits()
+    {
+        return $this->hasMany(EmailAuditLog::class, 'receipt_form_id');
+    }
+
     public function formPackage()
     {
         return $this->belongsTo(FormPakages::class, 'package');

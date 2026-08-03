@@ -3119,6 +3119,68 @@
       }
     };
 
+    function waitForPendingUploads() {
+      const dropzones = ['#my-awesome-dropzone', '#my-awesome-dropzone2']
+        .map(function (selector) {
+          const element = document.querySelector(selector);
+          if (!element || !window.Dropzone) {
+            return null;
+          }
+
+          try {
+            return Dropzone.forElement(element);
+          } catch (error) {
+            return null;
+          }
+        })
+        .filter(Boolean);
+
+      const pendingDropzones = dropzones.filter(function (dropzone) {
+        return (
+          dropzone.getQueuedFiles().length > 0 ||
+          dropzone.getUploadingFiles().length > 0
+        );
+      });
+
+      if (!pendingDropzones.length) {
+        return Promise.resolve();
+      }
+
+      pendingDropzones.forEach(function (dropzone) {
+        if (dropzone.getQueuedFiles().length) {
+          dropzone.processQueue();
+        }
+      });
+
+      return new Promise(function (resolve, reject) {
+        const startedAt = Date.now();
+        const poll = setInterval(function () {
+          const hasError = pendingDropzones.some(function (dropzone) {
+            return dropzone.files.some(function (file) {
+              return file.status === Dropzone.ERROR;
+            });
+          });
+          const isPending = pendingDropzones.some(function (dropzone) {
+            return (
+              dropzone.getQueuedFiles().length > 0 ||
+              dropzone.getUploadingFiles().length > 0
+            );
+          });
+
+          if (hasError) {
+            clearInterval(poll);
+            reject(new Error('File upload failed'));
+          } else if (!isPending) {
+            clearInterval(poll);
+            resolve();
+          } else if (Date.now() - startedAt > 120000) {
+            clearInterval(poll);
+            reject(new Error('File upload timed out'));
+          }
+        }, 100);
+      });
+    }
+
     if ($.validator) {
       const originalCheck = $.validator.prototype.check;
       $.validator.prototype.check = function (element) {
@@ -3246,10 +3308,11 @@
           return false;
         }
 
-        // Use AJAX to submit form with better error handling
-        var formData = new FormData(form);
+        const submitWithUploadedFiles = function () {
+          // Use AJAX to submit form with better error handling
+          var formData = new FormData(form);
 
-        $.ajax({
+          $.ajax({
           url: $(form).attr('action'),
           type: 'POST',
           data: formData,
@@ -3422,6 +3485,17 @@
             }
           }
         });
+
+          return false; // Prevent default form submission
+        };
+
+        waitForPendingUploads()
+          .then(submitWithUploadedFiles)
+          .catch(function () {
+            $('#loader-container').hide();
+            $('#send_data').attr('disabled', false);
+            alert('ไม่สามารถอัปโหลดรูปได้ กรุณารอให้ไฟล์อัปโหลดเสร็จแล้วลองใหม่อีกครั้ง');
+          });
 
         return false; // Prevent default form submission
       }
