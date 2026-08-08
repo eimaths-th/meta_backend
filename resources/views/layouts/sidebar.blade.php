@@ -343,6 +343,7 @@
           <li>
             <a
               href="{{ route('receipts_form', ['sfield' => $formManage->sfield]) }}"
+              title="{{ $formManage->form_name }}"
             >
               <i class="metismenu-icon"></i>
               {{ $formManage->form_name }}
@@ -556,6 +557,7 @@
             <li>
               <a
                 href="{{ route('receipts', ['sfield' => $formManage->sfield]) }}"
+                title="{{ $formManage->form_name }}"
               >
                 <i class="metismenu-icon"></i>
                 {{ $formManage->form_name }}

@@ -553,35 +553,109 @@ class ReceiptFormController extends Controller
 
     public function fileStore(Request $request)
     {
-        // dd($request);
-
         $validator = Validator::make($request->all(), [
-            'file.*' => 'required', // max:10240 is 10 MB
-            // 'file.*' => 'required|mimes:jpeg,png,pdf,doc,docx|max:10240', // max:10240 is 10 MB
+            'file' => 'required|array|min:1',
+            'file.*' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'upload_type' => 'nullable|in:photo,slip',
+        ], [
+            'file.required' => 'กรุณาเลือกไฟล์รูปภาพ',
+            'file.*.image' => 'ไฟล์ที่อัปโหลดต้องเป็นรูปภาพเท่านั้น',
+            'file.*.mimes' => 'รองรับเฉพาะไฟล์ JPG, JPEG, PNG และ WEBP',
+            'file.*.max' => 'รูปภาพหลังปรับขนาดต้องมีขนาดไม่เกิน 5 MB',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()->first()], 400);
+            return response()->json(['error' => $validator->errors()->first()], 422);
         }
-        $filecount = count($request->file('file'));
 
+        $uploadType = $request->input('upload_type', 'slip');
+        $files = $request->file('file', []);
+        $targetDirectory = public_path('form_images');
+        $storedFiles = [];
         $newname = '';
-        for ($i = 0; $i <= $filecount - 1; $i++) {
-            $image = $request->file('file')[$i];
-            $imageName = $image->getClientOriginalName();
-            $oldfile = FileUpload::where('oldname', $imageName)->get();
-            if (! is_array($oldfile)) {
-                $newname = Str::random(40).'_'.$imageName;
-                $image->move(public_path('form_images'), $newname);
+
+        if (! file_exists($targetDirectory)) {
+            mkdir($targetDirectory, 0777, true);
+        }
+
+        try {
+            foreach ($files as $uploadedImage) {
+                $originalName = $uploadedImage->getClientOriginalName();
+                $extension = $this->registrationImageExtension($uploadedImage->getMimeType());
+                $newname = Str::random(40).'.'.$extension;
+                $targetPath = $targetDirectory.DIRECTORY_SEPARATOR.$newname;
+
+                $this->resizeRegistrationImage(
+                    $uploadedImage->getRealPath(),
+                    $targetPath,
+                    $uploadType,
+                    $extension,
+                );
+                $storedFiles[] = $newname;
 
                 $imageUpload = new FileUpload;
                 $imageUpload->filename = $newname;
-                $imageUpload->oldname = $imageName;
+                $imageUpload->oldname = $originalName;
                 $imageUpload->save();
+
             }
+        } catch (\Throwable $e) {
+            foreach ($storedFiles as $storedFile) {
+                File::delete($targetDirectory.DIRECTORY_SEPARATOR.$storedFile);
+                FileUpload::where('filename', $storedFile)->delete();
+            }
+
+            Log::error('Unable to resize registration image.', [
+                'upload_type' => $uploadType,
+                'message' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'error' => 'ไม่สามารถประมวลผลรูปภาพได้ กรุณาเลือกไฟล์ใหม่แล้วลองอีกครั้ง',
+            ], 422);
         }
 
         return response()->json(['success' => $newname]);
+    }
+
+    private function resizeRegistrationImage(
+        string $sourcePath,
+        string $targetPath,
+        string $uploadType,
+        string $extension,
+    ): void {
+        $maxDimension = $uploadType === 'photo' ? 1600 : 2000;
+        $quality = $uploadType === 'photo' ? 85 : 90;
+        $image = Image::make($sourcePath);
+
+        if (function_exists('exif_read_data')) {
+            $image->orientate();
+        }
+
+        $image->resize($maxDimension, $maxDimension, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+
+        if ($extension === 'jpg') {
+            $image->encode('jpg', $quality);
+        } elseif ($extension === 'webp') {
+            $image->encode('webp', $quality);
+        } else {
+            $image->encode('png');
+        }
+
+        $image->save($targetPath);
+        $image->destroy();
+    }
+
+    private function registrationImageExtension(?string $mimeType): string
+    {
+        return match ($mimeType) {
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+            default => 'jpg',
+        };
     }
 
     public function fileStoreAPI(Request $request)

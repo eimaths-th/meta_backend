@@ -12476,6 +12476,8 @@ button,
     border-radius: 0.25rem;
     color: #343a40;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     transition: all 0.2s;
     margin: 0.1rem 0;
 }

@@ -2852,6 +2852,9 @@
       headers: {
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
       },
+      params: {
+        upload_type: 'photo'
+      },
       paramName: 'file', // ชื่อไฟล์ปลายทางเมื่อ upload แบบ mutiple จะเป็น array
       autoProcessQueue: true, // ใส่เพื่อไม่ให้อัพโหลดทันที หลังจากเลือกไฟล์
       uploadMultiple: true, // อัพโหลดไฟล์หลายไฟล์
@@ -2862,7 +2865,11 @@
         this.addFile(file);
       },
       addRemoveLinks: true, // อนุญาตให้ลบไฟล์ก่อนการอัพโหลด
-      maxFilesize: 5, // MB
+      resizeWidth: 1600,
+      resizeHeight: 1600,
+      resizeQuality: 0.85,
+      resizeMethod: 'contain',
+      resizeMimeType: 'image/jpeg',
       previewsContainer: '#dropzone_preview', // ระบุ element เป้าหลาย
       //previewTemplate: $('#template-preview').html(),
       dictRemoveFile: 'Remove', // ชื่อ ปุ่ม remove
@@ -2874,8 +2881,8 @@
       dictCancelUpload: 'Cancel', // ชื่อ ปุ่ม ยกเลิก
       dictDefaultMessage:
         "<img height='60' src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNsug8XTE5KVJEMECVvm8p43BZTdvZExoQ9Q&usqp=CAU'><br><font size='3'>Browse File</font>", // ข้อความบนพื้นที่แสดงรูปจะแสดงหลังจากโหลดเพจเสร็จ
-      dictFileTooBig: 'ไม่อนุญาตให้อัพโหลดไฟล์เกิน 2 MB', //ข้อความแสดงเมื่อเลือกไฟล์ขนาดเกินที่กำหนด
-      acceptedFiles: 'image/*', // อนุญาตให้เลือกไฟล์ประเภทรูปภาพได้
+      dictFileTooBig: 'ระบบไม่สามารถประมวลผลรูปภาพนี้ได้ กรุณาเลือกไฟล์ใหม่',
+      acceptedFiles: 'image/jpeg,image/png,image/webp', // อนุญาตเฉพาะชนิดไฟล์ที่ฝั่ง Server รองรับ
 
       // The setting up of the dropzone
       init: function () {
@@ -2913,7 +2920,9 @@
                 console.log('success: ' + data);
                 var element = document.getElementById('infinite');
                 var child = document.getElementById(name);
-                element.removeChild(child);
+                if (element && child && child.parentNode === element) {
+                  element.removeChild(child);
+                }
                 if (!document.getElementsByName('imgFiles[]').length) {
                   $('#dropzone_preview').css('display', 'none');
                   $('#dropzone-photo').addClass('form-focus-error');
@@ -2933,15 +2942,10 @@
             this.removeFile(file);
           })
           .on('complete', function (file) {
-            let val = file.accepted;
-            if (file.accepted == true) {
-              obj = JSON.parse(file.xhr.response);
-              //file.previewElement.id = obj.success;
-              console.log(obj.success);
-              //$('#infinite').append("<input type='text' id='" + obj.success +
-              //    "' class='form_none' name='imgFiles[]' value='" + obj.success + "'/>");
+            if (file.status !== Dropzone.SUCCESS) {
+              return;
             }
-            let val1 = file.name;
+
             $('#dropzone_preview').css('display', 'block');
             $('#dropzone-photo').removeClass('form-focus-error');
             $('#dropzone-photo').find('.form-error-message').css('display', 'none');
@@ -2955,8 +2959,17 @@
             //console.log(response); // console should show the ID you pointed to
             // do stuff with file.id ...
           })
-          .on('error', function (file) {
-            alert('ไม่อนุญาตให้อัพโหลดไฟล์เกิน 5 MB');
+          .on('error', function (file, message, xhr) {
+            let errorMessage = 'ไม่สามารถประมวลผลรูปภาพได้ กรุณาตรวจสอบไฟล์แล้วลองใหม่อีกครั้ง';
+            if (xhr && xhr.responseText) {
+              try {
+                errorMessage = JSON.parse(xhr.responseText).error || errorMessage;
+              } catch (error) {}
+            } else if (typeof message === 'string') {
+              errorMessage = message;
+            }
+
+            alert(errorMessage);
             while (imgFiles.length > 0) {
               imgFiles[0].parentNode.removeChild(imgFiles[0]);
             }
@@ -2988,6 +3001,9 @@
       headers: {
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
       },
+      params: {
+        upload_type: 'slip'
+      },
       paramName: 'file', // ชื่อไฟล์ปลายทางเมื่อ upload แบบ mutiple จะเป็น array
       autoProcessQueue: true, // ใส่เพื่อไม่ให้อัพโหลดทันที หลังจากเลือกไฟล์
       uploadMultiple: true, // อัพโหลดไฟล์หลายไฟล์
@@ -2998,7 +3014,11 @@
         this.addFile(file);
       },
       addRemoveLinks: true, // อนุญาตให้ลบไฟล์ก่อนการอัพโหลด
-      maxFilesize: 5, // MB
+      resizeWidth: 2000,
+      resizeHeight: 2000,
+      resizeQuality: 0.9,
+      resizeMethod: 'contain',
+      resizeMimeType: 'image/jpeg',
       renameFile: function (file) {
         let newName = new Date().getTime() + '_' + file.name;
         file.newName = newName;
@@ -3010,8 +3030,8 @@
       dictCancelUpload: 'Cancel', // ชื่อ ปุ่ม ยกเลิก
       dictDefaultMessage:
         "<img height='60' src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNsug8XTE5KVJEMECVvm8p43BZTdvZExoQ9Q&usqp=CAU'><br><font size='3'>Browse File</font>", // ข้อความบนพื้นที่แสดงรูปจะแสดงหลังจากโหลดเพจเสร็จ
-      dictFileTooBig: 'ไม่อนุญาตให้อัพโหลดไฟล์เกิน 2 MB', //ข้อความแสดงเมื่อเลือกไฟล์ขนาดเกินที่กำหนด
-      acceptedFiles: 'image/*', // อนุญาตให้เลือกไฟล์ประเภทรูปภาพได้
+      dictFileTooBig: 'ระบบไม่สามารถประมวลผลรูปภาพนี้ได้ กรุณาเลือกไฟล์ใหม่',
+      acceptedFiles: 'image/jpeg,image/png,image/webp', // อนุญาตเฉพาะชนิดไฟล์ที่ฝั่ง Server รองรับ
       // The setting up of the dropzone
       init: function () {
         myDropzone = this;
@@ -3048,7 +3068,9 @@
                 console.log('success: ' + data);
                 var element = document.getElementById('infinite');
                 var child = document.getElementById(name);
-                element.removeChild(child);
+                if (element && child && child.parentNode === element) {
+                  element.removeChild(child);
+                }
                 if (!document.getElementsByName('imgFiles2[]').length) {
                   //alert();
                   $('#dropzone_preview2').css('display', 'none');
@@ -3069,16 +3091,10 @@
             this.removeFile(file);
           })
           .on('complete', function (file) {
-            let val = file.accepted;
-            if (file.accepted == true) {
-              obj = JSON.parse(file.xhr.response);
-              //file.previewElement.id = obj.success;
-              console.log(obj.success);
-              //alert(obj.success);
-              //$('#infinite').append("<input type='text' id='" + obj.success +
-              //   "' class='form_none' name='imgFiles2[]' value='" + obj.success + "'/>");
+            if (file.status !== Dropzone.SUCCESS) {
+              return;
             }
-            let val1 = file.name;
+
             $('#dropzone_preview2').css('display', 'block');
             $('#dropzone-att').removeClass('form-focus-error');
             $('#dropzone-att').find('.form-error-message').css('display', 'none');
@@ -3092,7 +3108,16 @@
             //console.log(response); // console should show the ID you pointed to
             // do stuff with file.id ...
           })
-          .on('error', function (file) {
+          .on('error', function (file, message, xhr) {
+            let errorMessage = 'ไม่สามารถประมวลผลรูปภาพได้ กรุณาตรวจสอบไฟล์แล้วลองใหม่อีกครั้ง';
+            if (xhr && xhr.responseText) {
+              try {
+                errorMessage = JSON.parse(xhr.responseText).error || errorMessage;
+              } catch (error) {}
+            } else if (typeof message === 'string') {
+              errorMessage = message;
+            }
+
             this.removeFile(file);
             // this.removeFile(file);
             console.log(file);
@@ -3101,7 +3126,7 @@
               imgFiles2[0].parentNode.removeChild(imgFiles2[0]);
             }
             // document.getElementsByName('imgFiles2[]').length = 0;
-            alert('ไม่อนุญาตให้อัพโหลดไฟล์เกิน 5 MB');
+            alert(errorMessage);
           });
         /*this.on("addedfile", function(file) {
 
