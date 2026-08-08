@@ -2379,7 +2379,17 @@ class ReceiptFormController extends Controller
 
         if ($receiptForm) {
             // บันทึก activity log — บันทึกข้อมูลจากฟอร์ม storeFormManage
-            LogActivity::modelEvent($receiptForm, 'receipt_form store', null, $receiptForm->toArray());
+            try {
+                LogActivity::modelEvent($receiptForm, 'receipt_form store', null, $receiptForm->toArray());
+            } catch (\Throwable $e) {
+                // The registration is already saved. A non-critical audit-log
+                // failure must not make the customer see a false 500 error.
+                Log::error('Activity log failed after receipt form was saved.', [
+                    'receipt_form_id' => $receiptForm->id,
+                    'route' => $route,
+                    'message' => $e->getMessage(),
+                ]);
+            }
 
             session()->put('completed_receipt_form_id', $receiptForm->id);
 
