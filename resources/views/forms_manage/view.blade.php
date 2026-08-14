@@ -2,21 +2,6 @@
 
 @section ('style')
   @include ('forms_manage.css')
-  <!-- Select2 CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
-    rel="stylesheet"
-  />
-  <!-- Font Awesome for Icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-  />
-  <!-- Google Fonts -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
   <style>
     /* Modern Educational Theme Styles - Orange Palette */
     :root {
@@ -804,7 +789,6 @@
             id="infinite"
             method="POST"
             action="{{ route('form.storeFormManage') }}"
-            onsubmit="return check_input();"
           >
             @csrf
             <div class="card-body">
@@ -1168,6 +1152,9 @@
                             value=""
                             maxlength="50"
                             minlength="2"
+                            autocomplete="given-name"
+                            autocapitalize="words"
+                            spellcheck="false"
                             @if ($isFieldRequired('student_first_name')) required @endif
                           />
                           <small
@@ -1222,6 +1209,9 @@
                             id="middlename"
                             value=""
                             maxlength="50"
+                            autocomplete="additional-name"
+                            autocapitalize="words"
+                            spellcheck="false"
                             @if ($isFieldRequired('student_middle_name')) required @endif
                           />
                           <label
@@ -1264,6 +1254,9 @@
                           value=""
                           maxlength="50"
                           minlength="2"
+                          autocomplete="family-name"
+                          autocapitalize="words"
+                          spellcheck="false"
                           @if ($isFieldRequired('student_last_name')) required @endif
                         />
                         <small
@@ -1306,6 +1299,9 @@
                             value=""
                             maxlength="50"
                             minlength="1"
+                            autocomplete="off"
+                            autocapitalize="words"
+                            spellcheck="false"
                             @if ($isFieldRequired('student_nick_name')) required @endif
                           />
                           <label
@@ -1833,12 +1829,14 @@
                             <div style="width: 270px"></div>
                           </label>
                           <input
-                            type="text"
+                            type="tel"
                             class="AddPhone form-control"
                             name="phone"
                             id="phone"
                             value=""
                             maxlength="20"
+                            inputmode="tel"
+                            autocomplete="tel"
                             @if ($isFieldRequired('parent_phone')) required @endif
                           />
                           <label
@@ -1895,6 +1893,10 @@
                           id="email"
                           value=""
                           maxlength="70"
+                          inputmode="email"
+                          autocomplete="email"
+                          autocapitalize="none"
+                          spellcheck="false"
                           @if ($isFieldRequired('contact_email')) required @endif
                         />
                         <small id="email-msg" style="color: red"></small>
@@ -1952,12 +1954,12 @@
                           <div style="width: 280px"></div>
                         </label>
                         <input
-                          type="text"
+                          type="hidden"
                           id="drop1"
                           name="drop1"
                           class="form-control form_none"
                           value=""
-                          @if ($isFieldRequired('student_photo')) required @endif
+                          data-upload-required="{{ $isFieldRequired('student_photo') ? '1' : '0' }}"
                         />
                         <div
                           class="dropzone"
@@ -2036,12 +2038,12 @@
                           <div style="width: 280px"></div>
                         </label>
                         <input
-                          type="text"
+                          type="hidden"
                           id="drop2"
                           name="drop2"
                           class="form-control form_none"
                           value=""
-                          @if ($isFieldRequired('student_slip_photo')) required @endif
+                          data-upload-required="{{ $isFieldRequired('student_slip_photo') ? '1' : '0' }}"
                         />
                         <div
                           class="dropzone"
@@ -2435,11 +2437,12 @@
 
     let timeout;
 
-    emailInput.addEventListener('input', function () {
-      clearTimeout(timeout);
+    if (emailInput && msg) {
+      emailInput.addEventListener('input', function () {
+        clearTimeout(timeout);
 
-      timeout = setTimeout(() => {
-        const email = emailInput.value.trim();
+        timeout = setTimeout(() => {
+          const email = emailInput.value.trim();
 
         if (email.length < 5) {
           msg.textContent = '';
@@ -2480,8 +2483,9 @@
             ')';
           msg.style.color = 'red';
         }
-      }, 500);
-    });
+        }, 500);
+      });
+    }
 
     const duplicateCheckUrl = '{{ route('form.checkDuplicateRegistration') }}';
     const duplicateToken = '{{ csrf_token() }}';
@@ -2493,6 +2497,28 @@
     };
     let duplicateNameTimeout;
     let duplicateEmailTimeout;
+    let duplicateNameSequence = 0;
+    let duplicateEmailSequence = 0;
+
+    function trimmedFieldValue(selector) {
+      const value = $(selector).val();
+
+      return typeof value === 'string' ? value.trim() : '';
+    }
+
+    function normalizeEnglishNameFields() {
+      ['firstname', 'middlename', 'lastname', 'nickname'].forEach(function (id) {
+        const input = document.getElementById(id);
+        if (!input) {
+          return;
+        }
+
+        input.value = input.value
+          .replace(/[\u200B-\u200D\u2060\uFEFF]/g, '')
+          .replace(/[\s\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000]+/g, ' ')
+          .trim();
+      });
+    }
 
     function setDuplicateSubmitState() {
       const shouldDisable =
@@ -2530,6 +2556,8 @@
     }
 
     function duplicatePayload(checkType) {
+      normalizeEnglishNameFields();
+
       return {
         _token: duplicateToken,
         routeName: $('#routeName').val(),
@@ -2542,8 +2570,9 @@
     }
 
     function checkNameDuplicate() {
-      const firstname = $('#firstname').val().trim();
-      const lastname = $('#lastname').val().trim();
+      const firstname = trimmedFieldValue('#firstname');
+      const lastname = trimmedFieldValue('#lastname');
+      const requestSequence = ++duplicateNameSequence;
 
       clearTimeout(duplicateNameTimeout);
 
@@ -2559,6 +2588,10 @@
       duplicateNameTimeout = setTimeout(function () {
         $.post(duplicateCheckUrl, duplicatePayload('name'))
           .done(function (response) {
+            if (requestSequence !== duplicateNameSequence) {
+              return;
+            }
+
             if (response.duplicate && response.field === 'name') {
               setNameDuplicateMessage(response.message);
               return;
@@ -2568,6 +2601,10 @@
             checkEmailDuplicate();
           })
           .always(function () {
+            if (requestSequence !== duplicateNameSequence) {
+              return;
+            }
+
             duplicateState.namePending = false;
             setDuplicateSubmitState();
           });
@@ -2575,7 +2612,8 @@
     }
 
     function checkEmailDuplicate() {
-      const email = $('#email').val().trim();
+      const email = trimmedFieldValue('#email');
+      const requestSequence = ++duplicateEmailSequence;
 
       clearTimeout(duplicateEmailTimeout);
 
@@ -2591,6 +2629,10 @@
       duplicateEmailTimeout = setTimeout(function () {
         $.post(duplicateCheckUrl, duplicatePayload('email'))
           .done(function (response) {
+            if (requestSequence !== duplicateEmailSequence) {
+              return;
+            }
+
             if (response.duplicate && response.field === 'email') {
               setEmailDuplicateMessage(response.message);
               return;
@@ -2599,6 +2641,10 @@
             setEmailDuplicateMessage('');
           })
           .always(function () {
+            if (requestSequence !== duplicateEmailSequence) {
+              return;
+            }
+
             duplicateState.emailPending = false;
             setDuplicateSubmitState();
           });
@@ -2843,6 +2889,79 @@
     let imgFiles = document.getElementsByName('imgFiles[]');
     let imgFiles2 = document.getElementsByName('imgFiles2[]');
 
+    function registrationUploadName(file) {
+      const extensionMatch = (file.name || '').match(/\.[A-Za-z0-9]{1,10}$/);
+      const extension = extensionMatch ? extensionMatch[0].toLowerCase() : '';
+
+      return (
+        Date.now().toString(36) +
+        '_' +
+        Math.random().toString(36).slice(2, 12) +
+        extension
+      );
+    }
+
+    function appendUploadToken(file, inputName) {
+      $('<input>', {
+        type: 'hidden',
+        id: file.newName,
+        name: inputName,
+        value: file.newName
+      }).appendTo('#infinite');
+    }
+
+    function uploadIsRequired(inputSelector) {
+      const input = document.querySelector(inputSelector);
+
+      return !!input && input.dataset.uploadRequired === '1';
+    }
+
+    function requiredUploadsArePresent() {
+      const requiredUploads = [
+        {
+          input: '#drop1',
+          wrapper: '#dropzone-photo',
+          fieldName: 'imgFiles[]',
+          anchor: 'dphoto'
+        },
+        {
+          input: '#drop2',
+          wrapper: '#dropzone-att',
+          fieldName: 'imgFiles2[]',
+          anchor: 'datt'
+        }
+      ];
+      let valid = true;
+      let firstMissingAnchor = null;
+
+      requiredUploads.forEach(function (upload) {
+        const $wrapper = $(upload.wrapper);
+        if (
+          !$wrapper.length ||
+          !$wrapper.is(':visible') ||
+          !uploadIsRequired(upload.input)
+        ) {
+          return;
+        }
+
+        const hasUpload = document.getElementsByName(upload.fieldName).length > 0;
+        $wrapper.toggleClass('form-focus-error', !hasUpload);
+        $wrapper.find('.form-error-message').css('display', hasUpload ? 'none' : 'block');
+        $wrapper.css('border', hasUpload ? '' : 'solid 1px red');
+
+        if (!hasUpload) {
+          valid = false;
+          firstMissingAnchor = firstMissingAnchor || upload.anchor;
+        }
+      });
+
+      if (firstMissingAnchor) {
+        jumpTo(firstMissingAnchor);
+      }
+
+      return valid;
+    }
+
     Dropzone.options.myAwesomeDropzone = {
       url: '{{
       route(
@@ -2874,7 +2993,7 @@
       //previewTemplate: $('#template-preview').html(),
       dictRemoveFile: 'Remove', // ชื่อ ปุ่ม remove
       renameFile: function (file) {
-        let newName = new Date().getTime() + '_' + file.name;
+        let newName = registrationUploadName(file);
         file.newName = newName;
         return newName;
       },
@@ -2888,14 +3007,8 @@
       init: function () {
         myDropzone = this;
         this.on('addedfile', function (file) {
-          //$('#infinite').append("<input type='text' class='form_none' name='imgFiles[]' value='" + file.newName + "'/>");
-          $('#infinite').append(
-            "<input type='text' id='" +
-              file.newName +
-              "' class='form_none' name='imgFiles[]' value='" +
-              file.newName +
-              "'/>"
-          );
+          appendUploadToken(file, 'imgFiles[]');
+          $('#drop1').val(file.newName);
           file.previewElement.id = file.newName;
         })
           .on('removedfile', function (file) {
@@ -2923,7 +3036,11 @@
                 if (element && child && child.parentNode === element) {
                   element.removeChild(child);
                 }
-                if (!document.getElementsByName('imgFiles[]').length) {
+                if (
+                  !document.getElementsByName('imgFiles[]').length &&
+                  uploadIsRequired('#drop1')
+                ) {
+                  $('#drop1').val('');
                   $('#dropzone_preview').css('display', 'none');
                   $('#dropzone-photo').addClass('form-focus-error');
                   $('#dropzone-photo')
@@ -2950,6 +3067,7 @@
             $('#dropzone-photo').removeClass('form-focus-error');
             $('#dropzone-photo').find('.form-error-message').css('display', 'none');
             $('#dropzone-photo').css('border', 'solid 1px green');
+            $('#drop1').val(file.newName);
             if (document.getElementsByName('imgFiles[]').length) {
               //$('#error_div').css('display', 'none');
             }
@@ -2973,6 +3091,7 @@
             while (imgFiles.length > 0) {
               imgFiles[0].parentNode.removeChild(imgFiles[0]);
             }
+            $('#drop1').val('');
             this.removeFile(file);
             // alert(dictFileTooBig);
           });
@@ -3020,7 +3139,7 @@
       resizeMethod: 'contain',
       resizeMimeType: 'image/jpeg',
       renameFile: function (file) {
-        let newName = new Date().getTime() + '_' + file.name;
+        let newName = registrationUploadName(file);
         file.newName = newName;
         return newName;
       },
@@ -3036,14 +3155,8 @@
       init: function () {
         myDropzone = this;
         this.on('addedfile', function (file) {
-          //$('#infinite').append("<input type='text' class='form_none' name='imgFiles[]' value='" + file.name + "'/>");
-          $('#infinite').append(
-            "<input type='text' id='" +
-              file.newName +
-              "' class='form_none' name='imgFiles2[]' value='" +
-              file.newName +
-              "'/>"
-          );
+          appendUploadToken(file, 'imgFiles2[]');
+          $('#drop2').val(file.newName);
           file.previewElement.id = file.newName;
         })
           .on('removedfile', function (file) {
@@ -3071,7 +3184,11 @@
                 if (element && child && child.parentNode === element) {
                   element.removeChild(child);
                 }
-                if (!document.getElementsByName('imgFiles2[]').length) {
+                if (
+                  !document.getElementsByName('imgFiles2[]').length &&
+                  uploadIsRequired('#drop2')
+                ) {
+                  $('#drop2').val('');
                   //alert();
                   $('#dropzone_preview2').css('display', 'none');
                   $('#dropzone-att').addClass('form-focus-error');
@@ -3099,6 +3216,7 @@
             $('#dropzone-att').removeClass('form-focus-error');
             $('#dropzone-att').find('.form-error-message').css('display', 'none');
             $('#dropzone-att').css('border', 'solid 1px green');
+            $('#drop2').val(file.newName);
             if (document.getElementsByName('imgFiles2[]').length) {
               //$('#error_div').css('display', 'none');
             }
@@ -3122,6 +3240,7 @@
             // this.removeFile(file);
             console.log(file);
             $('#imgFiles2').val('');
+            $('#drop2').val('');
             while (imgFiles2.length > 0) {
               imgFiles2[0].parentNode.removeChild(imgFiles2[0]);
             }
@@ -3284,18 +3403,14 @@
 
         const $photoWrapper = $('#dropzone-photo');
         const $slipWrapper = $('#dropzone-att');
-        const photoActive =
-          $photoWrapper.length &&
-          $photoWrapper.is(':visible') &&
-          !$photoWrapper.find('input, textarea, select').filter(':enabled').length;
-        const slipActive =
-          $slipWrapper.length &&
-          $slipWrapper.is(':visible') &&
-          !$slipWrapper.find('input, textarea, select').filter(':enabled').length;
 
         let missing = false;
 
-        if ($photoWrapper.length && $photoWrapper.is(':visible')) {
+        if (
+          $photoWrapper.length &&
+          $photoWrapper.is(':visible') &&
+          uploadIsRequired('#drop1')
+        ) {
           const hasPhoto = document.getElementsByName('imgFiles[]').length > 0;
           if (!hasPhoto) {
             missing = true;
@@ -3310,14 +3425,19 @@
           }
         }
 
-        if ($slipWrapper.length && $slipWrapper.is(':visible')) {
+        if (
+          $slipWrapper.length &&
+          $slipWrapper.is(':visible') &&
+          uploadIsRequired('#drop2')
+        ) {
           const hasSlip = document.getElementsByName('imgFiles2[]').length > 0;
           if (!hasSlip) {
+            const alreadyMissing = missing;
             missing = true;
             $slipWrapper.addClass('form-focus-error');
             $slipWrapper.find('.form-error-message').css('display', 'block');
             $slipWrapper.css('border', 'solid 1px red');
-            if (!missing) {
+            if (!alreadyMissing) {
               jumpTo('datt');
             }
           } else {
@@ -3334,6 +3454,8 @@
         }
 
         const submitWithUploadedFiles = function () {
+          normalizeEnglishNameFields();
+
           // Use AJAX to submit form with better error handling
           var formData = new FormData(form);
 
@@ -3366,6 +3488,14 @@
           },
           success: function (response, textStatus, xhr) {
             $('#loading-message').text('กำลังดำเนินการ...');
+            if (
+              xhr.responseURL &&
+              xhr.responseURL.includes('/form/completed/')
+            ) {
+              window.location.assign(xhr.responseURL);
+              return;
+            }
+
             // Check if response is a redirect (HTML page)
             if (
               xhr.getResponseHeader('Content-Type') &&
@@ -3385,7 +3515,8 @@
                 } else {
                   // Assume success, redirect to completed page
                   var routeName = $('input[name="routeName"]').val();
-                  window.location.href = '/form/completed/' + routeName;
+                  window.location.href =
+                    '{{ url('/form/completed') }}/' + encodeURIComponent(routeName);
                 }
               } else {
                 // Server returned HTML (possibly error page or redirect)
@@ -3397,7 +3528,8 @@
               window.location.href = response.redirect;
             } else if (response.success) {
               var routeName = $('input[name="routeName"]').val();
-              window.location.href = '/form/completed/' + routeName;
+              window.location.href =
+                '{{ url('/form/completed') }}/' + encodeURIComponent(routeName);
             }
           },
           error: function (xhr, status, error) {
@@ -3529,81 +3661,44 @@
     $(document).ready(function () {
       // $('#loader-container').show();
 
-      $('.AddDate').inputmask('99-99-9999');
-      $('.AddPhone').inputmask('(999) 999-9999');
+      if ($.fn.inputmask) {
+        $('.AddPhone').inputmask('(999) 999-9999');
+      }
 
-      $('#infinite').validate(valid_option);
+      if ($.fn.validate) {
+        $('#infinite').validate(valid_option);
+      } else {
+        document
+          .getElementById('infinite')
+          .addEventListener('submit', function (event) {
+            event.preventDefault();
+            $('#loader-container').show();
+            $('#send_data').attr('disabled', true);
+
+            if (!requiredUploadsArePresent()) {
+              $('#loader-container').hide();
+              $('#send_data').attr('disabled', false);
+              return;
+            }
+
+            normalizeEnglishNameFields();
+
+            waitForPendingUploads()
+              .then(function () {
+                event.target.submit();
+              })
+              .catch(function () {
+                $('#loader-container').hide();
+                $('#send_data').attr('disabled', false);
+                alert('ไม่สามารถอัปโหลดรูปได้ กรุณาลองใหม่อีกครั้ง');
+              });
+          });
+      }
 
       $('#btnUpload').on('click', function () {
         myDropzone.processQueue();
       });
     });
-
-    function check_input() {
-      $('.form-control').focus();
-
-      const $agreeCheckbox = $('#agreeCheckbox');
-      const $agreeWrapper = $agreeCheckbox.closest('.form-group');
-
-      if (!$agreeCheckbox.is(':checked')) {
-        $agreeWrapper.addClass('form-focus-error');
-        if (!$agreeWrapper.find('.form-error-message').length) {
-          $agreeWrapper.append(`
-                        <div class="form-error-message" role="alert">
-                            <img src="https://cdn.jotfor.ms/images/exclamation-octagon.png" height="10">
-                            <span class="error-navigation-message">
-                                กรุณาติ๊ก "ตกลงและยอมรับข้อกำหนดและเงื่อนไข รวมถึงตรวจสอบข้อมูลและเนื้อหาต่างๆเรียบร้อยแล้ว" ก่อนส่งฟอร์ม
-                            </span>
-                            <div class="form-error-arrow">
-                                <div class="form-error-arrow-inner"></div>
-                            </div>
-                        </div>
-                    `);
-        } else {
-          $agreeWrapper
-            .find('.error-navigation-message')
-            .text(
-              'กรุณาติ๊ก "ตกลงและยอมรับข้อกำหนดและเงื่อนไข รวมถึงตรวจสอบข้อมูลและเนื้อหาต่างๆเรียบร้อยแล้ว" ก่อนส่งฟอร์ม'
-            );
-          $agreeWrapper.find('.form-error-message').show();
-        }
-
-        jumpTo('agreeCheckbox');
-        alert(
-          'กรุณาติ๊ก "ตกลงและยอมรับข้อกำหนดและเงื่อนไข รวมถึงตรวจสอบข้อมูลและเนื้อหาต่างๆเรียบร้อยแล้ว" ก่อนส่งฟอร์ม'
-        );
-
-        return false;
-      } else {
-        $agreeWrapper.removeClass('form-focus-error');
-        $agreeWrapper.find('.form-error-message').hide();
-      }
-
-      if (
-        document.getElementsByName('imgFiles[]').length &&
-        document.getElementsByName('imgFiles2[]').length
-      ) {
-        //$('#error_div').css('display', 'none');
-
-        return true;
-      } else {
-        if (!document.getElementsByName('imgFiles[]').length) {
-          $('#dropzone-photo').addClass('form-focus-error');
-          $('#dropzone-photo').find('.form-error-message').css('display', 'block');
-          $('#dropzone-photo').css('border', 'solid 1px red');
-          jumpTo('dphoto');
-        }
-        if (!document.getElementsByName('imgFiles2[]').length) {
-          $('#dropzone-att').addClass('form-focus-error');
-          $('#dropzone-att').find('.form-error-message').css('display', 'block');
-          $('#dropzone-att').css('border', 'solid 1px red');
-          jumpTo('datt');
-        }
-
-        //$('#error_div').css('display', 'block');
-        return false;
-      }
-    }
 
     function jumpTo(id) {
       var get = location.href;
@@ -3627,7 +3722,6 @@
     });
   </script>
   <!-- Select2 JS -->
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     // Package-Grade linking data
@@ -3920,7 +4014,7 @@
       $pkg->has_exam_mode
         ? 1
         : 0
-    }}
+    }}@unless ($loop->last),@endunless
         @endforeach
       };
 
@@ -4062,7 +4156,9 @@
         if (showExamMode) {
           examModeContainer.slideDown();
           // Set required attribute
-          $('input[name="exam_mode"]').attr('required', true);
+          $('input[name="exam_mode"]')
+            .prop('disabled', false)
+            .attr('required', true);
 
           // Update available slots first
           updateExamModeOptions();
@@ -4082,7 +4178,10 @@
           }
         } else {
           examModeContainer.slideUp();
-          $('input[name="exam_mode"]').removeAttr('required');
+          $('input[name="exam_mode"]')
+            .prop('checked', false)
+            .prop('disabled', true)
+            .removeAttr('required');
         }
       }
 

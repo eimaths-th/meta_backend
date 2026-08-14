@@ -18,10 +18,12 @@ class StatusServiceOptimized
 
     public function __construct()
     {
-        $this->currentMonthYear = date('Y-m');
-        $this->currentMonth = Carbon::parse($this->currentMonthYear)->firstOfMonth();
-        $this->cMonth = date('m');
-        $this->cYear = date('Y');
+        $now = Carbon::now();
+
+        $this->currentMonthYear = $now->format('Y-m');
+        $this->currentMonth = $now->copy()->firstOfMonth();
+        $this->cMonth = $now->format('m');
+        $this->cYear = $now->format('Y');
     }
 
     public function updateStudentStatus()

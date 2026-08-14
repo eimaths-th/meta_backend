@@ -52,12 +52,12 @@
   @endif
 
   <script
-    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    src="{{ asset('assets/plugins/jquery/dist/jquery.min.js') }}"
     type="text/javascript"
   ></script>
   <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.21.0/dist/jquery.validate.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/jquery.inputmask.min.js"></script>
-  <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+  <script src="{{ asset('assets/plugins/dropzone/dist/min/dropzone.min.js') }}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
   <script
     src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
@@ -84,15 +84,15 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   />
   <link
+    href="{{ asset('assets/plugins/dropzone/dist/min/dropzone.min.css') }}"
     rel="stylesheet"
-    href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css"
     type="text/css"
   />
   <link
-    href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+    href="{{ asset('assets/plugins/select2/dist/css/select2.min.css') }}"
     rel="stylesheet"
   />
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="{{ asset('assets/plugins/select2/dist/js/select2.min.js') }}"></script>
   @yield ('style')
   <style>
     /* Global Layout Styles - Orange Theme */

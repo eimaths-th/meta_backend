@@ -320,6 +320,11 @@ class ReceiptFormController extends Controller
         $set_time = OpeningClosingTime::where('route', $route)
             ->orderBy('id', 'desc')
             ->first();
+
+        if (! $set_time || ! $set_time->opening_time || ! $set_time->closing_time) {
+            return 'Registration schedule unavailable';
+        }
+
         if ($set_time->status === 'Online') {
             $dt_start = new \DateTime($set_time->opening_time);
             $dt_closs = new \DateTime($set_time->closing_time);
@@ -1142,10 +1147,87 @@ class ReceiptFormController extends Controller
      */
     protected function normalizeDuplicateName($value): string
     {
-        $value = trim((string) $value);
+        $value = $this->normalizeEnglishNameInput($value);
+
+        if (! is_string($value)) {
+            return '';
+        }
+
         $value = preg_replace('/\s+/', ' ', $value);
 
         return strtolower($value);
+    }
+
+    /**
+     * Remove invisible characters and normalize whitespace added by mobile
+     * keyboards and in-app browsers before validating an English name.
+     */
+    protected function normalizeEnglishNameInput($value)
+    {
+        if (! is_string($value)) {
+            return $value;
+        }
+
+        // LINE WebView and mobile autofill can add zero-width formatting
+        // characters which are invisible to the user but fail the name regex.
+        $valueWithoutFormatting = preg_replace('/\p{Cf}+/u', '', $value);
+        if ($valueWithoutFormatting !== null) {
+            $value = $valueWithoutFormatting;
+        }
+
+        // Treat every Unicode separator and control whitespace as a normal
+        // space, then remove leading/trailing and repeated spaces.
+        $normalizedWhitespace = preg_replace('/[\p{Z}\p{Cc}]+/u', ' ', $value);
+        if ($normalizedWhitespace !== null) {
+            $value = $normalizedWhitespace;
+        }
+
+        return trim($value);
+    }
+
+    protected function normalizeRegistrationNameFields(Request $request): void
+    {
+        $normalized = [];
+
+        foreach (['firstname', 'middlename', 'lastname', 'nickname'] as $field) {
+            if ($request->has($field)) {
+                $normalized[$field] = $this->normalizeEnglishNameInput($request->input($field));
+            }
+        }
+
+        if ($normalized !== []) {
+            $request->merge($normalized);
+        }
+    }
+
+    protected function normalizeRegistrationContactFields(Request $request): void
+    {
+        $normalized = [];
+
+        foreach (['email', 'phone', 'postcode'] as $field) {
+            if ($request->has($field) && is_string($request->input($field))) {
+                $normalized[$field] = trim($request->input($field));
+            }
+        }
+
+        if ($normalized !== []) {
+            $request->merge($normalized);
+        }
+    }
+
+    protected function normalizeFormFieldBoolean($value, bool $default): bool
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        if ($value === null) {
+            return $default;
+        }
+
+        $normalized = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+
+        return $normalized ?? $default;
     }
 
     protected function normalizeDuplicateDate($value): ?string
@@ -1284,6 +1366,16 @@ class ReceiptFormController extends Controller
             'sfield' => 'required',
             'check_type' => 'required|in:name,email,all',
         ]);
+
+        $formExists = FormManage::whereKey($request->get('sfield'))
+            ->where('form_route', $request->get('routeName'))
+            ->exists();
+
+        if (! $formExists) {
+            return response()->json([
+                'message' => 'The registration form is invalid or no longer available.',
+            ], 422);
+        }
 
         $result = $this->checkCurrentPeriodDuplicate(
             $request->get('routeName'),
@@ -1694,9 +1786,9 @@ class ReceiptFormController extends Controller
         return response()->json(['success' => 'Receive Add successfully']);
     }
 
-    protected function buildDynamicValidationRules($route, $allowedTLDs)
+    protected function buildDynamicValidationRules($route, $allowedTLDs, ?FormManage $formManage = null)
     {
-        $formManage = FormManage::where('form_route', $route)->first();
+        $formManage ??= FormManage::where('form_route', $route)->first();
 
         if (! $formManage || ! $formManage->field_settings) {
             return $this->getDefaultValidationRules($allowedTLDs);
@@ -1709,9 +1801,11 @@ class ReceiptFormController extends Controller
 
         $fieldMapping = [
             'student_first_name' => 'firstname',
+            'student_middle_name' => 'middlename',
             'student_last_name' => 'lastname',
             'student_nick_name' => 'nickname',
             'date_of_birth' => 'birthdate',
+            'ref_date_label' => 'ref_date',
             'student_school_name' => 'schoolname',
             'student_grade' => 'grade',
             'package' => 'package',
@@ -1720,22 +1814,24 @@ class ReceiptFormController extends Controller
             'parent_name' => 'parent',
             'parent_phone' => 'phone',
             'contact_email' => 'email',
+            'student_photo' => 'imgFiles',
+            'student_slip_photo' => 'imgFiles2',
             'news' => 'newsf',
         ];
 
         foreach ($fieldMapping as $configKey => $inputName) {
             $settings = $fieldSettings[$configKey] ?? null;
 
-            if (! is_array($settings)) {
-                continue;
-            }
+            $settings = is_array($settings) ? $settings : [];
 
-            $enabled =
-                $settings['enabled'] ??
-                ($fieldConfig[$configKey]['default_enabled'] ?? true);
-            $required =
-                $settings['required'] ??
-                ($fieldConfig[$configKey]['default_required'] ?? false);
+            $enabled = $this->normalizeFormFieldBoolean(
+                $settings['enabled'] ?? null,
+                (bool) ($fieldConfig[$configKey]['default_enabled'] ?? true),
+            );
+            $required = $this->normalizeFormFieldBoolean(
+                $settings['required'] ?? null,
+                (bool) ($fieldConfig[$configKey]['default_required'] ?? false),
+            );
 
             if (! $enabled) {
                 continue;
@@ -1772,16 +1868,28 @@ class ReceiptFormController extends Controller
                             ' แพคเกจเท่านั้น';
                     }
                 } else {
-                    // Single select: expect string or integer
-                    $ruleArray[] = 'string';
+                    $ruleArray[] = 'integer';
+                    $ruleArray[] = 'exists:forms_pakages,id';
                     $rules[$inputName] = $ruleArray;
                 }
-            } elseif (in_array($inputName, ['firstname', 'lastname', 'nickname'])) {
+            } elseif (in_array($inputName, ['firstname', 'middlename', 'lastname', 'nickname'])) {
                 $ruleArray[] = 'string';
                 $ruleArray[] = 'regex:/^[A-Za-z ]+$/';
                 $messages["{$inputName}.regex"] =
                     ucfirst($inputName).' ต้องเป็นตัวอักษรภาษาอังกฤษเท่านั้น';
                 $rules[$inputName] = $ruleArray;
+            } elseif (in_array($inputName, ['birthdate', 'ref_date'])) {
+                $ruleArray[] = 'date';
+                $rules[$inputName] = $ruleArray;
+            } elseif ($inputName === 'grade') {
+                $ruleArray[] = 'integer';
+                $ruleArray[] = 'exists:forms_grades,id';
+                $rules[$inputName] = $ruleArray;
+            } elseif (in_array($inputName, ['imgFiles', 'imgFiles2'])) {
+                $rules[$inputName] = $required
+                    ? ['required', 'array', 'min:1']
+                    : ['nullable', 'array'];
+                $rules[$inputName.'.*'] = ['string', 'distinct', 'exists:file_uploads,oldname'];
             } elseif ($inputName === 'email') {
                 $rules[$inputName] = array_merge(
                     $required ? ['required'] : ['nullable'],
@@ -1791,7 +1899,7 @@ class ReceiptFormController extends Controller
                             if (! $value) {
                                 return;
                             }
-                            $domain = substr(strrchr($value, '@'), 1);
+                            $domain = strtolower(substr(strrchr($value, '@'), 1));
                             if (
                                 ! collect($allowedTLDs)->contains(
                                     fn ($suffix) => str_ends_with($domain, $suffix),
@@ -1818,21 +1926,26 @@ class ReceiptFormController extends Controller
         return [
             'rules' => [
                 'firstname' => 'required|string|regex:/^[A-Za-z ]+$/',
+                'middlename' => 'nullable|string|regex:/^[A-Za-z ]+$/',
                 'lastname' => 'required|string|regex:/^[A-Za-z ]+$/',
                 'nickname' => 'required|string|regex:/^[A-Za-z ]+$/',
-                'birthdate' => 'required|string',
+                'birthdate' => 'required|date',
                 'schoolname' => 'required|string',
-                'grade' => 'required|string',
-                'package' => 'required|string',
+                'grade' => 'required|integer|exists:forms_grades,id',
+                'package' => 'required|integer|exists:forms_pakages,id',
                 'parent' => 'required|string',
                 'address' => 'required|string',
                 'postcode' => 'required|string',
                 'phone' => 'required|string',
+                'imgFiles' => 'required|array|min:1',
+                'imgFiles.*' => 'string|distinct|exists:file_uploads,oldname',
+                'imgFiles2' => 'required|array|min:1',
+                'imgFiles2.*' => 'string|distinct|exists:file_uploads,oldname',
                 'email' => [
                     'required',
                     'email',
                     function ($attribute, $value, $fail) use ($allowedTLDs) {
-                        $domain = substr(strrchr($value, '@'), 1);
+                        $domain = strtolower(substr(strrchr($value, '@'), 1));
                         if (
                             ! collect($allowedTLDs)->contains(
                                 fn ($suffix) => str_ends_with($domain, $suffix),
@@ -1852,6 +1965,21 @@ class ReceiptFormController extends Controller
                 'nickname.regex' => 'ชื่อเล่นต้องเป็นตัวอักษรภาษาอังกฤษเท่านั้น',
             ],
         ];
+    }
+
+    protected function registrationValidationFailure(
+        Request $request,
+        string $message,
+        array $errors = [],
+    ) {
+        if ($request->ajax()) {
+            return response()->json([
+                'message' => $message,
+                'errors' => $errors,
+            ], 422);
+        }
+
+        return back()->withInput()->with('error', $message);
     }
 
     // public function store(Request $request)
@@ -2097,6 +2225,9 @@ class ReceiptFormController extends Controller
 
     public function storeFormManage(Request $request)
     {
+        $this->normalizeRegistrationNameFields($request);
+        $this->normalizeRegistrationContactFields($request);
+
         Log::info('storeFormManage started', [
             'request' => $request->except([
                 'imgFiles',
@@ -2117,6 +2248,19 @@ class ReceiptFormController extends Controller
             '.org',
         ];
         $route = $request->get('routeName');
+        $formManage = FormManage::whereKey($request->get('sfield'))
+            ->where('form_route', $route)
+            ->first();
+
+        if (! $formManage) {
+            $message = 'The registration form is invalid or no longer available.';
+
+            if ($request->ajax()) {
+                return response()->json(['message' => $message], 422);
+            }
+
+            return back()->withInput()->with('error', $message);
+        }
 
         $result = $this->checkCurrentPeriodDuplicate(
             $route,
@@ -2159,7 +2303,7 @@ class ReceiptFormController extends Controller
         }
 
         // Build dynamic validation rules based on field_settings
-        $validationData = $this->buildDynamicValidationRules($route, $allowedTLDs);
+        $validationData = $this->buildDynamicValidationRules($route, $allowedTLDs, $formManage);
         $validator = Validator::make(
             $request->all(),
             $validationData['rules'],
@@ -2178,7 +2322,90 @@ class ReceiptFormController extends Controller
 
             return back()->withErrors(['errors' => $validator->errors()->all()]);
         }
-        // dd($request);
+
+        $submittedPackageIds = collect((array) $request->input('package', []))
+            ->filter(fn ($id) => $id !== null && $id !== '')
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values();
+        $selectedPackages = FormPakages::where('form_id', $formManage->id)
+            ->whereIn('id', $submittedPackageIds)
+            ->get()
+            ->keyBy('id');
+
+        if ($selectedPackages->count() !== $submittedPackageIds->count()) {
+            return $this->registrationValidationFailure(
+                $request,
+                'The selected package does not belong to this registration form.',
+            );
+        }
+
+        $grade = null;
+        if ($request->filled('grade')) {
+            $grade = FormGrades::where('form_id', $formManage->id)
+                ->whereKey($request->input('grade'))
+                ->first();
+
+            if (! $grade) {
+                return $this->registrationValidationFailure(
+                    $request,
+                    'The selected grade does not belong to this registration form.',
+                );
+            }
+        }
+
+        if ($grade) {
+            foreach ($selectedPackages as $selectedPackage) {
+                $linkedGradeIds = collect($selectedPackage->linked_grades)
+                    ->filter()
+                    ->map(fn ($id) => (int) $id)
+                    ->values();
+
+                if ($linkedGradeIds->isEmpty() || $linkedGradeIds->contains((int) $grade->id)) {
+                    continue;
+                }
+
+                $matchesLegacyGradeName = FormGrades::whereIn('id', $linkedGradeIds)
+                    ->where('grade', $grade->grade)
+                    ->exists();
+
+                if (! $matchesLegacyGradeName) {
+                    return $this->registrationValidationFailure(
+                        $request,
+                        'The selected package is not available for this grade.',
+                    );
+                }
+            }
+        }
+
+        $requiresExamMode = $formManage->enable_exam_mode &&
+            $selectedPackages->contains(fn ($package) => (bool) $package->has_exam_mode);
+        $examMode = $requiresExamMode ? $request->input('exam_mode') : null;
+
+        if ($requiresExamMode && ! in_array($examMode, ['online', 'onsite'], true)) {
+            return $this->registrationValidationFailure(
+                $request,
+                'กรุณาเลือกรูปแบบการสอบ / Please select Exam Mode',
+            );
+        }
+
+        if ($requiresExamMode) {
+            $currentCount = ReceiptForm::where('sfield', $request->get('sfield'))
+                ->where('exam_mode', $examMode)
+                ->count();
+            $limit = $examMode === 'online'
+                ? $formManage->online_limit
+                : $formManage->onsite_limit;
+
+            if ($limit !== null && $currentCount >= $limit) {
+                $modeLabel = $examMode === 'online' ? 'Online' : 'Onsite';
+
+                return $this->registrationValidationFailure(
+                    $request,
+                    "ขออภัย ที่นั่งสอบรูปแบบ {$modeLabel} เต็มแล้ว / Sorry, {$modeLabel} exam seats are full.",
+                );
+            }
+        }
 
         if (! file_exists(public_path().'/receipt_form_images/')) {
             mkdir(public_path().'/receipt_form_images/', 0777, true);
@@ -2301,7 +2528,7 @@ class ReceiptFormController extends Controller
             $packageNames = [];
 
             foreach ($packageInput as $pkgId) {
-                $formPackage = FormPakages::find($pkgId);
+                $formPackage = $selectedPackages->get((int) $pkgId);
                 if ($formPackage) {
                     $packageIds[] = $formPackage->id;
                     $packageNames[] = $formPackage->package;
@@ -2313,7 +2540,7 @@ class ReceiptFormController extends Controller
         } else {
             // Handle single package selection
             $package_id = $packageInput;
-            $formPackage = FormPakages::find($package_id);
+            $formPackage = $selectedPackages->get((int) $package_id);
 
             if ($formPackage) {
                 // code...
@@ -2325,49 +2552,9 @@ class ReceiptFormController extends Controller
             }
         }
 
-        // dd($request->all(), '1');
-        // Check Exam Mode Limits
-        $formManage = FormManage::find($request->get('sfield'));
-        if ($formManage && $formManage->enable_exam_mode) {
-            $examMode = $request->get('exam_mode');
-            if (! $examMode) {
-                $message = 'กรุณาเลือกรูปแบบการสอบ / Please select Exam Mode';
-                if ($request->ajax()) {
-                    return response()->json(['message' => $message], 422);
-                }
-
-                return back()->withInput()->with('error', $message);
-            }
-
-            $currentCount = ReceiptForm::where('sfield', $request->get('sfield'))
-                ->where('exam_mode', $examMode)
-                ->count();
-
-            $limit =
-                $examMode == 'online'
-                ? $formManage->online_limit
-                : $formManage->onsite_limit;
-
-            // If limit is set (not null) and greater than 0, check against count
-            // Assumption: If limit is null, it's unlimited. If 0, no seats.
-            if (! is_null($limit) && $currentCount >= $limit) {
-                $modeLabel = $examMode == 'online' ? 'Online' : 'Onsite';
-                $message = "ขออภัย ที่นั่งสอบรูปแบบ {$modeLabel} เต็มแล้ว / Sorry, {$modeLabel} exam seats are full.";
-
-                if ($request->ajax()) {
-                    return response()->json(['message' => $message], 422);
-                }
-
-                return back()->withInput()->with('error', $message);
-            }
-        }
-
-        $grade = FormGrades::find($request->get('grade'));
-        // dd($request->all());
-
         $receiptForm = new ReceiptForm([
             'sfield' => $request->get('sfield'),
-            'exam_mode' => $request->get('exam_mode'),
+            'exam_mode' => $examMode,
             'submission_date' => date('Y-m-d'),
             'generate' => 0,
             'subject' => $request->get('subject'),
@@ -2381,7 +2568,7 @@ class ReceiptFormController extends Controller
             'school_name' => $request->get('schoolname'),
             'award' => $award ?? null,
             'street_address2' => $street_address2 ?? null,
-            'grade' => $grade->grade,
+            'grade' => $grade?->grade,
             'package' => $package,
             'package_id' => $package_id,
             'contest' => $request->get('contest'),
@@ -2441,7 +2628,7 @@ class ReceiptFormController extends Controller
         }
         // $receiptForm->save();
 
-        if ($formManage && $formManage->enable_exam_mode && $examMode) {
+        if ($requiresExamMode && $examMode) {
             if ($examMode === 'online') {
                 $formManage->increment('online_registered');
             } elseif ($examMode === 'onsite') {
