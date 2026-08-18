@@ -721,19 +721,18 @@
                 <div class="col-md-6">
                   <div class="position-relative form-group">
                     <label for="Package">Package:</label>
-                    <input
-                      type="text"
+                    <select
                       class="form-control"
+                      name="package_id"
+                      id="AddPackageId"
+                    ></select>
+                    <input
+                      type="hidden"
                       name="package"
                       id="AddPackage"
                       value=""
                     />
-                    <input
-                      type="hidden"
-                      name="package_id"
-                      id="AddPackageId"
-                      value=""
-                    />
+                    <small id="AddPackagePrice" class="form-text text-muted"></small>
                   </div>
                 </div>
               </div>
@@ -1364,6 +1363,65 @@
       });
 
       let id;
+
+      function syncReceiptPackageSelection() {
+        var selectedOptions = $('#AddPackageId option:selected');
+        var packageNames = selectedOptions
+          .map(function () {
+            return $(this).data('package-name') || '';
+          })
+          .get()
+          .filter(Boolean);
+        var packagePrices = selectedOptions
+          .map(function () {
+            return $(this).data('package-price') || '';
+          })
+          .get()
+          .filter(Boolean);
+
+        $('#AddPackage').val(packageNames.join(', '));
+        $('#AddPackagePrice').text(
+          packagePrices.length
+            ? 'Receipt price: ' + packagePrices.join(' + ') + ' Baht'
+            : ''
+        );
+      }
+
+      function populateReceiptPackageOptions(res) {
+        var packageSelect = $('#AddPackageId');
+        var selectedIds = (res.selected_package_ids || []).map(String);
+        var isMultiselect = Boolean(res.package_multiselect);
+        var packageOptions = res.packages || [];
+
+        packageSelect.empty().prop('multiple', isMultiselect);
+        if (!isMultiselect && packageOptions.length) {
+          packageSelect.append(new Option('Select Package', ''));
+        }
+
+        packageOptions.forEach(function (packageOption) {
+          var label = packageOption.package;
+          if (packageOption.price !== null && packageOption.price !== '') {
+            label += ' : ' + packageOption.price + ' Baht';
+          }
+
+          var option = $(new Option(label, packageOption.id));
+          option.attr('data-package-name', packageOption.package);
+          option.attr('data-package-price', packageOption.price || '');
+          packageSelect.append(option);
+        });
+
+        if (!packageOptions.length && res.data.package) {
+          var legacyOption = $(new Option(res.data.package, '', true, true));
+          legacyOption.attr('data-package-name', res.data.package);
+          packageSelect.append(legacyOption);
+        }
+
+        packageSelect.val(isMultiselect ? selectedIds : selectedIds[0] || '');
+        syncReceiptPackageSelection();
+      }
+
+      $('#AddPackageId').on('change', syncReceiptPackageSelection);
+
       $(document).on('click', '#getEditData', function (e) {
         e.preventDefault();
         $('#SubmitEditForm').css('display', 'block');
@@ -1384,8 +1442,7 @@
             //$('#EditModalBody').html(res.html);
             $('#AddRecId').val(res.data.id);
             $('#AddSubmissiondate').val(res.data.submission_date);
-            $('#AddPackage').val(res.data.package);
-            $('#AddPackageId').val(res.data.packageId);
+            populateReceiptPackageOptions(res);
             $('#AddContest').val(res.data.contest);
             $('#AddDcode').val(res.data.discount_code);
             $('#AddFirstname').val(res.data.first_name);

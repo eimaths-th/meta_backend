@@ -1494,9 +1494,7 @@ class ReceiptFormController extends Controller
                 // 'postcode' => 'required|string',
                 // 'name_parent' => 'required|string',
                 'mobile' => 'required|string',
-                'package' => 'required|string',
                 // 'file_att' => 'required|string',
-                'description' => 'required|string',
                 'grade' => 'required|string',
             ]);
         } else {
@@ -1511,9 +1509,7 @@ class ReceiptFormController extends Controller
                 'postcode' => 'required|string',
                 'name_parent' => 'required|string',
                 'mobile' => 'required|string',
-                'package' => 'required|string',
                 // 'file_att' => 'required|string',
-                'description' => 'required|string',
                 'grade' => 'required|string',
             ]);
         }
@@ -1530,6 +1526,80 @@ class ReceiptFormController extends Controller
                 'errors' => ['Registration form or competition field is invalid.'],
             ]);
         }
+
+        $packageIds = $this->normalizeReceiptPackageIds($request->input('package_id'));
+        $configuredPackages = FormPakages::where('sfield', $form->sfield)->get();
+        $legacyPackageName = trim((string) $form->package);
+        $usesLegacyPackage = $packageIds === []
+            && $configuredPackages->isEmpty()
+            && $this->normalizeReceiptPackageIds($form->package_id) === []
+            && $legacyPackageName !== '';
+
+        if ($packageIds === [] && ! $usesLegacyPackage) {
+            return response()->json([
+                'errors' => ['Please select a package before generating the receipt.'],
+            ]);
+        }
+
+        $formManage = FormManage::where('sfield', $form->sfield)->first();
+        $packageMultiselect = (bool) optional($formManage)->package_multiselect;
+        $packageMaxSelection = (int) (optional($formManage)->package_max_selection ?: 0);
+
+        if (! $packageMultiselect && count($packageIds) > 1) {
+            return response()->json([
+                'errors' => ['Only one package can be selected for this registration form.'],
+            ]);
+        }
+
+        if ($packageMaxSelection > 0 && count($packageIds) > $packageMaxSelection) {
+            return response()->json([
+                'errors' => ["A maximum of {$packageMaxSelection} packages can be selected."],
+            ]);
+        }
+
+        if ($usesLegacyPackage) {
+            $selectedPackageIdValue = null;
+            $selectedPackageNameValue = $legacyPackageName;
+        } else {
+            $packagesById = $configuredPackages
+                ->whereIn('id', $packageIds)
+                ->keyBy('id');
+
+            if ($packagesById->count() !== count($packageIds)) {
+                return response()->json([
+                    'errors' => ['The selected package does not belong to this registration form.'],
+                ]);
+            }
+
+            $selectedPackages = collect($packageIds)
+                ->map(fn ($packageId) => $packagesById->get($packageId));
+            $selectedPackageNames = $selectedPackages
+                ->pluck('package')
+                ->map(fn ($package) => trim((string) $package))
+                ->filter()
+                ->values();
+
+            if ($selectedPackageNames->count() !== count($packageIds)) {
+                return response()->json([
+                    'errors' => ['The selected package does not have a valid name.'],
+                ]);
+            }
+
+            $selectedPackageIdValue = count($packageIds) === 1
+                ? (string) $packageIds[0]
+                : json_encode($packageIds);
+            $selectedPackageNameValue = $selectedPackageNames->implode(', ');
+        }
+
+        // Package labels and prices must always come from the same configured
+        // package records. Never trust a free-text label submitted by the modal.
+        $form->package_id = $selectedPackageIdValue;
+        $form->package = $selectedPackageNameValue;
+        $request->merge([
+            'package_id' => $selectedPackageIdValue,
+            'package' => $selectedPackageNameValue,
+            'description' => $selectedPackageNameValue,
+        ]);
 
         // ส่ง email เฉพาะ sfield 17 — ใช้ email จาก DB record เพื่อรับประกัน consistency
         if ($request->get('sfield') === '17') {
@@ -1563,7 +1633,7 @@ class ReceiptFormController extends Controller
         try {
             $receiptLines = (new ReceiptLineItemResolver)->resolve(
                 $form,
-                $request->get('description'),
+                count($packageIds) === 1 ? $selectedPackageNameValue : null,
             );
         } catch (\RuntimeException $e) {
             Log::warning('Receipt generation blocked because the price could not be resolved.', [
@@ -1588,6 +1658,9 @@ class ReceiptFormController extends Controller
             if ((int) $form->generate === 1) {
                 throw new \LogicException('Receipt has already been generated.');
             }
+
+            $form->package_id = $selectedPackageIdValue;
+            $form->package = $selectedPackageNameValue;
 
             $rnumber = Receipt_RunningNumber::generate(
                 $request->get('sfield'),
@@ -2940,17 +3013,24 @@ class ReceiptFormController extends Controller
             $data->rnumber = '';
         }
 
-        // `package` stores the display name; `package_id` stores the package key.
-        // Looking up by the display name left AddPackageId empty in the generate
-        // receipt modal and caused the receipt detail price to fall back to zero.
-        $packages = FormPakages::find($data->package_id ?: $data->package);
+        $selectedPackageIds = $this->normalizeReceiptPackageIds(
+            $data->package_id ?: $data->package,
+        );
+        $availablePackages = FormPakages::where('sfield', $data->sfield)
+            ->orderBy('id')
+            ->get(['id', 'package', 'price', 'has_exam_mode']);
+        $selectedPackages = $availablePackages
+            ->whereIn('id', $selectedPackageIds)
+            ->sortBy(fn ($package) => array_search((int) $package->id, $selectedPackageIds, true))
+            ->values();
 
-        if ($packages) {
-            $data->package = $packages->package;
-            $data->packageId = $packages->id;
-        } else {
-            $data->packageId = '';
+        if ($selectedPackages->isNotEmpty()) {
+            $data->package = $selectedPackages->pluck('package')->implode(', ');
         }
+
+        $data->packageId = count($selectedPackageIds) === 1
+            ? $selectedPackageIds[0]
+            : $selectedPackageIds;
 
         // Decode award JSON if it exists
         if ($data->award && is_string($data->award)) {
@@ -2963,11 +3043,40 @@ class ReceiptFormController extends Controller
         $data->ref_date_label = optional($data->formManage)->ref_date_label
             ? optional($data->formManage)->ref_date_label.' : '
             : 'Reference Date :';
+        $data->enable_exam_mode = (bool) optional($data->formManage)->enable_exam_mode;
 
         // dd($data);
         return response()->json([
             'data' => $data,
+            'packages' => $availablePackages,
+            'selected_package_ids' => $selectedPackageIds,
+            'package_multiselect' => (bool) optional($data->formManage)->package_multiselect,
+            'package_max_selection' => optional($data->formManage)->package_max_selection,
         ]);
+    }
+
+    /** @return array<int, int> */
+    private function normalizeReceiptPackageIds($rawPackageIds): array
+    {
+        if (is_array($rawPackageIds)) {
+            $values = $rawPackageIds;
+        } else {
+            $rawPackageIds = trim((string) $rawPackageIds);
+            if ($rawPackageIds === '') {
+                return [];
+            }
+
+            $decoded = json_decode($rawPackageIds, true);
+            $values = is_array($decoded) ? $decoded : [$rawPackageIds];
+        }
+
+        return collect($values)
+            ->map(fn ($value) => trim((string) $value))
+            ->filter(fn ($value) => $value !== '' && ctype_digit($value))
+            ->map(fn ($value) => (int) $value)
+            ->unique()
+            ->values()
+            ->all();
     }
 
     /**
