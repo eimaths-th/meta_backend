@@ -629,7 +629,7 @@
           </style>
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLongTitle">
-              Generate Receipt (
+              <span id="ReceiptModalTitle">Generate Receipt</span> (
               <span id="rnumber" style="color: red"></span>
               )
             </h5>
@@ -694,7 +694,7 @@
                   <div class="position-relative form-group">
                     <label for="Package">Package:</label>
                     <select
-                      class="form-control"
+                      class="form-control custom-select"
                       name="package_id"
                       id="AddPackageId"
                     ></select>
@@ -1271,9 +1271,6 @@
 
         packageOptions.forEach(function (packageOption) {
           var label = packageOption.package;
-          if (packageOption.price !== null && packageOption.price !== '') {
-            label += ' : ' + packageOption.price + ' Baht';
-          }
 
           var option = $(new Option(label, packageOption.id));
           option.attr('data-package-name', packageOption.package);
@@ -1296,6 +1293,8 @@
       $(document).on('click', '#getEditData', function (e) {
         e.preventDefault();
         $('#SubmitEditForm').css('display', 'block');
+        $('#SubmitEditOForm').css('display', 'none');
+        $('#ReceiptModalTitle').text('Generate Receipt');
 
         $('.alert-danger').html('');
         $('.alert-danger').hide();
@@ -1346,6 +1345,8 @@
             $('#rnumber').html(res.data.rnumber);
             if (res.data.generate == 1) {
               $('#SubmitEditForm').css('display', 'none');
+              $('#SubmitEditOForm').css('display', 'block');
+              $('#ReceiptModalTitle').text('Edit Receipt');
             }
 
             //console.log(res.data.photo);
@@ -1814,6 +1815,8 @@
             mobile: $('#AddMobile').val(),
             email: $('#AddEmail').val(),
             package: $('#AddPackage').val(),
+            package_id: $('#AddPackageId').val(),
+            description: $('#AddPackage').val(),
             contest: $('#AddContest').val(),
             news_form: $('#AddNewsf').val(),
             //file_att: $('#AddFile').val(),

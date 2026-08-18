@@ -3010,7 +3010,7 @@ class ReceiptFormController extends Controller
                 $data->submission_date,
             );
         } else {
-            $data->rnumber = '';
+            $data->rnumber = optional(Receipt::find($data->rec_id))->receipt_number ?: '';
         }
 
         $selectedPackageIds = $this->normalizeReceiptPackageIds(
@@ -3095,6 +3095,96 @@ class ReceiptFormController extends Controller
         $dataimg = ReceiptForm::find($request->get('fid'));
         if (! $dataimg) {
             return response()->json(['error' => 'Receipt Form not found'], 404);
+        }
+
+        $updatedReceiptLines = null;
+        if ($request->has('package_id')) {
+            $packageIds = $this->normalizeReceiptPackageIds($request->input('package_id'));
+            $configuredPackages = FormPakages::where('sfield', $dataimg->sfield)->get();
+
+            if ($packageIds === []) {
+                $usesLegacyPackage = $configuredPackages->isEmpty()
+                    && $this->normalizeReceiptPackageIds($dataimg->package_id) === []
+                    && trim((string) $dataimg->package) !== '';
+
+                if (! $usesLegacyPackage) {
+                    return response()->json([
+                        'errors' => ['Please select a package before saving.'],
+                    ]);
+                }
+
+                $request->merge([
+                    'package_id' => null,
+                    'package' => $dataimg->package,
+                    'description' => $dataimg->package,
+                ]);
+            } else {
+                $formManage = FormManage::where('sfield', $dataimg->sfield)->first();
+                $packageMultiselect = (bool) optional($formManage)->package_multiselect;
+                $packageMaxSelection = (int) (optional($formManage)->package_max_selection ?: 0);
+
+                if (! $packageMultiselect && count($packageIds) > 1) {
+                    return response()->json([
+                        'errors' => ['Only one package can be selected for this registration form.'],
+                    ]);
+                }
+
+                if ($packageMaxSelection > 0 && count($packageIds) > $packageMaxSelection) {
+                    return response()->json([
+                        'errors' => ["A maximum of {$packageMaxSelection} packages can be selected."],
+                    ]);
+                }
+
+                $packagesById = $configuredPackages
+                    ->whereIn('id', $packageIds)
+                    ->keyBy('id');
+
+                if ($packagesById->count() !== count($packageIds)) {
+                    return response()->json([
+                        'errors' => ['The selected package does not belong to this registration form.'],
+                    ]);
+                }
+
+                $selectedPackages = collect($packageIds)
+                    ->map(fn ($packageId) => $packagesById->get($packageId));
+                $selectedPackageNames = $selectedPackages
+                    ->pluck('package')
+                    ->map(fn ($package) => trim((string) $package))
+                    ->filter()
+                    ->values();
+
+                if ($selectedPackageNames->count() !== count($packageIds)) {
+                    return response()->json([
+                        'errors' => ['The selected package does not have a valid name.'],
+                    ]);
+                }
+
+                $selectedPackageIdValue = count($packageIds) === 1
+                    ? (string) $packageIds[0]
+                    : json_encode($packageIds);
+                $selectedPackageNameValue = $selectedPackageNames->implode(', ');
+
+                $dataimg->package_id = $selectedPackageIdValue;
+                $dataimg->package = $selectedPackageNameValue;
+                try {
+                    $updatedReceiptLines = (new ReceiptLineItemResolver)->resolve(
+                        $dataimg,
+                        count($packageIds) === 1 ? $selectedPackageNameValue : null,
+                    );
+                } catch (\RuntimeException $e) {
+                    return response()->json([
+                        'errors' => [
+                            'The selected package does not have a valid receipt price.',
+                        ],
+                    ]);
+                }
+
+                $request->merge([
+                    'package_id' => $selectedPackageIdValue,
+                    'package' => $selectedPackageNameValue,
+                    'description' => $selectedPackageNameValue,
+                ]);
+            }
         }
 
         $img = $request->get('img', []);
@@ -3183,6 +3273,9 @@ class ReceiptFormController extends Controller
             'exam_mode', 'award', 'subject',
         ];
         $updateData = $request->only($allowed_fields);
+        // `description` belongs to the generated receipt on legacy databases;
+        // some receipt_forms tables do not contain this column.
+        unset($updateData['description']);
 
         // แปลง award เป็น JSON ถ้าเป็น array
         if ($request->has('award')) {
@@ -3227,7 +3320,46 @@ class ReceiptFormController extends Controller
             );
         }
 
-        $receiptForm->update($updateData);
+        DB::beginTransaction();
+
+        try {
+            $receiptForm->update($updateData);
+
+            if ($updatedReceiptLines !== null && $datare) {
+                $datare->update([
+                    'package' => $request->get('package'),
+                    'description' => $request->get('description'),
+                ]);
+
+                $packageDetailsQuery = ReceiptDetail::where('receipt_id', $datare->id)
+                    ->whereNotNull('quantity')
+                    ->whereNotNull('unitprice');
+                $existingDiscount = (int) (clone $packageDetailsQuery)->sum('discount');
+                $packageDetailsQuery->delete();
+
+                foreach ($updatedReceiptLines as $index => $receiptLine) {
+                    ReceiptDetail::create([
+                        'receipt_id' => $datare->id,
+                        'description' => $receiptLine['description'],
+                        'quantity' => $receiptLine['quantity'],
+                        'unitprice' => $receiptLine['unitprice'],
+                        'discount' => $index === 0 ? $existingDiscount : 0,
+                    ]);
+                }
+            }
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('Receipt form update failed and was rolled back.', [
+                'receipt_form_id' => $receiptForm->id,
+                'message' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'errors' => ['Receipt update failed. No changes were saved.'],
+            ], 500);
+        }
 
         // บันทึก activity log — update receipt form (หลัง update เพื่อเก็บข้อมูลใหม่)
         LogActivity::modelEvent($receiptForm, 'receipt_form updated', $old_data_before, $receiptForm->fresh()->toArray());

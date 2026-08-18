@@ -94,6 +94,49 @@ class ReceiptPackageSelectionTest extends TestCase
             'quantity' => 1,
             'unitprice' => 1990,
         ]);
+
+        $this->postJson(route('receipts_form.update'), [
+            'fid' => $registration->id,
+            'sfield' => $form->sfield,
+            'submission_date' => '2026-08-18',
+            'first_name' => 'Package',
+            'last_name' => 'Customer',
+            'nick_name' => 'Pack',
+            'birth_date' => '2015-01-01',
+            'school_name' => 'Test School',
+            'street_address' => '123 Test Road',
+            'postcode' => '10110',
+            'name_parent' => 'Parent Customer',
+            'mobile' => '0812345678',
+            'email' => 'package-customer@example.com',
+            'news_form' => 'page',
+            'grade' => 'Grade 3',
+            'package_id' => $originalPackage->id,
+            'package' => 'Tampered package',
+            'description' => 'Tampered description',
+        ])
+            ->assertOk()
+            ->assertJsonPath('success', 'Receipt Form updated successfully');
+
+        $registration->refresh();
+        $this->assertSame((string) $originalPackage->id, (string) $registration->package_id);
+        $this->assertSame('Original package', $registration->package);
+        $this->assertDatabaseHas('receipts', [
+            'id' => $registration->rec_id,
+            'package' => 'Original package',
+            'description' => 'Original package',
+        ]);
+        $this->assertDatabaseHas('receipt_details', [
+            'receipt_id' => $registration->rec_id,
+            'description' => 'Original package',
+            'quantity' => 1,
+            'unitprice' => 990,
+        ]);
+        $this->assertDatabaseMissing('receipt_details', [
+            'receipt_id' => $registration->rec_id,
+            'description' => 'Upgrade package',
+            'unitprice' => 1990,
+        ]);
     }
 
     public function test_generate_rejects_a_package_from_another_form(): void
