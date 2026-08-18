@@ -2500,14 +2500,17 @@
         indexoptionPackage++;
         document.getElementById('options_package').style.display = 'block';
         var option = document.createElement('div');
-        option.classList.add(`option${indexoptionPackage}`);
+        option.classList.add(`option${indexoptionPackage}`, 'package-option');
         option.innerHTML = `
             <label>Option Package ${indexoptionPackage}</label>
             <div class="form-group border p-3 rounded mb-3 bg-light">
                 <div class="row align-items-center mb-2">
                      <div class="col-md-12 mb-2">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input new-exam-mode-toggle" id="newHasExamMode${indexoptionPackage}" data-index="${indexoptionPackage}" data-no-validation="true">
+                            <input type="hidden" name="optionPackage[${indexoptionPackage}][has_exam_mode]" value="0">
+                            <input type="hidden" id="newOnlineLimit${indexoptionPackage}" name="optionPackage[${indexoptionPackage}][online_limit]" value="">
+                            <input type="hidden" id="newOnsiteLimit${indexoptionPackage}" name="optionPackage[${indexoptionPackage}][onsite_limit]" value="">
+                            <input type="checkbox" class="custom-control-input new-exam-mode-toggle" id="newHasExamMode${indexoptionPackage}" name="optionPackage[${indexoptionPackage}][has_exam_mode]" value="1" data-index="${indexoptionPackage}" data-no-validation="true">
                             <label class="custom-control-label" for="newHasExamMode${indexoptionPackage}">Enable Exam Mode Selection (Online/Onsite)</label>
                         </div>
                      </div>
@@ -2550,6 +2553,14 @@
       'deleteAllOptionPackage'
     );
 
+    function escapeDynamicAttribute(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
     if (deleteAllPackageButton) {
       deleteAllPackageButton.addEventListener('click', function () {
         deleteAllPackages();
@@ -2583,26 +2594,14 @@
     @if (isset($data->packages))
     @foreach ($data->packages as $index => $package)
     showPackage(
-      '{{ $package->id }}',
-      '{{ $package->package }}',
-      '{{ $package->price }}',
-      '{{ $package->has_exam_mode }}',
-      '{{
-      $package->online_limit ??
-        ''
-    }}',
-      '{{
-      $package->onsite_limit ??
-        ''
-    }}',
-      '{{
-      $package->online_registered ??
-        0
-    }}',
-      '{{
-      $package->onsite_registered ??
-        0
-    }}'
+      @json($package->id),
+      @json($package->package),
+      @json($package->price),
+      @json($package->has_exam_mode),
+      @json($package->online_limit),
+      @json($package->onsite_limit),
+      @json($package->online_registered ?? 0),
+      @json($package->onsite_registered ?? 0)
     );
     @endforeach
     @endif
@@ -2620,12 +2619,16 @@
     ) {
       document.getElementById('options_package').style.display = 'block';
       let option = document.createElement('div');
-      option.classList.add(`option${index}`);
+      option.classList.add(`option${index}`, 'package-option');
       // Convert string '1'/'0' or boolean to checked attribute
       const isChecked =
         hasExamMode == 1 || hasExamMode == '1' || hasExamMode === true
           ? 'checked'
           : '';
+      const safePackage = escapeDynamicAttribute(package);
+      const safePrice = escapeDynamicAttribute(price);
+      const safeOnlineLimit = escapeDynamicAttribute(onlineLimit);
+      const safeOnsiteLimit = escapeDynamicAttribute(onsiteLimit);
 
       option.innerHTML = `
             <label>Option Package ${index}</label>
@@ -2633,7 +2636,10 @@
                 <div class="row align-items-center mb-2">
                      <div class="col-md-12 mb-2">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="hasExamModePackage${id}" ${isChecked} onchange="togglePackageExamMode(${id})" data-no-validation="true">
+                            <input type="hidden" name="optionPackage[${index}][has_exam_mode]" value="0">
+                            <input type="hidden" id="onlineLimit${id}" name="optionPackage[${index}][online_limit]" value="${safeOnlineLimit}">
+                            <input type="hidden" id="onsiteLimit${id}" name="optionPackage[${index}][onsite_limit]" value="${safeOnsiteLimit}">
+                            <input type="checkbox" class="custom-control-input" id="hasExamModePackage${id}" name="optionPackage[${index}][has_exam_mode]" value="1" ${isChecked} onchange="togglePackageExamMode(${id})" data-no-validation="true">
                             <label class="custom-control-label" for="hasExamModePackage${id}">Enable Exam Mode Selection (Online/Onsite) for this package</label>
                         </div>
                      </div>
@@ -2641,10 +2647,10 @@
                 <div class="row">
                     <div class="col-md-4">
                         <input type="hidden" id="optionPackageId${id}" name="optionPackage[${index}][id]" value="${id || ''}">
-                        <input type="number" id="optionPackagePrice${id}" class="form-control" name="optionPackage[${index}][value]" placeholder="Option Value" value="${price}" data-no-validation="true">
+                        <input type="number" id="optionPackagePrice${id}" class="form-control" name="optionPackage[${index}][value]" placeholder="Option Value" value="${safePrice}" data-no-validation="true">
                     </div>
                     <div class="col-md-4">
-                        <input type="text" id="optionPackageName${id}" class="form-control" name="optionPackage[${index}][name]" placeholder="Option Name" value="${package}" data-no-validation="true">
+                        <input type="text" id="optionPackageName${id}" class="form-control" name="optionPackage[${index}][name]" placeholder="Option Name" value="${safePackage}" data-no-validation="true">
                     </div>
                     <div class="col-md-4">
                         <div class="row">
@@ -2659,7 +2665,7 @@
                                 </button>
                             </div>
                             <div class="col-md-2">
-                                <button type="button" onclick="removeOptionPackage(${index})" class="btn btn-danger btn-sm mt-1">
+                                <button type="button" onclick="deleteOptionPackage(${id}, ${index})" class="btn btn-danger btn-sm mt-1">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </div>
@@ -2672,13 +2678,14 @@
     }
 
     function removeOptionPackage(index) {
-      let optionDiv = document.querySelector(`.option${index}`);
+      const container = document.getElementById('options_package');
+      let optionDiv = container.querySelector(`.package-option.option${index}`);
       if (optionDiv) {
         optionDiv.remove();
       }
       // ถ้าไม่มี option เหลือ ให้ซ่อน container
-      if (document.getElementById('options_package').children.length === 0) {
-        document.getElementById('options_package').style.display = 'none';
+      if (container.children.length === 0) {
+        container.style.display = 'none';
       }
     }
 
@@ -2792,20 +2799,55 @@
       });
     }
 
-    let package_id;
+    function ajaxErrorMessage(xhr, fallbackMessage) {
+      const errors = xhr.responseJSON?.errors;
+      if (errors) {
+        const firstMessages = Object.values(errors)[0];
+        if (Array.isArray(firstMessages) && firstMessages.length) {
+          return firstMessages[0];
+        }
+      }
 
-    function editOptionPackage(id) {
-      package_id = id;
-      var value = document.getElementById('optionPackageName' + package_id).value;
-      var price = document.getElementById('optionPackagePrice' + package_id).value;
-      var hasExamMode = document.getElementById('hasExamModePackage' + package_id)
+      return xhr.responseJSON?.message || fallbackMessage;
+    }
+
+    function editOptionPackage(packageId) {
+      const nameInput = document.getElementById('optionPackageName' + packageId);
+      const priceInput = document.getElementById('optionPackagePrice' + packageId);
+      const icon = document.getElementById('changeIconPackage' + packageId);
+      const editButton = icon?.closest('button');
+      const value = nameInput?.value.trim() || '';
+      const price = priceInput?.value.trim() || '';
+      const formId = document.getElementById('form_id').value;
+      const hasExamMode = document.getElementById('hasExamModePackage' + packageId)
         ?.checked
         ? 1
         : 0;
-      var onlineLimit =
-        document.getElementById('onlineLimit' + package_id)?.value || null;
-      var onsiteLimit =
-        document.getElementById('onsiteLimit' + package_id)?.value || null;
+      const onlineLimit =
+        document.getElementById('onlineLimit' + packageId)?.value || null;
+      const onsiteLimit =
+        document.getElementById('onsiteLimit' + packageId)?.value || null;
+
+      if (!nameInput || !priceInput || !icon || !editButton) {
+        Swal.fire('Error', 'Package controls were not found. Please reload the page.', 'error');
+        return;
+      }
+
+      if (!value) {
+        Swal.fire('Cannot save', 'Please enter a package name.', 'warning');
+        nameInput.focus();
+        return;
+      }
+
+      if (price === '' || Number.isNaN(Number(price)) || Number(price) < 0) {
+        Swal.fire('Cannot save', 'Please enter a valid package price.', 'warning');
+        priceInput.focus();
+        return;
+      }
+
+      editButton.disabled = true;
+      icon.classList.remove('fa-edit');
+      icon.classList.add('fa-spinner', 'fa-spin');
 
       $.ajax({
         url: '{{
@@ -2816,7 +2858,8 @@
         type: 'POST',
         data: {
           _token: '{{ csrf_token() }}',
-          id: package_id,
+          id: packageId,
+          form_id: formId,
           value: value,
           price: price,
           has_exam_mode: hasExamMode,
@@ -2824,20 +2867,40 @@
           onsite_limit: onsiteLimit
         },
         success: function (response) {
-          //change icon
-          let icon = document.getElementById('changeIconPackage' + package_id);
-          icon.classList.remove('fa-edit');
+          nameInput.value = response.data.package;
+          priceInput.value = response.data.price;
+          icon.classList.remove('fa-spinner', 'fa-spin');
           icon.classList.add('fa-check');
+          editButton.classList.remove('btn-warning');
+          editButton.classList.add('btn-success');
+
+          toastr.success(response.message || 'Package updated successfully.');
 
           setTimeout(() => {
             icon.classList.remove('fa-check');
             icon.classList.add('fa-edit');
+            editButton.classList.remove('btn-success');
+            editButton.classList.add('btn-warning');
+            editButton.disabled = false;
           }, 2000);
+        },
+        error: function (xhr) {
+          icon.classList.remove('fa-spinner', 'fa-spin');
+          icon.classList.add('fa-edit');
+          editButton.disabled = false;
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Package was not updated',
+            text: ajaxErrorMessage(xhr, 'Please reload the page and try again.')
+          });
         }
       });
     }
 
     function deleteOptionPackage(id, index) {
+      const formId = document.getElementById('form_id').value;
+
       $.ajax({
         url: '{{
       route(
@@ -2847,11 +2910,20 @@
         type: 'POST',
         data: {
           _token: '{{ csrf_token() }}',
-          id: package_id,
+          id: id,
+          form_id: formId,
           index: index
         },
         success: function (response) {
           removeOptionPackage(response.index);
+          toastr.success('Package deleted successfully.');
+        },
+        error: function (xhr) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Package was not deleted',
+            text: ajaxErrorMessage(xhr, 'Please reload the page and try again.')
+          });
         }
       });
     }
@@ -3241,15 +3313,16 @@
     function addOptionGrade(index, value, gradeId = null) {
       document.getElementById('options_grade').style.display = 'block';
       let option = document.createElement('div');
-      option.classList.add(`option${index}`);
+      option.classList.add(`option${index}`, 'grade-option');
       option.setAttribute('data-grade-id', gradeId || '');
+      const safeValue = escapeDynamicAttribute(value);
       option.innerHTML = `
         <label>Option Grade ${index}</label>
         <div class="form-group">
             <div class="row">
                 <div class="col-md-8">
                     <input type="hidden" id="optionGradeId${gradeId}" name="optionGrade[${index}][id]" value="${gradeId || ''}">
-                    <input type="text" class="form-control" name="optionGrade[${index}][grade]" id="gradeInput${index}" value="${value}" data-grade-id="${gradeId || ''}">
+                    <input type="text" class="form-control" name="optionGrade[${index}][grade]" id="gradeInput${index}" value="${safeValue}" data-grade-id="${gradeId || ''}">
                 </div>
                 <div class="row col-md-4">
                     <div class="col-md-2">
@@ -3272,15 +3345,16 @@
     function addBulkOptionGrade(index, value, gradeId) {
       document.getElementById('options_grade').style.display = 'block';
       let option = document.createElement('div');
-      option.classList.add(`option${index}`);
+      option.classList.add(`option${index}`, 'grade-option');
       option.setAttribute('data-grade-id', gradeId);
+      const safeValue = escapeDynamicAttribute(value);
       option.innerHTML = `
         <label>Option Grade ${index}</label>
         <div class="form-group">
             <div class="row">
                 <div class="col-md-8">
                     <input type="hidden" id="optionGradeId${gradeId}" name="optionGrade[${index}][id]" value="${gradeId || ''}">
-                    <input type="text" class="form-control" name="optionGrade[${index}][grade]" id="optionGrade${gradeId}" value="${value}" data-grade-id="${gradeId || ''}">
+                    <input type="text" class="form-control" name="optionGrade[${index}][grade]" id="optionGrade${gradeId}" value="${safeValue}" data-grade-id="${gradeId || ''}">
                 </div>
                 <div class="row col-md-4">
                     <div class="col-md-2">
@@ -3289,7 +3363,7 @@
                             </button>
                         </div>
                     <div class="col-md-2">
-                        <button type="button" onclick="removeOptionGrade(${index})" class="btn btn-danger btn-sm mt-1" title="ลบระดับชั้นนี้">
+                        <button type="button" onclick="deleteOptionGrade(${gradeId}, ${index})" class="btn btn-danger btn-sm mt-1" title="ลบระดับชั้นนี้">
                             <i class="fa fa-trash"></i>
                         </button>
                     </div>
@@ -3301,11 +3375,12 @@
     }
 
     function removeOptionGrade(index) {
-      let optionDiv = document.querySelector(`.option${index}`);
+      const container = document.getElementById('options_grade');
+      let optionDiv = container.querySelector(`.grade-option.option${index}`);
       if (optionDiv) optionDiv.remove();
 
-      if (document.getElementById('options_grade').children.length === 0) {
-        document.getElementById('options_grade').style.display = 'none';
+      if (container.children.length === 0) {
+        container.style.display = 'none';
       }
     }
 
@@ -3396,6 +3471,16 @@
                 `editOptionGrade(${response.grade_id}, ${index})`
               );
               createBtn.disabled = false;
+
+              const deleteBtn = createBtn
+                .closest('.grade-option')
+                ?.querySelector('.btn-danger');
+              if (deleteBtn) {
+                deleteBtn.setAttribute(
+                  'onclick',
+                  `deleteOptionGrade(${response.grade_id}, ${index})`
+                );
+              }
             }, 2000);
           }
         },
@@ -3514,6 +3599,30 @@
             packageNameInput.id = 'optionPackageName' + response.package_id;
             packagePriceInput.id = 'optionPackagePrice' + response.package_id;
 
+            const examModeInput = document.getElementById('newHasExamMode' + index);
+            if (examModeInput) {
+              const examModeLabel = document.querySelector(
+                `label[for="newHasExamMode${index}"]`
+              );
+              examModeInput.id = 'hasExamModePackage' + response.package_id;
+              examModeInput.setAttribute(
+                'onchange',
+                `togglePackageExamMode(${response.package_id})`
+              );
+              if (examModeLabel) {
+                examModeLabel.htmlFor = examModeInput.id;
+              }
+            }
+
+            const newOnlineLimit = document.getElementById('newOnlineLimit' + index);
+            const newOnsiteLimit = document.getElementById('newOnsiteLimit' + index);
+            if (newOnlineLimit) {
+              newOnlineLimit.id = 'onlineLimit' + response.package_id;
+            }
+            if (newOnsiteLimit) {
+              newOnsiteLimit.id = 'onsiteLimit' + response.package_id;
+            }
+
             // Change icon to check
             btnIcon.classList.remove('fa-spinner', 'fa-spin');
             btnIcon.classList.add('fa-check');
@@ -3543,6 +3652,16 @@
               );
               createBtn.id = 'editPackageBtn' + response.package_id;
               createBtn.disabled = false;
+
+              const deleteBtn = createBtn
+                .closest('.package-option')
+                ?.querySelector('.btn-danger');
+              if (deleteBtn) {
+                deleteBtn.setAttribute(
+                  'onclick',
+                  `deleteOptionPackage(${response.package_id}, ${index})`
+                );
+              }
 
               // Show and update linkGrade button
               const linkGradeBtn = document.getElementById(
@@ -3600,14 +3719,15 @@
     function getOptionGrade(index, value, id) {
       document.getElementById('options_grade').style.display = 'block';
       let option = document.createElement('div');
-      option.classList.add(`option${index}`);
+      option.classList.add(`option${index}`, 'grade-option');
+      const safeValue = escapeDynamicAttribute(value);
       option.innerHTML = `
         <label>Option Grade ${index}</label>
         <div class="form-group">
             <div class="row">
                 <div class="col-md-8">
                     <input type="hidden" id="optionGradeId${id}" name="optionGrade[${index}][id]" value="${id || ''}">
-                    <input type="text" class="form-control" id="optionGrade${id}" name="optionGrade[${index}][grade]" value="${value}">
+                    <input type="text" class="form-control" id="optionGrade${id}" name="optionGrade[${index}][grade]" value="${safeValue}">
                 </div>
                 <div class="col-md-4">
                     <div class="row">
@@ -3649,6 +3769,7 @@
       }
 
       const gradeName = gradeInput.value.trim();
+      const formId = document.getElementById('form_id').value;
 
       // Try to find button by different ID patterns
       let createBtn = document.getElementById('createBtn' + index);
@@ -3696,6 +3817,7 @@
         data: {
           _token: '{{ csrf_token() }}',
           id: gradeId,
+          form_id: formId,
           value: gradeName
         },
         success: function (response) {
@@ -3744,6 +3866,8 @@
     }
 
     function deleteOptionGrade(id, index) {
+      const formId = document.getElementById('form_id').value;
+
       $.ajax({
         url: '{{
       route(
@@ -3754,10 +3878,19 @@
         data: {
           _token: '{{ csrf_token() }}',
           id: id,
+          form_id: formId,
           index: index
         },
         success: function (response) {
           removeOptionGrade(response.index);
+          toastr.success('Grade deleted successfully.');
+        },
+        error: function (xhr) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Grade was not deleted',
+            text: ajaxErrorMessage(xhr, 'Please reload the page and try again.')
+          });
         }
       });
     }
@@ -4021,6 +4154,7 @@
         ? 1
         : 0;
       const toggleIcon = document.getElementById('hasExamModePackage' + packageId);
+      const formId = document.getElementById('form_id').value;
 
       // Disable temporarily
       toggleIcon.disabled = true;
@@ -4035,6 +4169,7 @@
         data: {
           _token: '{{ csrf_token() }}',
           package_id: packageId,
+          form_id: formId,
           has_exam_mode: isChecked
         },
         success: function (response) {
@@ -4046,8 +4181,10 @@
             toggleIcon.checked = !isChecked;
           }
         },
-        error: function () {
-          toastr.error('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+        error: function (xhr) {
+          toastr.error(
+            ajaxErrorMessage(xhr, 'Unable to update the package exam mode.')
+          );
           toggleIcon.checked = !isChecked;
         },
         complete: function () {

@@ -279,11 +279,26 @@ class FormManageController extends Controller
 
   public function editOptionGrade(Request $request)
   {
-    $id = $request->id;
-    $value = $request->value;
-    $data = FormGrades::find($id);
+    $validated = $request->validate([
+      'id' => 'required|integer',
+      'form_id' => 'required|integer|exists:forms_manage,id',
+      'value' => 'required|string|max:255',
+    ]);
+
+    $data = FormGrades::where('id', $validated['id'])
+      ->where('form_id', $validated['form_id'])
+      ->first();
+
+    if (!$data) {
+      return response()->json([
+        'status' => 'error',
+        'message' => 'Grade not found for this form.',
+      ], 404);
+    }
+
     $old_data = $data->toArray();
-    $data->grade = $value;
+    $data->grade = trim($validated['value']);
+    $data->update_by = Auth::id();
     $data->save();
 
     // บันทึก activity log — แก้ไข grade
@@ -296,9 +311,23 @@ class FormManageController extends Controller
   }
   public function deleteOptionGrade(Request $request)
   {
-    $id = $request->id;
-    $index = $request->index;
-    $data = FormGrades::find($id);
+    $validated = $request->validate([
+      'id' => 'required|integer',
+      'form_id' => 'required|integer|exists:forms_manage,id',
+      'index' => 'required|integer|min:1',
+    ]);
+
+    $data = FormGrades::where('id', $validated['id'])
+      ->where('form_id', $validated['form_id'])
+      ->first();
+
+    if (!$data) {
+      return response()->json([
+        'status' => 'error',
+        'message' => 'Grade not found for this form.',
+      ], 404);
+    }
+
     $old_data = $data->toArray();
 
     // บันทึก activity log — ลบ grade
@@ -308,22 +337,56 @@ class FormManageController extends Controller
     return response()->json([
       'status' => 'success',
       'data' => $data,
-      'index' => $index,
+      'index' => $validated['index'],
     ]);
   }
 
   public function editOptionPackage(Request $request)
   {
-    $id = $request->id;
-    $value = $request->value;
-    $data = FormPakages::find($id);
+    $validated = $request->validate([
+      'id' => 'required|integer',
+      'form_id' => 'required|integer|exists:forms_manage,id',
+      'value' => 'required|string|max:255',
+      'price' => 'required|numeric|min:0',
+      'has_exam_mode' => 'required|boolean',
+      'online_limit' => 'nullable|integer|min:0',
+      'onsite_limit' => 'nullable|integer|min:0',
+    ]);
+
+    $data = FormPakages::where('id', $validated['id'])
+      ->where('form_id', $validated['form_id'])
+      ->first();
+
+    if (!$data) {
+      return response()->json([
+        'status' => 'error',
+        'message' => 'Package not found for this form.',
+      ], 404);
+    }
+
+    $packageName = trim($validated['value']);
+    $duplicateExists = FormPakages::where('form_id', $validated['form_id'])
+      ->where('package', $packageName)
+      ->where('id', '!=', $data->id)
+      ->exists();
+
+    if ($duplicateExists) {
+      return response()->json([
+        'status' => 'error',
+        'message' => 'A package with this name already exists in the form.',
+        'errors' => [
+          'value' => ['A package with this name already exists in the form.'],
+        ],
+      ], 422);
+    }
+
     $old_data = $data->toArray();
-    $data->package = $value;
-    $data->price = $request->price;
-    $data->has_exam_mode = $request->has_exam_mode ?? false;
-    $data->online_limit = $request->online_limit ?: null;
-    $data->onsite_limit = $request->onsite_limit ?: null;
-    $data->update_by = Auth::user()->id;
+    $data->package = $packageName;
+    $data->price = $validated['price'];
+    $data->has_exam_mode = $validated['has_exam_mode'];
+    $data->online_limit = $validated['online_limit'] ?? null;
+    $data->onsite_limit = $validated['onsite_limit'] ?? null;
+    $data->update_by = Auth::id();
     $data->save();
 
     // บันทึก activity log — แก้ไข package
@@ -331,15 +394,30 @@ class FormManageController extends Controller
 
     return response()->json([
       'status' => 'success',
+      'message' => 'Package updated successfully.',
       'data' => $data,
     ]);
   }
 
   public function deleteOptionPackage(Request $request)
   {
-    $id = $request->id;
-    $index = $request->index;
-    $data = FormPakages::find($id);
+    $validated = $request->validate([
+      'id' => 'required|integer',
+      'form_id' => 'required|integer|exists:forms_manage,id',
+      'index' => 'required|integer|min:1',
+    ]);
+
+    $data = FormPakages::where('id', $validated['id'])
+      ->where('form_id', $validated['form_id'])
+      ->first();
+
+    if (!$data) {
+      return response()->json([
+        'status' => 'error',
+        'message' => 'Package not found for this form.',
+      ], 404);
+    }
+
     $old_data = $data->toArray();
 
     // บันทึก activity log — ลบ package
@@ -349,7 +427,7 @@ class FormManageController extends Controller
     return response()->json([
       'status' => 'success',
       'data' => $data,
-      'index' => $index,
+      'index' => $validated['index'],
     ]);
   }
 
@@ -399,7 +477,7 @@ class FormManageController extends Controller
 
   public function createOptionPackage(Request $request)
   {
-    $request->validate([
+    $validated = $request->validate([
       'form_id' => 'required|exists:forms_manage,id',
       'package_name' => 'required|string|max:255',
       'package_price' => 'required|numeric|min:0',
@@ -408,9 +486,9 @@ class FormManageController extends Controller
       'onsite_limit' => 'nullable|integer|min:0',
     ]);
 
-    $formId = $request->form_id;
-    $packageName = $request->package_name;
-    $packagePrice = $request->package_price;
+    $formId = $validated['form_id'];
+    $packageName = trim($validated['package_name']);
+    $packagePrice = $validated['package_price'];
 
     // Check if package already exists for this form
     $existingPackage = FormPakages::where('form_id', $formId)
@@ -435,9 +513,9 @@ class FormManageController extends Controller
     $package->form_id = $formId;
     $package->package = $packageName;
     $package->price = $packagePrice;
-    $package->has_exam_mode = $request->has_exam_mode ?? false;
-    $package->online_limit = $request->online_limit ?: null;
-    $package->onsite_limit = $request->onsite_limit ?: null;
+    $package->has_exam_mode = $validated['has_exam_mode'] ?? false;
+    $package->online_limit = $validated['online_limit'] ?? null;
+    $package->onsite_limit = $validated['onsite_limit'] ?? null;
     $package->sfield = $form->sfield ?? '';
     $package->form_name = $form->form_name ?? '';
     $package->form_route = $form->form_route ?? '';
@@ -734,6 +812,9 @@ class FormManageController extends Controller
       'optionPackage.*.id' => 'nullable|integer|exists:forms_pakages,id',
       'optionPackage.*.name' => 'nullable|string|max:100',
       'optionPackage.*.value' => 'nullable|numeric',
+      'optionPackage.*.has_exam_mode' => 'nullable|boolean',
+      'optionPackage.*.online_limit' => 'nullable|integer|min:0',
+      'optionPackage.*.onsite_limit' => 'nullable|integer|min:0',
       'field_settings' => 'nullable|array',
       'field_settings.*.enabled' => 'nullable|boolean',
       'field_settings.*.required' => 'nullable|boolean',
@@ -890,6 +971,16 @@ class FormManageController extends Controller
       'optionPackage.*.name.max' =>
         'Each package name may not be greater than 100 characters.',
       'optionPackage.*.value.numeric' => 'Each package value must be a number.',
+      'optionPackage.*.has_exam_mode.boolean' =>
+        'Each package exam mode value must be true or false.',
+      'optionPackage.*.online_limit.integer' =>
+        'Each package online limit must be a number.',
+      'optionPackage.*.online_limit.min' =>
+        'Each package online limit must be at least 0.',
+      'optionPackage.*.onsite_limit.integer' =>
+        'Each package onsite limit must be a number.',
+      'optionPackage.*.onsite_limit.min' =>
+        'Each package onsite limit must be at least 0.',
 
       // images (generic)
       'brand.image' => 'The brand must be an image file.',
@@ -1250,6 +1341,20 @@ class FormManageController extends Controller
             ->update([
               'package' => $packageName,
               'price' => $packagePrice,
+              'has_exam_mode' => filter_var(
+                $packageData['has_exam_mode'] ?? false,
+                FILTER_VALIDATE_BOOL,
+              ),
+              'online_limit' =>
+                array_key_exists('online_limit', $packageData) &&
+                $packageData['online_limit'] !== ''
+                  ? (int) $packageData['online_limit']
+                  : null,
+              'onsite_limit' =>
+                array_key_exists('onsite_limit', $packageData) &&
+                $packageData['onsite_limit'] !== ''
+                  ? (int) $packageData['onsite_limit']
+                  : null,
               'update_by' => Auth::id(),
             ]);
         } else {
@@ -1265,6 +1370,20 @@ class FormManageController extends Controller
             'form_route' => $form_manage->form_route,
             'package' => $packageName,
             'price' => $packagePrice,
+            'has_exam_mode' => filter_var(
+              $packageData['has_exam_mode'] ?? false,
+              FILTER_VALIDATE_BOOL,
+            ),
+            'online_limit' =>
+              array_key_exists('online_limit', $packageData) &&
+              $packageData['online_limit'] !== ''
+                ? (int) $packageData['online_limit']
+                : null,
+            'onsite_limit' =>
+              array_key_exists('onsite_limit', $packageData) &&
+              $packageData['onsite_limit'] !== ''
+                ? (int) $packageData['onsite_limit']
+                : null,
             'create_by' => Auth::id(),
             'update_by' => Auth::id(),
           ]);
@@ -1540,12 +1659,23 @@ class FormManageController extends Controller
   {
     $request->validate([
       'package_id' => 'required|exists:forms_pakages,id',
+      'form_id' => 'required|exists:forms_manage,id',
       'has_exam_mode' => 'required|boolean',
     ]);
 
-    $package = FormPakages::find($request->package_id);
+    $package = FormPakages::where('id', $request->package_id)
+      ->where('form_id', $request->form_id)
+      ->first();
+
+    if (!$package) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Package not found for this form.',
+      ], 404);
+    }
+
     $package->has_exam_mode = $request->has_exam_mode;
-    $package->update_by = Auth::user()->id;
+    $package->update_by = Auth::id();
     $package->save();
 
     return response()->json([
