@@ -78,27 +78,36 @@
         color: rgb(138, 175, 61);
       }
 
-      #bg-text {
-        text-decoration: underline;
-        /* Add underline to the text */
-        z-index: 9999;
-        top: 20%;
-        /* Adjust the top position */
-        left: 20%;
-        /* Adjust the left position */
+      #x_content {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .receipt-cancel-watermark {
         position: absolute;
-        color: rgba(255, 0, 0, 0.7);
-        font-size: 100px;
-        transform: rotate(200deg);
-        -webkit-transform: rotate(300deg);
+        z-index: 10;
+        top: 46%;
+        left: 50%;
+        width: 92%;
+        text-align: center;
+        transform: translate(-50%, -50%) rotate(-24deg);
+        pointer-events: none;
+      }
+
+      .receipt-cancel-watermark span {
+        color: rgba(220, 0, 0, 0.55);
+        font-size: 64px;
+        font-weight: 700;
+        line-height: 1;
+        white-space: nowrap;
       }
     </style>
   </head>
 
   <body>
-    {!! $app_html !!}
     <div class="row">
       <div class="main-card card mb-3" id="x_content">
+        {!! $app_html !!}
         <div class="card-body">
           <table align="center" width="99%" cellpadding="0" cellspacing="0">
             <thead>

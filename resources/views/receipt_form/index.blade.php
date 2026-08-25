@@ -24,6 +24,15 @@
     href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
   />
   <style>
+    #Listview tbody tr.receipt-cancelled > td {
+      background-color: #f8d7da !important;
+      color: #842029 !important;
+    }
+
+    #Listview tbody tr.receipt-cancelled:hover > td {
+      background-color: #f1bfc4 !important;
+    }
+
     .receipt-form-page {
       width: 100%;
       max-width: none;
@@ -1308,6 +1317,11 @@
         stateSave: true,
         sPaginationType: 'full_numbers',
         dom: 'T<"clear">lfrtip',
+        createdRow: function (row, data) {
+          if (Number(data.receipt_cancelled) === 1) {
+            $(row).addClass('receipt-cancelled');
+          }
+        },
         columns: [
           {
             data: 'checkbox',

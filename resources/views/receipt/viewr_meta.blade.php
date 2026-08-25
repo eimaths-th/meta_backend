@@ -62,19 +62,28 @@
       color: rgb(255, 174, 0);
     }
 
-    #bg-text {
-      text-decoration: underline;
-      /* Add underline to the text */
-      z-index: 9999;
-      top: 50%;
-      /* Adjust the top position */
-      left: 30%;
-      /* Adjust the left position */
+    .receipt-document {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .receipt-cancel-watermark {
       position: absolute;
-      color: rgba(255, 0, 0, 0.7);
-      font-size: 100px;
-      transform: rotate(200deg);
-      -webkit-transform: rotate(300deg);
+      z-index: 10;
+      top: 300px;
+      left: 50%;
+      width: 90%;
+      text-align: center;
+      transform: translate(-50%, -50%) rotate(-24deg);
+      pointer-events: none;
+    }
+
+    .receipt-cancel-watermark span {
+      color: rgba(220, 0, 0, 0.55);
+      font-size: clamp(54px, 6vw, 88px);
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
     }
   </style>
 @endsection
@@ -121,7 +130,12 @@
       </div>
     </div>
     @foreach ($data as $receipt_info => $receipt_val)
-      <div class="main-card card mb-3" id="x_content">
+      <div class="main-card card mb-3 receipt-document" id="x_content">
+        @if (! empty($receipt_val['cancle']))
+          <div class="receipt-cancel-watermark" aria-hidden="true">
+            <span>ยกเลิก / CANCELLED</span>
+          </div>
+        @endif
         <div class="card-body">
           @php
             //var_dump($data);

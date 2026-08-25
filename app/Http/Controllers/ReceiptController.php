@@ -559,6 +559,22 @@ class ReceiptController extends Controller
         }
     }
 
+    private function receiptActionHtml($receipt): string
+    {
+        $viewUrl = route('receipts.show', ['type' => 'view', 'id' => $receipt->receipt_id]);
+        $html = '<div class="receipt-actions"><a href="'.$viewUrl.'" class="btn btn-xs btn-success btn-view" id="ViewData" data-id="'.$receipt->receipt_id.'"><i class="fa fa-eye"></i> View</a>';
+
+        if ((bool) $receipt->cancle) {
+            return $html.'<span class="badge badge-danger">Cancelled</span></div>';
+        }
+
+        $html .= '<a href="#" class="btn btn-xs btn-warning btn-edit" id="getEditData" data-id="'.$receipt->receipt_id.'"><i class="fa fa-edit"></i> Edit</a>';
+        $html .= '<a href="#" class="btn btn-xs btn-info btn-edit" id="getConvData" data-id="'.$receipt->receipt_id.'"><i class="fa fa-code-compare"></i> Credit Note</a>';
+        $html .= '<button type="button" class="btn btn-xs btn-danger btn-cancel-receipt" data-rowid="'.$receipt->receipt_id.'"><i class="fa fa-ban"></i> Cancel</button>';
+
+        return $html.'</div>';
+    }
+
     public function migrateReceipt($id)
     {
         $receipts = Receipt::select(
@@ -677,6 +693,9 @@ class ReceiptController extends Controller
                 "receipts.name_parent as receipt_parent_name",
                 "receipts.mobile as receipt_mobile",
                 "receipts.referent_code as receipt_referent_code",
+                "receipts.cancle as cancle",
+                "receipts.cancelled_at as cancelled_at",
+                "receipts.cancel_reason as cancel_reason",
             )
                 //->join("students", "students.id", "=", "receipts.student_id")
                 //->join("subjects", "subjects.id", "=", "receipts.subject_id")
@@ -706,6 +725,10 @@ class ReceiptController extends Controller
                         $mes = "ใบกำกับภาษี/ใบเสร็จรับเงิน";
                         $text = "Tax Invoice/Receipt";
                     }
+                    if ($receipt->cancle) {
+                        $mes .= ' <span class="badge badge-danger">Cancelled</span>';
+                    }
+
                     return $mes;
                 })
                 ->addColumn('exam_mode', function ($row) {
@@ -736,13 +759,9 @@ class ReceiptController extends Controller
                     return '<input type="checkbox" id="' . $row->receipt_id . '" class="flat" name="table_records[]" value="' . $row->receipt_id . '" >';
                 })
                 ->addColumn('action', function ($row) {
-                    $html = '<a href="receipts/show/view/' . $row->receipt_id . '" class="btn btn-xs btn-success btn-view" id="ViewData" data-id="' . $row->receipt_id . '"><i class="fa fa-eye"></i> View </a> ';
-                    $html .= '<a href="#" class="btn btn-xs btn-warning btn-edit" id="getEditData" data-id="' . $row->receipt_id . '"><i class="fa fa-edit"></i> Edit</a> ';
-                    $html .= '<a href="#" class="btn btn-xs btn-info btn-edit" id="getConvData" data-id="' . $row->receipt_id . '"><i class="fa fa-code-compare"></i></i> Credit Note</a> ';
-                    //$html .= '<a href="#" data-rowid="' . $row->receipt_id . '" class="btn btn-xs btn-danger btn-delete"><i class="fa fa-trash"></i> Delete</a>';
-                    return $html;
+                    return $this->receiptActionHtml($row);
                 })
-                ->rawColumns(['checkbox', 'action', 'exam_mode'])
+                ->rawColumns(['checkbox', 'receipt_type', 'action', 'exam_mode'])
                 ->toJson();
         }
 
@@ -796,6 +815,9 @@ class ReceiptController extends Controller
                 "receipts.name_parent as receipt_parent_name",
                 "receipts.mobile as receipt_mobile",
                 "receipts.referent_code as receipt_referent_code",
+                "receipts.cancle as cancle",
+                "receipts.cancelled_at as cancelled_at",
+                "receipts.cancel_reason as cancel_reason",
             )
                 //->join("students", "students.id", "=", "receipts.student_id")
                 //->join("subjects", "subjects.id", "=", "receipts.subject_id")
@@ -825,6 +847,10 @@ class ReceiptController extends Controller
                         $mes = "ใบกำกับภาษี/ใบเสร็จรับเงิน";
                         $text = "Tax Invoice/Receipt";
                     }
+                    if ($receipt->cancle) {
+                        $mes .= ' <span class="badge badge-danger">Cancelled</span>';
+                    }
+
                     return $mes;
                 })
                 ->editColumn('referent_code', function (Receipt $receipt) {
@@ -846,12 +872,10 @@ class ReceiptController extends Controller
                     return '<input type="checkbox" id="' . $row->receipt_id . '" class="flat" name="table_records[]" value="' . $row->receipt_id . '" >';
                 })
                 ->addColumn('action', function ($row) {
-                    $html = '<a href="receipts/show/view/' . $row->receipt_id . '" class="btn btn-xs btn-success btn-view" id="ViewData" data-id="' . $row->receipt_id . '"><i class="fa fa-eye"></i> View </a> ';
-                    $html .= '<a href="#" class="btn btn-xs btn-warning btn-edit" id="getEditData" data-id="' . $row->receipt_id . '"><i class="fa fa-edit"></i> Edit</a> ';
-                    $html .= '<a href="#" class="btn btn-xs btn-info btn-edit" id="getConvData" data-id="' . $row->receipt_id . '"><i class="fa fa-code-compare"></i></i> Credit Note</a> ';
-                    //$html .= '<a href="#" data-rowid="' . $row->receipt_id . '" class="btn btn-xs btn-danger btn-delete"><i class="fa fa-trash"></i> Delete</a>';
-                    return $html;
-                })->toJson();
+                    return $this->receiptActionHtml($row);
+                })
+                ->rawColumns(['checkbox', 'receipt_type', 'action'])
+                ->toJson();
         }
 
         $referent_codes = ReferentCode::orderBy("id", "asc")->get();
@@ -1049,7 +1073,12 @@ class ReceiptController extends Controller
     {
         //
         $this->check_permission();
-        $data = Receipt::find($id);
+        $data = Receipt::with('cancelledBy:id,name')->find($id);
+
+        if (! $data) {
+            return response()->json(['errors' => ['Receipt not found.']], 404);
+        }
+
         $field_id = $data->sfield;
 
         $date_start = date("Y-m-d", strtotime('2025-02-10'));
@@ -1184,13 +1213,22 @@ class ReceiptController extends Controller
         // );
 
         $app_html = '';
+        $cancel_notice_html = '';
         if ($data->cancle == 1) {
-            $app_html = '<div id="background">
-            <p id="bg-text"> ยกเลิก ใบเสร็จรับเงิน </p>
+            $cancelledAt = $data->cancelled_at
+                ? $data->cancelled_at->format('Y-m-d H:i:s')
+                : '-';
+            $cancelledBy = optional($data->cancelledBy)->name ?: '-';
+            $cancelReason = e($data->cancel_reason ?: '-');
+            $app_html = '<div class="receipt-cancel-watermark" aria-hidden="true">
+                <span>&#3618;&#3585;&#3648;&#3621;&#3636;&#3585; / CANCELLED</span>
+            </div>';
+            $cancel_notice_html = '<div class="alert alert-danger receipt-cancel-notice">
+                <strong>Cancelled receipt</strong><br>
+                Cancelled at: '.$cancelledAt.' | Cancelled by: '.e($cancelledBy).'<br>
+                Reason: '.$cancelReason.'
             </div>';
         }
-
-
 
         //$des_text = nl2br($data->description);
 
@@ -1206,6 +1244,7 @@ class ReceiptController extends Controller
             ->with(['mes' => $mes])
             ->with(['text' => $text])
             ->with(['app_html' => $app_html])
+            ->with(['cancel_notice_html' => $cancel_notice_html])
             ->with(['price_texten' => $price_texten])
             ->with(['price_text' => $price_text])
             ->with(['discount_val' => $discount_val])
@@ -1264,6 +1303,7 @@ class ReceiptController extends Controller
             "receipts.package as receipt_price",
             "receipts.type as receipt_type",
             "receipts.file_att as file_att",
+            "receipts.cancle as cancle",
         )
             //->join("students", "students.id", "=", "receipts.student_id")
             //->join("subjects", "subjects.id", "=", "receipts.subject_id")
@@ -1272,9 +1312,7 @@ class ReceiptController extends Controller
             ->where([
                 ['receipts.sfield', $sfield],
                 ['submission_date', $request->get('print_rdate')],
-                ['cancle', '!=', 1]
             ])
-            /* ->whereNull('cancle') */
             ->orderBy("receipts.receipt_number", "asc")
             ->get();
         //->toArray();
@@ -1312,6 +1350,7 @@ class ReceiptController extends Controller
             $ret_receipt[$result->id]['last_name'] = $result->receipt_lastname;
             $ret_receipt[$result->id]['name_parent'] = $result->receipt_name_parent;
             $ret_receipt[$result->id]['submission_date'] = $result->receipt_submission_date;
+            $ret_receipt[$result->id]['cancle'] = (bool) $result->cancle;
 
             //price detail
             $receipts_detail = ReceiptDetail::where('receipt_details.receipt_id', $result->id)
@@ -1518,7 +1557,6 @@ class ReceiptController extends Controller
                 $ret_receipt[$i]['receipt_des'] = $desresult;
             } elseif ($ret_receipt[$i]['cancle'] == 1) {
                 $ret_receipt[$i]['receipt_type'] = "ยกเลิก";
-                $price = $price * -1;
                 $ret_receipt[$i]['receipt_des'] = "<font color='red'>( ยกเลิก )</font>";
             }
 
@@ -1528,7 +1566,7 @@ class ReceiptController extends Controller
             $ret_receipt[$i]['receipt_price_label'] = "บาท";
 
 
-            if ($ret_receipt[$i]['cancle'] !== 1) {
+            if (! $ret_receipt[$i]['cancle']) {
                 $total_price = ($total_price + $price);
             }
             $i++;
@@ -1704,7 +1742,6 @@ class ReceiptController extends Controller
             }
 
             if ($result->cancle == 1) {
-                $price = $price * -1;
                 $rtype2 .= "<font color='red'>( ยกเลิก ) " . $ret_receipt[$result->receipt_submission_date]['receipt_number'][$i] . ' </font>';
             }
 
@@ -1914,7 +1951,6 @@ class ReceiptController extends Controller
             }
             $rtype3 = '';
             if ($result->cancle == 1) {
-                $price = $price * -1;
                 $rtype3 .= "<font color='red'>( ยกเลิก ) " . $ret_receipt[$ymcode]['receipt_number'][$i] . ' </font>';
             }
 
@@ -2040,6 +2076,14 @@ class ReceiptController extends Controller
         $this->check_permission();
         $data = Receipt::find($id);
 
+        if (! $data) {
+            return response()->json(['errors' => ['Receipt not found.']], 404);
+        }
+
+        if ($data->isCancelled()) {
+            return response()->json(['errors' => ['Cancelled receipts cannot be edited.']], 422);
+        }
+
 
 
         $receipts_detail = ReceiptDetail::where('receipt_details.receipt_id', $id)
@@ -2120,6 +2164,16 @@ class ReceiptController extends Controller
     {
         //
         $this->check_permission();
+        $receipt = Receipt::find($id);
+
+        if (! $receipt) {
+            return response()->json(['errors' => ['Receipt not found.']], 404);
+        }
+
+        if ($receipt->isCancelled()) {
+            return response()->json(['errors' => ['Cancelled receipts cannot be edited.']], 422);
+        }
+
         $validator =  Validator::make($request->all(), [
             'submission_date' => 'required|string',
             'first_name' => 'required|string',
@@ -2148,8 +2202,7 @@ class ReceiptController extends Controller
         $runitp  = $request->get('runitp');
         $rdis  = $request->get('rdis');
 
-        $receipt = Receipt::find($id);
-        $old_data = $receipt ? $receipt->toArray() : null;
+        $old_data = $receipt->toArray();
 
         $receipt->update($request->all());
 
@@ -2179,35 +2232,74 @@ class ReceiptController extends Controller
      * @param  \App\Models\Receipt  $receipt
      * @return \Illuminate\Http\Response
      */
+    public function cancel(Request $request, $id)
+    {
+        $this->check_permission();
+
+        $validator = Validator::make($request->all(), [
+            'reason' => 'required|string|max:1000',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+
+        $receipt = DB::transaction(function () use ($id, $request) {
+            $receipt = Receipt::whereKey($id)->lockForUpdate()->first();
+
+            if (! $receipt) {
+                abort(404, 'Receipt not found.');
+            }
+
+            if ($receipt->isCancelled()) {
+                abort(422, 'Receipt is already cancelled.');
+            }
+
+            $oldData = $receipt->toArray();
+            $receipt->update([
+                'cancle' => true,
+                'cancelled_at' => now(),
+                'cancelled_by' => Auth::id(),
+                'cancel_reason' => trim((string) $request->input('reason')),
+            ]);
+
+            LogActivity::modelEvent(
+                $receipt,
+                'receipt cancelled',
+                $oldData,
+                $receipt->fresh()->toArray(),
+            );
+
+            return $receipt->fresh();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Receipt cancelled successfully',
+            'data' => [
+                'id' => $receipt->id,
+                'status' => 'cancelled',
+                'cancelled_at' => optional($receipt->cancelled_at)->toIso8601String(),
+                'cancel_reason' => $receipt->cancel_reason,
+            ],
+        ]);
+    }
+
     public function destroy($id)
     {
         $this->check_permission();
 
-        // บันทึก activity log ก่อนลบ receipt
-        $receipt = Receipt::find($id);
-        if ($receipt) {
-            LogActivity::modelEvent($receipt, 'receipt deleted', $receipt->toArray(), null);
-            $receipt->delete();
-        }
-
-        return ['success' => true, 'message' => 'Deleted Successfully'];
+        return response()->json([
+            'success' => false,
+            'message' => 'Issued receipts cannot be deleted. Please cancel the receipt instead.',
+        ], 405);
     }
 
     public function destroy_all(Request $request)
     {
         $this->check_permission();
-        $arr_del = $request->get('table_records');
 
-        // บันทึก activity log สำหรับการลบทั้งหมด
-        foreach ($arr_del as $del_id) {
-            $receipt = Receipt::find($del_id);
-            if ($receipt) {
-                LogActivity::modelEvent($receipt, 'receipt bulk_deleted', $receipt->toArray(), null);
-                $receipt->delete();
-            }
-        }
-
-        return redirect('/receipts')->with('success', 'Deleted Successfully');
+        return back()->with('error', 'Issued receipts cannot be deleted. Please cancel each receipt instead.');
     }
 
     public function importExcel(Request $request)

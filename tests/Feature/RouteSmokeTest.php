@@ -16,6 +16,7 @@ class RouteSmokeTest extends TestCase
             'parentregister',
             'google.login',
             'generate.tts',
+            'receipts.cancel',
         ] as $routeName) {
             $this->assertNotNull(Route::getRoutes()->getByName($routeName), "Route [{$routeName}] is not registered.");
         }

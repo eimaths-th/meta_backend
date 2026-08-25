@@ -253,7 +253,11 @@
                 <td align="center" width="15%" class="actived gray">หน่วย</td>
               </tr>
               @foreach ($data as $receipt)
-                <tr class="activeda" height="15">
+                <tr
+                  class="activeda"
+                  height="15"
+                  @if (($receipt['cancle'] ?? 0) == 1) style="background:#f8d7da;color:#842029;" @endif
+                >
                   <td align="center" width="15%" class="actived">
                     <b>
                       <font size="{{ $fontsize }}"

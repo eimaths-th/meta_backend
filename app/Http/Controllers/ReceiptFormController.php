@@ -809,10 +809,16 @@ class ReceiptFormController extends Controller
                 'receipt_forms.name_parent as receipt_parent_name',
                 'receipt_forms.mobile as receipt_mobile',
                 'receipt_forms.generate as receipt_generate',
+                'receipt_forms.rec_id as generated_receipt_id',
                 'receipt_forms.photo_att as file',
                 'receipt_forms.referent_code as referent_code',
                 'receipt_forms.email as email',
             )
+                ->addSelect([
+                    'receipt_cancelled' => Receipt::select('cancle')
+                        ->whereColumn('receipts.id', 'receipt_forms.rec_id')
+                        ->limit(1),
+                ])
                 ->where('receipt_forms.sfield', $request->sfield)
                 ->orderBy('receipt_forms.id', 'desc');
             if ($request->start_date && $request->end_date) {
@@ -843,7 +849,9 @@ class ReceiptFormController extends Controller
                 })
 
                 ->addColumn('receipt_status', function ($row) {
-                    if ($row->receipt_generate == 0) {
+                    if ($row->receipt_cancelled) {
+                        $html = '<span class="badge badge-danger">Cancelled</span>';
+                    } elseif ($row->receipt_generate == 0) {
                         $html =
                             '<i class="text-danger fa fa-edit"></i> ยังไม่ได้ออกใบเสร็จ ';
                     } else {
@@ -894,6 +902,16 @@ class ReceiptFormController extends Controller
                                 }
                             }
                         }
+                    }
+
+                    if ($row->receipt_cancelled) {
+                        $viewUrl = route('receipts.show', [
+                            'type' => 'view',
+                            'id' => $row->generated_receipt_id,
+                        ]);
+
+                        return '<a href="'.$viewUrl.'" class="btn btn-xs btn-success"><i class="fa fa-eye"></i> View</a> '
+                            .'<span class="badge badge-danger">Cancelled</span>';
                     }
 
                     if ($row->receipt_generate == 0) {
@@ -982,10 +1000,16 @@ class ReceiptFormController extends Controller
                 'receipt_forms.name_parent as receipt_parent_name',
                 'receipt_forms.mobile as receipt_mobile',
                 'receipt_forms.generate as receipt_generate',
+                'receipt_forms.rec_id as generated_receipt_id',
                 'receipt_forms.photo_att as file',
                 'receipt_forms.referent_code as referent_code',
                 'receipt_forms.email as email',
             )
+                ->addSelect([
+                    'receipt_cancelled' => Receipt::select('cancle')
+                        ->whereColumn('receipts.id', 'receipt_forms.rec_id')
+                        ->limit(1),
+                ])
                 ->where('receipt_forms.sfield', $request->sfield)
                 ->orderBy('receipt_forms.id', 'desc');
             if ($request->start_date && $request->end_date) {
@@ -1016,7 +1040,9 @@ class ReceiptFormController extends Controller
                 })
 
                 ->addColumn('receipt_status', function ($row) {
-                    if ($row->receipt_generate == 0) {
+                    if ($row->receipt_cancelled) {
+                        $html = '<span class="badge badge-danger">Cancelled</span>';
+                    } elseif ($row->receipt_generate == 0) {
                         $html =
                             '<i class="text-danger fa fa-edit"></i> ยังไม่ได้ออกใบเสร็จ ';
                     } else {
@@ -1064,6 +1090,16 @@ class ReceiptFormController extends Controller
                                 }
                             }
                         }
+                    }
+
+                    if ($row->receipt_cancelled) {
+                        $viewUrl = route('receipts.show', [
+                            'type' => 'view',
+                            'id' => $row->generated_receipt_id,
+                        ]);
+
+                        return '<a href="'.$viewUrl.'" class="btn btn-xs btn-success"><i class="fa fa-eye"></i> View</a> '
+                            .'<span class="badge badge-danger">Cancelled</span>';
                     }
 
                     if ($row->receipt_generate == 0) {
@@ -2738,6 +2774,7 @@ class ReceiptFormController extends Controller
 
     public function reSendMail($id)
     {
+        $this->check_permission();
         $receiptForm = ReceiptForm::find($id);
 
         if (! $receiptForm) {
@@ -2745,6 +2782,17 @@ class ReceiptFormController extends Controller
                 'status' => 'error',
                 'message' => 'Receipt form not found',
             ], 404);
+        }
+
+        $generatedReceiptIsCancelled = Receipt::whereKey($receiptForm->rec_id)
+            ->where('cancle', 1)
+            ->exists();
+
+        if ($generatedReceiptIsCancelled) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Cancelled receipts cannot be resent by email.',
+            ], 422);
         }
 
         $adminEmail = $receiptForm->email;
@@ -2999,6 +3047,12 @@ class ReceiptFormController extends Controller
             return response()->json(['error' => 'Receipt Form not found'], 404);
         }
 
+        if (Receipt::whereKey($data->rec_id)->where('cancle', 1)->exists()) {
+            return response()->json([
+                'errors' => ['Cancelled receipts cannot be edited.'],
+            ], 422);
+        }
+
         $imageHtml = $this->renderAdminImageLists($data);
         $data->photo = $imageHtml['photo'];
         $data->file = $imageHtml['file'];
@@ -3095,6 +3149,12 @@ class ReceiptFormController extends Controller
         $dataimg = ReceiptForm::find($request->get('fid'));
         if (! $dataimg) {
             return response()->json(['error' => 'Receipt Form not found'], 404);
+        }
+
+        if (Receipt::whereKey($dataimg->rec_id)->where('cancle', 1)->exists()) {
+            return response()->json([
+                'errors' => ['Cancelled receipts cannot be edited.'],
+            ], 422);
         }
 
         $updatedReceiptLines = null;

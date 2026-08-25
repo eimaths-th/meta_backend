@@ -62,25 +62,38 @@
       color: rgb(255, 174, 0);
     }
 
-    #bg-text {
-      text-decoration: underline;
-      /* Add underline to the text */
-      z-index: 9999;
-      top: 50%;
-      /* Adjust the top position */
-      left: 30%;
-      /* Adjust the left position */
+    #x_content {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .receipt-cancel-watermark {
       position: absolute;
-      color: rgba(255, 0, 0, 0.7);
-      font-size: 100px;
-      transform: rotate(200deg);
-      -webkit-transform: rotate(300deg);
+      z-index: 10;
+      top: 46%;
+      left: 50%;
+      width: 90%;
+      text-align: center;
+      transform: translate(-50%, -50%) rotate(-24deg);
+      pointer-events: none;
+    }
+
+    .receipt-cancel-watermark span {
+      color: rgba(220, 0, 0, 0.55);
+      font-size: clamp(54px, 6vw, 88px);
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .receipt-cancel-notice {
+      width: 100%;
+      margin: 0 0 16px;
     }
   </style>
 @endsection
 
 @section ('content')
-  {!! $app_html !!}
   <div class="row">
     @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -122,7 +135,10 @@
       </div>
     </div>
 
+    {!! $cancel_notice_html !!}
+
     <div class="main-card card mb-3" id="x_content">
+      {!! $app_html !!}
       <div class="card-body">
         <table align="center" width="85%" cellpadding="0" cellspacing="0">
           <!-- Old commented header kept for reference -->

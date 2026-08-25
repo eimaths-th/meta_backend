@@ -45,6 +45,30 @@
   {{-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script> --}}
   <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <style>
+    #Listview tbody tr.receipt-cancelled > td {
+      background-color: #f8d7da !important;
+      color: #842029 !important;
+    }
+
+    #Listview tbody tr.receipt-cancelled:hover > td {
+      background-color: #f1bfc4 !important;
+    }
+
+    #Listview .receipt-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      min-width: max-content;
+      white-space: nowrap;
+    }
+
+    #Listview .receipt-actions .btn,
+    #Listview .receipt-actions .badge {
+      flex: 0 0 auto;
+      margin: 0;
+    }
+  </style>
 @endsection
 
 @section ('content')
@@ -2340,6 +2364,11 @@
         stateSave: true,
         sPaginationType: 'full_numbers',
         dom: 'T<"clear">lfrtip',
+        createdRow: function (row, data) {
+          if (Number(data.cancle) === 1) {
+            $(row).addClass('receipt-cancelled');
+          }
+        },
         columns: [
           {
             data: 'checkbox',
@@ -2833,6 +2862,44 @@
               //$('#CreateModal').modal('hide');
               //}, 10000);
             }
+          }
+        });
+      });
+
+      $(document).on('click', '.btn-cancel-receipt', function () {
+        var rowid = $(this).data('rowid');
+        if (!rowid) return;
+
+        var reason = window.prompt('Please enter the cancellation reason:');
+        if (reason === null) return;
+        reason = reason.trim();
+
+        if (!reason) {
+          toastr.error('Cancellation reason is required.');
+          return;
+        }
+
+        if (!confirm('Cancel this receipt? This action cannot be undone.')) return;
+
+        $.ajax({
+          type: 'POST',
+          dataType: 'JSON',
+          url: '{{ url('/receipts/cancel') }}/' + rowid,
+          data: {
+            _method: 'PATCH',
+            _token: token,
+            reason: reason
+          },
+          success: function (data) {
+            toastr.success(data.message, { timeOut: 5000 });
+            table.ajax.reload(null, false);
+          },
+          error: function (xhr) {
+            var response = xhr.responseJSON || {};
+            var message = response.message ||
+              (response.errors && response.errors[0]) ||
+              'Unable to cancel receipt.';
+            toastr.error(message, { timeOut: 5000 });
           }
         });
       });

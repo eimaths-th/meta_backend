@@ -29,7 +29,7 @@ class ExportHelperTest extends TestCase
         $this->assertSame('Course 1200 baht', $export->delete_all_between('(', ')', 'Course 1200 baht'));
     }
 
-    public function test_form_and_receipt_exports_share_the_expected_headings(): void
+    public function test_form_and_receipt_exports_have_the_expected_headings(): void
     {
         $expected = [
             'Submission Date',
@@ -58,6 +58,17 @@ class ExportHelperTest extends TestCase
         ];
 
         $this->assertSame($expected, (new ExportForm('17', []))->headings());
-        $this->assertSame($expected, (new ExportExcel('17', []))->headings());
+
+        $receiptExpected = $expected;
+        array_splice($receiptExpected, 1, 0, [
+            'Voucher Number',
+            'Customer Code',
+            'Status',
+            'Cancelled At',
+            'Cancelled By',
+            'Cancel Reason',
+        ]);
+
+        $this->assertSame($receiptExpected, (new ExportExcel('17', []))->headings());
     }
 }

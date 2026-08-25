@@ -173,6 +173,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/receipts/store', [ReceiptController::class, 'store'])->name('receipts.store');
     Route::post('/receipts/conv', [ReceiptController::class, 'conv'])->name('receipts.conv');
     Route::post('/receipts/import', [ReceiptController::class, 'importExcel'])->name('receipts.import');
+    Route::patch('/receipts/cancel/{id}', [ReceiptController::class, 'cancel'])->name('receipts.cancel');
     Route::delete('/receipts/destroy/{id}', [ReceiptController::class, 'destroy'])->name('receipts.destroy');
     Route::delete('/receipts/destroy_all', [ReceiptController::class, 'destroy_all'])->name('receipts.destroy_all');
 
