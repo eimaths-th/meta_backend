@@ -38,8 +38,8 @@ class EmailAuditLogController extends Controller
 
         $forms = $query
             ->with(['emailAudits' => function ($auditQuery) {
-                $auditQuery->latest('created_at');
-            }, 'formManage'])
+                $auditQuery->latest('created_at')->latest('id');
+            }, 'formManage', 'receipt:id,cancle'])
             ->latest('id')
             ->paginate(25)
             ->withQueryString();

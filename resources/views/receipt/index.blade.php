@@ -1,24 +1,12 @@
 @extends ('layouts.main_template')
 
 @section ('style')
-  <script
-    src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"
-    type="text/javascript"
-  ></script>
-  <script
-    src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"
-    type="text/javascript"
-  ></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
   <script src="https://malsup.github.io/jquery.blockUI.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/jquery.inputmask.min.js"></script>
-  <script
-    src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"
-    type="text/javascript"
-  ></script>
   <link
     rel="stylesheet"
-    href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css"
+    href="{{ asset('assets/plugins/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css') }}"
   />
   <link
     rel="stylesheet"
@@ -68,11 +56,148 @@
       flex: 0 0 auto;
       margin: 0;
     }
+
+    #Listview .receipt-action-label {
+      margin-left: 3px;
+    }
+
+    .app-main__outer,
+    .app-main__inner,
+    .receipts-page,
+    .receipts-page .main-card,
+    .receipts-page .card-body,
+    .receipts-page form,
+    .receipts-table-shell,
+    .receipts-table-shell .dataTables_wrapper {
+      min-width: 0;
+    }
+
+    .receipts-page .main-card,
+    .receipts-table-shell,
+    .receipts-table-shell .dataTables_wrapper {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .receipts-table-shell {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #Listview {
+      width: 100% !important;
+    }
+
+    #Listview th,
+    #Listview td {
+      vertical-align: middle;
+    }
+
+    #Listview td.dtr-control {
+      white-space: nowrap;
+    }
+
+    #Listview .receipt-details-column {
+      width: 20px !important;
+      min-width: 20px;
+      padding-right: 4px !important;
+      padding-left: 4px !important;
+      text-align: center;
+    }
+
+    #Listview .receipt-select-column {
+      width: 24px !important;
+      min-width: 24px;
+      padding-right: 4px !important;
+      padding-left: 4px !important;
+      text-align: center;
+    }
+
+    #Listview tr.child td.child {
+      padding: 12px 16px;
+      background: #f8f9fa;
+    }
+
+    #Listview tr.child ul.dtr-details {
+      display: block;
+      width: 100%;
+      margin: 0;
+    }
+
+    #Listview tr.child ul.dtr-details > li {
+      display: grid;
+      grid-template-columns: minmax(110px, 35%) minmax(0, 1fr);
+      gap: 12px;
+      padding: 8px 0;
+    }
+
+    #Listview tr.child .dtr-data {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 1599.98px) {
+      #Listview .receipt-actions {
+        min-width: 0;
+        gap: 3px;
+        white-space: normal;
+      }
+
+      #Listview .receipt-actions .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        padding: 0;
+      }
+
+      #Listview .receipt-action-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      #Listview_wrapper .dataTables_length,
+      #Listview_wrapper .dataTables_filter,
+      #Listview_wrapper .dataTables_info,
+      #Listview_wrapper .dataTables_paginate {
+        float: none;
+        width: 100%;
+        text-align: center;
+      }
+
+      #Listview_wrapper .dataTables_filter {
+        margin-top: 12px;
+      }
+
+      #Listview_wrapper .dataTables_filter input {
+        max-width: 190px;
+      }
+
+      #Listview_wrapper .dataTables_paginate .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      #Listview tr.child ul.dtr-details > li {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+    }
   </style>
 @endsection
 
 @section ('content')
-  <div class="row">
+  <div class="row receipts-page">
     @if ($message = Session::get('success'))
       <!--<div class="alert alert-success">
                                                                                                             <p>{{ $message }}</p>
@@ -232,7 +357,7 @@
                 </form> --}}
         <form action="{{ route('receipts') }}" method="GET">
           <div class="row mb-4">
-            <div class="col-md-2">
+            <div class="col-12 col-md-6 col-xl-3">
               <label for="date_range">วันที่</label>
               <input
                 type="hidden"
@@ -250,7 +375,7 @@
                 placeholder="เลือกช่วงวันที่"
               />
             </div>
-            <div class="col-md-2">
+            <div class="col-12 col-md-6 col-xl-3">
               <label for="date_range"> Referent Code</label>
               <input
                 type="hidden"
@@ -301,32 +426,34 @@
             value="{{ request()->get('sfield') }}"
           />
 
-          <table
-            style="width: 100%"
-            id="Listview"
-            class="table-striped table-hover table-bordered responsive-utilities jambo_table bulk_action table"
-          >
-            <thead>
-              <tr>
-                <th width="10px">
-                  <input type="checkbox" id="check-all" class="flat" />
-                </th>
-                <th>Type</th>
-                <th>Exam Mode</th>
-                <th>Submission Date</th>
-                <th>Referent Code</th>
-                <th>Referent Name</th>
-                <th>Voucher Number</th>
-                <th>Customer Code</th>
-                <th>First Name</th>
-                <th>Middle Name</th>
-                <th>Last Name</th>
-                <th>Parent Name</th>
-                <th>Mobile</th>
-                <th width="280px">Action</th>
-              </tr>
-            </thead>
-          </table>
+          <div class="receipts-table-shell">
+            <table
+              id="Listview"
+              class="table-striped table-hover table-bordered jambo_table bulk_action table"
+            >
+              <thead>
+                <tr>
+                  <th aria-label="Show receipt details"></th>
+                  <th>
+                    <input type="checkbox" id="check-all" class="flat" />
+                  </th>
+                  <th>Type</th>
+                  <th>Exam Mode</th>
+                  <th>Submission Date</th>
+                  <th>Referent Code</th>
+                  <th>Referent Name</th>
+                  <th>Voucher Number</th>
+                  <th>Customer Code</th>
+                  <th>First Name</th>
+                  <th>Middle Name</th>
+                  <th>Last Name</th>
+                  <th>Parent Name</th>
+                  <th>Mobile</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
         </form>
       </div>
     </div>
@@ -2195,6 +2322,8 @@
 @endsection
 
 @section ('script')
+  <script src="{{ asset('assets/plugins/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
   <script>
     $(function () {
       $('#daterange').daterangepicker({
@@ -2358,18 +2487,125 @@
           loadingRecords: '&nbsp;',
           processing: '<div class="spinner"></div>'
         },
-        aaSorting: [[0, 'desc']],
+        order: [[4, 'desc']],
         iDisplayLength: 10,
         lengthMenu: [10, 20, 50, 75, 100, -1],
         stateSave: true,
+        stateLoadParams: function (settings, data) {
+          if (data.receiptsResponsiveVersion !== 2) {
+            return false;
+          }
+
+          if (
+            Array.isArray(data.order) &&
+            data.order.some(function (item) {
+              return Number(item[0]) <= 1;
+            })
+          ) {
+            data.order = [[4, 'desc']];
+          }
+        },
+        stateSaveParams: function (settings, data) {
+          data.receiptsResponsiveVersion = 2;
+        },
         sPaginationType: 'full_numbers',
         dom: 'T<"clear">lfrtip',
+        autoWidth: false,
+        responsive: {
+          details: {
+            type: 'column',
+            target: 0,
+            renderer: function (api, rowIdx, columns) {
+              var list = $('<ul/>', {
+                class: 'dtr-details',
+                'data-dtr-index': rowIdx
+              });
+
+              columns.forEach(function (column) {
+                var valueText = $('<div/>')
+                  .html(column.data == null ? '' : column.data)
+                  .text()
+                  .trim();
+
+                if (!column.hidden || valueText === '') {
+                  return;
+                }
+
+                $('<li/>', {
+                  'data-dtr-index': column.columnIndex,
+                  'data-dt-row': column.rowIndex,
+                  'data-dt-column': column.columnIndex
+                })
+                  .append(
+                    $('<span/>', {
+                      class: 'dtr-title',
+                      text: column.title
+                    })
+                  )
+                  .append(
+                    $('<span/>', {
+                      class: 'dtr-data'
+                    }).html(column.data)
+                  )
+                  .appendTo(list);
+              });
+
+              return list.children().length ? list : false;
+            }
+          }
+        },
+        columnDefs: [
+          {
+            targets: 0,
+            className: 'dtr-control control receipt-details-column',
+            orderable: false,
+            searchable: false,
+            width: '20px'
+          },
+          {
+            targets: 1,
+            className: 'all receipt-select-column',
+            responsivePriority: 1,
+            orderable: false,
+            searchable: false,
+            width: '24px'
+          },
+          {
+            targets: 7,
+            className: 'all',
+            responsivePriority: 1
+          },
+          {
+            targets: 14,
+            className: 'all receipt-action-column',
+            responsivePriority: 1,
+            orderable: false,
+            searchable: false
+          },
+          { targets: 9, responsivePriority: 2 },
+          { targets: 11, responsivePriority: 3 },
+          { targets: 4, responsivePriority: 4 },
+          { targets: 13, responsivePriority: 5 },
+          { targets: 2, responsivePriority: 6 },
+          { targets: 3, responsivePriority: 7 },
+          { targets: 12, responsivePriority: 8 },
+          { targets: 5, responsivePriority: 9 },
+          { targets: 6, responsivePriority: 10 },
+          { targets: 8, responsivePriority: 11 },
+          { targets: 10, responsivePriority: 12 }
+        ],
         createdRow: function (row, data) {
           if (Number(data.cancle) === 1) {
             $(row).addClass('receipt-cancelled');
           }
         },
         columns: [
+          {
+            data: null,
+            defaultContent: '',
+            orderable: false,
+            searchable: false
+          },
           {
             data: 'checkbox',
             name: 'checkbox',

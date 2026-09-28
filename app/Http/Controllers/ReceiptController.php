@@ -562,15 +562,15 @@ class ReceiptController extends Controller
     private function receiptActionHtml($receipt): string
     {
         $viewUrl = route('receipts.show', ['type' => 'view', 'id' => $receipt->receipt_id]);
-        $html = '<div class="receipt-actions"><a href="'.$viewUrl.'" class="btn btn-xs btn-success btn-view" id="ViewData" data-id="'.$receipt->receipt_id.'"><i class="fa fa-eye"></i> View</a>';
+        $html = '<div class="receipt-actions"><a href="'.$viewUrl.'" class="btn btn-xs btn-success btn-view" id="ViewData" data-id="'.$receipt->receipt_id.'" title="View" aria-label="View"><i class="fa fa-eye"></i><span class="receipt-action-label">View</span></a>';
 
         if ((bool) $receipt->cancle) {
             return $html.'<span class="badge badge-danger">Cancelled</span></div>';
         }
 
-        $html .= '<a href="#" class="btn btn-xs btn-warning btn-edit" id="getEditData" data-id="'.$receipt->receipt_id.'"><i class="fa fa-edit"></i> Edit</a>';
-        $html .= '<a href="#" class="btn btn-xs btn-info btn-edit" id="getConvData" data-id="'.$receipt->receipt_id.'"><i class="fa fa-code-compare"></i> Credit Note</a>';
-        $html .= '<button type="button" class="btn btn-xs btn-danger btn-cancel-receipt" data-rowid="'.$receipt->receipt_id.'"><i class="fa fa-ban"></i> Cancel</button>';
+        $html .= '<a href="#" class="btn btn-xs btn-warning btn-edit" id="getEditData" data-id="'.$receipt->receipt_id.'" title="Edit" aria-label="Edit"><i class="fa fa-edit"></i><span class="receipt-action-label">Edit</span></a>';
+        $html .= '<a href="#" class="btn btn-xs btn-info btn-edit" id="getConvData" data-id="'.$receipt->receipt_id.'" title="Credit Note" aria-label="Credit Note"><i class="fa fa-code-compare"></i><span class="receipt-action-label">Credit Note</span></a>';
+        $html .= '<button type="button" class="btn btn-xs btn-danger btn-cancel-receipt" data-rowid="'.$receipt->receipt_id.'" title="Cancel" aria-label="Cancel"><i class="fa fa-ban"></i><span class="receipt-action-label">Cancel</span></button>';
 
         return $html.'</div>';
     }

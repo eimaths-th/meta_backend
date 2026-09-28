@@ -2797,7 +2797,7 @@ class ReceiptFormController extends Controller
 
         $adminEmail = $receiptForm->email;
 
-        if (! in_array($receiptForm->sfield, [0, 17], true) && $adminEmail) {
+        if (! in_array((string) $receiptForm->sfield, ['0', '17'], true) && $adminEmail) {
             if (filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
                 try {
                     Mail::to($adminEmail)->send(new ContactMail($receiptForm));
