@@ -240,7 +240,7 @@
         },
         success: function (response) {
           if (response.success) {
-            $('#id').val(response.referent_code.id);
+            $('#Editid').val(response.referent_code.id);
             $('#Editreferent_code').val(response.referent_code.referent_code);
             $('#Editreferent_name').val(response.referent_code.referent_name);
             $('#Editcomments').val(response.referent_code.comments);

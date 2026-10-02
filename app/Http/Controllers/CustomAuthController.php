@@ -23,10 +23,6 @@ class CustomAuthController extends Controller
         ]);
 
         $credentials = $request->only('email', 'password');
-        $this_month = date("Y-m");
-        $this_month = '2023-05';
-        $this_year = date("Y");
-
         if (Auth::attempt($credentials)) {
             if (Auth::user()->level > 5) {
 
@@ -37,25 +33,9 @@ class CustomAuthController extends Controller
                 ]);*/
                 return back()->withErrors(['error' => 'You are users but not have permissions. Please Contact Administrator']);
             } else {
-                // dd($request);
+                $request->session()->regenerate();
 
-                if (Auth::user()->level == 1 || Auth::user()->level == 0) {
-                    //return redirect()->intended('users');
-                    //return redirect('/users');
-                    return redirect(route('home'));
-                } elseif (Auth::user()->level == 2) {
-                    //return redirect()->intended('course');
-                    return redirect('/course');
-                } else if (Auth::user()->level == 3) {
-                    //return redirect()->intended('receipts');
-                    //return redirect('/receipts?sfield=2');
-                    return redirect('/receipts/print_month?pmsfield=9&type=report_view&print_month='.$this_month.'&Pmdescription=ค่าสมัคร OLPCS รอบแรก '. $this_year);
-                }elseif (Auth::user()->level == 4 || Auth::user()->level == 5) {
-                    //return redirect()->intended('course');
-                    return redirect(route('home2'));
-                }
-
-                //->withSuccess('Signed in');
+                return redirect(Auth::user()->backOfficeHomePath());
             }
         }
 

@@ -6,38 +6,46 @@ use App\Models\FormManage;
 use App\Models\OpeningClosingTime;
 use Illuminate\Http\Request;
 use App\Helpers\LogActivity;
+use App\Http\Middleware\EnsureCanManageForms;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Route;
 
 class TimeController extends Controller
 {
-    //
+    public function __construct()
+    {
+        $this->middleware(EnsureCanManageForms::class)->except('formsControl');
+    }
+
     public function saveTimes(Request $request)
     {
-        $request->validate([
-            'opening_time'  => 'required',
-            'closing_time'  => 'required',
-            'route'         => 'required',
-            'user_id'       => 'required',
-            // 'comments'      => 'required',
+        $validated = $request->validate([
+            'opening_time' => ['required', 'date'],
+            'closing_time' => ['required', 'date', 'after_or_equal:opening_time'],
+            'route' => ['required', 'string', 'max:255'],
+            'comments' => ['nullable', 'string'],
+        ], [
+            'opening_time.date' => 'Enter a valid opening date and time.',
+            'closing_time.date' => 'Enter a valid closing date and time.',
+            'closing_time.after_or_equal' => 'Closing time must be on or after opening time.',
         ]);
 
-        $openingTime = $request->input('opening_time');
-        $closingTime = $request->input('closing_time');
-        $route = $request->input('route');
-        $user_id = $request->input('user_id');
-        $comments = $request->input('comments');
-
         $control = OpeningClosingTime::create([
-            'user_id' => $user_id,
-            'comments' => $comments,
-            'route' => $route,
-            'opening_time' => $openingTime,
-            'closing_time' => $closingTime,
+            'user_id' => $request->user()->id,
+            'comments' => $validated['comments'] ?? null,
+            'route' => $validated['route'],
+            'opening_time' => Carbon::parse($validated['opening_time'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
+            'closing_time' => Carbon::parse($validated['closing_time'])->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
         ]);
 
         // บันทึก activity log — สร้าง form control
         LogActivity::modelEvent($control, 'form_control created', null, $control->toArray());
 
-        return redirect(route('formsControl'));
+        if ($request->expectsJson()) {
+            return response()->json(['redirect' => route('formsControl')]);
+        }
+
+        return redirect(route('formsControl'))->with('success', 'Registration schedule saved.');
     }
     public function formsTimes()
     {
@@ -51,46 +59,50 @@ class TimeController extends Controller
     }
     public function formsControl()
     {
-        $controls = OpeningClosingTime::orderBy('id', 'desc')
-            ->get()
-            ->groupBy('route');
+        // The public registration page uses the most recently created schedule.
+        $schedules = OpeningClosingTime::latestFirst()->get()->groupBy('route');
+        $forms = FormManage::get(['id', 'form_name', 'slug', 'form_route', 'sfield']);
+        $bySlug = $forms->filter(fn ($form) => filled($form->slug))->keyBy('slug');
+        $byRoute = $forms->filter(fn ($form) => filled($form->form_route))->keyBy('form_route');
         $now = now();
 
-        foreach ($controls as $route => $times) {
-            // หาสนามใหม่ล่าสุด
-            $latestTime = $times->first();
+        $entries = $schedules->map(function ($times, $route) use ($bySlug, $byRoute, $now) {
+            $current = $times->first();
+            $form = $bySlug->get($route) ?? $byRoute->get($route);
+            $opening = Carbon::parse($current->opening_time);
+            $closing = Carbon::parse($current->closing_time);
+            $state = $now->lt($opening) ? 'upcoming' : ($now->gt($closing) ? 'closed' : 'open');
+            $publicUrl = null;
 
-            // ตรวจสอบว่าสนามใหม่ล่าสุดปิดไปแล้วหรือยัง
-            $closingDateTime = $now->copy()->setDateTimeFrom($latestTime->closing_time);
-
-            if ($now > $closingDateTime) {
-                // ถ้าสนามใหม่ล่าสุดปิดไปแล้ว ให้ทุกสนามของ route นี้เป็น Offline
-                foreach ($times as $time) {
-                    $time->update(['status' => 'Offline']);
-                }
-            } else {
-                // ถ้ายังไม่ปิด ให้ตรวจสอบแต่ละสนามตามเวลาของสนามนั้นๆ
-                foreach ($times as $time) {
-                    $openingDateTime = $now->copy()->setDateTimeFrom($time->opening_time);
-                    $closingDateTime = $now->copy()->setDateTimeFrom($time->closing_time);
-
-                    if ($now < $openingDateTime || $now > $closingDateTime) {
-                        $status = 'Offline';
-                        $time->update(['status' => $status]);
-                    } else {
-                        $status = 'Online';
-                        $time->update(['status' => $status]);
-                    }
-                }
+            if ($form && $form->slug === (string) $route) {
+                $publicUrl = route('form.show', ['slug' => $form->slug]);
+            } elseif (Route::has($route) && empty(Route::getRoutes()->getByName($route)->parameterNames())) {
+                $publicUrl = route($route);
             }
-        }
 
-        $control = OpeningClosingTime::orderBy('id', 'desc')
-            ->get();
+            return [
+                'route' => (string) $route,
+                'form' => $form,
+                'name' => $form->form_name ?? $route,
+                'opening' => $opening,
+                'closing' => $closing,
+                'state' => $state,
+                'public_url' => $publicUrl,
+                'comments' => $current->comments,
+                'history' => $times->skip(1),
+            ];
+        })->sortBy(function ($entry) {
+            $priority = ['open' => 0, 'upcoming' => 1, 'closed' => 2];
+            $date = $entry['state'] === 'upcoming' ? $entry['opening'] : $entry['closing'];
+            return [$priority[$entry['state']], $entry['state'] === 'closed' ? -$date->timestamp : $date->timestamp];
+        })->values();
+
         return view('receipt_form.form_control', [
-            'controls' => $control
+            'entries' => $entries,
+            'canManageForms' => auth()->user()->canManageForms(),
         ]);
     }
+
     public function deleteControl($id)
     {
         $control = OpeningClosingTime::find($id);

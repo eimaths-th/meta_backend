@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="@yield('body_class')">
 <head>
   <meta charset="utf-8" />
   <meta
@@ -246,7 +246,7 @@
   </style>
 </head>
 
-<body>
+<body class="@yield('body_class')">
   @if ($shouldLoadGoogleTagManager)
     <!-- Google Tag Manager (noscript) -->
     <noscript>

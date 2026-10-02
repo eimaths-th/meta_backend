@@ -2,6 +2,8 @@
 
 @section ('style')
   @include ('forms_manage.css')
+  <link rel="stylesheet" href="{{ asset('css/form-banner-editor.css') }}?v={{ filemtime(public_path('css/form-banner-editor.css')) }}" />
+  <script src="{{ asset('js/form-banner-editor.js') }}?v={{ filemtime(public_path('js/form-banner-editor.js')) }}" defer></script>
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
@@ -31,48 +33,6 @@
       <div class="col-md-9">
         <div class="card bg-light2 mb-3">
           {{-- <div class="card-header">{{ __('Login') }}</div> --}}
-          <div align="center">
-            @if (isset($data->brand))
-              <div
-                class="show-image-brand-default"
-                id="show-image-brand-default"
-              >
-                <img
-                  class="card-img"
-                  src="{{ asset('form_manage/brand/' . $data->brand) }}"
-                  alt="..."
-                  width="100%"
-                  height="auto"
-                />
-              </div>
-            @else
-              <div
-                class="show-image-brand-default"
-                id="show-image-brand-default"
-              ></div>
-            @endif
-          </div>
-          <script>
-            $(document).ready(function () {
-              //show image brand
-              $('#brand').on('change', function () {
-                var file = this.files[0];
-                if (file) {
-                  var reader = new FileReader();
-                  reader.onload = function (e) {
-                    $('.show-image-brand-default')
-                      .html(
-                        '<img src="' +
-                          e.target.result +
-                          '" class=" my-3" alt="Preview" width="100%" height="auto">'
-                      )
-                      .show();
-                  };
-                  reader.readAsDataURL(file);
-                }
-              });
-            });
-          </script>
           <form
             id="infinite"
             method="POST"
@@ -322,7 +282,7 @@
                     <div class="col-md-6">
                       <p style="text-align: left">
                         <span style="color: #6351a2">
-                          <label for="brand">
+                          <label for="form_name">
                             <strong>Form Name :</strong>
                           </label>
 
@@ -340,7 +300,7 @@
                     <div class="col-md-6">
                       <p style="text-align: left">
                         <span style="color: #6351a2">
-                          <label for="brand">
+                          <label for="title">
                             <strong>Title Form :</strong>
                           </label>
 
@@ -359,7 +319,7 @@
                     <div class="col-md-6">
                       <p style="text-align: left">
                         <span style="color: #6351a2">
-                          <label for="brand">
+                          <label for="sub_title">
                             <strong>Sub Title Form :</strong>
                           </label>
 
@@ -378,7 +338,7 @@
                     <div class="col-md-6">
                       <p style="text-align: left">
                         <span style="color: #6351a2">
-                          <label for="brand">
+                          <label for="head_title">
                             <strong>Head Form :</strong>
                           </label>
 
@@ -394,30 +354,8 @@
                       </p>
                     </div>
 
-                    <div class="col-md-6">
-                      <p style="text-align: left">
-                        <span style="color: #6351a2">
-                          <label for="brand">
-                            <strong>Brand Image :</strong>
-                          </label>
-
-                          <input
-                            type="file"
-                            name="brand"
-                            id="brand"
-                            class="form-control"
-                          />
-                          @if (isset($data->brand))
-                            <input
-                              type="text"
-                              name="oldBrand"
-                              id="oldBrand"
-                              value="{{ $data->brand }}"
-                              hidden
-                            />
-                          @endif
-                        </span>
-                      </p>
+                    <div class="col-md-12">
+                      @include ('forms_manage.banner_editor', ['data' => $data])
                     </div>
 
                     <div class="row">
@@ -2102,8 +2040,9 @@
                         >
                       </div>
 
+                      <p class="text-muted small" style="text-align: left">ช่องทางโซเชียลจะแสดงที่ท้ายหน้าลงทะเบียน กรอก URL และบันทึกเพื่อเปิดใช้งาน ช่องที่เว้นว่างจะแสดงเป็นสีเทา</p>
                       <div class="mb-2">
-                        <label class="form-label">
+                        <label class="form-label" for="footer_facebook">
                           <strong>
                             <i class="fab fa-facebook"></i>
                             Facebook URL
@@ -2112,6 +2051,7 @@
                         <input
                           type="url"
                           name="footer_facebook"
+                          id="footer_facebook"
                           class="form-control"
                           value="{{ $data->footer_facebook ?? '' }}"
                           placeholder="https://facebook.com/yourpage"
@@ -2125,7 +2065,7 @@
                       </div>
 
                       <div class="mb-2">
-                        <label class="form-label">
+                        <label class="form-label" for="footer_line">
                           <strong>
                             <i class="fab fa-line"></i>
                             Line URL
@@ -2134,6 +2074,7 @@
                         <input
                           type="url"
                           name="footer_line"
+                          id="footer_line"
                           class="form-control"
                           value="{{ $data->footer_line ?? '' }}"
                           placeholder="https://line.me/ti/p/@yourline"
@@ -2148,7 +2089,7 @@
                       </div>
 
                       <div class="mb-2">
-                        <label class="form-label">
+                        <label class="form-label" for="footer_instagram">
                           <strong>
                             <i class="fab fa-instagram"></i>
                             Instagram URL
@@ -2157,6 +2098,7 @@
                         <input
                           type="url"
                           name="footer_instagram"
+                          id="footer_instagram"
                           class="form-control"
                           value="{{ $data->footer_instagram ?? '' }}"
                           placeholder="https://instagram.com/yourprofile"
@@ -2170,7 +2112,7 @@
                       </div>
 
                       <div class="mb-2">
-                        <label class="form-label">
+                        <label class="form-label" for="footer_youtube">
                           <strong>
                             <i class="fab fa-youtube"></i>
                             YouTube URL
@@ -2179,6 +2121,7 @@
                         <input
                           type="url"
                           name="footer_youtube"
+                          id="footer_youtube"
                           class="form-control"
                           value="{{ $data->footer_youtube ?? '' }}"
                           placeholder="https://youtube.com/@yourchannel"
@@ -2223,7 +2166,7 @@
                 </div>
               </div>
 
-              <div class="form-submit-actions">
+              <div class="form-submit-actions banner-manager-actions">
                 <input
                   type="submit"
                   id="send_data"
@@ -2241,194 +2184,6 @@
     </div>
   </div>
   <!-- Meta Knowledge Footer (Preview) -->
-  <footer class="meta-footer" style="margin-top: 2rem">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4 mb-4">
-          @php
-            $footerLogo = $data->footer_logo ?? 'logo_meta.png';
-          @endphp
-
-          <img
-            src="{{ asset('images/' . $footerLogo) }}"
-            alt="Footer Logo"
-            class="footer-logo"
-            style="
-              max-width: 200px;
-              margin-bottom: 1rem;
-              filter: brightness(0) invert(1);
-            "
-          />
-          <h4 style="font-weight: 700; margin-bottom: 1rem; color: #fff">
-            {{
-              $data->footer_company_name ??
-                'Meta Knowledge'
-            }}
-          </h4>
-          <p style="color: #bdc3c7; margin-bottom: 0.5rem">
-            {{
-              $data->footer_description_1 ??
-                'ศูนย์รวมความรู้และการพัฒนาทักษะสำหรับนักเรียนและผู้ปกครอง'
-            }}
-          </p>
-          <p style="color: #bdc3c7; margin-bottom: 0.5rem">
-            {{
-              $data->footer_description_2 ??
-                'พัฒนาศักยภาพ สร้างอนาคตที่ดีกว่า'
-            }}
-          </p>
-        </div>
-        <div class="col-md-4 mb-4">
-          <h4 style="font-weight: 700; margin-bottom: 1rem; color: #fff">
-            <i class="fas fa-info-circle"></i>
-            {{
-              $data->footer_about_title ??
-                'เกี่ยวกับเรา'
-            }}
-          </h4>
-          <p style="color: #bdc3c7; margin-bottom: 0.5rem">
-            <i class="fas fa-graduation-cap"></i>
-            {{
-              $data->footer_feature_1 ??
-                'ระบบสอบและแข่งขันออนไลน์'
-            }}
-          </p>
-          <p style="color: #bdc3c7; margin-bottom: 0.5rem">
-            <i class="fas fa-book-reader"></i>
-            {{
-              $data->footer_feature_2 ??
-                'หลักสูตรคุณภาพสำหรับทุกระดับชั้น'
-            }}
-          </p>
-          <p style="color: #bdc3c7; margin-bottom: 0.5rem">
-            <i class="fas fa-trophy"></i>
-            {{
-              $data->footer_feature_3 ??
-                'พัฒนาทักษะเพื่อความสำเร็จ'
-            }}
-          </p>
-          <p style="color: #bdc3c7; margin-bottom: 0.5rem">
-            <i class="fas fa-certificate"></i>
-            {{
-              $data->footer_feature_4 ??
-                'ใบประกาศนียบัตรรับรอง'
-            }}
-          </p>
-        </div>
-        <div class="col-md-4 mb-4">
-          <h4 style="font-weight: 700; margin-bottom: 1rem; color: #fff">
-            <i class="fas fa-envelope"></i>
-            {{
-              $data->footer_contact_title ??
-                'ติดต่อเรา'
-            }}
-          </h4>
-          <p style="color: #bdc3c7; margin-bottom: 0.5rem">
-            <i class="fas fa-phone"></i>
-            โทร: {{
-              $data->footer_phone ??
-                '02-XXX-XXXX'
-            }}
-          </p>
-          <p style="color: #bdc3c7; margin-bottom: 0.5rem">
-            <i class="fas fa-envelope"></i>
-            Email: {{
-              $data->footer_email ??
-                'info@metaknowledge.com'
-            }}
-          </p>
-          <p style="color: #bdc3c7; margin-bottom: 0.5rem">
-            <i class="fas fa-map-marker-alt"></i>
-            {{
-              $data->footer_address ??
-                'กรุงเทพมหานคร ประเทศไทย'
-            }}
-          </p>
-          <div style="margin-top: 1rem">
-            <a
-              href="{{ $data->footer_facebook ?? '' }}"
-              title="Facebook"
-              style="
-                color: white;
-                font-size: 1.5rem;
-                margin: 0 0.5rem;
-                transition: all 0.3s ease;
-              "
-            >
-              <i class="fab fa-facebook"></i>
-            </a>
-            <a
-              href="{{ $data->footer_line ?? '' }}"
-              title="Line"
-              style="
-                color: white;
-                font-size: 1.5rem;
-                margin: 0 0.5rem;
-                transition: all 0.3s ease;
-              "
-            >
-              <i class="fab fa-line"></i>
-            </a>
-            <a
-              href="{{ $data->footer_instagram ?? '' }}"
-              title="Instagram"
-              style="
-                color: white;
-                font-size: 1.5rem;
-                margin: 0 0.5rem;
-                transition: all 0.3s ease;
-              "
-            >
-              <i class="fab fa-instagram"></i>
-            </a>
-            <a
-              href="{{ $data->footer_youtube ?? '' }}"
-              title="YouTube"
-              style="
-                color: white;
-                font-size: 1.5rem;
-                margin: 0 0.5rem;
-                transition: all 0.3s ease;
-              "
-            >
-              <i class="fab fa-youtube"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div
-        style="
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
-          padding-top: 1.5rem;
-          margin-top: 2rem;
-          text-align: center;
-          color: #95a5a6;
-        "
-      >
-        <p>
-          &copy; {{ date('Y') }} {{
-            $data->footer_copyright ??
-              'Meta Knowledge. All Rights Reserved. | Empowering Education, Inspiring Excellence'
-          }}
-        </p>
-      </div>
-    </div>
-  </footer>
-  <style>
-    /* Footer Styling for Create Page */
-    .meta-footer {
-      background: linear-gradient(135deg, #d84315 0%, #bf360c 100%);
-      color: white;
-      padding: 3rem 0 1.5rem 0;
-      border-radius: 50px 50px 0 0;
-      box-shadow: 0 -10px 30px rgba(216, 67, 21, 0.3);
-    }
-
-    .meta-footer a:hover {
-      color: #ffb84d !important;
-      transform: translateY(-3px);
-    }
-  </style>
   <script>
     window.fieldConfig = @json ($fieldConfig ?? []);
     window.initialFieldSettings = @json ($fieldSettings ?? []);

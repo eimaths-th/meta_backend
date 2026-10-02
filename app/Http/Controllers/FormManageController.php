@@ -9,6 +9,7 @@ use App\Models\OpeningClosingTime;
 use App\Models\Receipt;
 use App\Models\ReceiptForm;
 use App\Services\FormGradeLinkMapper;
+use App\Support\FormBannerSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,9 +17,15 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Helpers\LogActivity;
+use App\Http\Middleware\EnsureCanManageForms;
 
 class FormManageController extends Controller
 {
+  public function __construct()
+  {
+    $this->middleware(EnsureCanManageForms::class);
+  }
+
   /**
    * Display a listing of the resource.
    *
@@ -52,11 +59,6 @@ class FormManageController extends Controller
     //         ]);
     //     }
     // }
-
-    $checkNull = FormManage::whereNull('form_route')->get();
-    foreach ($checkNull as $key => $value) {
-      $value->delete();
-    }
 
     return view('forms_manage.index', compact('data'));
   }
@@ -818,6 +820,12 @@ class FormManageController extends Controller
       'field_settings' => 'nullable|array',
       'field_settings.*.enabled' => 'nullable|boolean',
       'field_settings.*.required' => 'nullable|boolean',
+      'banner_settings' => 'nullable|array',
+      'banner_settings.fit' => 'sometimes|required|in:auto,contain,cover',
+      'banner_settings.desktop_height' => 'sometimes|required|integer|between:120,480',
+      'banner_settings.mobile_height' => 'sometimes|required|integer|between:100,320',
+      'banner_settings.position_x' => 'sometimes|required|integer|between:0,100',
+      'banner_settings.position_y' => 'sometimes|required|integer|between:0,100',
       // Exam Mode
       'enable_exam_mode' => 'nullable|boolean',
       'online_limit' => 'nullable|integer|min:0',
@@ -834,6 +842,13 @@ class FormManageController extends Controller
     // $messages = [];
 
     $messages = [
+      'banner_settings.*.required' => 'กรุณาระบุการแสดงผลแบนเนอร์ให้ครบถ้วน',
+      'banner_settings.*.integer' => 'การตั้งค่าขนาดและตำแหน่งแบนเนอร์ต้องเป็นจำนวนเต็ม',
+      'banner_settings.fit.in' => 'กรุณาเลือกอัตโนมัติ แสดงภาพครบในกรอบ หรือครอปเต็มกรอบ',
+      'banner_settings.desktop_height.between' => 'ความสูงแบนเนอร์บนคอมพิวเตอร์ต้องอยู่ระหว่าง 120–480 พิกเซล',
+      'banner_settings.mobile_height.between' => 'ความสูงแบนเนอร์บนมือถือต้องอยู่ระหว่าง 100–320 พิกเซล',
+      'banner_settings.position_x.between' => 'ตำแหน่งภาพแนวนอนต้องอยู่ระหว่าง 0–100',
+      'banner_settings.position_y.between' => 'ตำแหน่งภาพแนวตั้งต้องอยู่ระหว่าง 0–100',
       // core
       'form_id.required' => 'The form ID is required.',
       'form_id.exists' => 'The specified form ID was not found.',
@@ -1186,6 +1201,10 @@ class FormManageController extends Controller
       'text_footer' => $request->text_footer,
       'text_policy' => $request->text_policy,
       'field_settings' => $normalizedFieldSettings,
+      'banner_settings' => FormBannerSettings::normalize(array_replace(
+        $form_manage->banner_display,
+        (array) $request->input('banner_settings', []),
+      )),
       // Footer fields
       'show_footer' => $request->input('show_footer', 0) == 1 ? true : false,
       'footer_company_name' => $request->footer_company_name,

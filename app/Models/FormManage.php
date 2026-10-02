@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Support\FormBannerSettings;
 
 /**
  * @property integer $id
@@ -71,6 +72,7 @@ class FormManage extends Model
     'form_route',
     'slug',
     'brand',
+    'banner_settings',
     'title',
     'sub_title',
     'head_title',
@@ -143,6 +145,7 @@ class FormManage extends Model
   ];
 
   protected $casts = [
+    'banner_settings' => 'array',
     'field_settings' => 'array',
     'enable_exam_mode' => 'boolean',
     'online_limit' => 'integer',
@@ -150,6 +153,11 @@ class FormManage extends Model
     'online_registered' => 'integer',
     'onsite_registered' => 'integer',
   ];
+
+  public function getBannerDisplayAttribute(): array
+  {
+    return FormBannerSettings::normalize($this->banner_settings);
+  }
 
   // Helper methods for exam mode
   public function HasAvailableOnlineSlots()

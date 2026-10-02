@@ -1,0 +1,307 @@
+/* Public registration theme. Scoped to leave legacy forms and the admin UI alone. */
+body.registration-page {
+  --registration-accent: #b74722;
+  --registration-ink: #252b33;
+  --registration-muted: #626b76;
+  --registration-line: #dde2e7;
+  background: #f5f6f7;
+  color: var(--registration-ink);
+  font-family: 'Sarabun', sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.registration-page::-webkit-scrollbar,
+.registration-page ::-webkit-scrollbar { width: 10px; }
+.registration-page::-webkit-scrollbar-track,
+.registration-page ::-webkit-scrollbar-track { background: #f5f6f7; }
+.registration-page::-webkit-scrollbar-thumb,
+.registration-page::-webkit-scrollbar-thumb:hover,
+.registration-page ::-webkit-scrollbar-thumb,
+.registration-page ::-webkit-scrollbar-thumb:hover { background: #b9c0c7; border-radius: 6px; }
+
+.registration-page .registration-brand,
+.registration-page .registration-shell,
+.registration-page .meta-footer > .container {
+  width: 100%;
+  max-width: 1000px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.registration-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-block: 24px;
+}
+.registration-brand img { width: 54px; height: 54px; object-fit: contain; }
+.registration-brand strong { display: block; font-size: 17px; font-weight: 700; }
+.registration-brand span { display: block; color: var(--registration-muted); font-size: 13px; }
+
+.registration-page .registration-column { width: 100%; }
+.registration-page .card.bg-light2 {
+  border: 1px solid var(--registration-line);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgb(25 35 45 / 3%);
+  overflow: hidden;
+  animation: none;
+}
+.registration-page .registration-banner {
+  position: relative;
+  display: block;
+  height: var(--banner-desktop-height, 240px);
+  overflow: hidden;
+  border-bottom: 1px solid var(--registration-line);
+  background: #f8f9fa;
+  cursor: zoom-in;
+}
+.registration-page .registration-banner .card-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: var(--banner-fit, contain);
+  object-position: var(--banner-position, 50% 50%);
+  border-radius: 0;
+}
+.registration-banner-caption {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  padding: 3px 8px;
+  border: 1px solid var(--registration-line);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--registration-muted);
+  font-size: 12px;
+}
+.registration-page .registration-banner:focus-visible { outline-offset: -3px; }
+.registration-page .registration-banner.registration-banner-auto { height: auto; }
+.registration-page .registration-banner-auto .card-img {
+  height: auto;
+  max-height: var(--banner-auto-desktop-max, 360px);
+  object-fit: contain;
+  object-position: center;
+}
+.registration-banner-auto .registration-banner-caption {
+  position: static;
+  display: block;
+  width: fit-content;
+  margin: 6px 10px 6px auto;
+  border: 0;
+  background: transparent;
+}
+.registration-page .card-body { padding: 32px 40px; }
+.registration-intro { padding-bottom: 24px; border-bottom: 1px solid var(--registration-line); }
+.registration-page .form_header {
+  color: var(--registration-ink);
+  font-size: clamp(24px, 2.4vw, 30px);
+  font-weight: 700;
+  line-height: 1.45;
+  text-shadow: none;
+  margin: 0 0 10px;
+  overflow-wrap: anywhere;
+}
+.registration-page .form_sub_header { color: var(--registration-muted); font-size: 15px; margin: 0; }
+.registration-page .form_sub_header b { font-weight: 400; }
+.registration-page .registration-information,
+.registration-page .registration-fields { width: 100%; margin: 0; }
+.registration-overview-title { font-size: 20px; font-weight: 700; line-height: 1.6; margin: 24px 0 16px; }
+.registration-dates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 20px 0; }
+.registration-page .info-badge {
+  padding: 16px 18px;
+  border: 1px solid #eeded2;
+  border-left: 3px solid var(--registration-accent);
+  border-radius: 6px;
+  background: #fff8f2;
+  color: var(--registration-ink);
+  font-size: 18px;
+  line-height: 1.7;
+}
+.registration-page .info-badge strong { display: block; color: #8e361a; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.registration-date-value { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.registration-fees { margin: 24px 0; padding: 18px 20px; border: 1px solid #e5c8b6; border-radius: 8px; background: #fffaf5; }
+.registration-fees h4 { color: #8e361a; font-size: 17px; line-height: 1.6; font-weight: 700; margin: 0 0 8px; }
+.registration-criteria h4 { color: var(--registration-ink); font-size: 15px; line-height: 1.6; font-weight: 600; margin: 0 0 8px; }
+.registration-page .package-list { background: none; list-style: none; margin: 0; padding: 0; font-size: 16px; }
+.registration-page .package-list li { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 20px; padding: 8px 0; }
+.registration-page .package-list li + li { border-top: 1px solid #eeded2; }
+.registration-package-price { color: #8e361a; font-size: 22px; font-weight: 700; white-space: nowrap; }
+.registration-package-price small { font-size: 14px; font-weight: 500; }
+.registration-page .package-list li::before { content: none; }
+.registration-criteria { margin: 24px 0; line-height: 1.8; font-size: 15px; }
+.registration-criteria .text-center { background: #f7f8f9; padding: 16px; border-radius: 8px; }
+.registration-page .custom-image,
+.registration-page .custom-image2 { max-width: 100%; height: auto; border-radius: 6px; box-shadow: none; }
+.registration-page .custom-image2 { width: auto; max-height: 720px; object-fit: contain; }
+
+.registration-page .section-header { border-top: 1px solid var(--registration-line); margin: 28px 0 20px; padding-top: 24px; }
+.registration-page .section-header h3 { color: var(--registration-ink); font-size: 20px; line-height: 1.55; font-weight: 700; margin: 0; }
+.registration-page .section-header h3 span { display: inline-block; margin-left: 8px; color: var(--registration-muted); font-size: 14px; font-weight: 400; }
+.registration-section-note { font-size: 13px; color: var(--registration-muted); margin: 6px 0 0; }
+.registration-page .form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; margin: 0 0 22px; }
+.registration-page .form-row > [class*='col-'] { width: auto; max-width: 100%; min-width: 0; padding: 0; }
+.registration-page .form-row > .col-md-12 { grid-column: 1 / -1; }
+.registration-page .form-group { min-width: 0; margin: 0; padding: 0; }
+.registration-page .form-label.form-label-auto {
+  display: block;
+  width: 100%;
+  margin: 0 0 8px;
+  color: var(--registration-ink);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.65;
+  text-align: left;
+}
+.registration-page .form-required { color: #b42318; font-size: 14px; }
+.registration-field-translation { display: block; margin-top: 2px; font-size: 12px; color: var(--registration-muted); font-weight: 400; }
+.registration-page .form-sub-label { display: block; color: var(--registration-muted); font-size: 13px; font-weight: 400; margin: 6px 0 0; line-height: 1.6; }
+.registration-page .form-sub-label:empty { display: none; }
+.registration-page #infinite .form-control {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid #bdc5cd;
+  border-radius: 8px;
+  background-color: #fff;
+  color: var(--registration-ink);
+  font-size: 16px;
+  line-height: 1.5;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.registration-page #infinite .form-control:focus {
+  border-color: var(--registration-accent);
+  outline: 0;
+  box-shadow: 0 0 0 3px rgb(183 71 34 / 13%);
+}
+.registration-page #infinite select.form-control:not([multiple]) {
+  appearance: none;
+  padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%23626b76' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+.registration-page .form-group:focus-within { background: transparent; }
+.registration-page .form-focus-error { background: transparent; border: 0; }
+.registration-page #infinite .form-control.error,
+.registration-page #infinite .form-control[aria-invalid='true'] { border-color: #b42318; background-color: #fff; }
+.registration-page #infinite .form-control.error:focus { box-shadow: 0 0 0 3px rgb(180 35 24 / 12%); }
+.registration-page .form-error-message { background: #fff3f1; color: #a12a21; font-size: 13px; padding: 8px 10px; border-radius: 6px; box-shadow: none; animation: none; }
+.registration-page .form-error-message::before,
+.registration-page .form-error-message > img { display: none; }
+.registration-page .error-navigation-message,
+.registration-page label.error { color: #a12a21; font-size: 13px; font-weight: 400; }
+.registration-page label.error { margin-top: 6px; }
+.registration-page label.error:empty { display: none; }
+/* jQuery Validation and the legacy blur handler can show the same error together. */
+.registration-page .form-control.error ~ label.error:not(:empty) ~ .form-error-message { display: none !important; }
+.registration-page .error_div { position: fixed; top: 0; height: auto; padding: 12px; font-size: 14px; background: #a12a21; opacity: 1; }
+
+.registration-page .dropzone {
+  min-height: 140px !important;
+  height: auto;
+  padding: 20px;
+  border: 1px dashed #aeb8c2;
+  border-radius: 8px;
+  background: #f8f9fa;
+  font-size: 16px;
+}
+.registration-page .dropzone:hover { background: #f3f5f7; border-color: var(--registration-accent); }
+.registration-page .dropzone .dz-message { margin: 16px 0; font-size: 15px; color: var(--registration-muted); }
+.registration-upload-title { display: block; color: var(--registration-accent); font-weight: 600; }
+.registration-upload-help { display: block; color: var(--registration-muted); font-size: 13px; margin-top: 6px; }
+.registration-page .dropzone .dz-message svg { width: 30px; height: 30px; }
+.registration-page .dropzonex { background: #f7f8f9; border-radius: 8px; padding: 12px; font-size: 16px; }
+.registration-page .dropzonex .dz-preview .dz-image { border-radius: 8px; }
+.registration-page .dropzonex .dz-preview:hover .dz-image img { transform: none; filter: none; }
+.registration-page .registration-payment { text-align: left; margin: 0 0 24px; }
+.registration-page .registration-payment img { width: auto; height: auto; max-width: 100%; max-height: 560px; object-fit: contain; border: 1px solid var(--registration-line); border-radius: 8px; }
+
+.registration-page .select2-container { width: 100% !important; max-width: 100%; font-size: 16px; }
+.registration-page .select2-container--default .select2-selection--multiple { border: 1px solid #bdc5cd; border-radius: 8px; min-height: 46px; padding: 4px 8px; }
+.registration-page .select2-container--default.select2-container--focus .select2-selection--multiple { border-color: var(--registration-accent); box-shadow: 0 0 0 3px rgb(183 71 34 / 13%); }
+.registration-page .select2-container--default .select2-selection--multiple .select2-selection__choice { color: var(--registration-ink); background: #f0f2f4; border: 1px solid var(--registration-line); border-radius: 5px; }
+.registration-page .select2-container--default .select2-selection__choice__remove { min-height: 0; }
+
+.registration-page .registration-actions { text-align: left; padding: 28px 40px 32px; border-top: 1px solid var(--registration-line); background: #fff; }
+.registration-notice { padding: 16px 18px; margin-bottom: 16px; border-left: 3px solid #ba8a32; border-radius: 0 6px 6px 0; background: #fcf8ef; color: #59471f; font-size: 14px; line-height: 1.8; }
+.registration-notice h3 { font-size: 16px; font-weight: 600; margin: 0 0 8px; color: #59471f; }
+.registration-notice h3 span { font-size: 13px; font-weight: 400; margin-left: 6px; }
+.registration-notice--secondary { background: #f7f8f9; color: var(--registration-muted); border-color: #b7bec7; }
+.registration-page .registration-consent { display: grid; grid-template-columns: 20px minmax(0, 1fr); align-items: start; gap: 12px; padding: 16px; margin: 24px 0; border: 1px solid var(--registration-line); border-radius: 8px; }
+.registration-page .registration-consent .form-error-message { grid-column: 1 / -1; }
+.registration-page .registration-consent.form-focus-error { border-color: #b42318; }
+.registration-page .registration-consent .form-check-input { flex: 0 0 20px; width: 20px; height: 20px; min-height: 20px; margin: 3px 0 0; float: none; border: 1px solid #9da8b4; border-radius: 4px; }
+.registration-page .form-check-input:checked { background-color: var(--registration-accent); border-color: var(--registration-accent); }
+.registration-page .form-check-input:focus { box-shadow: 0 0 0 3px rgb(183 71 34 / 13%); border-color: var(--registration-accent); }
+.registration-page .form-check-label { color: var(--registration-ink); font-size: 14px; line-height: 1.7; font-weight: 400; }
+.registration-buttons { display: flex; align-items: center; gap: 16px; }
+.registration-page .registration-buttons .btn { min-height: 46px; border-radius: 8px; padding: 11px 24px; font-size: 16px; font-weight: 600; line-height: 1.5; }
+.registration-page .submit-btn { background: var(--registration-accent); border: 1px solid var(--registration-accent); color: #fff; }
+.registration-page .submit-btn:hover { background: #96391b; border-color: #96391b; }
+.registration-page .submit-btn:disabled { opacity: .6; cursor: not-allowed; }
+.registration-page .registration-reset { color: var(--registration-muted); background: transparent; border: 1px solid transparent; font-weight: 400; }
+.registration-page .registration-reset:hover { background: #f2f4f6; color: var(--registration-ink); }
+.registration-page .btn:focus-visible,
+.registration-page .dz-button:focus-visible,
+.registration-page summary:focus-visible,
+.registration-page a:focus-visible { outline: 2px solid var(--registration-accent); outline-offset: 3px; box-shadow: none; }
+.registration-page .badge-info { background: #f8ede7; color: #823216; font-weight: 500; }
+
+.registration-page .meta-footer { margin-top: 28px; padding: 0 0 32px; color: var(--registration-muted); font-size: 13px; }
+.registration-footer-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.registration-footer-brand { display: flex; gap: 12px; max-width: 430px; }
+.registration-page .footer-logo { width: 44px; height: 44px; object-fit: contain; filter: none; }
+.registration-page .meta-footer h4 { font-size: 14px; color: var(--registration-ink); font-weight: 600; margin: 0 0 6px; }
+.registration-page .meta-footer p { margin: 0 0 4px; }
+.registration-page .meta-footer a { color: var(--registration-muted); text-underline-offset: 3px; overflow-wrap: anywhere; }
+.registration-footer-contact { min-width: 0; }
+.registration-page .social-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.registration-page .registration-social { display: inline-flex; align-items: center; gap: 7px; padding: 8px 10px; border: 1px solid #d5dbe1; border-radius: 6px; background: #fff; color: #3e4752; font-size: 13px; text-decoration: none; }
+.registration-page a.registration-social:hover { border-color: var(--registration-accent); background: #fff8f2; }
+.registration-social i { font-size: 17px; }
+.registration-social-facebook i { color: #1877f2; }
+.registration-social-line i { color: #008a3b; }
+.registration-social-instagram i { color: #b73775; }
+.registration-social-youtube i { color: #d11c1c; }
+.registration-page .registration-social-disabled { color: #6b7480; background: #eef1f3; cursor: default; }
+.registration-footer-about { margin-top: 16px; }
+.registration-footer-about summary { cursor: pointer; width: fit-content; }
+.registration-footer-about > div { padding: 12px 0; max-width: 620px; }
+.registration-footer-about ul { margin: 8px 0; padding-left: 20px; }
+.registration-page .copyright { border-top: 1px solid var(--registration-line); padding-top: 14px; margin-top: 18px; font-size: 12px; }
+
+@media (min-width: 992px) {
+  .registration-page .registration-name-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  .registration-page .registration-brand,
+  .registration-page .registration-shell,
+  .registration-page .meta-footer > .container { padding-inline: 16px; }
+  .registration-brand { padding-block: 18px; gap: 10px; }
+  .registration-brand img { width: 44px; height: 44px; }
+  .registration-brand strong { font-size: 16px; }
+  .registration-page .registration-shell > .row { margin-inline: 0; }
+  .registration-page .registration-column { padding: 0; }
+  .registration-page .registration-banner { height: var(--banner-mobile-height, 160px); }
+  .registration-page .registration-banner-auto .card-img { max-height: var(--banner-auto-mobile-max, 240px); }
+  .registration-page .card-body { padding: 24px 20px; }
+  .registration-page .form_header { font-size: 23px; }
+  .registration-page .registration-actions { padding: 24px 20px; }
+  .registration-dates { grid-template-columns: 1fr; gap: 14px; }
+  .registration-page .form-row { grid-template-columns: 1fr; gap: 20px; margin-bottom: 20px; }
+  .registration-page .section-header h3 { font-size: 19px; }
+  .registration-page .section-header h3 span { display: block; margin: 3px 0 0; font-size: 13px; }
+  .registration-fees { padding: 14px 16px; }
+  .registration-buttons { flex-direction: column; align-items: stretch; gap: 8px; }
+  .registration-page .registration-buttons .btn { width: 100%; }
+  .registration-footer-main { flex-direction: column; gap: 20px; }
+  .registration-page .meta-footer { margin-top: 24px; }
+  .registration-page .swal2-popup { width: calc(100% - 32px); max-width: 480px; padding: 20px; }
+  .registration-page .swal2-title { font-size: 22px; }
+  .registration-page .swal2-html-container { font-size: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .registration-page *, .registration-page *::before, .registration-page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

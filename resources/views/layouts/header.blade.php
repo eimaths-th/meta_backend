@@ -2,7 +2,7 @@
   <div class="app-header__logo">
     @if (Auth::user()->level >= 0 && Auth::user()->level < 3)
       <a
-        href="{{ route('home') }}"
+        href="{{ url(Auth::user()->backOfficeHomePath()) }}"
         style="
           display: flex;
           align-items: center;
@@ -90,7 +90,7 @@
       </a>
     @elseif (Auth::user()->level > 3 && Auth::user()->level < 6)
       <a
-        href="{{ route('home2') }}"
+        href="{{ url(Auth::user()->backOfficeHomePath()) }}"
         style="
           display: flex;
           align-items: center;

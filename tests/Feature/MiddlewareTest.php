@@ -91,13 +91,13 @@ class MiddlewareTest extends TestCase
         $this->assertSame(url('/home'), $response->headers->get('Location'));
     }
 
-    public function test_switchhome_routes_users_by_level(): void
+    public function test_switchhome_routes_all_users_to_forms_control(): void
     {
         $middleware = new switchhome();
 
         $this->actingAs($this->user(1, 2));
-        $allowed = $middleware->handle(Request::create('/'), fn () => response('ok'));
-        $this->assertSame('ok', $allowed->getContent());
+        $levelTwo = $middleware->handle(Request::create('/'), fn () => response('ok'));
+        $this->assertTrue($levelTwo->isRedirect(route('formsControl')));
 
         $this->actingAs($this->user(2, 3));
         $levelThree = $middleware->handle(Request::create('/'), fn () => response('ok'));
@@ -105,7 +105,7 @@ class MiddlewareTest extends TestCase
 
         $this->actingAs($this->user(3, 9));
         $other = $middleware->handle(Request::create('/'), fn () => response('ok'));
-        $this->assertTrue($other->isRedirect(route('home2')));
+        $this->assertTrue($other->isRedirect(route('formsControl')));
     }
 
     public function test_outhome_redirects_level_three_users(): void

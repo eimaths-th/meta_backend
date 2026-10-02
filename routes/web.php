@@ -104,13 +104,13 @@ Route::group(['middleware' => ['auth', 'checkUserId']], function () {
 Route::get('/stdLog-search', [StdlogController::class, 'search_id'])->name('searchTestLog');
 
 Route::group(['middleware' => ['auth', 'switch']], function () {
-    Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'landing']);
 });
 Route::group(['middleware' => ['auth', 'outhome']], function () {
 
     Route::get('/updateStudentStatus', [App\Http\Controllers\HomeController::class, 'updateStudentStatus'])->name('updateStudentStatus');
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    Route::get('/Home', [App\Http\Controllers\HomeController::class, 'home2'])->name('home2');
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'landing'])->name('home');
+    Route::get('/Home', [App\Http\Controllers\HomeController::class, 'landing'])->name('home2');
 });
 
 
@@ -266,7 +266,7 @@ Route::put('/receipt_form/delete_img/{filename}/{id}', [ReceiptFormController::c
 Route::post('/receipts_form/resend-mail/{id}', [ReceiptFormController::class, 'reSendMail'])->name('receipts_form.resend_mail');
 
 Route::group(array('domain' => 'form.infinitebrain.co.th'), function () {
-    Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'landing']);
 });
 Route::get('/send-line-message', [LineController::class, 'sendMessage'])->name('send.line.message');
 Route::get('/test-view', [LineController::class, 'testView'])->name('line.testView');

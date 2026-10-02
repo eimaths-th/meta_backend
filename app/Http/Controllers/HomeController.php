@@ -43,8 +43,13 @@ class HomeController extends Controller
         }
     }
 
+    public function landing()
+    {
+        return redirect(Auth::user()->backOfficeHomePath());
+    }
+
     /**
-     * Show the application dashboard.
+     * Show the legacy student dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */

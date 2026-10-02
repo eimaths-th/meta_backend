@@ -48,6 +48,16 @@ class User extends Authenticatable
 
     const ADMIN_TYPE = 1;
     const DEFAULT_TYPE = 0;
+
+    public function canManageForms(): bool
+    {
+        return in_array((int) $this->level, [0, 1, 3], true);
+    }
+
+    public function backOfficeHomePath(): string
+    {
+        return '/forms-control';
+    }
     /*public  function isAdmin()
     {
         return $this->level === self::ADMIN_TYPE;

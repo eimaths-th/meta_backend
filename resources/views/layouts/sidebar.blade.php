@@ -55,9 +55,9 @@
           Auth::user()->level == 0)
           <li class="app-sidebar__heading">สนามสอบ</li>
           <li>
-            <a href="{{ route('formsControl') }}">
+            <a href="{{ route('formsControl') }}" @if (request()->routeIs('formsControl')) class="mm-active" aria-current="page" @endif>
               <i class="metismenu-icon pe-7s-clock"></i>
-              SetTime
+              SetTime Forms log
             </a>
           </li>
           <li>
@@ -677,16 +677,6 @@
           </li>
         </ul>
       </li>
-      @endif
-
-      @if (Auth::user()->level != 3)
-        <li class="app-sidebar__heading">พนักงาน</li>
-        <li>
-          <a href="{{ route('home2') }}">
-            <i class="metismenu-icon pe-7s-home"></i>
-            Home
-          </a>
-        </li>
       @endif
 
       @if (Auth::user()->level == 1 ||

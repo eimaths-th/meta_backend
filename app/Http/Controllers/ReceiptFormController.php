@@ -317,9 +317,7 @@ class ReceiptFormController extends Controller
 
     public function getDatetime($route)
     {
-        $set_time = OpeningClosingTime::where('route', $route)
-            ->orderBy('id', 'desc')
-            ->first();
+        $set_time = OpeningClosingTime::currentForRoute($route);
 
         if (! $set_time || ! $set_time->opening_time || ! $set_time->closing_time) {
             return 'Registration schedule unavailable';
@@ -1290,9 +1288,7 @@ class ReceiptFormController extends Controller
 
     protected function getCurrentOpeningPeriod($route): ?array
     {
-        $getTime = OpeningClosingTime::where('route', $route)
-            ->orderBy('id', 'desc')
-            ->first();
+        $getTime = OpeningClosingTime::currentForRoute($route);
 
         if (! $getTime || ! $getTime->opening_time || ! $getTime->closing_time) {
             return null;
@@ -2081,7 +2077,7 @@ class ReceiptFormController extends Controller
         string $message,
         array $errors = [],
     ) {
-        if ($request->ajax()) {
+        if ($request->expectsJson()) {
             return response()->json([
                 'message' => $message,
                 'errors' => $errors,
@@ -2371,8 +2367,20 @@ class ReceiptFormController extends Controller
             return back()->withInput()->with('error', $message);
         }
 
+        // Match the schedule used by the public URL, including legacy forms
+        // whose internal form_route differs from their public slug.
+        $scheduleRoute = $formManage->slug ?: $formManage->form_route;
+        $schedule = OpeningClosingTime::currentForRoute($scheduleRoute);
+        if (! $schedule || ! $schedule->isOpenAt(now())) {
+            $message = 'Registration is currently closed. กรุณาตรวจสอบช่วงเวลาเปิดรับสมัคร';
+
+            return $this->registrationValidationFailure($request, $message, [
+                'registration_period' => [$message],
+            ]);
+        }
+
         $result = $this->checkCurrentPeriodDuplicate(
-            $route,
+            $scheduleRoute,
             $request->get('sfield'),
             $request->get('firstname'),
             $request->get('lastname'),

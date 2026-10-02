@@ -18,15 +18,6 @@ class switchhome
     public function handle(Request $request, Closure $next)
     {
 
-        if (Auth::user()->level >= 0 && Auth::user()->level < 3) {
-            # code...
-            return $next($request);
-        } elseif (Auth::user()->level == 3) {
-            # code...
-            return redirect(route('formsControl'));
-        } else {
-            # code...
-            return redirect(route('home2'));
-        }
+        return redirect(Auth::user()->backOfficeHomePath());
     }
 }

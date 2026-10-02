@@ -77,8 +77,8 @@
           <i class="fa fa-home icon-gradient bg-happy-itmeo"></i>
         </div>
         <div>
-          Wellcome
-          <div class="page-title-subheading">META Knowledge Dashboard</div>
+          รายงานการทำงาน
+          <div class="page-title-subheading">สรุปเวลาเข้างาน การลา และการทำงานของคุณ</div>
         </div>
       </div>
     </div>
