@@ -917,9 +917,6 @@
                   </div>
 
                   <div style="text-align: center; margin-bottom: 2rem">
-                    @php
-                      $hideRegistrationDateFallback = (int) ($form->id ?? 0) === 60;
-                    @endphp
                     @if (isset($form->registration_date_label))
                       <div class="info-badge">
                         <i class="fas fa-calendar-check"></i>
@@ -927,11 +924,7 @@
                           <strong>
                             {{ $form->registration_date_label }}:
                           </strong>
-                          @if (isset($date))
-                            {{ $date }}
-                          @elseif (! $hideRegistrationDateFallback)
-                            Today - 25 October 2024
-                          @endif
+                          {{ $date ?? 'Registration schedule unavailable' }}
                         </span>
                       </div>
                     @endif

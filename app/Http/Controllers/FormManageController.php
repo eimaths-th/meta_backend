@@ -68,21 +68,7 @@ class FormManageController extends Controller
    */
   public function getDatetime($route)
   {
-    $set_time = OpeningClosingTime::where('route', $route)
-      ->orderBy('id', 'desc')
-      ->first();
-    if ($set_time->status === 'Online') {
-      $dt_start = new \DateTime($set_time->opening_time);
-      $dt_closs = new \DateTime($set_time->closing_time);
-      $start = $dt_start->format('d F Y');
-      $closs = $dt_closs->format('d F Y');
-      $date = $start . ' - ' . $closs;
-    } else {
-      $start = 'null date';
-      $closs = 'null date';
-      $date = $start . ' to ' . $closs;
-    }
-    return $date;
+    return OpeningClosingTime::registrationDateForRoute($route);
   }
 
   public function testing_form_manage()
@@ -244,7 +230,7 @@ class FormManageController extends Controller
       'form_route' => $form_route,
       'slug' => $slug,
       'sfield' => $nextSfield,
-      'head_title' => $form_name . ' 2025 Registration Form',
+      'head_title' => $form_name . ' Registration Form',
       'news' => 'ท่านทราบข่าวสารการจัดสอบ ' . $form_name . ' จากช่องทางใด',
       'create_by' => Auth::user()->id,
     ]);
@@ -1414,9 +1400,10 @@ class FormManageController extends Controller
 
   public function view($id)
   {
-    //
-    $form = FormManage::find($id);
-    return view('forms_manage.view', compact('form'));
+    $form = FormManage::findOrFail($id);
+    $date = $this->getDatetime($form->slug ?: $form->form_route);
+
+    return view('forms_manage.view', compact('form', 'date'));
   }
 
   /**

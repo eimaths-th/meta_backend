@@ -18,21 +18,12 @@ class CheckOpeningDateTime
     public function handle(Request $request, Closure $next)
     {
 
-        // dd($request);
         $now = now();
 
         $route = $request->route()->getName();
-        // dd($route);
-        // If using new slug-based route, get slug from URL parameter
-        if ($route === 'form.show') {
-            $slug = $request->route('slug');
-            $times = OpeningClosingTime::where('route', $slug)->latest()->first();
-        } else {
-            // For backward compatibility with old routes
-            $times = OpeningClosingTime::where('route', $route)->latest()->first();
-        }
+        $scheduleRoute = $route === 'form.show' ? $request->route('slug') : $route;
+        $times = OpeningClosingTime::currentForRoute($scheduleRoute);
 
-        // dd($times);
         if (!$times) {
 
             $status = 'Offline';

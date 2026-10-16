@@ -317,27 +317,7 @@ class ReceiptFormController extends Controller
 
     public function getDatetime($route)
     {
-        $set_time = OpeningClosingTime::where('route', $route)
-            ->orderBy('id', 'desc')
-            ->first();
-
-        if (! $set_time || ! $set_time->opening_time || ! $set_time->closing_time) {
-            return 'Registration schedule unavailable';
-        }
-
-        if ($set_time->status === 'Online') {
-            $dt_start = new \DateTime($set_time->opening_time);
-            $dt_closs = new \DateTime($set_time->closing_time);
-            $start = $dt_start->format('d F Y');
-            $closs = $dt_closs->format('d F Y');
-            $date = $start.' - '.$closs;
-        } else {
-            $start = 'null date';
-            $closs = 'null date';
-            $date = $start.' to '.$closs;
-        }
-
-        return $date;
+        return OpeningClosingTime::registrationDateForRoute($route);
     }
 
     public function getForm()
